@@ -17,9 +17,9 @@ This local folder (`SULLYS`) currently has **no git commits and no remote** — 
    - **Do not** add README / .gitignore / license (this folder already has them)
 4. Invite yourself (and any QA teammates) as Owner/Admin on the org.
 
-You should end with a URL like:
+Quiet Agency repo (live target):
 
-`https://github.com/Quiet-Agency/SULLYS.git`
+`https://github.com/QuietAgencyDev/Sullys1943.git`
 
 ---
 

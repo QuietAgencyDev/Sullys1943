@@ -2,19 +2,19 @@
 
 You will end with:
 
-- `https://www.YOURDOMAIN.com` — marketing + portal  
-- `https://api.YOURDOMAIN.com/api/v1/health` — API  
-- `https://www.YOURDOMAIN.com/tv/floor` — second-screen demo  
+- `https://www.sullys1943.com` — marketing + portal  
+- `https://api.sullys1943.com/api/v1/health` — API  
+- `https://www.sullys1943.com/tv/floor` — second-screen demo  
 
+**Domain:** `sullys1943.com` (purchased on Quiet Agency Cloudflare) — see [08-sullys1943-domain.md](./08-sullys1943-domain.md)  
 Detailed stack notes: [02-demo-deploy…](./02-demo-deploy-cloudflare-vercel-railway-neon.md)
 
 ---
 
-## A) Buy domain (Cloudflare) — ~10 min
+## A) Domain (done)
 
-1. [dash.cloudflare.com](https://dash.cloudflare.com) → **Domain Registration** → buy (e.g. `sullys.app` / `.ca`).  
-2. Keep DNS on Cloudflare.  
-3. Leave records empty for now (Vercel/Railway will give targets).
+- [x] Cloudflare account + **sullys1943.com**  
+- Keep DNS on Cloudflare; add Vercel/Railway records when those hosts exist.
 
 ---
 
@@ -45,10 +45,10 @@ Build: npm install && npx prisma generate && npm run build
 Start: node dist/main.js
 ```
 
-4. Variables — copy from `apps/api/.env.production.example` (fill Neon URL + JWT + WEB_ORIGIN).  
-5. Settings → Networking → generate domain → add custom **`api.YOURDOMAIN.com`**.  
+4. Variables — copy from `apps/api/.env.production.example` (Neon URL + JWT; WEB_ORIGIN already set for sullys1943.com).  
+5. Settings → Networking → generate domain → add custom **`api.sullys1943.com`**.  
 6. Cloudflare DNS: `CNAME api` → Railway hostname.  
-7. Test: `https://api.YOURDOMAIN.com/api/v1/health` and `/api/v1/tv/board?profile=floor`.
+7. Test: `https://api.sullys1943.com/api/v1/health` and `/api/v1/tv/board?profile=floor`.
 
 ---
 
