@@ -1,6 +1,5 @@
 # Quiet Agency · Sullys1943 API on Railway (monorepo root)
-# Service: @sullys/api → https://sullysapi-production.up.railway.app
-# Leave Root Directory EMPTY (repo root). Do not set apps/api.
+# Matches apps/api/railway.toml — keep both in sync.
 
 [build]
 builder = "NIXPACKS"

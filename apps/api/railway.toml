@@ -1,11 +1,11 @@
-# Prefer repo-root railway.toml for monorepo deploys.
-# If Railway Root Directory is set to apps/api, this file is used instead.
+# Railway picks this up for the @sullys/api service but builds from the monorepo root.
+# Paths are therefore repo-root relative (apps/api/...), not service-root relative.
 
 [build]
 builder = "NIXPACKS"
-buildCommand = "npm install && npx prisma generate --schema=./prisma/schema.prisma && npm run build"
+buildCommand = "npm install && npx prisma generate --schema=apps/api/prisma/schema.prisma && npm run build -w @sullys/api"
 
 [deploy]
-startCommand = "node dist/main.js"
+startCommand = "node apps/api/dist/main.js"
 healthcheckPath = "/api/v1/health"
 restartPolicyType = "ON_FAILURE"
