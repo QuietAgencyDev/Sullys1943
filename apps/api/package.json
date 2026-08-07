@@ -25,9 +25,11 @@
     "cookie-parser": "^1.4.7",
     "jose": "^6.0.12",
     "pdfkit": "^0.19.1",
+    "prisma": "^6.19.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "stripe": "^17.7.0",
+    "typescript": "^5.8.3",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
@@ -37,9 +39,7 @@
     "@types/node": "^22.16.5",
     "@types/pdfkit": "^0.17.6",
     "@types/uuid": "^10.0.0",
-    "prisma": "^6.19.0",
-    "tsx": "^4.20.3",
-    "typescript": "^5.8.3"
+    "tsx": "^4.20.3"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

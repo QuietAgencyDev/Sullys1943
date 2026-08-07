@@ -1,0 +1,12 @@
+# Quiet Agency · Sullys1943 API on Railway (monorepo root)
+# Service: @sullys/api → https://sullysapi-production.up.railway.app
+# Leave Root Directory EMPTY (repo root). Do not set apps/api.
+
+[build]
+builder = "NIXPACKS"
+buildCommand = "npm install && npx prisma generate --schema=apps/api/prisma/schema.prisma && npm run build -w @sullys/api"
+
+[deploy]
+startCommand = "node apps/api/dist/main.js"
+healthcheckPath = "/api/v1/health"
+restartPolicyType = "ON_FAILURE"
