@@ -19,7 +19,7 @@ export default function TvDemoKitPage() {
         <p className={styles.eyebrow}>Demo kit</p>
         <h1 className={styles.title}>Second screen in 60 seconds</h1>
         <p className={styles.lead}>
-          F45-style energy, Sully&apos;s brand — live class countdown, check-ins,
+          Floor energy, Sully&apos;s brand — live class countdown, check-ins,
           leaderboard, and reception welcome ticker. Built for a spare monitor
           or living-room cast while you walk people through the platform.
         </p>

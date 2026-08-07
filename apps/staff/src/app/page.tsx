@@ -126,7 +126,7 @@ export default function StaffHome() {
               rel="noreferrer"
             >
               <strong>Floor TV (direct)</strong>
-              <span>F45-style class board — spare monitor / Fire TV</span>
+              <span>Live class board — spare monitor / Fire TV</span>
             </a>
             <a
               className={styles.navCard}
