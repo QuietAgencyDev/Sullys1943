@@ -26,6 +26,8 @@ import {
   OwnerBriefController,
 } from "./platform.controllers";
 import { PortalController } from "./portal.controller";
+import { CoachController } from "./coach.controller";
+import { ProgressionService } from "./progression.service";
 
 @Module({
   controllers: [
@@ -36,6 +38,7 @@ import { PortalController } from "./portal.controller";
     AdminUsersController,
     TvController,
     PortalController,
+    CoachController,
     SessionsController,
     BookingsController,
     CalendarController,
@@ -53,6 +56,6 @@ import { PortalController } from "./portal.controller";
     FamilyController,
     OwnerBriefController,
   ],
-  providers: [PrismaService, AuthGuard],
+  providers: [PrismaService, AuthGuard, ProgressionService],
 })
 export class AppModule {}

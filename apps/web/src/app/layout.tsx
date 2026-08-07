@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, DM_Sans, Libre_Baskerville } from "next/font/google";
 import "./globals.css";
 
@@ -25,7 +25,6 @@ export const metadata: Metadata = {
     "Canada's oldest boxing club. Boxing is the engine. People are the purpose. Character is the legacy. Building character before life demands it.",
   applicationName: "Sully's",
   manifest: "/manifest.webmanifest",
-  themeColor: "#C82026",
   appleWebApp: {
     capable: true,
     title: "Sully's",
@@ -38,6 +37,10 @@ export const metadata: Metadata = {
     ],
     apple: [{ url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }],
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#C82026",
 };
 
 export default function RootLayout({

@@ -96,7 +96,7 @@ async function main() {
     },
   });
 
-  await prisma.user.create({
+  const coachMaria = await prisma.user.create({
     data: {
       organizationId: org.id,
       email: "coach.maria@sullys.local",
@@ -111,7 +111,7 @@ async function main() {
     },
   });
 
-  await prisma.user.create({
+  const coachJamal = await prisma.user.create({
     data: {
       organizationId: org.id,
       email: "coach.jamal@sullys.local",
@@ -367,6 +367,8 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
       start: atHour(today, 12, 0),
       end: atHour(today, 13, 0),
       capacity: 16,
+      coachUserId: coach.id,
+      coachName: "Alex Coach",
     },
     {
       title: "Competitive Team",
@@ -374,6 +376,8 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
       start: atHour(today, 18, 0),
       end: atHour(today, 19, 30),
       capacity: 12,
+      coachUserId: coachJamal.id,
+      coachName: "Jamal Wright",
     },
     {
       title: "Women's Boxing",
@@ -381,6 +385,8 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
       start: atHour(today, 19, 0),
       end: atHour(today, 20, 0),
       capacity: 14,
+      coachUserId: coach.id,
+      coachName: "Alex Coach",
     },
     {
       title: "Kids Boxing",
@@ -388,6 +394,8 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
       start: atHour(today, 16, 0),
       end: atHour(today, 17, 0),
       capacity: 12,
+      coachUserId: coachMaria.id,
+      coachName: "Maria Reyes",
     },
   ];
 
@@ -403,8 +411,8 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
           startsAt: s.start,
           endsAt: s.end,
           capacity: s.capacity,
-          coachName: "Alex Coach",
-          coachUserId: coach.id,
+          coachName: s.coachName,
+          coachUserId: s.coachUserId,
         },
       }),
     );

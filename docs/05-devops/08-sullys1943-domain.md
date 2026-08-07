@@ -11,6 +11,8 @@ Public URLs when live:
 | Marketing + member portal | https://www.sullys1943.com |
 | Apex redirect (optional) | https://sullys1943.com → www |
 | API | https://api.sullys1943.com |
+| API (Railway public) | https://sullysapi-production.up.railway.app |
+| API (Railway CNAME target) | `69a3ykoh.up.railway.app` → use for Cloudflare `api` |
 | Floor TV | https://www.sullys1943.com/tv/floor |
 | Staff (later) | https://staff.sullys1943.com |
 

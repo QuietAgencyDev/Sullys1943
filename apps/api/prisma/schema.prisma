@@ -68,6 +68,10 @@ model User {
   kitchenOrders      KitchenOrder[]
   badges             UserBadge[]
   passwordResets     PasswordResetToken[]
+  coachNotesAuthored CoachNote[] @relation("CoachNoteAuthor")
+  coachNotesReceived CoachNote[] @relation("CoachNoteAthlete")
+  assessmentsAuthored CoachAssessment[] @relation("CoachAssessmentAuthor")
+  assessmentsReceived CoachAssessment[] @relation("CoachAssessmentAthlete")
 
   @@unique([organizationId, email])
 }
@@ -227,6 +231,54 @@ model Session {
   coach       User?    @relation("CoachSessions", fields: [coachUserId], references: [id])
   bookings    Booking[]
   attendance  AttendanceEvent[]
+  liveState   LiveClassState?
+  coachNotes  CoachNote[]
+  assessments CoachAssessment[]
+}
+
+/** Coach-controlled class timer + TV sync state (Phase 1 Live Class Mode). */
+model LiveClassState {
+  id              String   @id @default(cuid())
+  sessionId       String   @unique
+  session         Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  status          String   @default("idle") // idle | running | paused | finished
+  phase           String   @default("work") // work | rest
+  round           Int      @default(1)
+  totalRounds     Int      @default(12)
+  workSec         Int      @default(180)
+  restSec         Int      @default(60)
+  phaseEndsAt     DateTime?
+  pausedRemainSec Int?
+  startedById     String?
+  tvMode          String   @default("timer") // timer | leaderboard | announcement
+  updatedAt       DateTime @updatedAt
+  createdAt       DateTime @default(now())
+}
+
+model CoachNote {
+  id        String   @id @default(cuid())
+  sessionId String?
+  session   Session? @relation(fields: [sessionId], references: [id])
+  athleteId String
+  athlete   User     @relation("CoachNoteAthlete", fields: [athleteId], references: [id])
+  authorId  String
+  author    User     @relation("CoachNoteAuthor", fields: [authorId], references: [id])
+  body      String
+  createdAt DateTime @default(now())
+}
+
+model CoachAssessment {
+  id        String   @id @default(cuid())
+  sessionId String?
+  session   Session? @relation(fields: [sessionId], references: [id])
+  athleteId String
+  athlete   User     @relation("CoachAssessmentAthlete", fields: [athleteId], references: [id])
+  authorId  String
+  author    User     @relation("CoachAssessmentAuthor", fields: [authorId], references: [id])
+  category  String   // stance | guard | jab | footwork | defense | conditioning | discipline | teamwork
+  score     Int      // 1-5
+  notes     String?
+  createdAt DateTime @default(now())
 }
 
 model Booking {
@@ -294,12 +346,16 @@ model Message {
 }
 
 model XpLedger {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  delta     Int
-  reason    String
-  createdAt DateTime @default(now())
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  delta          Int
+  reason         String
+  source         String?  // check_in | class_complete | coach_award | welcome
+  sessionId      String?
+  idempotencyKey String?  @unique
+  metadata       String?  // JSON
+  createdAt      DateTime @default(now())
 }
 
 model PointsAccount {

@@ -92,6 +92,10 @@ export default function StaffHome() {
             Signed in as {user.email} ({user.role})
           </p>
           <nav className={styles.nav}>
+            <Link className={styles.navCard} href="/coach">
+              <strong>Coach Command Center</strong>
+              <span>Today&apos;s classes · Live Class Mode · coach timer control</span>
+            </Link>
             <Link className={styles.navCard} href="/desk">
               <strong>Desk scanner</strong>
               <span>QR / USB wedge + session + staff override</span>

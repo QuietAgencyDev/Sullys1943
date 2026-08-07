@@ -71,4 +71,11 @@
   .logo {
     width: 56px;
   }
+
+  /* True viewport center, nudged left so it reads centered next to the brand */
+  .nav {
+    position: absolute;
+    left: 50%;
+    transform: translateX(calc(-50% - 1.25rem));
+  }
 }

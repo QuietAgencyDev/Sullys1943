@@ -120,7 +120,15 @@ export default function CoachRosterPage() {
         reason.
       </p>
       <p>
-        <Link href="/">← Staff home</Link>
+        <Link href="/coach">← Coach home</Link>
+        {" · "}
+        <Link href="/">Staff hub</Link>
+        {activeId ? (
+          <>
+            {" · "}
+            <Link href={`/coach/live/${activeId}`}>Live Class Mode</Link>
+          </>
+        ) : null}
       </p>
 
       <div className={styles.row}>

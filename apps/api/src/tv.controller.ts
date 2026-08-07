@@ -22,13 +22,15 @@ export class TvController {
     const end = new Date(start);
     end.setDate(end.getDate() + 1);
 
-    const [sessions, checkInsToday, xpRows, announcements] = await Promise.all([
+    const [sessions, checkInsToday, xpRows, announcements, activeLive] =
+      await Promise.all([
       this.prisma.session.findMany({
         where: { startsAt: { gte: start, lt: end } },
         include: {
           bookings: { where: { status: { not: "cancelled" } } },
           coach: { select: { firstName: true, lastName: true } },
           program: { select: { name: true } },
+          liveState: true,
         },
         orderBy: { startsAt: "asc" },
         take: 12,
@@ -45,6 +47,20 @@ export class TvController {
       this.prisma.announcement.findMany({
         orderBy: { createdAt: "desc" },
         take: 3,
+      }),
+      this.prisma.liveClassState.findFirst({
+        where: { status: { in: ["running", "paused"] } },
+        include: {
+          session: {
+            select: {
+              id: true,
+              title: true,
+              coachName: true,
+              coach: { select: { firstName: true, lastName: true } },
+            },
+          },
+        },
+        orderBy: { updatedAt: "desc" },
       }),
     ]);
 
@@ -146,7 +162,41 @@ export class TvController {
         "Character is the legacy",
         "We don't lower standards — we raise people",
       ],
-      refreshSeconds: 15,
+      refreshSeconds: activeLive ? 3 : 15,
+      /** Coach-controlled timer — overrides open-gym wall-clock sync on floor TV */
+      coachTimer: activeLive
+        ? (() => {
+            const ls = activeLive;
+            let secondsLeft = ls.workSec;
+            if (ls.status === "paused") {
+              secondsLeft = ls.pausedRemainSec ?? ls.workSec;
+            } else if (ls.status === "running" && ls.phaseEndsAt) {
+              secondsLeft = Math.max(
+                0,
+                Math.ceil((ls.phaseEndsAt.getTime() - now.getTime()) / 1000),
+              );
+            }
+            const coach = ls.session.coach
+              ? `${ls.session.coach.firstName} ${ls.session.coach.lastName.charAt(0)}.`
+              : ls.session.coachName;
+            return {
+              sessionId: ls.sessionId,
+              title: ls.session.title,
+              coach,
+              status: ls.status,
+              phase: ls.phase,
+              round: ls.round,
+              totalRounds: ls.totalRounds,
+              workSec: ls.workSec,
+              restSec: ls.restSec,
+              secondsLeft,
+              phaseEndsAt: ls.phaseEndsAt?.toISOString() ?? null,
+              pausedRemainSec: ls.pausedRemainSec,
+              tvMode: ls.tvMode,
+              syncedToCoach: true,
+            };
+          })()
+        : null,
     };
   }
 }

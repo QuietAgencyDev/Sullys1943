@@ -21,6 +21,23 @@ type SessionCard = {
   secondsRemaining: number;
 };
 
+type CoachTimer = {
+  sessionId: string;
+  title: string;
+  coach: string | null;
+  status: string;
+  phase: "work" | "rest" | string;
+  round: number;
+  totalRounds: number;
+  workSec: number;
+  restSec: number;
+  secondsLeft: number;
+  phaseEndsAt?: string | null;
+  pausedRemainSec?: number | null;
+  tvMode: string;
+  syncedToCoach: boolean;
+};
+
 type Board = {
   profile: "floor" | "reception";
   asOf: string;
@@ -38,6 +55,7 @@ type Board = {
   ticker: { name: string; at: string }[];
   manifesto: string[];
   refreshSeconds: number;
+  coachTimer?: CoachTimer | null;
 };
 
 type RoundPhase = "work" | "rest";
@@ -205,7 +223,8 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       }
     }
     void load();
-    const poll = setInterval(load, 15_000);
+    // Faster poll so coach timer controls reach the floor TV quickly
+    const poll = setInterval(load, profile === "floor" ? 3_000 : 15_000);
     return () => {
       cancelled = true;
       clearInterval(poll);
@@ -250,17 +269,43 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     return Math.max(0, Math.floor((target - now.getTime()) / 1000));
   }, [focus, now]);
 
-  const round = useMemo(
-    () =>
-      computeRoundState(
+  const round = useMemo(() => {
+    const ct = board?.coachTimer;
+    if (ct?.syncedToCoach) {
+      const secondsInPhase = ct.phase === "work" ? ct.workSec : ct.restSec;
+      let secondsLeft = ct.secondsLeft;
+      if (ct.status === "paused") {
+        secondsLeft = ct.pausedRemainSec ?? ct.secondsLeft;
+      } else if (ct.status === "running" && ct.phaseEndsAt) {
+        secondsLeft = Math.max(
+          0,
+          Math.ceil((new Date(ct.phaseEndsAt).getTime() - now.getTime()) / 1000),
+        );
+      }
+      return {
+        phase: (ct.phase === "rest" ? "rest" : "work") as RoundPhase,
+        round: ct.round,
+        totalRounds: ct.totalRounds,
+        secondsLeft,
+        secondsInPhase,
+        progress: 1 - secondsLeft / Math.max(1, secondsInPhase),
+        syncedToClass: true,
+        coachControlled: true,
+        paused: ct.status === "paused",
+      };
+    }
+    return {
+      ...computeRoundState(
         now,
         board?.live ?? null,
         timerCfg.workSec,
         timerCfg.restSec,
         timerCfg.rounds,
       ),
-    [now, board?.live, timerCfg],
-  );
+      coachControlled: false,
+      paused: false,
+    };
+  }, [now, board?.live, board?.coachTimer, timerCfg]);
 
   const tickerItems = board?.ticker?.length
     ? [...board.ticker, ...board.ticker]
@@ -325,14 +370,19 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                   : ""}
               </p>
               <h1 className={styles.classTitle}>
-                {focus?.title ?? "Open gym rounds"}
+                {board?.coachTimer?.title ?? focus?.title ?? "Open gym rounds"}
               </h1>
               <p className={styles.meta}>
-                {focus?.coach ? `Coach ${focus.coach}` : "Sully's floor"}
-                {focus
+                {board?.coachTimer?.coach
+                  ? `Coach ${board.coachTimer.coach}`
+                  : focus?.coach
+                    ? `Coach ${focus.coach}`
+                    : "Sully's floor"}
+                {focus && !board?.coachTimer
                   ? ` · ${focus.booked}/${focus.capacity} · ${focus.spotsLeft} spots`
                   : ""}
-                {classCountdown !== null && focus?.phase === "live"
+                {round.paused ? " · PAUSED" : ""}
+                {classCountdown !== null && focus?.phase === "live" && !board?.coachTimer
                   ? ` · class ${formatCountdown(classCountdown)}`
                   : focus?.phase === "upcoming" && classCountdown !== null
                     ? ` · starts ${formatCountdown(classCountdown)}`
@@ -340,7 +390,11 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
               </p>
               <p className={styles.timerLabel}>
                 {round.phase === "work" ? "Round clock" : "Rest clock"}
-                {round.syncedToClass ? " · synced to class" : " · open gym sync"}
+                {round.coachControlled
+                  ? " · coach controlled"
+                  : round.syncedToClass
+                    ? " · synced to class"
+                    : " · open gym sync"}
               </p>
               <p className={styles.timer}>
                 {formatCountdown(round.secondsLeft)}
