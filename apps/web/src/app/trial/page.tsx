@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "@sullys/ui";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import styles from "../join/placeholder.module.css";
+import styles from "../join/join.module.css";
 
 export default function TrialPage() {
   return (
