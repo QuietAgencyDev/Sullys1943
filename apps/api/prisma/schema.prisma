@@ -1,0 +1,419 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id        String     @id @default(cuid())
+  name      String
+  slug      String     @unique
+  createdAt DateTime   @default(now())
+  locations Location[]
+  users     User[]
+  products  MembershipProduct[]
+  programs  Program[]
+  templates DocumentTemplate[]
+  announcements Announcement[]
+  legacyEntries LegacyTimelineEntry[]
+}
+
+model Location {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  name           String
+  timezone       String   @default("America/Toronto")
+  rooms          Room[]
+  sessions       Session[]
+  memberships    Membership[]
+}
+
+model User {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  email          String
+  passwordHash   String
+  firstName      String
+  lastName       String
+  phone          String?
+  role           String   @default("member") // member | parent | coach | front_desk | admin | owner | child
+  title          String?  // coach display title
+  bio            String?
+  photoUrl       String?
+  dateOfBirth    DateTime?
+  disabledAt     DateTime?
+  invitedAt      DateTime?
+  createdAt      DateTime @default(now())
+
+  membershipsAsPayer Membership[] @relation("Payer")
+  membershipMembers  MembershipMember[]
+  bookings           Booking[]
+  attendance         AttendanceEvent[]
+  signatures         Signature[]
+  guardianships      Guardianship[] @relation("Guardian")
+  children           Guardianship[] @relation("Child")
+  messagesSent       Message[]
+  xpEntries          XpLedger[]
+  points             PointsAccount?
+  checkInTokens      CheckInCredential[]
+  coachedSessions    Session[] @relation("CoachSessions")
+  recordedAttendance AttendanceEvent[] @relation("RecordedBy")
+  nutritionProfile   NutritionProfile?
+  mealPlanAssignments MealPlanAssignment[]
+  kitchenOrders      KitchenOrder[]
+  badges             UserBadge[]
+  passwordResets     PasswordResetToken[]
+
+  @@unique([organizationId, email])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+}
+
+model Guardianship {
+  id              String @id @default(cuid())
+  guardianUserId  String
+  childUserId     String
+  relationship    String @default("parent")
+  guardian        User   @relation("Guardian", fields: [guardianUserId], references: [id])
+  child           User   @relation("Child", fields: [childUserId], references: [id])
+
+  @@unique([guardianUserId, childUserId])
+}
+
+model Room {
+  id         String   @id @default(cuid())
+  locationId String
+  location   Location @relation(fields: [locationId], references: [id])
+  name       String
+  capacity   Int      @default(20)
+  sessions   Session[]
+}
+
+model MembershipProduct {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  code           String
+  name           String
+  description    String?
+  interval       String   // monthly | annual | one_time
+  priceCents     Int
+  currency       String   @default("cad")
+  stripePriceId  String?
+  active         Boolean  @default(true)
+  memberships    Membership[]
+
+  @@unique([organizationId, code])
+}
+
+model Membership {
+  id                   String   @id @default(cuid())
+  locationId           String
+  location             Location @relation(fields: [locationId], references: [id])
+  productId            String
+  product              MembershipProduct @relation(fields: [productId], references: [id])
+  payerUserId          String
+  payer                User     @relation("Payer", fields: [payerUserId], references: [id])
+  status               String   @default("active") // active | past_due | paused | cancelled | pending_payment
+  startsAt             DateTime @default(now())
+  endsAt               DateTime?
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  stripeCheckoutId     String?
+  paymentEvents        PaymentEvent[]
+  members              MembershipMember[]
+}
+
+model PaymentEvent {
+  id              String   @id @default(cuid())
+  membershipId    String?
+  membership      Membership? @relation(fields: [membershipId], references: [id])
+  provider        String   @default("mock") // mock | stripe
+  externalId      String   @unique
+  type            String
+  status          String   @default("pending") // pending | completed | failed
+  amountCents     Int      @default(0)
+  raw             String?
+  createdAt       DateTime @default(now())
+}
+
+model MembershipMember {
+  id           String @id @default(cuid())
+  membershipId String
+  membership   Membership @relation(fields: [membershipId], references: [id])
+  userId       String
+  user         User @relation(fields: [userId], references: [id])
+
+  @@unique([membershipId, userId])
+}
+
+model DocumentTemplate {
+  id             String @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  type           String
+  name           String
+  versions       DocumentTemplateVersion[]
+}
+
+model DocumentTemplateVersion {
+  id         String @id @default(cuid())
+  templateId String
+  template   DocumentTemplate @relation(fields: [templateId], references: [id])
+  version    Int
+  body       String
+  status     String @default("active") // draft | active | retired
+  packets    SignaturePacket[]
+
+  @@unique([templateId, version])
+}
+
+model SignaturePacket {
+  id        String @id @default(cuid())
+  versionId String
+  version   DocumentTemplateVersion @relation(fields: [versionId], references: [id])
+  subjectUserId String
+  status    String @default("required") // required | signed | expired
+  signedAt  DateTime?
+  signatures Signature[]
+}
+
+model Signature {
+  id        String @id @default(cuid())
+  packetId  String
+  packet    SignaturePacket @relation(fields: [packetId], references: [id])
+  signerId  String
+  signer    User @relation(fields: [signerId], references: [id])
+  typedName String
+  signedAt  DateTime @default(now())
+}
+
+model Program {
+  id             String @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  name           String
+  kind           String @default("adult")
+  sessions       Session[]
+}
+
+model Session {
+  id          String   @id @default(cuid())
+  locationId  String
+  location    Location @relation(fields: [locationId], references: [id])
+  programId   String
+  program     Program  @relation(fields: [programId], references: [id])
+  roomId      String?
+  room        Room?    @relation(fields: [roomId], references: [id])
+  title       String
+  startsAt    DateTime
+  endsAt      DateTime
+  capacity    Int      @default(16)
+  coachName   String?
+  coachUserId String?
+  coach       User?    @relation("CoachSessions", fields: [coachUserId], references: [id])
+  bookings    Booking[]
+  attendance  AttendanceEvent[]
+}
+
+model Booking {
+  id        String   @id @default(cuid())
+  sessionId String
+  session   Session  @relation(fields: [sessionId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  status    String   @default("confirmed") // confirmed | cancelled | waitlisted | checked_in
+  createdAt DateTime @default(now())
+
+  @@unique([sessionId, userId])
+}
+
+model AttendanceEvent {
+  id            String   @id @default(cuid())
+  locationId    String
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  sessionId     String?
+  session       Session? @relation(fields: [sessionId], references: [id])
+  recordedById  String?
+  recordedBy    User?    @relation("RecordedBy", fields: [recordedById], references: [id])
+  method        String   @default("qr")
+  status        String   @default("checked_in")
+  checkedInAt   DateTime @default(now())
+  lateBySeconds Int?
+  overrideReason String?
+  flags         String   @default("") // comma flags: waiver_override,membership_override
+}
+
+model CheckInCredential {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model Announcement {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  title          String
+  body           String
+  createdAt      DateTime @default(now())
+}
+
+model MessageThread {
+  id        String    @id @default(cuid())
+  subject   String
+  createdAt DateTime  @default(now())
+  messages  Message[]
+}
+
+model Message {
+  id        String @id @default(cuid())
+  threadId  String
+  thread    MessageThread @relation(fields: [threadId], references: [id])
+  senderId  String
+  sender    User @relation(fields: [senderId], references: [id])
+  body      String
+  createdAt DateTime @default(now())
+}
+
+model XpLedger {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  delta     Int
+  reason    String
+  createdAt DateTime @default(now())
+}
+
+model PointsAccount {
+  id      String @id @default(cuid())
+  userId  String @unique
+  user    User   @relation(fields: [userId], references: [id])
+  balance Int    @default(0)
+}
+
+model Badge {
+  id          String      @id @default(cuid())
+  code        String      @unique
+  name        String
+  description String?
+  users       UserBadge[]
+}
+
+model UserBadge {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  badgeId  String
+  badge    Badge    @relation(fields: [badgeId], references: [id])
+  earnedAt DateTime @default(now())
+
+  @@unique([userId, badgeId])
+}
+
+model LegacyTimelineEntry {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  decade         Int
+  year           Int?
+  type           String   @default("milestone") // milestone | champion | moment | media
+  title          String
+  body           String
+  mediaUrl       String?
+  sortOrder      Int      @default(0)
+  published      Boolean  @default(true)
+  createdAt      DateTime @default(now())
+}
+
+model NutritionProfile {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id])
+  goal           String?
+  allergens      String   @default("") // comma-separated
+  notes          String?
+  updatedAt      DateTime @updatedAt
+}
+
+model MealPlan {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+  description    String?
+  daysJson       String   // JSON: [{day, meals:[{name,calories,tags}]}]
+  active         Boolean  @default(true)
+  assignments    MealPlanAssignment[]
+}
+
+model MealPlanAssignment {
+  id         String   @id @default(cuid())
+  mealPlanId String
+  mealPlan   MealPlan @relation(fields: [mealPlanId], references: [id])
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  startsAt   DateTime @default(now())
+  active     Boolean  @default(true)
+
+  @@unique([mealPlanId, userId])
+}
+
+model Recipe {
+  id             String @id @default(cuid())
+  organizationId String
+  name           String
+  description    String?
+  allergens      String @default("")
+  tags           String @default("")
+  ingredientsJson String @default("[]")
+}
+
+model MenuItem {
+  id             String @id @default(cuid())
+  organizationId String
+  name           String
+  description    String?
+  priceCents     Int
+  allergens      String @default("")
+  available      Boolean @default(true)
+  orders         KitchenOrderItem[]
+}
+
+model KitchenOrder {
+  id          String   @id @default(cuid())
+  locationId  String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  status      String   @default("placed") // placed | accepted | preparing | ready | completed | cancelled
+  notes       String?
+  allergenWarning String @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  items       KitchenOrderItem[]
+}
+
+model KitchenOrderItem {
+  id         String @id @default(cuid())
+  orderId    String
+  order      KitchenOrder @relation(fields: [orderId], references: [id])
+  menuItemId String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+  quantity   Int      @default(1)
+}

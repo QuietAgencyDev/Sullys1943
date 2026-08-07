@@ -1,0 +1,31 @@
+{
+  "name": "Sully's Member Portal",
+  "short_name": "Sully's",
+  "description": "Member home, class booking, and digital card for Sully's Boxing Gym.",
+  "start_url": "/app",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#140f0c",
+  "theme_color": "#C82026",
+  "lang": "en-CA",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

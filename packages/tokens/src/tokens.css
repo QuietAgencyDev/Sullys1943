@@ -1,0 +1,42 @@
+:root {
+  --brand-cream: #f3e6c8;
+  --brand-red: #c82026;
+  --brand-brown: #3a2418;
+  --brand-glove: #c4a06a;
+
+  --bg-canvas: #140f0c;
+  --bg-elevated: #1c1612;
+  --bg-cream: #f3e6c8;
+  --bg-glass: rgba(28, 22, 18, 0.78);
+
+  --text-primary: #f3e6c8;
+  --text-muted: #b8a990;
+  --text-on-cream: #3a2418;
+
+  --accent: var(--brand-red);
+  --accent-contrast: var(--brand-cream);
+
+  --danger: #e23b3b;
+  --warning: #d4a017;
+  --success: #2f9e6b;
+
+  --border: rgba(243, 230, 200, 0.12);
+  --focus: rgba(200, 32, 38, 0.85);
+
+  --radius-sm: 4px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --font-display: "Bebas Neue", "Arial Narrow", Impact, sans-serif;
+  --font-body: "DM Sans", "Segoe UI", sans-serif;
+  --font-heritage: "Libre Baskerville", Georgia, serif;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+}

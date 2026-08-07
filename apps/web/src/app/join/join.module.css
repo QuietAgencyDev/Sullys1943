@@ -1,0 +1,185 @@
+.main {
+  min-height: 70svh;
+  padding: calc(120px + var(--space-6)) var(--space-5) var(--space-8);
+  max-width: 640px;
+  display: grid;
+  gap: var(--space-5);
+  align-content: start;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--brand-red);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(2.8rem, 10vw, 4.5rem);
+  line-height: 0.95;
+  letter-spacing: 0.03em;
+}
+
+.copy {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.stepChip {
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.stepChipActive {
+  color: var(--brand-cream);
+  border-color: rgba(200, 32, 38, 0.55);
+  background: rgba(200, 32, 38, 0.18);
+}
+
+.panel {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.field {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: rgba(20, 15, 12, 0.65);
+  color: var(--brand-cream);
+  font: inherit;
+}
+
+.input:focus {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.waiver {
+  display: grid;
+  gap: var(--space-3);
+  max-height: 220px;
+  overflow: auto;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: rgba(20, 15, 12, 0.45);
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.checkbox input {
+  margin-top: 3px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--brand-red);
+}
+
+.plans {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.plan {
+  text-align: left;
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: rgba(20, 15, 12, 0.45);
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+
+.planSelected {
+  border-color: rgba(200, 32, 38, 0.7);
+  background: rgba(200, 32, 38, 0.14);
+}
+
+.planName {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.planMeta {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 0.9rem;
+}
+
+.success {
+  display: grid;
+  gap: var(--space-3);
+}
+
+@media (min-width: 768px) {
+  .main {
+    padding-inline: var(--space-7);
+  }
+}

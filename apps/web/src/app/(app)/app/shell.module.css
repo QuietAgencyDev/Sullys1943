@@ -1,0 +1,106 @@
+.shell {
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(200, 32, 38, 0.18), transparent 42%),
+    radial-gradient(ellipse at 90% 80%, rgba(196, 160, 106, 0.1), transparent 40%),
+    var(--bg-canvas);
+  color: var(--brand-cream);
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: color-mix(in srgb, var(--bg-canvas) 88%, transparent);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.logo {
+  width: 40px;
+  height: auto;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+}
+
+.brandName {
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.brandSub {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-heritage-loaded), var(--font-heritage);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+.main {
+  width: min(720px, 100%);
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-4) calc(88px + var(--space-4));
+}
+
+.mainAuth {
+  width: min(720px, 100%);
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-4) var(--space-7);
+  display: grid;
+  align-content: center;
+  min-height: calc(100svh - 72px);
+}
+
+.bottomNav {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  padding: var(--space-2) var(--space-2) calc(var(--space-2) + env(safe-area-inset-bottom));
+  background: color-mix(in srgb, var(--bg-elevated) 94%, black);
+  border-top: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+}
+
+.navItem {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: var(--space-2) 2px;
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: var(--radius-md);
+}
+
+.navItem span:first-child {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.navItemActive {
+  color: var(--brand-cream);
+  background: rgba(200, 32, 38, 0.16);
+}
+
+.navItemActive span:first-child {
+  color: var(--brand-red);
+}

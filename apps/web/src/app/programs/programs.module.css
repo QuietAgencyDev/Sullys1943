@@ -1,0 +1,127 @@
+.main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 6rem;
+}
+
+.eyebrow {
+  margin: 0;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--brand-red);
+}
+
+.title {
+  margin: 0.4rem 0 0.8rem;
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(2.6rem, 8vw, 4.2rem);
+  line-height: 0.95;
+  color: var(--brand-cream);
+  text-wrap: balance;
+}
+
+.copy {
+  margin: 0 0 1rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  max-width: 40rem;
+}
+
+.manifesto {
+  margin: 0 0 2rem;
+  font-family: var(--font-heritage-loaded), var(--font-heritage);
+  color: var(--brand-glove);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  max-width: 36rem;
+}
+
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.card {
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--border);
+  display: grid;
+  gap: 0.5rem;
+}
+
+.card:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.cardTitle {
+  margin: 0;
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 1.7rem;
+  letter-spacing: 0.03em;
+}
+
+.cardTitle a {
+  color: var(--brand-cream);
+  text-decoration: none;
+}
+
+.cardTitle a:hover {
+  color: var(--brand-red);
+}
+
+.cardCopy {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+  max-width: 48ch;
+}
+
+.cardLink {
+  color: var(--brand-glove);
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+}
+
+.prose {
+  display: grid;
+  gap: 1rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 42rem;
+}
+
+.prose p {
+  margin: 0;
+}
+
+.subhead {
+  margin: 2.5rem 0 0.75rem;
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: 0.04em;
+  color: var(--brand-cream);
+}
+
+.outcomes {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--brand-cream);
+  line-height: 1.7;
+}
+
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .main {
+    padding-inline: 2rem;
+  }
+}

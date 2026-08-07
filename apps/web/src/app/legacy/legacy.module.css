@@ -1,0 +1,122 @@
+.main {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 6rem;
+}
+
+.eyebrow {
+  margin: 0;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--brand-red);
+}
+
+.title {
+  margin: 0.4rem 0 0.8rem;
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(2.8rem, 8vw, 4.5rem);
+  line-height: 0.95;
+  color: var(--brand-cream);
+}
+
+.copy {
+  margin: 0 0 1rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  max-width: 36rem;
+}
+
+.manifesto {
+  margin: 0 0 2rem;
+  font-family: var(--font-heritage-loaded), var(--font-heritage);
+  color: var(--brand-glove);
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+}
+
+.decades {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.decade {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--brand-cream);
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: 0.06em;
+}
+
+.decadeActive {
+  border-color: var(--brand-red);
+  color: var(--brand-red);
+}
+
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1.75rem;
+  border-left: 2px solid color-mix(in srgb, var(--brand-red) 55%, transparent);
+  padding-left: 1.25rem;
+}
+
+.entry {
+  position: relative;
+}
+
+.entry::before {
+  content: "";
+  position: absolute;
+  left: -1.55rem;
+  top: 0.35rem;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--brand-red);
+}
+
+.year {
+  display: inline-block;
+  margin-right: 0.6rem;
+  font-weight: 700;
+  color: var(--brand-cream);
+}
+
+.type {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.entryTitle {
+  margin: 0.35rem 0;
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 1.6rem;
+}
+
+.entryBody {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2.5rem;
+}
+
+.error {
+  color: var(--brand-red);
+}
