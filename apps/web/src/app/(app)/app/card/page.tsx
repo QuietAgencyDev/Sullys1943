@@ -118,7 +118,8 @@ export default function CardPage() {
         <p className={styles.eyebrow}>Check-in</p>
         <h1 className={styles.title}>Digital Card</h1>
         <p className={styles.lead}>
-          Show this QR at the desk. It rotates every 60 seconds for secure entry.
+          Show this QR at the door scanner for walk-in check-in. It rotates every
+          60 seconds.
         </p>
       </div>
 
@@ -149,7 +150,7 @@ export default function CardPage() {
                   className={cardStyles.qrImage}
                 />
                 <p className={cardStyles.qrLabel}>
-                  Rotates in {secondsLeft}s · desk scan ready
+                  Rotates in {secondsLeft}s · door scan ready
                 </p>
                 <p className={cardStyles.token}>{token}</p>
               </>
@@ -171,17 +172,22 @@ export default function CardPage() {
           <div className={cardStyles.actions}>
             <Button
               variant="primary"
-              disabled={pending || !waiverOk}
-              onClick={doCheckIn}
-            >
-              {pending ? "Checking in…" : "Self check-in"}
-            </Button>
-            <Button
-              variant="secondary"
               disabled={!waiverOk}
               onClick={() => void refreshToken()}
             >
               Refresh QR
+            </Button>
+          </div>
+          <p className={styles.muted}>
+            Prefer the wall QR or door scanner. Fallback if needed:
+          </p>
+          <div className={cardStyles.actions}>
+            <Button
+              variant="secondary"
+              disabled={pending || !waiverOk}
+              onClick={doCheckIn}
+            >
+              {pending ? "Checking in…" : "Or check in here"}
             </Button>
           </div>
           {checkInMsg ? (

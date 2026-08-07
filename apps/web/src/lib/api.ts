@@ -16,7 +16,12 @@ function redirectOnUnauthorized(status: number) {
   if (typeof window === "undefined" || status !== 401) return;
   const path = window.location.pathname;
   if (path.startsWith("/app/login") || path.startsWith("/app/register")) return;
-  window.location.href = "/app/login";
+  const next = `${path}${window.location.search}`;
+  const safeNext =
+    next.startsWith("/app") && !next.startsWith("//")
+      ? `?next=${encodeURIComponent(next)}`
+      : "";
+  window.location.href = `/app/login${safeNext}`;
 }
 
 export async function apiFetch<T>(

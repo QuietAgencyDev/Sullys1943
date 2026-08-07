@@ -100,6 +100,10 @@ export default function StaffHome() {
               <strong>Desk scanner</strong>
               <span>QR / USB wedge + session + staff override</span>
             </Link>
+            <Link className={styles.navCard} href="/desk/kiosk">
+              <strong>Door kiosk mode</strong>
+              <span>Fullscreen auto-scan · member QR → check-in</span>
+            </Link>
             <Link className={styles.navCard} href="/desk/dry-run">
               <strong>Scanner dry-run</strong>
               <span>API checks + floor checklist before USB arrives</span>

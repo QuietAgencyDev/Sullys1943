@@ -22,6 +22,7 @@ import {
   verifyToken,
   type AuthPayload,
 } from "./auth/auth.guard";
+import { resolveSessionForMember } from "./check-in-session";
 
 const STAFF_ROLES = new Set([
   "coach",
@@ -532,7 +533,20 @@ async function performCheckIn(
     },
   });
   if (recent) {
-    return { attendance: recent, xpAwarded: 0, duplicate: true, overridden: false };
+    const dupUser = await prisma.user.findUniqueOrThrow({
+      where: { id: opts.memberUserId },
+    });
+    return {
+      attendance: recent,
+      xpAwarded: 0,
+      duplicate: true,
+      overridden: false,
+      member: {
+        id: dupUser.id,
+        name: `${dupUser.firstName} ${dupUser.lastName}`,
+        email: dupUser.email,
+      },
+    };
   }
 
   let lateBySeconds: number | undefined;
@@ -634,12 +648,17 @@ export class CheckInController {
     @CurrentUser() auth: AuthPayload,
     @Body() body: { sessionId?: string; token?: string },
   ) {
-    return performCheckIn(this.prisma, {
+    // body.token ignored for self check-in — auth.sub is the member
+    const sessionId =
+      body.sessionId?.trim() ||
+      (await resolveSessionForMember(this.prisma, auth.sub));
+    const result = await performCheckIn(this.prisma, {
       memberUserId: auth.sub,
       orgId: auth.orgId,
-      sessionId: body.sessionId,
+      sessionId: sessionId ?? undefined,
       method: "self",
     });
+    return this.withSessionLabel(result, sessionId);
   }
 
   @Post("scan")
@@ -680,15 +699,38 @@ export class CheckInController {
       throw new BadRequestException("token or email required");
     }
 
-    return performCheckIn(this.prisma, {
+    const sessionId =
+      body.sessionId?.trim() ||
+      (await resolveSessionForMember(this.prisma, memberUserId));
+
+    const result = await performCheckIn(this.prisma, {
       memberUserId,
       orgId: auth.orgId,
-      sessionId: body.sessionId,
+      sessionId: sessionId ?? undefined,
       method: body.token ? "qr_scan" : "manual",
       recordedById: auth.sub,
       override: body.override,
       overrideReason: body.overrideReason,
     });
+    return this.withSessionLabel(result, sessionId);
+  }
+
+  private async withSessionLabel<T extends object>(
+    result: T,
+    sessionId: string | null | undefined,
+  ) {
+    if (!sessionId) {
+      return { ...result, sessionId: null, sessionTitle: "Open gym" };
+    }
+    const session = await this.prisma.session.findUnique({
+      where: { id: sessionId },
+      select: { id: true, title: true },
+    });
+    return {
+      ...result,
+      sessionId: session?.id ?? sessionId,
+      sessionTitle: session?.title ?? "Class",
+    };
   }
 
   @Get("search")

@@ -1,15 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { FormEvent, Suspense, useState } from "react";
 import { Button } from "@sullys/ui";
 import { ApiError } from "@/lib/api";
 import { login } from "@/lib/auth-client";
 import styles from "../ui.module.css";
 
-export default function LoginPage() {
+function safeAppNext(raw: string | null): string {
+  if (!raw) return "/app";
+  if (!raw.startsWith("/app")) return "/app";
+  if (raw.startsWith("//")) return "/app";
+  return raw;
+}
+
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = safeAppNext(searchParams.get("next"));
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +30,7 @@ export default function LoginPage() {
     setPending(true);
     try {
       await login(email.trim(), password);
-      router.push("/app");
+      router.push(next);
     } catch (err) {
       setError(
         err instanceof ApiError
@@ -90,5 +99,19 @@ export default function LoginPage() {
         </div>
       </form>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className={styles.page}>
+          <p className={styles.muted}>Loading…</p>
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }
