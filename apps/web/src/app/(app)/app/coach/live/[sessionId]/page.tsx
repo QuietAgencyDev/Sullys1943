@@ -371,6 +371,18 @@ export default function AppCoachLivePage() {
                 disabled={busy}
                 onClick={() =>
                   void run("tv", {
+                    tvMode: "xp_bonus",
+                    tvMessage: "+50 XP BONUS",
+                  })
+                }
+              >
+                XP bonus
+              </button>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() =>
+                  void run("tv", {
                     tvMode: "class_complete",
                     tvMessage: "XP awarded · see you next bell",
                   })

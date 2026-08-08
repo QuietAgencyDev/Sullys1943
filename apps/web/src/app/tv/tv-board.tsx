@@ -11,8 +11,10 @@ import {
 
 const DEMO_MODES = [
   "achievement",
+  "xp_bonus",
   "teams",
   "challenge",
+  "leaderboard",
   "class_complete",
   "timer",
 ] as const;
@@ -373,15 +375,36 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   const showChallengeHero =
     modeActive && (tvMode === "challenge" || tvMode === "achievement");
   const showClassComplete = modeActive && tvMode === "class_complete";
+  const showXpBonusHero = modeActive && tvMode === "xp_bonus";
   const showRoundHero =
     !showAnnouncement &&
     !showLeaderboardHero &&
     !showTeamsHero &&
     !showChallengeHero &&
     !showClassComplete &&
+    !showXpBonusHero &&
     (profile === "floor" || board?.live?.phase === "live");
   const riveActive =
     profile === "floor" && (Boolean(board?.coachTimer) || demoCelebrate);
+  const topName = board?.leaderboard?.[0]?.displayName ?? null;
+  const riveXp =
+    tvMode === "class_complete"
+      ? 25
+      : tvMode === "achievement" || tvMode === "xp_bonus"
+        ? 50
+        : tvMode === "leaderboard" && board?.leaderboard?.[0]?.xp
+          ? Math.min(99, board.leaderboard[0].xp % 100 || 10)
+          : null;
+  const riveBonusLabel =
+    tvMode === "xp_bonus"
+      ? "STREAK ×2"
+      : tvMode === "achievement"
+        ? "FIRST BELL"
+        : tvMode === "class_complete"
+          ? "CLASS BONUS"
+          : tvMode === "leaderboard"
+            ? "BOARD KING"
+            : null;
 
   return (
     <div
@@ -435,8 +458,29 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             tvMode={tvMode}
             phase={round.phase === "rest" ? "rest" : "work"}
             message={board?.coachTimer?.tvMessage}
+            xpBonus={riveXp}
+            bonusLabel={riveBonusLabel}
+            highlightName={
+              tvMode === "leaderboard" || tvMode === "xp_bonus"
+                ? topName ?? (demoCelebrate ? "Gavin S" : null)
+                : tvMode === "achievement"
+                  ? (demoCelebrate ? "Gavin S" : topName)
+                  : null
+            }
           />
           <div className={styles.heroContent}>
+          {showXpBonusHero ? (
+            <>
+              <p className={styles.phase}>XP bonus</p>
+              <h1 className={styles.classTitle}>
+                {board?.coachTimer?.tvMessage || "+50 XP"}
+              </h1>
+              <p className={styles.meta}>
+                {topName ?? (demoCelebrate ? "Gavin S" : "Floor athlete")}
+                {" · keep swinging"}
+              </p>
+            </>
+          ) : null}
           {showAnnouncement ? (
             <>
               <p className={styles.phase}>Coach announcement</p>

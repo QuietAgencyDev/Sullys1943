@@ -46,6 +46,7 @@ const TV_MODES = new Set([
   "challenge",
   "achievement",
   "class_complete",
+  "xp_bonus",
 ]);
 
 function serializeLive(
@@ -698,7 +699,7 @@ export class CoachController {
         const mode = body.tvMode ?? live.tvMode;
         if (!TV_MODES.has(mode)) {
           throw new BadRequestException(
-            "tvMode must be timer|leaderboard|announcement|teams|challenge|achievement|class_complete",
+            "tvMode must be timer|leaderboard|announcement|teams|challenge|achievement|class_complete|xp_bonus",
           );
         }
         data = {

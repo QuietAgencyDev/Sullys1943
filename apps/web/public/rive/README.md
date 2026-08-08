@@ -1,32 +1,40 @@
 # Floor TV Rive assets
 
 Drop brand `.riv` files here. Filenames are fixed — swap art without changing code.
+Until files land, the TV uses an **AAA CSS celebration layer** (boxing gloves, XP pops, confetti, work/rest jabs).
 
 | File | Used for |
 |------|----------|
 | `celebration.riv` | `achievement`, `class_complete` |
 | `teams.riv` | `teams` |
 | `phase.riv` | work ↔ rest punch |
-| `challenge.riv` | `challenge` / `leaderboard` (optional; falls back to celebration) |
+| `challenge.riv` | `challenge` / `leaderboard` |
+| `xp.riv` | `xp_bonus` XP burst moments |
 
 ## Expected state machine (recommended)
 
-**Name:** `TV` (or first state machine in the file)
+**Name:** `TV`
 
 | Input | Type | When fired |
 |-------|------|------------|
 | `celebrate` | Trigger | achievement / class_complete enter |
 | `teamsReveal` | Trigger | teams mode enter |
-| `challenge` | Trigger | challenge mode enter |
+| `challenge` | Trigger | challenge / leaderboard enter |
 | `phasePunch` | Trigger | work ↔ rest transition |
-| `mode` | Number (optional) | 0=timer, 1=celebrate, 2=teams, 3=challenge |
+| `xpBurst` | Trigger | XP bonus / class complete XP |
+| `mode` | Number (optional) | 0=timer, 1=celebrate, 2=teams, 3=challenge, 4=xp |
 | `teamColor` | Number (optional) | 0–1 hue hint for teams art |
 
-If the file has no state machine, the runtime autoplays the default artboard animation and remounts on mode change.
+Suggested artboards: animated gloves, XP chip fly-up, confetti, bell flash.
 
-## Kill switch
+If the file has no state machine, the runtime autoplays the default artboard and remounts on mode change.
 
-- URL: `/tv/floor?rive=0`
-- Or `localStorage.setItem('sullys_tv_rive', 'off')`
+## Preview
 
-When Rive fails to load (missing file), the TV keeps CSS celebration fallbacks — never a blank hero.
+- `/tv/floor?demo=celebrate` — cycles achievement → XP → teams → challenge → leaderboard → class complete → timer
+- `/tv/floor?rive=0` — disable Rive host (CSS layer still runs)
+- `localStorage.setItem('sullys_tv_rive', 'off')` — same kill switch
+
+## Coach triggers
+
+Staff / phone Live → **Show achievement**, **Class complete**, TV modes — floor polls every 1s while coach is live.

@@ -134,8 +134,14 @@
 
 .celebrateRow {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 0.5rem;
+}
+
+@media (min-width: 480px) {
+  .celebrateRow {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
 
 .celebrateRow button {

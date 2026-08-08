@@ -199,8 +199,14 @@
 
 .celebrateRow {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 0.55rem;
+}
+
+@media (max-width: 700px) {
+  .celebrateRow {
+    grid-template-columns: 1fr;
+  }
 }
 
 .celebrateRow button {
