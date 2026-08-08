@@ -1,7 +1,9 @@
 # Floor TV Rive assets
 
 Drop brand `.riv` files here. Filenames are fixed — swap art without changing code.
-Until files land, the TV uses an **AAA CSS celebration layer** (boxing gloves, XP pops, confetti, work/rest jabs).
+Until files land, the TV uses an **AAA CSS celebration layer** (SVG gloves from `/tv/icons/`, XP pops, confetti, work/rest jabs).
+
+Icon pack: [`../tv/icons/`](../tv/icons/) — `glove-1.svg` is the primary animated glove.
 
 | File | Used for |
 |------|----------|

@@ -87,28 +87,59 @@ function badgeForMode(tvMode: string) {
   }
 }
 
-function BoxingGlove({ className }: { className: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 120 140"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden
-    >
-      <ellipse cx="58" cy="78" rx="42" ry="48" fill="#8b1519" />
-      <ellipse cx="58" cy="74" rx="36" ry="42" fill="#c82026" />
-      <path
-        d="M28 70c-8 6-12 18-8 28 6 14 24 22 40 18"
-        stroke="#f3e6c8"
-        strokeWidth="3"
-        opacity="0.35"
-      />
-      <rect x="40" y="108" width="36" height="22" rx="10" fill="#3a1a12" />
-      <rect x="44" y="112" width="28" height="14" rx="7" fill="#c4a06a" />
-      <circle cx="72" cy="58" r="10" fill="#f3e6c8" opacity="0.2" />
-    </svg>
-  );
+/** Public SVG pack — see apps/web/public/tv/icons/ */
+const TV_ICONS = {
+  glove: "/tv/icons/glove-1.svg",
+  gloveAlt: "/tv/icons/glove.svg",
+  surprise: "/tv/icons/glove-surprise.svg",
+  boxing: "/tv/icons/boxing.svg",
+  boxer: "/tv/icons/boxer.svg",
+  ring: "/tv/icons/ring.svg",
+  shorts: "/tv/icons/shorts.svg",
+  gear: "/tv/icons/kickboxing-equipment.svg",
+} as const;
+
+function iconsForMode(tvMode: string): {
+  left: string;
+  right: string;
+  center?: string;
+  tint?: boolean;
+} {
+  switch (tvMode) {
+    case "teams":
+      return { left: TV_ICONS.glove, right: TV_ICONS.glove, center: TV_ICONS.ring };
+    case "challenge":
+      return {
+        left: TV_ICONS.glove,
+        right: TV_ICONS.glove,
+        center: TV_ICONS.boxing,
+        tint: true,
+      };
+    case "class_complete":
+      return {
+        left: TV_ICONS.glove,
+        right: TV_ICONS.glove,
+        center: TV_ICONS.boxer,
+        tint: true,
+      };
+    case "achievement":
+    case "xp_bonus":
+      return {
+        left: TV_ICONS.glove,
+        right: TV_ICONS.glove,
+        center: TV_ICONS.surprise,
+        tint: true,
+      };
+    case "leaderboard":
+      return {
+        left: TV_ICONS.glove,
+        right: TV_ICONS.glove,
+        center: TV_ICONS.gear,
+        tint: true,
+      };
+    default:
+      return { left: TV_ICONS.glove, right: TV_ICONS.glove };
+  }
 }
 
 const CONFETTI = [
@@ -159,6 +190,8 @@ function CssFallback({
           ? 50
           : null;
 
+  const pack = iconsForMode(tvMode);
+
   return (
     <div
       key={pulseKey}
@@ -199,8 +232,31 @@ function CssFallback({
       ) : null}
 
       <div className={styles.gloves}>
-        <BoxingGlove className={`${styles.glove} ${styles.gloveLeft}`} />
-        <BoxingGlove className={`${styles.glove} ${styles.gloveRight}`} />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={pack.left}
+          alt=""
+          className={`${styles.glove} ${styles.gloveLeft}`}
+          draggable={false}
+        />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={pack.right}
+          alt=""
+          className={`${styles.glove} ${styles.gloveRight}`}
+          draggable={false}
+        />
+        {pack.center ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={pack.center}
+            alt=""
+            className={`${styles.centerIcon} ${
+              pack.tint ? styles.iconTintCream : ""
+            }`}
+            draggable={false}
+          />
+        ) : null}
       </div>
 
       {showXp && xpValue != null ? (

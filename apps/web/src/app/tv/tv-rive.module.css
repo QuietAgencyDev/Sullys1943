@@ -142,10 +142,31 @@
 
 .glove {
   position: absolute;
-  width: clamp(88px, 14vw, 140px);
+  width: clamp(96px, 15vw, 150px);
   height: auto;
+  object-fit: contain;
   filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.55));
-  opacity: 0.92;
+  opacity: 0.95;
+}
+
+.centerIcon {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: clamp(72px, 12vw, 120px);
+  height: auto;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.5));
+  animation: centerPop 1s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+  z-index: 3;
+}
+
+.iconTintCream {
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.5))
+    brightness(0) saturate(100%) invert(88%) sepia(18%) saturate(481%)
+    hue-rotate(352deg) brightness(104%) contrast(92%);
 }
 
 .gloveLeft {
@@ -528,5 +549,20 @@
   to {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes centerPop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -40%) scale(0.4);
+  }
+  45% {
+    opacity: 1;
+    transform: translate(-50%, -55%) scale(1.12);
+  }
+  100% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(1);
   }
 }
