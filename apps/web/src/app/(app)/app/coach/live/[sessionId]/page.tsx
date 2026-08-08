@@ -14,6 +14,7 @@ type Live = {
   secondsLeft: number;
   phaseEndsAt?: string | null;
   pausedRemainSec?: number | null;
+  tvMode?: string;
 };
 
 type Payload = {
@@ -51,11 +52,11 @@ export default function AppCoachLivePage() {
     return () => clearInterval(t);
   }, []);
 
-  async function run(action: string) {
+  async function run(action: string, body: Record<string, unknown> = {}) {
     setBusy(true);
     setError(null);
     try {
-      await post(`/api/v1/coach/sessions/${sessionId}/live/${action}`, {});
+      await post(`/api/v1/coach/sessions/${sessionId}/live/${action}`, body);
       await load();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Action failed");
@@ -114,6 +115,37 @@ export default function AppCoachLivePage() {
             </button>
             <button type="button" disabled={busy} onClick={() => void run("finish")}>
               FINISH
+            </button>
+          </div>
+          <p className={styles.phase} style={{ marginTop: "1rem" }}>
+            TV · {live.tvMode ?? "timer"}
+          </p>
+          <div className={styles.controls}>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => void run("tv", { tvMode: "timer" })}
+            >
+              TIMER
+            </button>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => void run("tv", { tvMode: "leaderboard" })}
+            >
+              BOARD
+            </button>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() =>
+                void run("tv", {
+                  tvMode: "announcement",
+                  tvMessage: "Eyes up — listen in",
+                })
+              }
+            >
+              ANNOUNCE
             </button>
           </div>
         </>

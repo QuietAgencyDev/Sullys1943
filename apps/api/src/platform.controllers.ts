@@ -467,7 +467,7 @@ export class CalendarController {
   }
 }
 
-async function performCheckIn(
+export async function performCheckIn(
   prisma: PrismaService,
   opts: {
     memberUserId: string;
@@ -982,13 +982,214 @@ export class MessagesController {
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   @Get("threads")
-  async threads() {
+  async threads(@CurrentUser() auth: AuthPayload) {
     const threads = await this.prisma.messageThread.findMany({
-      include: { messages: { take: 1, orderBy: { createdAt: "desc" } } },
+      where: {
+        OR: [
+          { participants: { some: { userId: auth.sub } } },
+          { createdById: auth.sub },
+          // Staff can see class broadcasts they created + gym-wide legacy threads
+          ...(STAFF_ROLES.has(auth.role)
+            ? [{ kind: "class_broadcast" as const }]
+            : []),
+        ],
+      },
+      include: {
+        messages: {
+          take: 1,
+          orderBy: { createdAt: "desc" },
+          include: {
+            sender: { select: { firstName: true, lastName: true } },
+          },
+        },
+        participants: {
+          include: {
+            user: { select: { id: true, firstName: true, lastName: true } },
+          },
+        },
+      },
       orderBy: { createdAt: "desc" },
-      take: 20,
+      take: 40,
     });
-    return { threads };
+    return {
+      threads: threads.map((t) => ({
+        id: t.id,
+        subject: t.subject,
+        kind: t.kind,
+        sessionId: t.sessionId,
+        createdAt: t.createdAt.toISOString(),
+        participants: t.participants.map((p) => ({
+          id: p.user.id,
+          name: `${p.user.firstName} ${p.user.lastName}`,
+        })),
+        messages: t.messages.map((m) => ({
+          body: m.body,
+          createdAt: m.createdAt.toISOString(),
+          sender: `${m.sender.firstName} ${m.sender.lastName}`,
+        })),
+      })),
+    };
+  }
+
+  @Get("threads/:id")
+  async thread(
+    @Param("id") id: string,
+    @CurrentUser() auth: AuthPayload,
+  ) {
+    const thread = await this.prisma.messageThread.findUnique({
+      where: { id },
+      include: {
+        participants: { select: { userId: true } },
+        messages: {
+          orderBy: { createdAt: "asc" },
+          include: {
+            sender: { select: { firstName: true, lastName: true, id: true } },
+          },
+        },
+      },
+    });
+    if (!thread) throw new BadRequestException("Thread not found");
+    const isParticipant = thread.participants.some((p) => p.userId === auth.sub);
+    const isStaff = STAFF_ROLES.has(auth.role);
+    if (!isParticipant && thread.createdById !== auth.sub && !isStaff) {
+      throw new ForbiddenException("Not in this thread");
+    }
+    return {
+      thread: {
+        id: thread.id,
+        subject: thread.subject,
+        kind: thread.kind,
+        sessionId: thread.sessionId,
+        messages: thread.messages.map((m) => ({
+          id: m.id,
+          body: m.body,
+          createdAt: m.createdAt.toISOString(),
+          senderId: m.sender.id,
+          sender: `${m.sender.firstName} ${m.sender.lastName}`,
+          mine: m.senderId === auth.sub,
+        })),
+      },
+    };
+  }
+
+  @Post("threads")
+  async createThread(
+    @CurrentUser() auth: AuthPayload,
+    @Body()
+    body: {
+      subject?: string;
+      body?: string;
+      athleteId?: string;
+      sessionId?: string;
+      kind?: "direct" | "class_broadcast";
+    },
+  ) {
+    const text = body.body?.trim();
+    if (!text) throw new BadRequestException("Message body required");
+    const kind = body.kind === "class_broadcast" ? "class_broadcast" : "direct";
+
+    if (kind === "class_broadcast") {
+      if (!STAFF_ROLES.has(auth.role)) {
+        throw new ForbiddenException("Staff only");
+      }
+      if (!body.sessionId) {
+        throw new BadRequestException("sessionId required for class broadcast");
+      }
+      const session = await this.prisma.session.findUnique({
+        where: { id: body.sessionId },
+        include: {
+          bookings: {
+            where: { status: { not: "cancelled" } },
+            select: { userId: true },
+          },
+        },
+      });
+      if (!session) throw new BadRequestException("Session not found");
+      const participantIds = [
+        ...new Set([auth.sub, ...session.bookings.map((b) => b.userId)]),
+      ];
+      const thread = await this.prisma.messageThread.create({
+        data: {
+          subject:
+            body.subject?.trim() || `Class: ${session.title}`,
+          kind,
+          sessionId: session.id,
+          createdById: auth.sub,
+          participants: {
+            create: participantIds.map((userId) => ({ userId })),
+          },
+          messages: {
+            create: { senderId: auth.sub, body: text },
+          },
+        },
+      });
+      return { thread: { id: thread.id } };
+    }
+
+    const athleteId = body.athleteId?.trim();
+    if (!athleteId) {
+      throw new BadRequestException("athleteId required for direct thread");
+    }
+    if (!STAFF_ROLES.has(auth.role) && athleteId !== auth.sub) {
+      throw new ForbiddenException("Cannot start this thread");
+    }
+    const athlete = await this.prisma.user.findUnique({
+      where: { id: athleteId },
+    });
+    if (!athlete) throw new BadRequestException("Athlete not found");
+    const thread = await this.prisma.messageThread.create({
+      data: {
+        subject:
+          body.subject?.trim() ||
+          `Coach note · ${athlete.firstName} ${athlete.lastName}`,
+        kind: "direct",
+        createdById: auth.sub,
+        participants: {
+          create: [
+            { userId: auth.sub },
+            ...(athleteId === auth.sub ? [] : [{ userId: athleteId }]),
+          ],
+        },
+        messages: {
+          create: { senderId: auth.sub, body: text },
+        },
+      },
+    });
+    return { thread: { id: thread.id } };
+  }
+
+  @Post("threads/:id/messages")
+  async reply(
+    @Param("id") id: string,
+    @CurrentUser() auth: AuthPayload,
+    @Body() body: { body?: string },
+  ) {
+    const text = body.body?.trim();
+    if (!text) throw new BadRequestException("Message body required");
+    const thread = await this.prisma.messageThread.findUnique({
+      where: { id },
+      include: { participants: { select: { userId: true } } },
+    });
+    if (!thread) throw new BadRequestException("Thread not found");
+    const isParticipant = thread.participants.some((p) => p.userId === auth.sub);
+    if (!isParticipant && !STAFF_ROLES.has(auth.role)) {
+      throw new ForbiddenException("Not in this thread");
+    }
+    if (!isParticipant) {
+      await this.prisma.messageParticipant.create({
+        data: { threadId: id, userId: auth.sub },
+      });
+    }
+    const message = await this.prisma.message.create({
+      data: { threadId: id, senderId: auth.sub, body: text },
+    });
+    return {
+      message: {
+        id: message.id,
+        body: message.body,
+        createdAt: message.createdAt.toISOString(),
+      },
+    };
   }
 }
 

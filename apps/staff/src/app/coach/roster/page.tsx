@@ -6,13 +6,15 @@ import { Button } from "@sullys/ui";
 import { ApiError, get, post } from "@/lib/api";
 import styles from "../../staff.module.css";
 
-type Session = {
+type HomeSession = {
   id: string;
   title: string;
   startsAt: string;
   coachName?: string | null;
   booked: number;
   capacity: number;
+  checkedIn: number;
+  phase: string;
 };
 
 type RosterRow = {
@@ -26,10 +28,18 @@ type RosterRow = {
   noShow: boolean;
   voided: boolean;
   lateBySeconds: number | null;
+  chips?: { new?: boolean; late?: boolean; streak?: number };
+};
+
+type Note = {
+  id: string;
+  body: string;
+  createdAt: string;
+  author: string;
 };
 
 export default function CoachRosterPage() {
-  const [sessions, setSessions] = useState<Session[]>([]);
+  const [sessions, setSessions] = useState<HomeSession[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [roster, setRoster] = useState<RosterRow[]>([]);
   const [counts, setCounts] = useState({
@@ -42,6 +52,11 @@ export default function CoachRosterPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [voidReason, setVoidReason] = useState("Entered in error");
   const [busy, setBusy] = useState(false);
+  const [drawerUser, setDrawerUser] = useState<RosterRow | null>(null);
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [noteBody, setNoteBody] = useState("");
+  const [score, setScore] = useState(3);
+  const [category, setCategory] = useState("discipline");
 
   const loadRoster = useCallback(async (sessionId: string) => {
     const res = await get<{
@@ -52,16 +67,16 @@ export default function CoachRosterPage() {
         late: number;
         noShow: number;
       };
-    }>(`/api/v1/sessions/${sessionId}/roster`);
+    }>(`/api/v1/coach/sessions/${sessionId}/roster`);
     setRoster(res.roster);
     setCounts(res.counts);
   }, []);
 
   useEffect(() => {
-    get<{ sessions: Session[] }>("/api/v1/sessions")
+    get<{ today: HomeSession[] }>("/api/v1/coach/home")
       .then((res) => {
-        setSessions(res.sessions);
-        if (res.sessions[0]) setActiveId(res.sessions[0].id);
+        setSessions(res.today);
+        if (res.today[0]) setActiveId(res.today[0].id);
       })
       .catch((err) =>
         setError(err instanceof ApiError ? err.message : "Failed to load"),
@@ -74,6 +89,70 @@ export default function CoachRosterPage() {
       setError(err instanceof ApiError ? err.message : "Roster failed"),
     );
   }, [activeId, loadRoster]);
+
+  async function markPresent(userId: string) {
+    if (!activeId) return;
+    setBusy(true);
+    setError(null);
+    setMessage(null);
+    try {
+      const res = await post<{ duplicate?: boolean; xpAwarded?: number }>(
+        `/api/v1/coach/sessions/${activeId}/roster/${userId}/present`,
+      );
+      setMessage(
+        res.duplicate
+          ? "Already checked in"
+          : `Present · +${res.xpAwarded ?? 0} XP`,
+      );
+      await loadRoster(activeId);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Present failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function openAthlete(row: RosterRow) {
+    setDrawerUser(row);
+    setNoteBody("");
+    setScore(3);
+    try {
+      const res = await get<{ notes: Note[] }>(
+        `/api/v1/coach/athletes/${row.userId}/notes?limit=3`,
+      );
+      setNotes(res.notes);
+    } catch {
+      setNotes([]);
+    }
+  }
+
+  async function saveNote() {
+    if (!drawerUser || !noteBody.trim() || !activeId) return;
+    setBusy(true);
+    try {
+      await post("/api/v1/coach/notes", {
+        athleteId: drawerUser.userId,
+        sessionId: activeId,
+        body: noteBody.trim(),
+      });
+      await post("/api/v1/coach/assessments", {
+        athleteId: drawerUser.userId,
+        sessionId: activeId,
+        category,
+        score,
+      });
+      setMessage(`Note saved for ${drawerUser.name}`);
+      const res = await get<{ notes: Note[] }>(
+        `/api/v1/coach/athletes/${drawerUser.userId}/notes?limit=3`,
+      );
+      setNotes(res.notes);
+      setNoteBody("");
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Save failed");
+    } finally {
+      setBusy(false);
+    }
+  }
 
   async function finalize() {
     if (!activeId) return;
@@ -116,8 +195,8 @@ export default function CoachRosterPage() {
       <p className={styles.eyebrow}>COACH</p>
       <h1 className={styles.title}>Live roster</h1>
       <p className={styles.copy}>
-        Check-ins, late flags, finalize no-shows, and void mistakes with a
-        reason.
+        One-tap present, attention chips, notes, and finalize no-shows — scoped
+        to your classes.
       </p>
       <p>
         <Link href="/coach">← Coach home</Link>
@@ -139,7 +218,7 @@ export default function CoachRosterPage() {
             variant={activeId === s.id ? "primary" : "secondary"}
             onClick={() => setActiveId(s.id)}
           >
-            {s.title}
+            {s.title} · {s.checkedIn}/{s.booked}
           </Button>
         ))}
       </div>
@@ -181,20 +260,42 @@ export default function CoachRosterPage() {
                   : r.checkedIn
                     ? "Checked in"
                     : "Booked"}
-              {r.late ? " · LATE" : ""} · {r.email}
+              {r.chips?.new ? " · NEW" : ""}
+              {r.chips?.late ? " · LATE" : ""}
+              {r.chips?.streak ? ` · ${r.chips.streak}-day streak` : ""}
+              {" · "}
+              {r.email}
             </div>
-            {r.attendanceId && r.checkedIn ? (
-              <div className={styles.actions}>
+            <div className={styles.actions}>
+              {!r.checkedIn && !r.voided && !r.noShow ? (
                 <button
                   type="button"
                   className={styles.buttonish}
                   disabled={busy}
-                  onClick={() => voidCheckIn(r.attendanceId!)}
+                  onClick={() => void markPresent(r.userId)}
                 >
-                  Void check-in
+                  Present
                 </button>
-              </div>
-            ) : null}
+              ) : null}
+              <button
+                type="button"
+                className={styles.buttonish}
+                disabled={busy}
+                onClick={() => void openAthlete(r)}
+              >
+                Note
+              </button>
+              {r.attendanceId && r.checkedIn ? (
+                <button
+                  type="button"
+                  className={styles.buttonish}
+                  disabled={busy}
+                  onClick={() => void voidCheckIn(r.attendanceId!)}
+                >
+                  Void
+                </button>
+              ) : null}
+            </div>
           </li>
         ))}
         {roster.length === 0 ? (
@@ -203,6 +304,88 @@ export default function CoachRosterPage() {
           </li>
         ) : null}
       </ul>
+
+      {drawerUser ? (
+        <div className={styles.panel} style={{ marginTop: "1.25rem" }}>
+          <p className={styles.eyebrow}>ATHLETE</p>
+          <h2 className={styles.title} style={{ fontSize: "1.6rem" }}>
+            {drawerUser.name}
+          </h2>
+          <label className={styles.field}>
+            <span>Quick note</span>
+            <textarea
+              className={styles.input}
+              rows={3}
+              value={noteBody}
+              onChange={(e) => setNoteBody(e.target.value)}
+              placeholder="Footwork cleaned up in round 3…"
+            />
+          </label>
+          <div className={styles.row}>
+            <label className={styles.field}>
+              <span>Category</span>
+              <select
+                className={styles.input}
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                {[
+                  "stance",
+                  "guard",
+                  "jab",
+                  "footwork",
+                  "defense",
+                  "conditioning",
+                  "discipline",
+                  "teamwork",
+                ].map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className={styles.field}>
+              <span>Score 1–5</span>
+              <input
+                className={styles.input}
+                type="number"
+                min={1}
+                max={5}
+                value={score}
+                onChange={(e) => setScore(Number(e.target.value))}
+              />
+            </label>
+          </div>
+          <div className={styles.row}>
+            <Button type="button" disabled={busy} onClick={() => void saveNote()}>
+              Save note + score
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => setDrawerUser(null)}
+            >
+              Close
+            </Button>
+          </div>
+          <ul className={styles.list}>
+            {notes.map((n) => (
+              <li key={n.id} className={styles.item}>
+                <div className={styles.meta}>
+                  {n.author} · {new Date(n.createdAt).toLocaleString()}
+                </div>
+                <strong>{n.body}</strong>
+              </li>
+            ))}
+            {notes.length === 0 ? (
+              <li className={styles.item}>
+                <span className={styles.meta}>No notes yet.</span>
+              </li>
+            ) : null}
+          </ul>
+        </div>
+      ) : null}
     </main>
   );
 }

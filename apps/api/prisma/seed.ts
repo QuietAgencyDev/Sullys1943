@@ -724,6 +724,30 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
     ],
   });
 
+  await prisma.gameDefinition.upsert({
+    where: { slug: "bag-battle" },
+    create: {
+      slug: "bag-battle",
+      name: "Bag Battle",
+      description:
+        "In-class heavy-bag scoring bout. Highest score wins XP. Coach taps scores from Live Mode.",
+      configJson: JSON.stringify({
+        scoring: "coach_manual",
+        maxScore: 100,
+        safetyRules: ["Stop on injury signal", "Kids Quest uses form not power"],
+      }),
+      xpWin: 15,
+      active: true,
+    },
+    update: {
+      name: "Bag Battle",
+      description:
+        "In-class heavy-bag scoring bout. Highest score wins XP. Coach taps scores from Live Mode.",
+      xpWin: 15,
+      active: true,
+    },
+  });
+
   console.log("Seeded Sully's flagship data");
   console.log("Logins (password: password123):");
   console.log("  member@sullys.local");
@@ -733,6 +757,7 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
   console.log("  admin@sullys.local");
   console.log("  owner@sullys.local");
   console.log(`Owner id: ${owner.id}, coach id: ${coach.id}`);
+  console.log("Game: bag-battle");
 }
 
 main()

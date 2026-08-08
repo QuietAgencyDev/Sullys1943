@@ -17,6 +17,7 @@ import {
   type AuthPayload,
 } from "./auth/auth.guard";
 import { ProgressionService } from "./progression.service";
+import { performCheckIn } from "./platform.controllers";
 
 const STAFF_ROLES = new Set(["coach", "front_desk", "admin", "owner"]);
 const COACH_MANAGE_ROLES = new Set(["coach", "admin", "owner"]);
@@ -48,6 +49,7 @@ function serializeLive(
     phaseEndsAt: Date | null;
     pausedRemainSec: number | null;
     tvMode: string;
+    tvMessage?: string | null;
     updatedAt: Date;
   } | null,
   now = new Date(),
@@ -62,6 +64,7 @@ function serializeLive(
       restSec: 60,
       secondsLeft: 180,
       tvMode: "timer",
+      tvMessage: null as string | null,
       syncedToCoach: false,
       updatedAt: null as string | null,
     };
@@ -91,10 +94,46 @@ function serializeLive(
     secondsLeft,
     pausedRemainSec: live.pausedRemainSec,
     tvMode: live.tvMode,
-    syncedToCoach: live.status === "running" || live.status === "paused",
+    tvMessage: live.tvMessage ?? null,
+    syncedToCoach:
+      live.status === "running" ||
+      live.status === "paused" ||
+      live.status === "finished",
     phaseEndsAt: live.phaseEndsAt?.toISOString() ?? null,
     updatedAt: live.updatedAt.toISOString(),
   };
+}
+
+async function attendanceStreak(
+  prisma: PrismaService,
+  userId: string,
+): Promise<number> {
+  const events = await prisma.attendanceEvent.findMany({
+    where: { userId, status: { not: "voided" } },
+    orderBy: { checkedInAt: "desc" },
+    take: 40,
+    select: { checkedInAt: true },
+  });
+  if (events.length === 0) return 0;
+  const days = [
+    ...new Set(events.map((e) => e.checkedInAt.toISOString().slice(0, 10))),
+  ].sort()
+    .reverse();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const cursor = new Date(today);
+  // Allow streak to start from yesterday if no check-in today yet
+  if (days[0] !== cursor.toISOString().slice(0, 10)) {
+    cursor.setDate(cursor.getDate() - 1);
+    if (days[0] !== cursor.toISOString().slice(0, 10)) return 0;
+  }
+  let streak = 0;
+  for (const day of days) {
+    if (day !== cursor.toISOString().slice(0, 10)) break;
+    streak += 1;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
 }
 
 @Controller("coach")
@@ -253,6 +292,7 @@ export class CoachController {
       restSec?: number;
       totalRounds?: number;
       tvMode?: string;
+      tvMessage?: string;
     } = {},
   ) {
     requireCoachOps(auth);
@@ -397,9 +437,19 @@ export class CoachController {
         break;
       }
       case "tv": {
+        const mode = body.tvMode ?? live.tvMode;
+        if (!["timer", "leaderboard", "announcement"].includes(mode)) {
+          throw new BadRequestException(
+            "tvMode must be timer|leaderboard|announcement",
+          );
+        }
         data = {
           ...data,
-          tvMode: body.tvMode ?? live.tvMode,
+          tvMode: mode,
+          tvMessage:
+            body.tvMessage !== undefined
+              ? body.tvMessage.trim() || null
+              : live.tvMessage,
         };
         break;
       }
@@ -414,7 +464,14 @@ export class CoachController {
         break;
       }
       case "config": {
-        data = { ...data, tvMode: body.tvMode ?? live.tvMode };
+        data = {
+          ...data,
+          tvMode: body.tvMode ?? live.tvMode,
+          tvMessage:
+            body.tvMessage !== undefined
+              ? body.tvMessage.trim() || null
+              : live.tvMessage,
+        };
         break;
       }
       default:
@@ -549,6 +606,332 @@ export class CoachController {
         createdAt: n.createdAt.toISOString(),
         author: `${n.author.firstName} ${n.author.lastName}`,
       })),
+    };
+  }
+
+  @Get("sessions/:id/roster")
+  @UseGuards(AuthGuard)
+  async roster(
+    @Param("id") id: string,
+    @CurrentUser() auth: AuthPayload,
+  ) {
+    requireStaff(auth);
+    const session = await this.assertSessionAccess(id, auth);
+    const bookings = await this.prisma.booking.findMany({
+      where: { sessionId: id, status: { not: "cancelled" } },
+      include: {
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            createdAt: true,
+          },
+        },
+      },
+    });
+    const attendance = await this.prisma.attendanceEvent.findMany({
+      where: { sessionId: id },
+    });
+    const attendanceByUser = new Map(attendance.map((a) => [a.userId, a]));
+
+    const roster = await Promise.all(
+      bookings.map(async (b) => {
+        const att = attendanceByUser.get(b.userId);
+        const voided = att?.status === "voided";
+        const late =
+          !voided &&
+          ((att?.lateBySeconds != null && att.lateBySeconds > 600) ||
+            att?.status === "late");
+        const checkedIn =
+          !voided &&
+          (Boolean(att && att.status !== "voided") ||
+            b.status === "checked_in");
+        const priorCount = await this.prisma.attendanceEvent.count({
+          where: {
+            userId: b.userId,
+            status: { not: "voided" },
+            ...(att ? { id: { not: att.id } } : {}),
+          },
+        });
+        const streak = await attendanceStreak(this.prisma, b.userId);
+        return {
+          userId: b.userId,
+          name: `${b.user.firstName} ${b.user.lastName}`,
+          email: b.user.email,
+          bookingStatus: b.status,
+          attendanceId: att?.id ?? null,
+          checkedIn,
+          late,
+          noShow: b.status === "no_show",
+          voided,
+          lateBySeconds: att?.lateBySeconds ?? null,
+          checkedInAt: att?.checkedInAt?.toISOString() ?? null,
+          chips: {
+            new: priorCount < 3,
+            late,
+            streak: streak >= 3 ? streak : 0,
+          },
+        };
+      }),
+    );
+
+    return {
+      session: {
+        id: session.id,
+        title: session.title,
+        program: session.program.name,
+        startsAt: session.startsAt.toISOString(),
+        endsAt: session.endsAt.toISOString(),
+        capacity: session.capacity,
+        coachName: session.coach
+          ? `${session.coach.firstName} ${session.coach.lastName}`
+          : session.coachName,
+      },
+      roster,
+      counts: {
+        booked: roster.length,
+        checkedIn: roster.filter((r) => r.checkedIn).length,
+        late: roster.filter((r) => r.late).length,
+        noShow: roster.filter((r) => r.noShow).length,
+      },
+    };
+  }
+
+  @Post("sessions/:id/roster/:userId/present")
+  @UseGuards(AuthGuard)
+  async markPresent(
+    @Param("id") id: string,
+    @Param("userId") userId: string,
+    @CurrentUser() auth: AuthPayload,
+  ) {
+    requireCoachOps(auth);
+    await this.assertSessionAccess(id, auth);
+    const booking = await this.prisma.booking.findFirst({
+      where: {
+        sessionId: id,
+        userId,
+        status: { not: "cancelled" },
+      },
+    });
+    if (!booking) {
+      throw new BadRequestException("Athlete is not booked for this class");
+    }
+    const result = await performCheckIn(this.prisma, {
+      orgId: auth.orgId,
+      memberUserId: userId,
+      sessionId: id,
+      method: "coach_roster",
+      recordedById: auth.sub,
+      override: true,
+      overrideReason: "Coach one-tap present",
+    });
+    return {
+      ok: true,
+      duplicate: Boolean(result.duplicate),
+      xpAwarded: result.xpAwarded,
+      member: result.member,
+      attendanceId: result.attendance.id,
+    };
+  }
+
+  @Get("games")
+  @UseGuards(AuthGuard)
+  async listGames(@CurrentUser() auth: AuthPayload) {
+    requireStaff(auth);
+    const games = await this.prisma.gameDefinition.findMany({
+      where: { active: true },
+      orderBy: { name: "asc" },
+    });
+    return {
+      games: games.map((g) => ({
+        id: g.id,
+        slug: g.slug,
+        name: g.name,
+        description: g.description,
+        xpWin: g.xpWin,
+      })),
+    };
+  }
+
+  @Post("sessions/:id/games/start")
+  @UseGuards(AuthGuard)
+  async startGame(
+    @Param("id") id: string,
+    @CurrentUser() auth: AuthPayload,
+    @Body() body: { slug?: string } = {},
+  ) {
+    requireCoachOps(auth);
+    await this.assertSessionAccess(id, auth);
+    const slug = body.slug?.trim() || "bag-battle";
+    const definition = await this.prisma.gameDefinition.findUnique({
+      where: { slug },
+    });
+    if (!definition || !definition.active) {
+      throw new BadRequestException("Game definition not found");
+    }
+    await this.prisma.gameSession.updateMany({
+      where: { sessionId: id, status: "active" },
+      data: { status: "finished", endedAt: new Date() },
+    });
+    const game = await this.prisma.gameSession.create({
+      data: {
+        definitionId: definition.id,
+        sessionId: id,
+        startedById: auth.sub,
+        status: "active",
+      },
+      include: { definition: true },
+    });
+    // Flip floor TV to leaderboard for game energy
+    await this.prisma.liveClassState.upsert({
+      where: { sessionId: id },
+      create: {
+        sessionId: id,
+        startedById: auth.sub,
+        tvMode: "leaderboard",
+        status: "running",
+      },
+      update: { tvMode: "leaderboard" },
+    });
+    return {
+      game: {
+        id: game.id,
+        status: game.status,
+        slug: game.definition.slug,
+        name: game.definition.name,
+        xpWin: game.definition.xpWin,
+        startedAt: game.startedAt.toISOString(),
+      },
+    };
+  }
+
+  @Get("sessions/:id/games/active")
+  @UseGuards(AuthGuard)
+  async activeGame(
+    @Param("id") id: string,
+    @CurrentUser() auth: AuthPayload,
+  ) {
+    requireStaff(auth);
+    await this.assertSessionAccess(id, auth);
+    const game = await this.prisma.gameSession.findFirst({
+      where: { sessionId: id, status: "active" },
+      include: {
+        definition: true,
+        scores: {
+          include: {
+            user: { select: { firstName: true, lastName: true } },
+          },
+          orderBy: { score: "desc" },
+        },
+      },
+    });
+    if (!game) return { game: null };
+    return {
+      game: {
+        id: game.id,
+        status: game.status,
+        slug: game.definition.slug,
+        name: game.definition.name,
+        xpWin: game.definition.xpWin,
+        startedAt: game.startedAt.toISOString(),
+        scores: game.scores.map((s) => ({
+          userId: s.userId,
+          name: `${s.user.firstName} ${s.user.lastName}`,
+          score: s.score,
+          xpAwarded: s.xpAwarded,
+        })),
+      },
+    };
+  }
+
+  @Post("sessions/:id/games/:gameId/score")
+  @UseGuards(AuthGuard)
+  async scoreGame(
+    @Param("id") id: string,
+    @Param("gameId") gameId: string,
+    @CurrentUser() auth: AuthPayload,
+    @Body() body: { userId?: string; score?: number } = {},
+  ) {
+    requireCoachOps(auth);
+    await this.assertSessionAccess(id, auth);
+    const userId = body.userId?.trim();
+    const score = Number(body.score);
+    if (!userId || !Number.isFinite(score) || score < 0) {
+      throw new BadRequestException("userId and non-negative score required");
+    }
+    const game = await this.prisma.gameSession.findFirst({
+      where: { id: gameId, sessionId: id, status: "active" },
+      include: { definition: true },
+    });
+    if (!game) throw new BadRequestException("Active game not found");
+    const row = await this.prisma.gameScore.upsert({
+      where: {
+        gameSessionId_userId: { gameSessionId: game.id, userId },
+      },
+      create: {
+        gameSessionId: game.id,
+        userId,
+        score: Math.floor(score),
+      },
+      update: { score: Math.floor(score) },
+    });
+    return { score: row };
+  }
+
+  @Post("sessions/:id/games/:gameId/finish")
+  @UseGuards(AuthGuard)
+  async finishGame(
+    @Param("id") id: string,
+    @Param("gameId") gameId: string,
+    @CurrentUser() auth: AuthPayload,
+  ) {
+    requireCoachOps(auth);
+    await this.assertSessionAccess(id, auth);
+    const game = await this.prisma.gameSession.findFirst({
+      where: { id: gameId, sessionId: id },
+      include: { definition: true, scores: true },
+    });
+    if (!game) throw new BadRequestException("Game not found");
+    if (game.status === "finished") {
+      return { game: { id: game.id, status: "finished" }, xpAwarded: 0 };
+    }
+    const maxScore = Math.max(0, ...game.scores.map((s) => s.score));
+    let xpAwarded = 0;
+    for (const row of game.scores) {
+      if (row.score <= 0 || row.score < maxScore) continue;
+      const result = await this.progression.award({
+        userId: row.userId,
+        delta: game.definition.xpWin,
+        reason: "game.win",
+        source: "coach_award",
+        sessionId: id,
+        idempotencyKey: `game.win:${game.id}:${row.userId}`,
+        metadata: { game: game.definition.slug, score: row.score },
+      });
+      if (result.awarded) {
+        xpAwarded += game.definition.xpWin;
+        await this.prisma.gameScore.update({
+          where: { id: row.id },
+          data: { xpAwarded: game.definition.xpWin },
+        });
+      }
+    }
+    await this.prisma.gameSession.update({
+      where: { id: game.id },
+      data: { status: "finished", endedAt: new Date() },
+    });
+    await this.prisma.liveClassState.updateMany({
+      where: { sessionId: id },
+      data: { tvMode: "leaderboard" },
+    });
+    return {
+      game: { id: game.id, status: "finished" },
+      xpAwarded,
+      winners: game.scores
+        .filter((s) => s.score === maxScore && s.score > 0)
+        .map((s) => s.userId),
     };
   }
 }

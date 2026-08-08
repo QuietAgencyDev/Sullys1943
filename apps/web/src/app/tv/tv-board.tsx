@@ -35,6 +35,7 @@ type CoachTimer = {
   phaseEndsAt?: string | null;
   pausedRemainSec?: number | null;
   tvMode: string;
+  tvMessage?: string | null;
   syncedToCoach: boolean;
 };
 
@@ -51,6 +52,7 @@ type Board = {
     displayName: string;
     xp: number;
     level: number;
+    score?: number;
   }[];
   ticker: { name: string; at: string }[];
   manifesto: string[];
@@ -311,7 +313,15 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     ? [...board.ticker, ...board.ticker]
     : [];
 
-  const showRoundHero = profile === "floor" || board?.live?.phase === "live";
+  const tvMode = board?.coachTimer?.tvMode ?? "timer";
+  const showAnnouncement =
+    profile === "floor" && tvMode === "announcement" && board?.coachTimer;
+  const showLeaderboardHero =
+    profile === "floor" && tvMode === "leaderboard" && board?.coachTimer;
+  const showRoundHero =
+    !showAnnouncement &&
+    !showLeaderboardHero &&
+    (profile === "floor" || board?.live?.phase === "live");
 
   return (
     <div
@@ -359,6 +369,51 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
 
       <div className={styles.main}>
         <section className={styles.hero} aria-live="polite">
+          {showAnnouncement ? (
+            <>
+              <p className={styles.phase}>Coach announcement</p>
+              <h1 className={styles.classTitle}>
+                {board?.coachTimer?.tvMessage || "Eyes up — listen in"}
+              </h1>
+              <p className={styles.meta}>
+                {board?.coachTimer?.title}
+                {board?.coachTimer?.coach
+                  ? ` · Coach ${board.coachTimer.coach}`
+                  : ""}
+              </p>
+            </>
+          ) : null}
+          {showLeaderboardHero ? (
+            <>
+              <p className={styles.phase}>Floor leaderboard</p>
+              <h1 className={styles.classTitle}>
+                {board?.coachTimer?.title ?? "Claim the board"}
+              </h1>
+              <p className={styles.meta}>
+                {board?.coachTimer?.coach
+                  ? `Coach ${board.coachTimer.coach}`
+                  : "Sully's floor"}
+                {" · coach controlled"}
+              </p>
+              <ul className={styles.boardList} style={{ marginTop: "1.25rem" }}>
+                {(board?.leaderboard ?? []).slice(0, 6).map((row) => (
+                  <li key={row.rank} className={styles.boardRow}>
+                    <span>
+                      <span className={styles.rank}>
+                        {String(row.rank).padStart(2, "0")}
+                      </span>
+                      <strong>{row.displayName}</strong>
+                    </span>
+                    <span>
+                      {row.score != null
+                        ? `${row.score} pts`
+                        : `${row.xp} XP · L${row.level}`}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
           {showRoundHero ? (
             <>
               <p className={styles.phase}>
@@ -505,7 +560,9 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                       <strong>{row.displayName}</strong>
                     </span>
                     <span>
-                      {row.xp} XP · L{row.level}
+                      {row.score != null
+                        ? `${row.score} pts`
+                        : `${row.xp} XP · L${row.level}`}
                     </span>
                   </li>
                 ))}

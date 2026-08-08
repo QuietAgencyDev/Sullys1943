@@ -49,7 +49,15 @@ export class TvController {
         take: 3,
       }),
       this.prisma.liveClassState.findFirst({
-        where: { status: { in: ["running", "paused"] } },
+        where: {
+          OR: [
+            { status: { in: ["running", "paused"] } },
+            {
+              status: "finished",
+              updatedAt: { gte: new Date(Date.now() - 45 * 60 * 1000) },
+            },
+          ],
+        },
         include: {
           session: {
             select: {
@@ -63,6 +71,47 @@ export class TvController {
         orderBy: { updatedAt: "desc" },
       }),
     ]);
+
+    let gameLeaderboard: {
+      rank: number;
+      displayName: string;
+      xp: number;
+      level: number;
+      score?: number;
+    }[] = [];
+    if (activeLive) {
+      const activeGame = await this.prisma.gameSession.findFirst({
+        where: {
+          sessionId: activeLive.sessionId,
+          OR: [
+            { status: "active" },
+            {
+              status: "finished",
+              endedAt: { gte: new Date(Date.now() - 45 * 60 * 1000) },
+            },
+          ],
+        },
+        include: {
+          scores: {
+            include: {
+              user: { select: { firstName: true, lastName: true } },
+            },
+            orderBy: { score: "desc" },
+            take: 8,
+          },
+        },
+        orderBy: { startedAt: "desc" },
+      });
+      if (activeGame?.scores.length) {
+        gameLeaderboard = activeGame.scores.map((s, index) => ({
+          rank: index + 1,
+          displayName: `${s.user.firstName} ${s.user.lastName.charAt(0)}.`,
+          xp: s.xpAwarded,
+          level: 1,
+          score: s.score,
+        }));
+      }
+    }
 
     const userIds = xpRows.map((r) => r.userId);
     const users = userIds.length
@@ -147,7 +196,7 @@ export class TvController {
       live,
       next,
       schedule: mapped.filter((s) => s.phase !== "done").slice(0, 6),
-      leaderboard,
+      leaderboard: gameLeaderboard.length ? gameLeaderboard : leaderboard,
       ticker: recentCheckIns.map((c) => ({
         name: `${c.user.firstName} ${c.user.lastName.charAt(0)}.`,
         at: c.checkedInAt.toISOString(),
@@ -193,6 +242,7 @@ export class TvController {
               phaseEndsAt: ls.phaseEndsAt?.toISOString() ?? null,
               pausedRemainSec: ls.pausedRemainSec,
               tvMode: ls.tvMode,
+              tvMessage: ls.tvMessage,
               syncedToCoach: true,
             };
           })()

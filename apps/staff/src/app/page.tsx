@@ -92,34 +92,49 @@ export default function StaffHome() {
             Signed in as {user.email} ({user.role})
           </p>
           <nav className={styles.nav}>
-            <Link className={styles.navCard} href="/coach">
-              <strong>Coach Command Center</strong>
-              <span>Today&apos;s classes · Live Class Mode · coach timer control</span>
-            </Link>
-            <Link className={styles.navCard} href="/desk">
-              <strong>Desk scanner</strong>
-              <span>QR / USB wedge + session + staff override</span>
-            </Link>
-            <Link className={styles.navCard} href="/desk/kiosk">
-              <strong>Door kiosk mode</strong>
-              <span>Fullscreen auto-scan · member QR → check-in</span>
-            </Link>
-            <Link className={styles.navCard} href="/desk/dry-run">
-              <strong>Scanner dry-run</strong>
-              <span>API checks + floor checklist before USB arrives</span>
-            </Link>
-            <a
-              className={styles.navCard}
-              href={
-                (process.env.NEXT_PUBLIC_WEB_ORIGIN ?? "http://localhost:3000") +
-                "/tv/demo"
-              }
-              target="_blank"
-              rel="noreferrer"
-            >
-              <strong>Second-screen demo kit</strong>
-              <span>Floor + Reception TV — open kit, then fullscreen on monitor 2</span>
-            </a>
+            {(user.role === "coach" ||
+              user.role === "admin" ||
+              user.role === "owner" ||
+              user.role === "front_desk") && (
+              <Link className={styles.navCard} href="/coach">
+                <strong>Coach Command Center</strong>
+                <span>
+                  Today&apos;s classes · Live Class Mode · coach timer control
+                </span>
+              </Link>
+            )}
+            {(user.role === "coach" ||
+              user.role === "admin" ||
+              user.role === "owner") && (
+              <>
+                <Link className={styles.navCard} href="/coach/roster">
+                  <strong>Coach roster</strong>
+                  <span>One-tap present · notes · attention chips</span>
+                </Link>
+                <Link className={styles.navCard} href="/coach/messages">
+                  <strong>Coach messages</strong>
+                  <span>Direct threads + class broadcast</span>
+                </Link>
+              </>
+            )}
+            {(user.role === "front_desk" ||
+              user.role === "admin" ||
+              user.role === "owner") && (
+              <>
+                <Link className={styles.navCard} href="/desk">
+                  <strong>Desk scanner</strong>
+                  <span>QR / USB wedge + session + staff override</span>
+                </Link>
+                <Link className={styles.navCard} href="/desk/kiosk">
+                  <strong>Door kiosk mode</strong>
+                  <span>Fullscreen auto-scan · member QR → check-in</span>
+                </Link>
+                <Link className={styles.navCard} href="/desk/dry-run">
+                  <strong>Scanner dry-run</strong>
+                  <span>API checks + floor checklist before USB arrives</span>
+                </Link>
+              </>
+            )}
             <a
               className={styles.navCard}
               href={
@@ -129,38 +144,40 @@ export default function StaffHome() {
               target="_blank"
               rel="noreferrer"
             >
-              <strong>Floor TV (direct)</strong>
-              <span>Live class board — spare monitor / Fire TV</span>
+              <strong>Floor TV</strong>
+              <span>Coach-synced timer · leaderboard · announcements</span>
             </a>
-            <a
-              className={styles.navCard}
-              href={
-                (process.env.NEXT_PUBLIC_WEB_ORIGIN ?? "http://localhost:3000") +
-                "/tv/reception"
-              }
-              target="_blank"
-              rel="noreferrer"
-            >
-              <strong>Reception TV</strong>
-              <span>Welcome ticker + today&apos;s schedule</span>
-            </a>
-            <Link className={styles.navCard} href="/coach/roster">
-              <strong>Coach roster</strong>
-              <span>Live class list, late flags, check-in status</span>
-            </Link>
-            <Link className={styles.navCard} href="/kitchen">
-              <strong>Kitchen KDS</strong>
-              <span>Allergen-aware tickets and status board</span>
-            </Link>
-            <Link className={styles.navCard} href="/owner">
-              <strong>Owner morning brief</strong>
-              <span>Check-ins, fill rates, waivers, overrides</span>
-            </Link>
-            {(user.role === "owner" || user.role === "admin") && (
-              <Link className={styles.navCard} href="/admin/users">
-                <strong>Staff user admin</strong>
-                <span>Invite, role change, disable desk/coach accounts</span>
-              </Link>
+            {(user.role === "admin" ||
+              user.role === "owner" ||
+              user.role === "front_desk") && (
+              <a
+                className={styles.navCard}
+                href={
+                  (process.env.NEXT_PUBLIC_WEB_ORIGIN ??
+                    "http://localhost:3000") + "/tv/reception"
+                }
+                target="_blank"
+                rel="noreferrer"
+              >
+                <strong>Reception TV</strong>
+                <span>Welcome ticker + today&apos;s schedule</span>
+              </a>
+            )}
+            {(user.role === "admin" || user.role === "owner") && (
+              <>
+                <Link className={styles.navCard} href="/kitchen">
+                  <strong>Kitchen KDS</strong>
+                  <span>Allergen-aware tickets and status board</span>
+                </Link>
+                <Link className={styles.navCard} href="/owner">
+                  <strong>Owner morning brief</strong>
+                  <span>Check-ins, fill rates, waivers, overrides</span>
+                </Link>
+                <Link className={styles.navCard} href="/admin/users">
+                  <strong>Staff user admin</strong>
+                  <span>Invite, role change, disable desk/coach accounts</span>
+                </Link>
+              </>
             )}
             <a
               className={styles.navCard}

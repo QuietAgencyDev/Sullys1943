@@ -84,6 +84,7 @@ export default function CoachHomePage() {
       <nav className={styles.topNav} aria-label="Coach">
         <Link href="/coach">Home</Link>
         <Link href="/coach/roster">Roster</Link>
+        <Link href="/coach/messages">Messages</Link>
         <Link href="/">Staff hub</Link>
       </nav>
 
