@@ -1,4 +1,4 @@
-/** Catalog copied from sullysboxinggym.com WooCommerce shop; images AI-upscaled locally. */
+/** Store catalog — legacy Woo checkout URLs until native payments. */
 export type StoreProduct = {
   id: string;
   name: string;
@@ -17,8 +17,7 @@ export const STORE_PRODUCTS: StoreProduct[] = [
     name: "Adult Hand Wraps",
     priceCents: 2000,
     category: "gear",
-    blurb:
-      "Hand wraps designed for adult fighters — protect the hands and train longer.",
+    blurb: "Protect the hands and train longer.",
     legacySlug: "adult-hand-wraps",
     image: "/store/adult-hand-wraps.jpg",
   },
@@ -27,8 +26,7 @@ export const STORE_PRODUCTS: StoreProduct[] = [
     name: "Kid's Hand Wraps",
     priceCents: 2000,
     category: "gear",
-    blurb:
-      "Shorter, stretchy wraps sized for young fighters — comfortable and secure.",
+    blurb: "Shorter stretch wraps for young fighters.",
     legacySlug: "kids-hand-wraps",
     image: "/store/kids-hand-wraps.jpg",
   },
@@ -37,8 +35,7 @@ export const STORE_PRODUCTS: StoreProduct[] = [
     name: "Kid's Boxing Gloves",
     priceCents: 7000,
     category: "gear",
-    blurb:
-      "Smaller, lighter gloves for young fighters — synthetic leather, secure fit.",
+    blurb: "Lighter gloves sized for young fighters.",
     legacySlug: "kids-boxing-gloves",
     image: "/store/kids-boxing-gloves.jpg",
   },

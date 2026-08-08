@@ -32,7 +32,21 @@
 .logo {
   width: 40px;
   height: auto;
+  aspect-ratio: 56 / 72;
+  object-fit: contain;
+  flex: 0 0 auto;
+  display: block;
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+}
+
+@media (max-width: 480px) {
+  .logo {
+    width: 44px;
+  }
+
+  .brandName {
+    font-size: 1.2rem;
+  }
 }
 
 .brandName {

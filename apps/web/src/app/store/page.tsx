@@ -28,10 +28,13 @@ export default function StorePage() {
       <main className={styles.main}>
         <div className={styles.intro}>
           <p className={styles.eyebrow}>Store</p>
-          <h1 className={styles.title}>Gear with a gym behind it</h1>
+          <h1 className={styles.title}>
+            <span>Gear with a</span>
+            <span>gym behind it</span>
+          </h1>
           <p className={styles.lead}>
-            Copied from the club shop — wraps, gloves, hats, and tees. Buy online
-            or pick up at the desk. Proceeds support the non-profit mission.
+            Wraps, gloves, hats, and tees. Buy online or pick up at the desk.
+            Proceeds support the non-profit mission.
           </p>
           <div className={styles.actions}>
             <a href={SHOP_BASE} target="_blank" rel="noreferrer">
@@ -79,8 +82,8 @@ function ProductBlock({
               <Image
                 src={p.image}
                 alt={p.name}
-                width={160}
-                height={160}
+                fill
+                sizes="84px"
                 className={styles.thumbImg}
               />
             </div>

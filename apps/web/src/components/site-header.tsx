@@ -12,6 +12,7 @@ export function SiteHeader() {
           width={56}
           height={72}
           priority
+          sizes="(max-width: 767px) 52px, 56px"
           className={styles.logo}
         />
         <span className={styles.brandText}>

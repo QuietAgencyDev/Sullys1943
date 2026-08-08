@@ -24,8 +24,7 @@ export function StoreTeaser() {
           Take the gym with you
         </h2>
         <p className={styles.copy}>
-          Wraps, gloves, hats, and tees from the club shop — photos sharpened for
-          this site. Proceeds support the non-profit mission.
+          Wraps, gloves, hats, and tees. Proceeds support the non-profit mission.
         </p>
         <ul className={styles.grid}>
           {FEATURED.map((p) => (
