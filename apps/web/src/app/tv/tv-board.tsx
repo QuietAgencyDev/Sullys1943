@@ -37,6 +37,21 @@ type CoachTimer = {
   tvMode: string;
   tvMessage?: string | null;
   syncedToCoach: boolean;
+  currentExercise?: { title: string; phase: string } | null;
+  nextExercise?: { title: string; phase: string } | null;
+  teams?: {
+    rank: number;
+    name: string;
+    color: string;
+    points: number;
+    members: string[];
+  }[];
+  challenges?: {
+    name: string;
+    type: string;
+    status: string;
+    winnerLabel: string | null;
+  }[];
 };
 
 type Board = {
@@ -318,9 +333,20 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     profile === "floor" && tvMode === "announcement" && board?.coachTimer;
   const showLeaderboardHero =
     profile === "floor" && tvMode === "leaderboard" && board?.coachTimer;
+  const showTeamsHero =
+    profile === "floor" && tvMode === "teams" && board?.coachTimer;
+  const showChallengeHero =
+    profile === "floor" &&
+    (tvMode === "challenge" || tvMode === "achievement") &&
+    board?.coachTimer;
+  const showClassComplete =
+    profile === "floor" && tvMode === "class_complete" && board?.coachTimer;
   const showRoundHero =
     !showAnnouncement &&
     !showLeaderboardHero &&
+    !showTeamsHero &&
+    !showChallengeHero &&
+    !showClassComplete &&
     (profile === "floor" || board?.live?.phase === "live");
 
   return (
@@ -383,6 +409,53 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
               </p>
             </>
           ) : null}
+          {showClassComplete ? (
+            <>
+              <p className={styles.phase}>Class complete</p>
+              <h1 className={styles.classTitle}>
+                {board?.coachTimer?.title ?? "Session done"}
+              </h1>
+              <p className={styles.meta}>
+                {board?.coachTimer?.tvMessage || "XP awarded · see you next bell"}
+              </p>
+            </>
+          ) : null}
+          {showTeamsHero ? (
+            <>
+              <p className={styles.phase}>Team battle</p>
+              <h1 className={styles.classTitle}>
+                {board?.coachTimer?.title ?? "Teams"}
+              </h1>
+              <ul className={styles.boardList} style={{ marginTop: "1.25rem" }}>
+                {(board?.coachTimer?.teams ?? []).map((t) => (
+                  <li key={t.name}>
+                    <span>
+                      #{t.rank} {t.name}
+                    </span>
+                    <strong>{t.points}</strong>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+          {showChallengeHero ? (
+            <>
+              <p className={styles.phase}>
+                {tvMode === "achievement" ? "Achievement" : "Challenge"}
+              </p>
+              <h1 className={styles.classTitle}>
+                {board?.coachTimer?.tvMessage ||
+                  board?.coachTimer?.challenges?.[0]?.name ||
+                  "Eyes on the prize"}
+              </h1>
+              <p className={styles.meta}>
+                {board?.coachTimer?.title}
+                {board?.coachTimer?.currentExercise
+                  ? ` · ${board.coachTimer.currentExercise.title}`
+                  : ""}
+              </p>
+            </>
+          ) : null}
           {showLeaderboardHero ? (
             <>
               <p className={styles.phase}>Floor leaderboard</p>
@@ -425,7 +498,10 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                   : ""}
               </p>
               <h1 className={styles.classTitle}>
-                {board?.coachTimer?.title ?? focus?.title ?? "Open gym rounds"}
+                {board?.coachTimer?.currentExercise?.title ??
+                  board?.coachTimer?.title ??
+                  focus?.title ??
+                  "Open gym rounds"}
               </h1>
               <p className={styles.meta}>
                 {board?.coachTimer?.coach
@@ -433,6 +509,9 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                   : focus?.coach
                     ? `Coach ${focus.coach}`
                     : "Sully's floor"}
+                {board?.coachTimer?.nextExercise
+                  ? ` · Next: ${board.coachTimer.nextExercise.title}`
+                  : ""}
                 {focus && !board?.coachTimer
                   ? ` · ${focus.booked}/${focus.capacity} · ${focus.spotsLeft} spots`
                   : ""}

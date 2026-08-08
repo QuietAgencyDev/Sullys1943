@@ -22,8 +22,22 @@ async function main() {
   await prisma.legacyTimelineEntry.deleteMany();
   await prisma.checkInCredential.deleteMany();
   await prisma.paymentEvent.deleteMany();
+  await prisma.commerceOrder.deleteMany();
   await prisma.message.deleteMany();
+  await prisma.messageParticipant.deleteMany().catch(() => undefined);
   await prisma.messageThread.deleteMany();
+  await prisma.gameScore.deleteMany();
+  await prisma.gameSession.deleteMany();
+  await prisma.gameDefinition.deleteMany();
+  await prisma.classTeamMember.deleteMany();
+  await prisma.classTeam.deleteMany();
+  await prisma.challengeInstance.deleteMany();
+  await prisma.liveClassState.deleteMany();
+  await prisma.coachAssessment.deleteMany();
+  await prisma.coachNote.deleteMany();
+  await prisma.workoutBlock.deleteMany();
+  await prisma.workoutTemplate.deleteMany();
+  await prisma.xpRule.deleteMany();
   await prisma.xpLedger.deleteMany();
   await prisma.pointsAccount.deleteMany();
   await prisma.attendanceEvent.deleteMany();
@@ -157,7 +171,7 @@ async function main() {
       email: "member@sullys.local",
       passwordHash,
       firstName: "Gavin",
-      lastName: "Member",
+      lastName: "Sheppard",
       role: "member",
       points: { create: { balance: 20 } },
     },
@@ -329,7 +343,7 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
       signatures: {
         create: {
           signerId: member.id,
-          typedName: "Gavin Member",
+          typedName: "Gavin Sheppard",
         },
       },
     },
@@ -747,6 +761,107 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
       active: true,
     },
   });
+
+  for (const g of [
+    {
+      slug: "combo-rush",
+      name: "Combo Challenge",
+      description: "Clean combinations under the clock — form over power.",
+      xpWin: 12,
+    },
+    {
+      slug: "team-battle",
+      name: "Team Battle",
+      description: "Red vs Blue energy — coach awards team points live.",
+      xpWin: 10,
+    },
+    {
+      slug: "kids-quest",
+      name: "Kids Quest",
+      description: "Positive skill milestones for youth — participation first.",
+      xpWin: 10,
+    },
+  ]) {
+    await prisma.gameDefinition.upsert({
+      where: { slug: g.slug },
+      create: {
+        slug: g.slug,
+        name: g.name,
+        description: g.description,
+        configJson: JSON.stringify({ scoring: "coach_manual" }),
+        xpWin: g.xpWin,
+        active: true,
+      },
+      update: {
+        name: g.name,
+        description: g.description,
+        xpWin: g.xpWin,
+        active: true,
+      },
+    });
+  }
+
+  const xpRules = [
+    { code: "attendance.checked_in", label: "Check-in", delta: 10 },
+    { code: "class.completed", label: "Class complete", delta: 25 },
+    { code: "coach.choice", label: "Coach's Choice", delta: 15 },
+    { code: "skill.milestone", label: "Skill milestone", delta: 20 },
+    { code: "personal.best", label: "Personal best", delta: 20 },
+    { code: "teamwork", label: "Teamwork", delta: 10 },
+    { code: "achievement", label: "Achievement", delta: 15 },
+    { code: "game.win", label: "Game win", delta: 15 },
+    { code: "kids.participation", label: "Kids participation", delta: 10 },
+  ];
+  for (const rule of xpRules) {
+    await prisma.xpRule.upsert({
+      where: { code: rule.code },
+      create: rule,
+      update: { label: rule.label, delta: rule.delta, active: true },
+    });
+  }
+
+  for (const b of [
+    { code: "first_class", name: "First Class", description: "Completed first class" },
+    { code: "class_club_10", name: "10 Class Club", description: "10 classes completed" },
+    { code: "class_club_25", name: "25 Class Club", description: "25 classes completed" },
+    { code: "class_club_50", name: "50 Class Club", description: "50 classes completed" },
+    { code: "class_club_100", name: "100 Class Club", description: "100 classes completed" },
+    { code: "streak", name: "Streak", description: "Showing up consistently" },
+    { code: "personal_best", name: "Personal Best", description: "Hit a PB in class" },
+    { code: "skill_milestone", name: "Skill Milestone", description: "Coach stamped a skill" },
+    { code: "team_player", name: "Team Player", description: "Lifted the room" },
+    { code: "coachs_choice", name: "Coach's Choice", description: "Earned coach recognition" },
+  ]) {
+    await prisma.badge.upsert({
+      where: { code: b.code },
+      create: b,
+      update: { name: b.name, description: b.description },
+    });
+  }
+
+  const fundamentals = await prisma.workoutTemplate.findFirst({
+    where: { name: "Sully's Boxing Fundamentals" },
+  });
+  if (!fundamentals) {
+    await prisma.workoutTemplate.create({
+      data: {
+        name: "Sully's Boxing Fundamentals",
+        description: "Warmup → five rounds → cooldown",
+        createdById: coach.id,
+        blocks: {
+          create: [
+            { sortOrder: 0, phase: "warmup", title: "WARMUP", notes: "Jump rope + shadow" },
+            { sortOrder: 1, phase: "round", title: "ROUND 1 — Jab / Cross", notes: "" },
+            { sortOrder: 2, phase: "round", title: "ROUND 2 — Footwork", notes: "" },
+            { sortOrder: 3, phase: "round", title: "ROUND 3 — Defense", notes: "" },
+            { sortOrder: 4, phase: "round", title: "ROUND 4 — Heavy Bag", notes: "" },
+            { sortOrder: 5, phase: "round", title: "ROUND 5 — Combinations", notes: "" },
+            { sortOrder: 6, phase: "cooldown", title: "COOLDOWN", notes: "Stretch + breath" },
+          ],
+        },
+      },
+    });
+  }
 
   console.log("Seeded Sully's flagship data");
   console.log("Logins (password: password123):");

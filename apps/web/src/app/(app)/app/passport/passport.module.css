@@ -1,0 +1,46 @@
+.hero {
+  margin: 1rem 0 1.25rem;
+  padding: 1.1rem 0 0.5rem;
+}
+
+.rank {
+  margin: 0;
+  font-family: var(--font-display, Georgia, serif);
+  font-size: clamp(2rem, 8vw, 2.75rem);
+  letter-spacing: 0.04em;
+  color: var(--brand-red, #c82026);
+}
+
+.levelLine {
+  margin: 0.25rem 0 0.75rem;
+  font-weight: 700;
+}
+
+.barTrack {
+  height: 10px;
+  background: rgba(20, 15, 12, 0.12);
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  background: var(--brand-red, #c82026);
+  transition: width 0.4s ease;
+}
+
+.ctaRow {
+  margin: 0.85rem 0 0;
+}
+
+.stamps {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.stamp {
+  border: 1px solid rgba(20, 15, 12, 0.15);
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 0.9rem;
+}

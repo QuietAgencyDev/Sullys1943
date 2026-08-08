@@ -28,6 +28,7 @@ import {
 import { PortalController } from "./portal.controller";
 import { CoachController } from "./coach.controller";
 import { ProgressionService } from "./progression.service";
+import { CommerceController } from "./commerce.controller";
 
 @Module({
   controllers: [
@@ -35,6 +36,7 @@ import { ProgressionService } from "./progression.service";
     ClassesController,
     AuthController,
     BillingController,
+    CommerceController,
     AdminUsersController,
     TvController,
     PortalController,

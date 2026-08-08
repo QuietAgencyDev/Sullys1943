@@ -45,10 +45,12 @@ model User {
   title          String?  // coach display title
   bio            String?
   photoUrl       String?
+  cosmeticJson   String?  // future unlock cosmetics — not pay-to-win
   dateOfBirth    DateTime?
   disabledAt     DateTime?
   invitedAt      DateTime?
   createdAt      DateTime @default(now())
+  classTeamMembers ClassTeamMember[]
 
   membershipsAsPayer Membership[] @relation("Payer")
   membershipMembers  MembershipMember[]
@@ -148,13 +150,32 @@ model PaymentEvent {
   id              String   @id @default(cuid())
   membershipId    String?
   membership      Membership? @relation(fields: [membershipId], references: [id])
-  provider        String   @default("mock") // mock | stripe
+  commerceOrderId String?
+  commerceOrder   CommerceOrder? @relation(fields: [commerceOrderId], references: [id])
+  provider        String   @default("mock") // mock | stripe | moneris
   externalId      String   @unique
   type            String
   status          String   @default("pending") // pending | completed | failed
   amountCents     Int      @default(0)
   raw             String?
   createdAt       DateTime @default(now())
+}
+
+/** Store purchase or donation — settled via PaymentProvider (mock | Moneris). */
+model CommerceOrder {
+  id           String   @id @default(cuid())
+  kind         String   // store | donation
+  status       String   @default("pending") // pending | paid | failed | fulfilled
+  email        String?
+  name         String?
+  userId       String?
+  amountCents  Int
+  currency     String   @default("CAD")
+  itemsJson    String   @default("[]")
+  message      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  payments     PaymentEvent[]
 }
 
 model MembershipMember {
@@ -239,6 +260,8 @@ model Session {
   assessments CoachAssessment[]
   gameSessions GameSession[]
   messageThreads MessageThread[]
+  classTeams     ClassTeam[]
+  challenges     ChallengeInstance[]
 }
 
 /** Coach-controlled class timer + TV sync state (Phase 1 Live Class Mode). */
@@ -247,7 +270,7 @@ model LiveClassState {
   sessionId       String   @unique
   session         Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   status          String   @default("idle") // idle | running | paused | finished
-  phase           String   @default("work") // work | rest
+  phase           String   @default("work") // work | rest | warmup | cooldown
   round           Int      @default(1)
   totalRounds     Int      @default(12)
   workSec         Int      @default(180)
@@ -255,10 +278,87 @@ model LiveClassState {
   phaseEndsAt     DateTime?
   pausedRemainSec Int?
   startedById     String?
-  tvMode          String   @default("timer") // timer | leaderboard | announcement
+  tvMode          String   @default("timer") // timer | leaderboard | announcement | teams | challenge | achievement | class_complete
   tvMessage       String?
+  workoutTemplateId String?
+  workoutTemplate WorkoutTemplate? @relation(fields: [workoutTemplateId], references: [id])
+  blockIndex      Int      @default(0)
+  kidsMode        Boolean  @default(false)
   updatedAt       DateTime @updatedAt
   createdAt       DateTime @default(now())
+}
+
+/** Admin-configurable XP amounts — single source for awards. */
+model XpRule {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  label     String
+  delta     Int
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model WorkoutTemplate {
+  id          String   @id @default(cuid())
+  name        String
+  description String   @default("")
+  kidsMode    Boolean  @default(false)
+  createdById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  blocks      WorkoutBlock[]
+  liveStates  LiveClassState[]
+}
+
+model WorkoutBlock {
+  id          String @id @default(cuid())
+  templateId  String
+  template    WorkoutTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  sortOrder   Int
+  phase       String // warmup | round | cooldown | work
+  title       String
+  notes       String @default("")
+  durationSec Int?
+
+  @@index([templateId, sortOrder])
+}
+
+model ClassTeam {
+  id        String @id @default(cuid())
+  sessionId String
+  session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  name      String
+  color     String @default("red") // red | blue | black | gold
+  points    Int    @default(0)
+  members   ClassTeamMember[]
+
+  @@index([sessionId])
+}
+
+model ClassTeamMember {
+  id     String @id @default(cuid())
+  teamId String
+  team   ClassTeam @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  userId String
+  user   User @relation(fields: [userId], references: [id])
+
+  @@unique([teamId, userId])
+}
+
+model ChallengeInstance {
+  id          String   @id @default(cuid())
+  sessionId   String
+  session     Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  name        String
+  type        String   // challenge | team_battle | combo | round | coachs_choice
+  status      String   @default("active") // active | finished
+  configJson  String   @default("{}")
+  winnerLabel String?
+  createdAt   DateTime @default(now())
+  endedAt     DateTime?
+
+  @@index([sessionId])
 }
 
 model CoachNote {
@@ -281,9 +381,13 @@ model CoachAssessment {
   athlete   User     @relation("CoachAssessmentAthlete", fields: [athleteId], references: [id])
   authorId  String
   author    User     @relation("CoachAssessmentAuthor", fields: [authorId], references: [id])
-  category  String   // stance | guard | jab | footwork | defense | conditioning | discipline | teamwork
-  score     Int      // 1-5
+  category  String   // stance | guard | jab | cross | hook | uppercut | footwork | defense | combinations | conditioning
+  score     Int      // 1-5 (legacy); prefer level when set
+  level     String?  // LEARNING | DEVELOPING | COMPETENT | ADVANCED | MASTERED
   notes     String?
+  goal      String?
+  recommendedDrill String?
+  nextAt    DateTime?
   createdAt DateTime @default(now())
 }
 

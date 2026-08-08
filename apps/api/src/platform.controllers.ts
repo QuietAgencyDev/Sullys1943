@@ -23,6 +23,7 @@ import {
   type AuthPayload,
 } from "./auth/auth.guard";
 import { resolveSessionForMember } from "./check-in-session";
+import { ProgressionService } from "./progression.service";
 
 const STAFF_ROLES = new Set([
   "coach",
@@ -580,18 +581,43 @@ export async function performCheckIn(
     },
   });
 
-  await prisma.xpLedger.create({
-    data: {
-      userId: opts.memberUserId,
-      delta: 10,
-      reason: "attendance.checked_in",
-    },
+  const checkInRule = await prisma.xpRule.findUnique({
+    where: { code: "attendance.checked_in" },
   });
-  await prisma.pointsAccount.upsert({
-    where: { userId: opts.memberUserId },
-    create: { userId: opts.memberUserId, balance: 10 },
-    update: { balance: { increment: 10 } },
-  });
+  const checkInXp =
+    checkInRule?.active !== false ? (checkInRule?.delta ?? 10) : 10;
+  const idempotencyKey = opts.sessionId
+    ? `attendance.checked_in:${opts.sessionId}:${opts.memberUserId}`
+    : `attendance.checked_in:${event.id}`;
+  try {
+    await prisma.xpLedger.create({
+      data: {
+        userId: opts.memberUserId,
+        delta: checkInXp,
+        reason: "attendance.checked_in",
+        source: "check_in",
+        sessionId: opts.sessionId,
+        idempotencyKey,
+      },
+    });
+    await prisma.pointsAccount.upsert({
+      where: { userId: opts.memberUserId },
+      create: { userId: opts.memberUserId, balance: checkInXp },
+      update: { balance: { increment: checkInXp } },
+    });
+  } catch (err: unknown) {
+    // Unique race on idempotency — treat as 0 XP duplicate award
+    if (
+      !(
+        typeof err === "object" &&
+        err &&
+        "code" in err &&
+        (err as { code?: string }).code === "P2002"
+      )
+    ) {
+      throw err;
+    }
+  }
 
   const user = await prisma.user.findUniqueOrThrow({
     where: { id: opts.memberUserId },
@@ -599,7 +625,7 @@ export async function performCheckIn(
 
   return {
     attendance: event,
-    xpAwarded: 10,
+    xpAwarded: checkInXp,
     overridden: flags.length > 0,
     flags,
     member: {
@@ -1196,35 +1222,26 @@ export class MessagesController {
 @Controller("gamification")
 @UseGuards(AuthGuard)
 export class GamificationController {
-  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
+  constructor(
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(ProgressionService)
+    private readonly progression: ProgressionService,
+  ) {}
 
   @Get("me")
   async me(@CurrentUser() auth: AuthPayload) {
-    const xp = await this.prisma.xpLedger.aggregate({
-      where: { userId: auth.sub },
-      _sum: { delta: true },
-    });
-    const points = await this.prisma.pointsAccount.findUnique({
-      where: { userId: auth.sub },
-    });
-    const totalXp = xp._sum.delta ?? 0;
-    const level = Math.floor(totalXp / 100) + 1;
-    const ranks = [
-      "Prospect",
-      "Contender",
-      "Amateur",
-      "Pro Prospect",
-      "Champion",
-    ];
-    const rank = ranks[Math.min(ranks.length - 1, level - 1)];
-    const badges = await this.prisma.userBadge.findMany({
-      where: { userId: auth.sub },
-      include: { badge: true },
-    });
+    const [prog, points, badges] = await Promise.all([
+      this.progression.summary(auth.sub),
+      this.prisma.pointsAccount.findUnique({ where: { userId: auth.sub } }),
+      this.prisma.userBadge.findMany({
+        where: { userId: auth.sub },
+        include: { badge: true },
+      }),
+    ]);
     return {
-      xp: totalXp,
-      level,
-      rank,
+      xp: prog.xp,
+      level: prog.level,
+      rank: prog.rank,
       points: points?.balance ?? 0,
       badges: badges.map((b) => ({
         code: b.badge.code,
@@ -1238,7 +1255,11 @@ export class GamificationController {
 @Controller("passport")
 @UseGuards(AuthGuard)
 export class PassportController {
-  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
+  constructor(
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(ProgressionService)
+    private readonly progression: ProgressionService,
+  ) {}
 
   @Get("me")
   async me(@CurrentUser() auth: AuthPayload) {
@@ -1250,32 +1271,86 @@ export class PassportController {
       orderBy: { checkedInAt: "desc" },
       take: 365,
     });
-    const xp = await this.prisma.xpLedger.aggregate({
-      where: { userId: auth.sub },
-      _sum: { delta: true },
-    });
-    const totalXp = xp._sum.delta ?? 0;
-    const level = Math.floor(totalXp / 100) + 1;
-    const ranks = [
-      "Prospect",
-      "Contender",
-      "Amateur",
-      "Pro Prospect",
-      "Champion",
+    const progression = await this.progression.summary(auth.sub);
+    const [badges, points, recentXp, lastClassRow, games] = await Promise.all([
+      this.prisma.userBadge.findMany({
+        where: { userId: auth.sub },
+        include: { badge: true },
+      }),
+      this.prisma.pointsAccount.findUnique({ where: { userId: auth.sub } }),
+      this.prisma.xpLedger.findMany({
+        where: { userId: auth.sub },
+        orderBy: { createdAt: "desc" },
+        take: 15,
+      }),
+      this.prisma.xpLedger.findFirst({
+        where: {
+          userId: auth.sub,
+          reason: { in: ["class.completed", "kids.participation"] },
+        },
+        orderBy: { createdAt: "desc" },
+      }),
+      this.prisma.gameScore.findMany({
+        where: { userId: auth.sub },
+        orderBy: { id: "desc" },
+        take: 10,
+        include: {
+          gameSession: {
+            include: {
+              definition: true,
+              session: { select: { title: true, startsAt: true } },
+            },
+          },
+        },
+      }),
+    ]);
+
+    const sessionIds = [
+      ...new Set(
+        recentXp.map((x) => x.sessionId).filter((id): id is string => !!id),
+      ),
     ];
-    const badges = await this.prisma.userBadge.findMany({
-      where: { userId: auth.sub },
-      include: { badge: true },
-    });
+    const sessions = sessionIds.length
+      ? await this.prisma.session.findMany({
+          where: { id: { in: sessionIds } },
+          select: { id: true, title: true },
+        })
+      : [];
+    const sessionMap = new Map(sessions.map((s) => [s.id, s.title]));
+
+    let lastClass: {
+      title: string;
+      at: string;
+      xp: number;
+    } | null = null;
+    if (lastClassRow?.sessionId) {
+      const s = await this.prisma.session.findUnique({
+        where: { id: lastClassRow.sessionId },
+        select: { title: true },
+      });
+      lastClass = {
+        title: s?.title ?? "Class",
+        at: lastClassRow.createdAt.toISOString(),
+        xp: lastClassRow.delta,
+      };
+    }
 
     const dayKeys = new Set(
       attendance.map((a) => a.checkedInAt.toISOString().slice(0, 10)),
     );
     let streak = 0;
     const cursor = new Date();
+    cursor.setHours(0, 0, 0, 0);
     for (;;) {
       const key = cursor.toISOString().slice(0, 10);
-      if (!dayKeys.has(key)) break;
+      if (!dayKeys.has(key)) {
+        if (streak === 0) {
+          cursor.setDate(cursor.getDate() - 1);
+          if (!dayKeys.has(cursor.toISOString().slice(0, 10))) break;
+          continue;
+        }
+        break;
+      }
       streak += 1;
       cursor.setDate(cursor.getDate() - 1);
     }
@@ -1288,14 +1363,36 @@ export class PassportController {
     return {
       member: {
         name: `${user.firstName} ${user.lastName}`,
+        photoUrl: user.photoUrl,
         joinedAt: user.createdAt.toISOString(),
         yearsAtGym: Math.round(yearsAtGym * 10) / 10,
       },
       progression: {
-        xp: totalXp,
-        level,
-        rank: ranks[Math.min(ranks.length - 1, level - 1)],
+        xp: progression.xp,
+        level: progression.level,
+        rank: progression.rank,
+        xpToNextLevel: progression.xpToNextLevel,
+        progressPct: progression.progressPct,
       },
+      points: points?.balance ?? 0,
+      lastClass,
+      recentXp: recentXp.map((x) => ({
+        delta: x.delta,
+        reason: x.reason,
+        source: x.source,
+        sessionTitle: x.sessionId
+          ? (sessionMap.get(x.sessionId) ?? null)
+          : null,
+        at: x.createdAt.toISOString(),
+      })),
+      games: games.map((g) => ({
+        name: g.gameSession.definition.name,
+        slug: g.gameSession.definition.slug,
+        score: g.score,
+        xpAwarded: g.xpAwarded,
+        classTitle: g.gameSession.session.title,
+        at: g.gameSession.session.startsAt.toISOString(),
+      })),
       attendance: {
         total: attendance.length,
         uniqueDays: dayKeys.size,

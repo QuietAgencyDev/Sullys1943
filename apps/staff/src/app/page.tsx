@@ -109,7 +109,15 @@ export default function StaffHome() {
               <>
                 <Link className={styles.navCard} href="/coach/roster">
                   <strong>Coach roster</strong>
-                  <span>One-tap present · notes · attention chips</span>
+                  <span>Boxing Card · XP · assessments · present</span>
+                </Link>
+                <Link className={styles.navCard} href="/coach/builder">
+                  <strong>Class builder</strong>
+                  <span>Workout templates for Live Mode</span>
+                </Link>
+                <Link className={styles.navCard} href="/coach/analytics">
+                  <strong>Coach analytics</strong>
+                  <span>Classes taught · attendance · challenges</span>
                 </Link>
                 <Link className={styles.navCard} href="/coach/messages">
                   <strong>Coach messages</strong>

@@ -50,7 +50,8 @@
   align-items: flex-start;
   gap: var(--space-4);
   width: min(720px, 100%);
-  padding: calc(96px + var(--space-6)) var(--space-5) var(--space-7);
+  /* Clear absolute SiteHeader — mobile stacks logo + wrapping nav (~2 rows) */
+  padding: calc(196px + env(safe-area-inset-top, 0px)) var(--space-5) var(--space-7);
   animation: rise 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
@@ -75,10 +76,10 @@
 .manifesto {
   margin: 0;
   display: grid;
-  gap: 0.12em;
+  gap: 0.18em;
   font-family: var(--font-display-loaded), var(--font-display);
   font-size: clamp(2.4rem, 9vw, 4.8rem);
-  line-height: 0.98;
+  line-height: 1.05;
   letter-spacing: 0.02em;
   color: var(--brand-cream);
   text-wrap: balance;
@@ -94,7 +95,7 @@
 }
 
 .lead {
-  margin: 0;
+  margin: 0.35rem 0 0;
   max-width: 36ch;
   font-size: 1.05rem;
   line-height: 1.55;
@@ -146,5 +147,17 @@
 
   .badge {
     width: 220px;
+  }
+}
+
+@media (max-width: 380px) {
+  .content {
+    padding-top: calc(210px + env(safe-area-inset-top, 0px));
+  }
+
+  .manifesto {
+    font-size: clamp(2rem, 9.5vw, 2.6rem);
+    line-height: 1.08;
+    gap: 0.14em;
   }
 }

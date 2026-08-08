@@ -59,12 +59,30 @@ export class TvController {
           ],
         },
         include: {
+          workoutTemplate: {
+            include: { blocks: { orderBy: { sortOrder: "asc" } } },
+          },
           session: {
             select: {
               id: true,
               title: true,
               coachName: true,
               coach: { select: { firstName: true, lastName: true } },
+              classTeams: {
+                include: {
+                  members: {
+                    include: {
+                      user: { select: { firstName: true, lastName: true } },
+                    },
+                  },
+                },
+                orderBy: { points: "desc" },
+              },
+              challenges: {
+                where: { status: { in: ["active", "finished"] } },
+                orderBy: { createdAt: "desc" },
+                take: 3,
+              },
             },
           },
         },
@@ -228,6 +246,9 @@ export class TvController {
             const coach = ls.session.coach
               ? `${ls.session.coach.firstName} ${ls.session.coach.lastName.charAt(0)}.`
               : ls.session.coachName;
+            const blocks = ls.workoutTemplate?.blocks ?? [];
+            const cur = blocks[ls.blockIndex] ?? null;
+            const nxt = blocks[ls.blockIndex + 1] ?? null;
             return {
               sessionId: ls.sessionId,
               title: ls.session.title,
@@ -243,7 +264,30 @@ export class TvController {
               pausedRemainSec: ls.pausedRemainSec,
               tvMode: ls.tvMode,
               tvMessage: ls.tvMessage,
+              kidsMode: ls.kidsMode,
               syncedToCoach: true,
+              currentExercise: cur
+                ? { title: cur.title, phase: cur.phase }
+                : null,
+              nextExercise: nxt
+                ? { title: nxt.title, phase: nxt.phase }
+                : null,
+              teams: ls.session.classTeams.map((t, i) => ({
+                rank: i + 1,
+                name: t.name,
+                color: t.color,
+                points: t.points,
+                members: t.members.map(
+                  (m) =>
+                    `${m.user.firstName} ${m.user.lastName.charAt(0)}.`,
+                ),
+              })),
+              challenges: ls.session.challenges.map((c) => ({
+                name: c.name,
+                type: c.type,
+                status: c.status,
+                winnerLabel: c.winnerLabel,
+              })),
             };
           })()
         : null,

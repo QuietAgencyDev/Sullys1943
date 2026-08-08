@@ -9,6 +9,19 @@ export const BOXING_RANKS = [
   "Legacy",
 ] as const;
 
+/** Fallback deltas if XpRule rows are missing (seed should always create them). */
+const DEFAULT_XP: Record<string, number> = {
+  "attendance.checked_in": 10,
+  "class.completed": 25,
+  "coach.choice": 15,
+  "skill.milestone": 20,
+  "personal.best": 20,
+  teamwork: 10,
+  achievement: 15,
+  "game.win": 15,
+  "kids.participation": 10,
+};
+
 @Injectable()
 export class ProgressionService {
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
@@ -25,6 +38,20 @@ export class ProgressionService {
     return BOXING_RANKS[0];
   }
 
+  progressTowardNext(xp: number) {
+    const level = this.levelFromXp(xp);
+    const floor = (level - 1) * 100;
+    const nextAt = level * 100;
+    const into = xp - floor;
+    const span = nextAt - floor;
+    return {
+      level,
+      xpToNextLevel: Math.max(0, nextAt - xp),
+      progressPct: Math.min(100, Math.round((into / span) * 100)),
+      nextLevelAt: nextAt,
+    };
+  }
+
   async totalXp(userId: string) {
     const agg = await this.prisma.xpLedger.aggregate({
       where: { userId },
@@ -35,8 +62,18 @@ export class ProgressionService {
 
   async summary(userId: string) {
     const xp = await this.totalXp(userId);
-    const level = this.levelFromXp(xp);
-    return { xp, level, rank: this.rankFromLevel(level) };
+    const progress = this.progressTowardNext(xp);
+    return {
+      xp,
+      rank: this.rankFromLevel(progress.level),
+      ...progress,
+    };
+  }
+
+  async deltaFor(code: string): Promise<number> {
+    const rule = await this.prisma.xpRule.findUnique({ where: { code } });
+    if (rule?.active) return rule.delta;
+    return DEFAULT_XP[code] ?? 10;
   }
 
   /**
@@ -56,7 +93,7 @@ export class ProgressionService {
         where: { idempotencyKey: opts.idempotencyKey },
       });
       if (existing) {
-        return { entry: existing, awarded: false, duplicate: true };
+        return { entry: existing, awarded: false, duplicate: true, delta: 0 };
       }
     }
 
@@ -77,9 +114,8 @@ export class ProgressionService {
         create: { userId: opts.userId, balance: opts.delta },
         update: { balance: { increment: opts.delta } },
       });
-      return { entry, awarded: true, duplicate: false };
+      return { entry, awarded: true, duplicate: false, delta: opts.delta };
     } catch (err: unknown) {
-      // Unique race on idempotencyKey
       if (
         opts.idempotencyKey &&
         typeof err === "object" &&
@@ -91,10 +127,30 @@ export class ProgressionService {
           where: { idempotencyKey: opts.idempotencyKey },
         });
         if (existing) {
-          return { entry: existing, awarded: false, duplicate: true };
+          return { entry: existing, awarded: false, duplicate: true, delta: 0 };
         }
       }
       throw err;
     }
+  }
+
+  async awardByCode(opts: {
+    userId: string;
+    code: string;
+    source?: string;
+    sessionId?: string;
+    idempotencyKey?: string;
+    metadata?: Record<string, unknown>;
+  }) {
+    const delta = await this.deltaFor(opts.code);
+    return this.award({
+      userId: opts.userId,
+      delta,
+      reason: opts.code,
+      source: opts.source ?? "coach_award",
+      sessionId: opts.sessionId,
+      idempotencyKey: opts.idempotencyKey,
+      metadata: opts.metadata,
+    });
   }
 }

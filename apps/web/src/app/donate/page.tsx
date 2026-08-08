@@ -3,6 +3,7 @@ import { Button } from "@sullys/ui";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { GYM, formatAddress } from "@/lib/gym-info";
+import { DonateForm } from "./donate-form";
 import styles from "./donate.module.css";
 
 export const metadata = {
@@ -38,44 +39,17 @@ export default function DonatePage() {
           </p>
         </section>
 
-        <section className={styles.section} aria-labelledby="present">
-          <h2 id="present" className={styles.subhead}>
-            The present
-          </h2>
-          <p className={styles.copy}>
-            Today the gym keeps Sully&apos;s values and old-school feel — home
-            to 60+ underprivileged youth and a competitive amateur program with
-            futures ahead of them. Our goal is to grow the number of young
-            people we serve, with parents, teachers, and agencies beside us.
-          </p>
-        </section>
-
-        <section className={styles.section} aria-labelledby="plan">
-          <h2 id="plan" className={styles.subhead}>
-            The plan
-          </h2>
-          <p className={styles.copy}>
-            Specialized programs ahead: after-school tutoring, fitness,
-            nutrition, and mindfulness alongside non-contact boxing — a
-            holistic path toward confident adults and better citizens.
-          </p>
-          <p className={styles.copy}>
-            Every donation goes directly to programs. Size doesn&apos;t matter —
-            showing up does.
-          </p>
-        </section>
-
         <section className={styles.ways} aria-labelledby="ways">
           <h2 id="ways" className={styles.subhead}>
             Ways to give
           </h2>
 
+          <DonateForm />
+
           <div className={styles.way}>
-            <h3 className={styles.wayLabel}>Card or PayPal</h3>
+            <h3 className={styles.wayLabel}>Call or email</h3>
             <p className={styles.copy}>
-              Online checkout remains on our established store while we finish
-              the new payment platform. Call or email and we&apos;ll send the
-              current link, or give by phone.
+              Prefer to talk it through? We&apos;ll help you give by phone.
             </p>
             <div className={styles.actions}>
               <a href={`tel:${GYM.phoneTel}`}>

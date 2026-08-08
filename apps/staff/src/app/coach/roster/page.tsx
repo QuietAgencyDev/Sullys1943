@@ -21,6 +21,8 @@ type RosterRow = {
   userId: string;
   name: string;
   email: string;
+  initials?: string;
+  photoUrl?: string | null;
   bookingStatus: string;
   attendanceId: string | null;
   checkedIn: boolean;
@@ -28,6 +30,12 @@ type RosterRow = {
   noShow: boolean;
   voided: boolean;
   lateBySeconds: number | null;
+  xp?: number;
+  level?: number;
+  rank?: string;
+  streak?: number;
+  skillLevel?: string | null;
+  lastNote?: string | null;
   chips?: { new?: boolean; late?: boolean; streak?: number };
 };
 
@@ -37,6 +45,36 @@ type Note = {
   createdAt: string;
   author: string;
 };
+
+type Badge = { code: string; name: string };
+
+const SKILL_CATS = [
+  "stance",
+  "guard",
+  "jab",
+  "cross",
+  "hook",
+  "uppercut",
+  "footwork",
+  "defense",
+  "combinations",
+  "conditioning",
+];
+
+const LEVELS = [
+  "LEARNING",
+  "DEVELOPING",
+  "COMPETENT",
+  "ADVANCED",
+  "MASTERED",
+];
+
+const XP_CODES = [
+  "coach.choice",
+  "skill.milestone",
+  "personal.best",
+  "teamwork",
+];
 
 export default function CoachRosterPage() {
   const [sessions, setSessions] = useState<HomeSession[]>([]);
@@ -55,8 +93,16 @@ export default function CoachRosterPage() {
   const [drawerUser, setDrawerUser] = useState<RosterRow | null>(null);
   const [notes, setNotes] = useState<Note[]>([]);
   const [noteBody, setNoteBody] = useState("");
-  const [score, setScore] = useState(3);
-  const [category, setCategory] = useState("discipline");
+  const [level, setLevel] = useState("DEVELOPING");
+  const [category, setCategory] = useState("jab");
+  const [goal, setGoal] = useState("");
+  const [drill, setDrill] = useState("");
+  const [badges, setBadges] = useState<Badge[]>([]);
+  const [xpCode, setXpCode] = useState("coach.choice");
+  const [card, setCard] = useState<{
+    progression: { xp: number; level: number; rank: string };
+    assessments: { category: string; level: string | null }[];
+  } | null>(null);
 
   const loadRoster = useCallback(async (sessionId: string) => {
     const res = await get<{
@@ -81,6 +127,9 @@ export default function CoachRosterPage() {
       .catch((err) =>
         setError(err instanceof ApiError ? err.message : "Failed to load"),
       );
+    get<{ badges: Badge[] }>("/api/v1/coach/badges")
+      .then((r) => setBadges(r.badges))
+      .catch(() => undefined);
   }, []);
 
   useEffect(() => {
@@ -115,37 +164,48 @@ export default function CoachRosterPage() {
   async function openAthlete(row: RosterRow) {
     setDrawerUser(row);
     setNoteBody("");
-    setScore(3);
+    setGoal("");
+    setDrill("");
+    setCard(null);
     try {
-      const res = await get<{ notes: Note[] }>(
-        `/api/v1/coach/athletes/${row.userId}/notes?limit=3`,
-      );
-      setNotes(res.notes);
+      const [notesRes, cardRes] = await Promise.all([
+        get<{ notes: Note[] }>(
+          `/api/v1/coach/athletes/${row.userId}/notes?limit=3`,
+        ),
+        get<{
+          progression: { xp: number; level: number; rank: string };
+          assessments: { category: string; level: string | null }[];
+        }>(`/api/v1/coach/athletes/${row.userId}/card`),
+      ]);
+      setNotes(notesRes.notes);
+      setCard(cardRes);
     } catch {
       setNotes([]);
     }
   }
 
-  async function saveNote() {
-    if (!drawerUser || !noteBody.trim() || !activeId) return;
+  async function saveAssessment() {
+    if (!drawerUser || !activeId) return;
     setBusy(true);
     try {
-      await post("/api/v1/coach/notes", {
-        athleteId: drawerUser.userId,
-        sessionId: activeId,
-        body: noteBody.trim(),
-      });
+      if (noteBody.trim()) {
+        await post("/api/v1/coach/notes", {
+          athleteId: drawerUser.userId,
+          sessionId: activeId,
+          body: noteBody.trim(),
+        });
+      }
       await post("/api/v1/coach/assessments", {
         athleteId: drawerUser.userId,
         sessionId: activeId,
         category,
-        score,
+        level,
+        notes: noteBody.trim() || undefined,
+        goal: goal.trim() || undefined,
+        recommendedDrill: drill.trim() || undefined,
       });
-      setMessage(`Note saved for ${drawerUser.name}`);
-      const res = await get<{ notes: Note[] }>(
-        `/api/v1/coach/athletes/${drawerUser.userId}/notes?limit=3`,
-      );
-      setNotes(res.notes);
+      setMessage(`Assessment saved for ${drawerUser.name}`);
+      await openAthlete(drawerUser);
       setNoteBody("");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Save failed");
@@ -154,11 +214,59 @@ export default function CoachRosterPage() {
     }
   }
 
+  async function awardXp() {
+    if (!drawerUser || !activeId) return;
+    setBusy(true);
+    try {
+      const res = await post<{ delta: number; awarded: boolean }>(
+        "/api/v1/coach/xp",
+        {
+          userId: drawerUser.userId,
+          code: xpCode,
+          sessionId: activeId,
+          idempotencyKey: `coach.xp:${xpCode}:${activeId}:${drawerUser.userId}:${Date.now()}`,
+        },
+      );
+      setMessage(
+        res.awarded
+          ? `+${res.delta} XP (${xpCode})`
+          : "XP already awarded (duplicate)",
+      );
+      await openAthlete(drawerUser);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "XP failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function grantBadge(code: string) {
+    if (!drawerUser || !activeId) return;
+    setBusy(true);
+    try {
+      const res = await post<{ granted: boolean; xp: number }>(
+        "/api/v1/coach/achievements",
+        {
+          userId: drawerUser.userId,
+          badgeCode: code,
+          sessionId: activeId,
+        },
+      );
+      setMessage(
+        res.granted
+          ? `Achievement granted · +${res.xp} XP`
+          : "Already has this badge",
+      );
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Badge failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function finalize() {
     if (!activeId) return;
     setBusy(true);
-    setError(null);
-    setMessage(null);
     try {
       const res = await post<{ markedNoShow: number }>(
         `/api/v1/sessions/${activeId}/attendance/finalize`,
@@ -175,8 +283,6 @@ export default function CoachRosterPage() {
   async function voidCheckIn(attendanceId: string) {
     if (!activeId) return;
     setBusy(true);
-    setError(null);
-    setMessage(null);
     try {
       await post(`/api/v1/attendance/${attendanceId}/void`, {
         reason: voidReason,
@@ -195,13 +301,12 @@ export default function CoachRosterPage() {
       <p className={styles.eyebrow}>COACH</p>
       <h1 className={styles.title}>Live roster</h1>
       <p className={styles.copy}>
-        One-tap present, attention chips, notes, and finalize no-shows — scoped
-        to your classes.
+        Present · Boxing Card · XP · assessments — one or two taps.
       </p>
       <p>
         <Link href="/coach">← Coach home</Link>
         {" · "}
-        <Link href="/">Staff hub</Link>
+        <Link href="/coach/builder">Builder</Link>
         {activeId ? (
           <>
             {" · "}
@@ -230,7 +335,7 @@ export default function CoachRosterPage() {
 
       <div className={styles.row}>
         <Button type="button" disabled={busy || !activeId} onClick={finalize}>
-          {busy ? "Working…" : "Finalize no-shows"}
+          Finalize no-shows
         </Button>
         <label className={styles.field} style={{ flex: 1, minWidth: 200 }}>
           <span>Void reason</span>
@@ -251,7 +356,10 @@ export default function CoachRosterPage() {
             key={r.userId}
             className={`${styles.item} ${r.late ? styles.late : ""} ${r.voided ? styles.warn : ""}`}
           >
-            <strong>{r.name}</strong>
+            <strong>
+              {r.initials ? `[${r.initials}] ` : ""}
+              {r.name}
+            </strong>
             <div className={styles.meta}>
               {r.voided
                 ? "VOIDED"
@@ -260,11 +368,13 @@ export default function CoachRosterPage() {
                   : r.checkedIn
                     ? "Checked in"
                     : "Booked"}
+              {r.rank ? ` · ${r.rank} L${r.level}` : ""}
+              {r.xp != null ? ` · ${r.xp} XP` : ""}
               {r.chips?.new ? " · NEW" : ""}
               {r.chips?.late ? " · LATE" : ""}
-              {r.chips?.streak ? ` · ${r.chips.streak}-day streak` : ""}
-              {" · "}
-              {r.email}
+              {r.streak && r.streak >= 3 ? ` · ${r.streak}d streak` : ""}
+              {r.skillLevel ? ` · ${r.skillLevel}` : ""}
+              {r.lastNote ? ` · “${r.lastNote}”` : ""}
             </div>
             <div className={styles.actions}>
               {!r.checkedIn && !r.voided && !r.noShow ? (
@@ -283,7 +393,7 @@ export default function CoachRosterPage() {
                 disabled={busy}
                 onClick={() => void openAthlete(r)}
               >
-                Note
+                Boxing Card
               </button>
               {r.attendanceId && r.checkedIn ? (
                 <button
@@ -307,12 +417,58 @@ export default function CoachRosterPage() {
 
       {drawerUser ? (
         <div className={styles.panel} style={{ marginTop: "1.25rem" }}>
-          <p className={styles.eyebrow}>ATHLETE</p>
+          <p className={styles.eyebrow}>BOXING CARD</p>
           <h2 className={styles.title} style={{ fontSize: "1.6rem" }}>
             {drawerUser.name}
           </h2>
+          {card ? (
+            <p className={styles.meta}>
+              {card.progression.rank} · Level {card.progression.level} ·{" "}
+              {card.progression.xp} XP
+            </p>
+          ) : null}
+
+          <div className={styles.row}>
+            <label className={styles.field}>
+              <span>Award XP</span>
+              <select
+                className={styles.input}
+                value={xpCode}
+                onChange={(e) => setXpCode(e.target.value)}
+              >
+                {XP_CODES.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <Button type="button" disabled={busy} onClick={() => void awardXp()}>
+              Award XP
+            </Button>
+          </div>
+
           <label className={styles.field}>
-            <span>Quick note</span>
+            <span>Achievement</span>
+            <select
+              className={styles.input}
+              defaultValue=""
+              onChange={(e) => {
+                if (e.target.value) void grantBadge(e.target.value);
+                e.target.value = "";
+              }}
+            >
+              <option value="">Give achievement…</option>
+              {badges.map((b) => (
+                <option key={b.code} value={b.code}>
+                  {b.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className={styles.field}>
+            <span>Coach note</span>
             <textarea
               className={styles.input}
               rows={3}
@@ -323,22 +479,13 @@ export default function CoachRosterPage() {
           </label>
           <div className={styles.row}>
             <label className={styles.field}>
-              <span>Category</span>
+              <span>Skill</span>
               <select
                 className={styles.input}
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               >
-                {[
-                  "stance",
-                  "guard",
-                  "jab",
-                  "footwork",
-                  "defense",
-                  "conditioning",
-                  "discipline",
-                  "teamwork",
-                ].map((c) => (
+                {SKILL_CATS.map((c) => (
                   <option key={c} value={c}>
                     {c}
                   </option>
@@ -346,20 +493,43 @@ export default function CoachRosterPage() {
               </select>
             </label>
             <label className={styles.field}>
-              <span>Score 1–5</span>
-              <input
+              <span>Level</span>
+              <select
                 className={styles.input}
-                type="number"
-                min={1}
-                max={5}
-                value={score}
-                onChange={(e) => setScore(Number(e.target.value))}
-              />
+                value={level}
+                onChange={(e) => setLevel(e.target.value)}
+              >
+                {LEVELS.map((l) => (
+                  <option key={l} value={l}>
+                    {l}
+                  </option>
+                ))}
+              </select>
             </label>
           </div>
+          <label className={styles.field}>
+            <span>Goal</span>
+            <input
+              className={styles.input}
+              value={goal}
+              onChange={(e) => setGoal(e.target.value)}
+            />
+          </label>
+          <label className={styles.field}>
+            <span>Recommended drill</span>
+            <input
+              className={styles.input}
+              value={drill}
+              onChange={(e) => setDrill(e.target.value)}
+            />
+          </label>
           <div className={styles.row}>
-            <Button type="button" disabled={busy} onClick={() => void saveNote()}>
-              Save note + score
+            <Button
+              type="button"
+              disabled={busy}
+              onClick={() => void saveAssessment()}
+            >
+              Save assessment
             </Button>
             <Button
               type="button"
@@ -378,11 +548,6 @@ export default function CoachRosterPage() {
                 <strong>{n.body}</strong>
               </li>
             ))}
-            {notes.length === 0 ? (
-              <li className={styles.item}>
-                <span className={styles.meta}>No notes yet.</span>
-              </li>
-            ) : null}
           </ul>
         </div>
       ) : null}

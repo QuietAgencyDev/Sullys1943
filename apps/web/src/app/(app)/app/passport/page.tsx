@@ -4,10 +4,32 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { get } from "@/lib/api";
 import styles from "../ui.module.css";
+import passportStyles from "./passport.module.css";
 
 type Passport = {
   member: { name: string; joinedAt: string; yearsAtGym: number };
-  progression: { xp: number; level: number; rank: string };
+  progression: {
+    xp: number;
+    level: number;
+    rank: string;
+    xpToNextLevel?: number;
+    progressPct?: number;
+  };
+  points?: number;
+  lastClass?: { title: string; at: string; xp: number } | null;
+  recentXp?: {
+    delta: number;
+    reason: string;
+    sessionTitle?: string | null;
+    at: string;
+  }[];
+  games?: {
+    name: string;
+    score: number;
+    xpAwarded: number;
+    classTitle: string;
+    at: string;
+  }[];
   attendance: {
     total: number;
     uniqueDays: number;
@@ -21,6 +43,22 @@ type Passport = {
     earnedAt: string;
   }[];
 };
+
+function reasonLabel(reason: string) {
+  const map: Record<string, string> = {
+    "attendance.checked_in": "Check-in",
+    "class.completed": "Class complete",
+    "kids.participation": "Kids class",
+    "coach.choice": "Coach's Choice",
+    "game.win": "Game win",
+    "skill.milestone": "Skill milestone",
+    "personal.best": "Personal best",
+    teamwork: "Teamwork",
+    achievement: "Achievement",
+    "challenge.win": "Challenge",
+  };
+  return map[reason] ?? reason.replace(/\./g, " ");
+}
 
 export default function PassportPage() {
   const [data, setData] = useState<Passport | null>(null);
@@ -48,6 +86,8 @@ export default function PassportPage() {
     );
   }
 
+  const pct = data.progression.progressPct ?? 0;
+
   return (
     <div className={styles.page}>
       <p className={styles.eyebrow}>Boxing Passport</p>
@@ -57,12 +97,74 @@ export default function PassportPage() {
         {data.member.yearsAtGym} yrs in the gym
       </p>
 
-      <section className={styles.card}>
-        <h2 className={styles.sectionTitle}>Progression</h2>
-        <p>
-          <strong>{data.progression.rank}</strong> · Level{" "}
-          {data.progression.level} · {data.progression.xp} XP
+      <section className={passportStyles.hero}>
+        <p className={passportStyles.rank}>{data.progression.rank}</p>
+        <p className={passportStyles.levelLine}>
+          Level {data.progression.level} · {data.progression.xp} XP
+          {data.points != null ? ` · ${data.points} pts` : ""}
         </p>
+        <div className={passportStyles.barTrack} aria-hidden>
+          <div
+            className={passportStyles.barFill}
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+        <p className={styles.muted}>
+          {data.progression.xpToNextLevel ?? 0} XP to next level
+        </p>
+        <p className={passportStyles.ctaRow}>
+          <Link href="/app/card" className={styles.link}>
+            Open digital card
+          </Link>
+          {" · "}
+          <Link href="/app/book" className={styles.link}>
+            Book a class
+          </Link>
+        </p>
+      </section>
+
+      {data.lastClass ? (
+        <section className={styles.card}>
+          <h2 className={styles.sectionTitle}>Last class</h2>
+          <p>
+            <strong>{data.lastClass.title}</strong> · +{data.lastClass.xp} XP
+          </p>
+          <p className={styles.muted}>
+            {new Date(data.lastClass.at).toLocaleString()}
+          </p>
+        </section>
+      ) : null}
+
+      <section className={styles.card}>
+        <h2 className={styles.sectionTitle}>Activity</h2>
+        {(data.recentXp ?? []).length === 0 ? (
+          <p className={styles.muted}>Train to fill your ledger.</p>
+        ) : (
+          <ul className={styles.list}>
+            {data.recentXp!.map((x) => (
+              <li key={x.at + x.reason + x.delta}>
+                +{x.delta} · {reasonLabel(x.reason)}
+                {x.sessionTitle ? ` · ${x.sessionTitle}` : ""}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className={styles.card}>
+        <h2 className={styles.sectionTitle}>Games</h2>
+        {(data.games ?? []).length === 0 ? (
+          <p className={styles.muted}>Bag Battle scores land here.</p>
+        ) : (
+          <ul className={styles.list}>
+            {data.games!.map((g) => (
+              <li key={g.at + g.name}>
+                <strong>{g.name}</strong> · {g.score} pts
+                {g.xpAwarded ? ` · +${g.xpAwarded} XP` : ""} · {g.classTitle}
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <section className={styles.card}>
@@ -71,28 +173,20 @@ export default function PassportPage() {
           {data.attendance.total} check-ins · {data.attendance.uniqueDays} days
           · streak {data.attendance.streak}
         </p>
-        <ul className={styles.list}>
-          {data.attendance.recent.map((r) => (
-            <li key={r.at}>
-              {new Date(r.at).toLocaleString()} — {r.status} ({r.method})
-            </li>
-          ))}
-        </ul>
       </section>
 
       <section className={styles.card}>
-        <h2 className={styles.sectionTitle}>Achievements</h2>
+        <h2 className={styles.sectionTitle}>Stamps</h2>
         {data.achievements.length === 0 ? (
           <p className={styles.muted}>Keep showing up — stamps land here.</p>
         ) : (
-          <ul className={styles.list}>
+          <div className={passportStyles.stamps}>
             {data.achievements.map((a) => (
-              <li key={a.code}>
+              <div key={a.code} className={passportStyles.stamp}>
                 <strong>{a.name}</strong>
-                {a.description ? ` — ${a.description}` : ""}
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </section>
 

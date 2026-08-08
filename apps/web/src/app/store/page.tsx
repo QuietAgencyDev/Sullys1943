@@ -10,6 +10,7 @@ import {
   formatPrice,
   productShopUrl,
 } from "@/lib/store-products";
+import { StoreCart } from "./store-cart";
 import styles from "./store.module.css";
 
 export const metadata = {
@@ -50,6 +51,8 @@ export default function StorePage() {
 
         <ProductBlock title="Training gear" products={gear} />
         <ProductBlock title="Apparel" products={apparel} />
+
+        <StoreCart />
 
         <section className={styles.desk} aria-label="Desk pickup">
           <h2 className={styles.subhead}>Prefer the desk?</h2>

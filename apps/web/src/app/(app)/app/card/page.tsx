@@ -16,6 +16,10 @@ type MembershipCard = {
   waiverStatus?: string;
 };
 
+type PassportLite = {
+  progression: { rank: string; level: number; xp: number };
+};
+
 type CheckInToken = {
   token: string;
   expiresInSeconds: number;
@@ -24,6 +28,7 @@ type CheckInToken = {
 
 export default function CardPage() {
   const [card, setCard] = useState<MembershipCard | null>(null);
+  const [passport, setPassport] = useState<PassportLite | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [expiresAt, setExpiresAt] = useState<number | null>(null);
@@ -62,11 +67,13 @@ export default function CardPage() {
     let active = true;
     (async () => {
       try {
-        const cardRes = await get<MembershipCard>(
-          "/api/v1/membership-card",
-        ).catch(() => null);
+        const [cardRes, passportRes] = await Promise.all([
+          get<MembershipCard>("/api/v1/membership-card").catch(() => null),
+          get<PassportLite>("/api/v1/passport/me").catch(() => null),
+        ]);
         if (!active) return;
         setCard(cardRes);
+        setPassport(passportRes);
         await refreshToken();
       } finally {
         if (active) setLoading(false);
@@ -130,7 +137,17 @@ export default function CardPage() {
           <h2 className={cardStyles.name}>{name}</h2>
           <p className={cardStyles.plan}>
             {plan} · {status}
+            {passport
+              ? ` · ${passport.progression.rank} · L${passport.progression.level}`
+              : ""}
           </p>
+          {passport ? (
+            <p className={styles.muted}>
+              <Link href="/app/passport" className={styles.link}>
+                Boxing Passport →
+              </Link>
+            </p>
+          ) : null}
           <div className={cardStyles.chips}>
             <span className={styles.badge}>{status}</span>
             <span className={waiverOk ? styles.badgeOk : styles.badgeMuted}>
