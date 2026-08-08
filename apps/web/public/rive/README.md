@@ -1,42 +1,50 @@
-# Floor TV Rive assets
+# Floor TV Rive assets (placeholders)
 
-Drop brand `.riv` files here. Filenames are fixed — swap art without changing code.
-Until files land, the TV uses an **AAA CSS celebration layer** (SVG gloves from `/tv/icons/`, XP pops, confetti, work/rest jabs).
+Drop brand `.riv` files here using the **exact filenames** below. Code already points at these paths; missing files fall back to the CSS + SVG celebration layer (`/tv/icons/*`).
 
-Icon pack: [`../tv/icons/`](../tv/icons/) — `glove-1.svg` is the primary animated glove.
+See [`manifest.json`](./manifest.json) for modes, triggers, and notes.
 
-| File | Used for |
-|------|----------|
-| `celebration.riv` | `achievement`, `class_complete` |
-| `teams.riv` | `teams` |
-| `phase.riv` | work ↔ rest punch |
-| `challenge.riv` | `challenge` / `leaderboard` |
-| `xp.riv` | `xp_bonus` XP burst moments |
+| File | Modes | Status |
+|------|--------|--------|
+| `celebration.riv` | achievement, class_complete | placeholder |
+| `belt.riv` | leaderboard, achievement | placeholder |
+| `teams.riv` | teams | placeholder |
+| `challenge.riv` | challenge | placeholder |
+| `phase.riv` | timer (work/rest) | placeholder |
+| `xp.riv` | xp_bonus | placeholder |
+| `gloves.riv` | timer / challenge gloves | placeholder |
+| `announcement.riv` | announcement | placeholder |
+| `class-complete.riv` | class_complete | placeholder |
+| `photo.riv` | photo plate moments | placeholder |
+| `confetti.riv` | overlay celebrate | placeholder |
+| `bell.riv` | round bell | placeholder |
 
-## Expected state machine (recommended)
+Each filename also has a `.placeholder` marker in this folder until the real `.riv` is dropped in (delete the marker when you add the file).
+
+## State machine
 
 **Name:** `TV`
 
-| Input | Type | When fired |
-|-------|------|------------|
-| `celebrate` | Trigger | achievement / class_complete enter |
-| `teamsReveal` | Trigger | teams mode enter |
-| `challenge` | Trigger | challenge / leaderboard enter |
-| `phasePunch` | Trigger | work ↔ rest transition |
-| `xpBurst` | Trigger | XP bonus / class complete XP |
-| `mode` | Number (optional) | 0=timer, 1=celebrate, 2=teams, 3=challenge, 4=xp |
-| `teamColor` | Number (optional) | 0–1 hue hint for teams art |
+| Input | Type | When |
+|-------|------|------|
+| `celebrate` | Trigger | achievement / class complete |
+| `beltReveal` | Trigger | champion belt moments |
+| `teamsReveal` | Trigger | teams |
+| `challenge` | Trigger | challenge |
+| `phasePunch` | Trigger | work ↔ rest |
+| `xpBurst` | Trigger | XP bonus |
+| `announce` | Trigger | announcement |
+| `photoReveal` | Trigger | athlete/gym photo plate |
+| `jab` / `bell` | Trigger | gloves / round bell |
+| `mode` | Number | 0 timer · 1 celebrate · 2 teams · 3 challenge · 4 xp · 5 belt · 6 photo |
+| `teamColor` | Number | 0–1 optional |
 
-Suggested artboards: animated gloves, XP chip fly-up, confetti, bell flash.
+## Related assets
 
-If the file has no state machine, the runtime autoplays the default artboard and remounts on mode change.
+- SVG fallbacks: [`../tv/icons/`](../tv/icons/) (`glove-1.svg`, `champion-belt.svg`, …)
+- Future photos: [`../tv/photos/`](../tv/photos/)
 
-## Preview
+## Preview / kill switch
 
-- `/tv/floor?demo=celebrate` — cycles achievement → XP → teams → challenge → leaderboard → class complete → timer
-- `/tv/floor?rive=0` — disable Rive host (CSS layer still runs)
-- `localStorage.setItem('sullys_tv_rive', 'off')` — same kill switch
-
-## Coach triggers
-
-Staff / phone Live → **Show achievement**, **Class complete**, TV modes — floor polls every 1s while coach is live.
+- `/tv/floor?demo=celebrate`
+- `/tv/floor?rive=0` or `localStorage.sullys_tv_rive=off`

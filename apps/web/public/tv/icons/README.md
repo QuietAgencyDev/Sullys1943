@@ -13,5 +13,8 @@ SVG pack from SVG Repo (boxing theme). Used by the floor TV celebration layer an
 | `ring.svg` / `ring-alt.svg` | Teams / ring battle |
 | `shorts.svg` | Apparel / kids moments |
 | `kickboxing-equipment.svg` | Gear / equipment callouts |
+| `champion-belt.svg` | Leaderboard / achievement / class complete dock |
 
 Public URLs: `/tv/icons/<file>`
+
+Layout: gloves in bottom corners; belt + XP chips in a bottom dock so they never cover hero titles.

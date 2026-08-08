@@ -29,15 +29,24 @@ export type TvRiveProps = {
 const SM = "TV";
 
 function srcForMode(tvMode: string): string {
-  if (tvMode === "teams") return "/rive/teams.riv";
-  if (tvMode === "challenge" || tvMode === "leaderboard") {
-    return "/rive/challenge.riv";
+  switch (tvMode) {
+    case "teams":
+      return "/rive/teams.riv";
+    case "challenge":
+      return "/rive/challenge.riv";
+    case "leaderboard":
+      return "/rive/belt.riv";
+    case "achievement":
+      return "/rive/belt.riv";
+    case "class_complete":
+      return "/rive/class-complete.riv";
+    case "xp_bonus":
+      return "/rive/xp.riv";
+    case "announcement":
+      return "/rive/announcement.riv";
+    default:
+      return "/rive/phase.riv";
   }
-  if (tvMode === "achievement" || tvMode === "class_complete") {
-    return "/rive/celebration.riv";
-  }
-  if (tvMode === "xp_bonus") return "/rive/xp.riv";
-  return "/rive/phase.riv";
 }
 
 function modeNumber(tvMode: string): number {
@@ -48,10 +57,13 @@ function modeNumber(tvMode: string): number {
     case "teams":
       return 2;
     case "challenge":
-    case "leaderboard":
       return 3;
     case "xp_bonus":
       return 4;
+    case "leaderboard":
+      return 5;
+    case "announcement":
+      return 6;
     default:
       return 0;
   }
@@ -97,44 +109,44 @@ const TV_ICONS = {
   ring: "/tv/icons/ring.svg",
   shorts: "/tv/icons/shorts.svg",
   gear: "/tv/icons/kickboxing-equipment.svg",
+  belt: "/tv/icons/champion-belt.svg",
 } as const;
 
 function iconsForMode(tvMode: string): {
   left: string;
   right: string;
-  center?: string;
+  /** Accent icon sits in the bottom dock — never over titles */
+  dock?: string;
   tint?: boolean;
 } {
   switch (tvMode) {
     case "teams":
-      return { left: TV_ICONS.glove, right: TV_ICONS.glove, center: TV_ICONS.ring };
+      return { left: TV_ICONS.glove, right: TV_ICONS.glove, dock: TV_ICONS.ring };
     case "challenge":
       return {
         left: TV_ICONS.glove,
         right: TV_ICONS.glove,
-        center: TV_ICONS.boxing,
+        dock: TV_ICONS.boxing,
         tint: true,
       };
     case "class_complete":
-      return {
-        left: TV_ICONS.glove,
-        right: TV_ICONS.glove,
-        center: TV_ICONS.boxer,
-        tint: true,
-      };
-    case "achievement":
-    case "xp_bonus":
-      return {
-        left: TV_ICONS.glove,
-        right: TV_ICONS.glove,
-        center: TV_ICONS.surprise,
-        tint: true,
-      };
     case "leaderboard":
       return {
         left: TV_ICONS.glove,
         right: TV_ICONS.glove,
-        center: TV_ICONS.gear,
+        dock: TV_ICONS.belt,
+      };
+    case "achievement":
+      return {
+        left: TV_ICONS.glove,
+        right: TV_ICONS.glove,
+        dock: TV_ICONS.belt,
+      };
+    case "xp_bonus":
+      return {
+        left: TV_ICONS.glove,
+        right: TV_ICONS.glove,
+        dock: TV_ICONS.surprise,
         tint: true,
       };
     default:
@@ -246,36 +258,41 @@ function CssFallback({
           className={`${styles.glove} ${styles.gloveRight}`}
           draggable={false}
         />
-        {pack.center ? (
+      </div>
+
+      {/* Bottom dock: XP + accent icon — clear of hero titles */}
+      <div className={styles.dock}>
+        {pack.dock ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={pack.center}
+            src={pack.dock}
             alt=""
-            className={`${styles.centerIcon} ${
+            className={`${styles.dockIcon} ${
               pack.tint ? styles.iconTintCream : ""
+            } ${
+              pack.dock === TV_ICONS.belt ? styles.dockBelt : ""
             }`}
             draggable={false}
           />
         ) : null}
+        {showXp && xpValue != null ? (
+          <div className={styles.xpStack}>
+            {highlightName ? (
+              <p className={styles.xpName}>{highlightName}</p>
+            ) : null}
+            <p className={styles.xpPop}>+{xpValue} XP</p>
+            {bonusLabel ? (
+              <p className={`${styles.xpPop} ${styles.xpPopBonus}`}>
+                {bonusLabel}
+              </p>
+            ) : tvMode === "class_complete" ? (
+              <p className={`${styles.xpPop} ${styles.xpPopBonus}`}>
+                CLASS BONUS
+              </p>
+            ) : null}
+          </div>
+        ) : null}
       </div>
-
-      {showXp && xpValue != null ? (
-        <div className={styles.xpStack}>
-          {highlightName ? (
-            <p className={styles.xpName}>{highlightName}</p>
-          ) : null}
-          <p className={styles.xpPop}>+{xpValue} XP</p>
-          {bonusLabel ? (
-            <p className={`${styles.xpPop} ${styles.xpPopBonus}`}>
-              {bonusLabel}
-            </p>
-          ) : tvMode === "class_complete" ? (
-            <p className={`${styles.xpPop} ${styles.xpPopBonus}`}>
-              CLASS BONUS
-            </p>
-          ) : null}
-        </div>
-      ) : null}
     </div>
   );
 }
@@ -307,6 +324,9 @@ function RiveCanvas({
   const challenge = useStateMachineInput(rive, SM, "challenge");
   const phasePunch = useStateMachineInput(rive, SM, "phasePunch");
   const xpBurst = useStateMachineInput(rive, SM, "xpBurst");
+  const beltReveal = useStateMachineInput(rive, SM, "beltReveal");
+  const announce = useStateMachineInput(rive, SM, "announce");
+  const photoReveal = useStateMachineInput(rive, SM, "photoReveal");
   const modeInput = useStateMachineInput(rive, SM, "mode");
 
   useEffect(() => {
@@ -315,16 +335,19 @@ function RiveCanvas({
 
     if (lastMode.current !== null && lastMode.current !== tvMode) {
       if (tvMode === "teams") teamsReveal?.fire();
-      else if (tvMode === "challenge" || tvMode === "leaderboard") {
-        challenge?.fire();
-      } else if (tvMode === "xp_bonus") {
+      else if (tvMode === "challenge") challenge?.fire();
+      else if (tvMode === "announcement") announce?.fire();
+      else if (tvMode === "xp_bonus") {
         xpBurst?.fire() ?? celebrate?.fire();
-      } else if (
-        tvMode === "achievement" ||
-        tvMode === "class_complete"
-      ) {
+      } else if (tvMode === "leaderboard" || tvMode === "achievement") {
+        beltReveal?.fire();
+        celebrate?.fire();
+        photoReveal?.fire();
+      } else if (tvMode === "class_complete") {
         celebrate?.fire();
         xpBurst?.fire();
+        beltReveal?.fire();
+        photoReveal?.fire();
       } else {
         try {
           rive.reset();
@@ -342,6 +365,9 @@ function RiveCanvas({
     teamsReveal,
     challenge,
     xpBurst,
+    beltReveal,
+    announce,
+    photoReveal,
     modeInput,
   ]);
 

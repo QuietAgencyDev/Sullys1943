@@ -1,0 +1,91 @@
+{
+  "stateMachine": "TV",
+  "assets": [
+    {
+      "file": "celebration.riv",
+      "modes": ["achievement", "class_complete"],
+      "triggers": ["celebrate", "xpBurst"],
+      "notes": "Confetti + belt flash + XP chips"
+    },
+    {
+      "file": "belt.riv",
+      "modes": ["leaderboard", "achievement"],
+      "triggers": ["celebrate", "beltReveal"],
+      "notes": "Champion belt hero — pairs with /tv/icons/champion-belt.svg fallback"
+    },
+    {
+      "file": "teams.riv",
+      "modes": ["teams"],
+      "triggers": ["teamsReveal"],
+      "notes": "Team clash / ring energy"
+    },
+    {
+      "file": "challenge.riv",
+      "modes": ["challenge"],
+      "triggers": ["challenge"],
+      "notes": "Challenge countdown punch"
+    },
+    {
+      "file": "phase.riv",
+      "modes": ["timer"],
+      "triggers": ["phasePunch"],
+      "notes": "Work ↔ rest jab"
+    },
+    {
+      "file": "xp.riv",
+      "modes": ["xp_bonus"],
+      "triggers": ["xpBurst"],
+      "notes": "XP burst / streak multiplier"
+    },
+    {
+      "file": "gloves.riv",
+      "modes": ["timer", "challenge"],
+      "triggers": ["phasePunch", "jab"],
+      "notes": "Animated gloves — replace CSS glove icons when ready"
+    },
+    {
+      "file": "announcement.riv",
+      "modes": ["announcement"],
+      "triggers": ["announce"],
+      "notes": "Coach eyes-up / listen-in"
+    },
+    {
+      "file": "class-complete.riv",
+      "modes": ["class_complete"],
+      "triggers": ["celebrate", "xpBurst", "beltReveal"],
+      "notes": "End-of-class victory — belt + XP"
+    },
+    {
+      "file": "photo.riv",
+      "modes": ["achievement", "leaderboard", "class_complete"],
+      "triggers": ["photoReveal"],
+      "notes": "Athlete / gym photo plate — swap with /tv/photos/* later"
+    },
+    {
+      "file": "confetti.riv",
+      "modes": ["achievement", "class_complete", "xp_bonus"],
+      "triggers": ["celebrate"],
+      "notes": "Overlay confetti loop"
+    },
+    {
+      "file": "bell.riv",
+      "modes": ["timer", "round"],
+      "triggers": ["phasePunch", "bell"],
+      "notes": "Round bell hit"
+    }
+  ],
+  "inputs": {
+    "celebrate": "trigger",
+    "teamsReveal": "trigger",
+    "challenge": "trigger",
+    "phasePunch": "trigger",
+    "xpBurst": "trigger",
+    "beltReveal": "trigger",
+    "announce": "trigger",
+    "photoReveal": "trigger",
+    "jab": "trigger",
+    "bell": "trigger",
+    "mode": "number",
+    "teamColor": "number"
+  }
+}
