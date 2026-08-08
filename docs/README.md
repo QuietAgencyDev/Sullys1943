@@ -72,6 +72,7 @@ This folder is the **single source of truth** for architecture, product scope, a
 5. [Permissions Matrix](./03-architecture/05-permissions-matrix.md)
 6. [API Design](./03-architecture/06-api-design.md)
 7. [Monorepo Folder Structure](./03-architecture/07-folder-structure.md)
+8. [Proprietary Payment Platform](./03-architecture/08-proprietary-payment-platform.md) — Helcim-first abstraction; audit + implementation plan
 
 ### 04 — Security
 1. [Security & Compliance Plan](./04-security/01-security-plan.md)

@@ -113,7 +113,7 @@ export const PROGRAMS: Program[] = [
     lead:
       "Boxing opens doors into an industry — not only into a ring.",
     body: [
-      "Young people explore roles across coaching, promotions, branding, social media, athlete management, and merchandise.",
+      "Anchored by a live conversation/workshop series with industry professionals — young people explore roles across coaching, promotions, branding, social media, athlete management, and merchandise.",
       "The gym becomes a living classroom for creative and operational entry points into sport.",
       "Excellence on the floor pairs with real pathways for careers around the sport.",
     ],
