@@ -233,7 +233,13 @@ export class AuthController {
 
   @Post("logout")
   logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie(COOKIE_NAME, { path: "/" });
+    const opts = this.cookieOptions();
+    res.clearCookie(COOKIE_NAME, {
+      path: opts.path,
+      domain: opts.domain,
+      secure: opts.secure,
+      sameSite: opts.sameSite,
+    });
     return { ok: true };
   }
 
@@ -248,12 +254,27 @@ export class AuthController {
     return toAuthUser(user);
   }
 
+  private cookieOptions() {
+    const isProd =
+      process.env.NODE_ENV === "production" ||
+      Boolean(process.env.RAILWAY_ENVIRONMENT) ||
+      process.env.COOKIE_SECURE === "true";
+    const webOrigin = process.env.WEB_ORIGIN ?? "";
+    const domain =
+      process.env.COOKIE_DOMAIN?.trim() ||
+      (webOrigin.includes("sullys1943.com") ? ".sullys1943.com" : undefined);
+    return {
+      httpOnly: true,
+      sameSite: "lax" as const,
+      secure: isProd,
+      path: "/",
+      ...(domain ? { domain } : {}),
+    };
+  }
+
   private setCookie(res: Response, token: string) {
     res.cookie(COOKIE_NAME, token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-      path: "/",
+      ...this.cookieOptions(),
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
   }

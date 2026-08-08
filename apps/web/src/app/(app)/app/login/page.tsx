@@ -58,8 +58,12 @@ function LoginForm() {
           <span className={styles.label}>Email</span>
           <input
             className={styles.input}
-            type="email"
-            autoComplete="email"
+            type="text"
+            inputMode="email"
+            autoComplete="username"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -93,7 +97,25 @@ function LoginForm() {
             </Link>
           </p>
           <p className={styles.muted}>
-            Demo sandbox:{" "}
+            Demo:{" "}
+            <button
+              type="button"
+              className={styles.link}
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                font: "inherit",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                setEmail("member@sullys.local");
+                setPassword("password123");
+              }}
+            >
+              Fill member demo
+            </button>
+            {" · "}
             <code>member@sullys.local</code> / <code>password123</code>
           </p>
         </div>

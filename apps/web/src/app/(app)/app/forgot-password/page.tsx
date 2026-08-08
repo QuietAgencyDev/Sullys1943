@@ -56,8 +56,12 @@ export default function ForgotPasswordPage() {
           <span className={styles.label}>Email</span>
           <input
             className={styles.input}
-            type="email"
-            autoComplete="email"
+            type="text"
+            inputMode="email"
+            autoComplete="username"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
