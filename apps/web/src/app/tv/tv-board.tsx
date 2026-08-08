@@ -6,7 +6,7 @@ import {
   isBoxingTimerSoundUnlocked,
   playRoundBell,
   playTenSecondWarning,
-  unlockBoxingTimerSounds,
+  testBoxingTimerSound,
 } from "../../lib/boxing-timer-sounds";
 import styles from "./tv.module.css";
 import {
@@ -232,6 +232,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   const [soundReady, setSoundReady] = useState(false);
   const warnedPhaseRef = useRef<string | null>(null);
   const bellPhaseRef = useRef<string | null>(null);
+  const startBellRef = useRef<string | null>(null);
 
   useEffect(() => {
     setTimerCfg(readTimerConfig());
@@ -318,7 +319,8 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   }, []);
 
   async function enableSound() {
-    const ok = await unlockBoxingTimerSounds();
+    // Plays an audible double-clap immediately so speakers are confirmed
+    const ok = await testBoxingTimerSound();
     setSoundReady(ok);
   }
 
@@ -371,17 +373,31 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     };
   }, [now, board?.live, board?.coachTimer, timerCfg]);
 
-  // Boxing timer SFX — 10s wooden double-clap + end-of-phase bell (floor only)
+  // Boxing timer SFX — start bell, 10s wooden double-clap, end bell (floor)
   useEffect(() => {
     if (profile !== "floor" || !soundReady) return;
-    if (!round.coachControlled || round.paused) return;
-    const ct = board?.coachTimer;
-    if (!ct || ct.status !== "running") return;
+    if (round.paused) return;
 
-    const phaseKey = `${ct.sessionId}:${ct.phase}:${ct.round}:${ct.phaseEndsAt ?? ""}`;
+    const ct = board?.coachTimer;
+    const running = ct ? ct.status === "running" : true;
+    if (!running) return;
+
+    const phaseKey = ct
+      ? `${ct.sessionId}:${ct.phase}:${ct.round}:${ct.phaseEndsAt ?? ""}`
+      : `auto:${round.phase}:${round.round}:${round.secondsInPhase}`;
     const left = round.secondsLeft;
 
-    // Fire once when we first enter the final 10s (handles skipped ticks)
+    // Bell once when a new running phase begins (near full duration)
+    if (
+      left >= round.secondsInPhase - 1 &&
+      left > 10 &&
+      startBellRef.current !== phaseKey
+    ) {
+      startBellRef.current = phaseKey;
+      playRoundBell();
+    }
+
+    // Fire once when we first enter the final 10s
     if (left <= 10 && left > 0 && warnedPhaseRef.current !== phaseKey) {
       warnedPhaseRef.current = phaseKey;
       playTenSecondWarning();
@@ -393,9 +409,11 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   }, [
     profile,
     soundReady,
-    round.coachControlled,
     round.paused,
     round.secondsLeft,
+    round.secondsInPhase,
+    round.phase,
+    round.round,
     board?.coachTimer,
   ]);
 
@@ -459,7 +477,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
         if (profile === "floor" && !soundReady) void enableSound();
       }}
     >
-      {profile === "floor" && !soundReady ? (
+      {profile === "floor" ? (
         <button
           type="button"
           className={styles.soundUnlock}
@@ -468,7 +486,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             void enableSound();
           }}
         >
-          Tap to enable boxing timer sound
+          {soundReady ? "🔊 Test sound (double clap)" : "Tap for sound — hear clap now"}
         </button>
       ) : null}
       {offline ? (
