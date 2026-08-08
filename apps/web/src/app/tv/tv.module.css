@@ -139,8 +139,8 @@
 .heroContent {
   position: relative;
   z-index: 4;
-  /* Keep titles readable above celebration FX; leave room for bottom dock */
-  padding-bottom: clamp(4.5rem, 12vh, 7.5rem);
+  /* Keep titles readable above celebration FX; leave room for raised bottom dock */
+  padding-bottom: clamp(6rem, 16vh, 9.5rem);
   text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55);
 }
 

@@ -155,11 +155,11 @@
     hue-rotate(352deg) brightness(104%) contrast(92%);
 }
 
-/* Bottom dock keeps XP + belt clear of hero titles */
+/* Bottom dock keeps XP + belt clear of hero titles (raised so chips aren't clipped) */
 .dock {
   position: absolute;
   left: 50%;
-  bottom: 4%;
+  bottom: clamp(1.25rem, 12%, 3.5rem);
   transform: translateX(-50%);
   z-index: 3;
   display: grid;
@@ -167,6 +167,7 @@
   gap: 0.4rem;
   max-width: min(90%, 28rem);
   pointer-events: none;
+  padding-bottom: 0.25rem;
 }
 
 .dockIcon {
@@ -184,13 +185,13 @@
 
 .gloveLeft {
   left: 6%;
-  bottom: 8%;
+  bottom: clamp(1.5rem, 14%, 3.75rem);
   transform-origin: 70% 60%;
 }
 
 .gloveRight {
   right: 6%;
-  bottom: 10%;
+  bottom: clamp(1.75rem, 15%, 4rem);
   transform-origin: 30% 60%;
   transform: scaleX(-1);
 }
