@@ -1,4 +1,15 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+/**
+ * Browser calls are same-origin ("" + /api/v1/...) and proxied by next.config rewrites.
+ * Server components still call the absolute API URL directly.
+ */
+function resolveApiUrl() {
+  if (typeof window === "undefined") {
+    return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+  }
+  return "";
+}
+
+const API_URL = resolveApiUrl();
 
 export class ApiError extends Error {
   status: number;
@@ -33,7 +44,8 @@ export async function apiFetch<T>(
     headers.set("Content-Type", "application/json");
   }
 
-  const res = await fetch(`${API_URL}${path}`, {
+  const base = resolveApiUrl();
+  const res = await fetch(`${base}${path}`, {
     ...init,
     credentials: "include",
     headers,
@@ -88,7 +100,8 @@ export function patch<T>(path: string, body?: unknown, init?: RequestInit) {
 }
 
 export async function downloadAuthenticated(path: string, filename: string) {
-  const res = await fetch(`${API_URL}${path}`, { credentials: "include" });
+  const base = resolveApiUrl();
+  const res = await fetch(`${base}${path}`, { credentials: "include" });
   if (!res.ok) {
     redirectOnUnauthorized(res.status);
     throw new ApiError(res.status, `Download failed (${res.status})`);

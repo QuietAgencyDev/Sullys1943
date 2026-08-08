@@ -255,18 +255,24 @@ export class AuthController {
   }
 
   private cookieOptions() {
-    const isProd =
-      process.env.NODE_ENV === "production" ||
-      Boolean(process.env.RAILWAY_ENVIRONMENT) ||
-      process.env.COOKIE_SECURE === "true";
     const webOrigin = process.env.WEB_ORIGIN ?? "";
-    const domain =
-      process.env.COOKIE_DOMAIN?.trim() ||
-      (webOrigin.includes("sullys1943.com") ? ".sullys1943.com" : undefined);
+    const isLocalWeb =
+      webOrigin.includes("localhost") || webOrigin.includes("127.0.0.1");
+    // Always Secure in deployed environments — required for HTTPS www ↔ api.
+    const secure =
+      process.env.COOKIE_SECURE === "true" ||
+      (!isLocalWeb &&
+        (process.env.NODE_ENV === "production" ||
+          Boolean(process.env.RAILWAY_ENVIRONMENT) ||
+          Boolean(process.env.RAILWAY_STATIC_URL) ||
+          webOrigin.startsWith("https://")));
+    // Prefer host-only cookies so Next.js same-origin proxy can attach them to www.
+    // Optional COOKIE_DOMAIN=.sullys1943.com for direct api.* clients (staff).
+    const domain = process.env.COOKIE_DOMAIN?.trim() || undefined;
     return {
       httpOnly: true,
       sameSite: "lax" as const,
-      secure: isProd,
+      secure,
       path: "/",
       ...(domain ? { domain } : {}),
     };
