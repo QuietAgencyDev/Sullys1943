@@ -282,9 +282,23 @@ export default function AppCoachLivePage() {
             )}
             {live.status === "paused" && (
               <button type="button" disabled={busy} onClick={() => void run("resume")}>
-                RESUME
+                START
               </button>
             )}
+            <button
+              type="button"
+              disabled={busy || live.status === "idle" || live.status === "finished"}
+              onClick={() => void run("reset")}
+            >
+              RESET
+            </button>
+            <button
+              type="button"
+              disabled={busy || live.status === "idle" || live.status === "finished"}
+              onClick={() => void run("stop")}
+            >
+              STOP
+            </button>
             <button type="button" disabled={busy} onClick={() => void run("next")}>
               NEXT
             </button>

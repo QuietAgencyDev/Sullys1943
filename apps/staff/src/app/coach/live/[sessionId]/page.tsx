@@ -223,6 +223,10 @@ export default function LiveClassPage() {
       } else if (action === "start") {
         setMessage("Timer started — floor TV follows coach");
         setCompletion(null);
+      } else if (action === "reset") {
+        setMessage("Timer reset — Round 1 · full work · paused");
+      } else if (action === "stop") {
+        setMessage("Timer stopped");
       } else if (action === "tv") {
         setMessage(`TV → ${String(body.tvMode ?? "timer")}`);
       }
@@ -474,9 +478,24 @@ export default function LiveClassPage() {
                 disabled={busy}
                 onClick={() => void run("resume")}
               >
-                RESUME
+                START
               </button>
             ) : null}
+            <button
+              type="button"
+              disabled={busy || live.status === "idle" || live.status === "finished"}
+              onClick={() => void run("reset")}
+            >
+              RESET
+            </button>
+            <button
+              type="button"
+              className={styles.danger}
+              disabled={busy || live.status === "idle" || live.status === "finished"}
+              onClick={() => void run("stop")}
+            >
+              STOP
+            </button>
             <button type="button" disabled={busy || live.status === "idle"} onClick={() => void run("next")}>
               NEXT
             </button>

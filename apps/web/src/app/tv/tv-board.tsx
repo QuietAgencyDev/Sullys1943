@@ -1,7 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  isBoxingTimerSoundUnlocked,
+  playRoundBell,
+  playTenSecondWarning,
+  unlockBoxingTimerSounds,
+} from "../../lib/boxing-timer-sounds";
 import styles from "./tv.module.css";
 import {
   TvRiveLayer,
@@ -223,11 +229,15 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     restSec: 60,
     rounds: 12,
   });
+  const [soundReady, setSoundReady] = useState(false);
+  const warnedPhaseRef = useRef<string | null>(null);
+  const bellPhaseRef = useRef<string | null>(null);
 
   useEffect(() => {
     setTimerCfg(readTimerConfig());
     setRiveEnabled(readRiveEnabled());
     setDemoCelebrate(readDemoCelebrate());
+    setSoundReady(isBoxingTimerSoundUnlocked());
     const cached = readCachedBoard(profile);
     if (cached) setBoard(cached);
   }, [profile]);
@@ -307,6 +317,11 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  async function enableSound() {
+    const ok = await unlockBoxingTimerSounds();
+    setSoundReady(ok);
+  }
+
   const focus = board?.live ?? board?.next ?? null;
 
   const classCountdown = useMemo(() => {
@@ -355,6 +370,34 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       paused: false,
     };
   }, [now, board?.live, board?.coachTimer, timerCfg]);
+
+  // Boxing timer SFX — 10s wooden double-clap + end-of-phase bell (floor only)
+  useEffect(() => {
+    if (profile !== "floor" || !soundReady) return;
+    if (!round.coachControlled || round.paused) return;
+    const ct = board?.coachTimer;
+    if (!ct || ct.status !== "running") return;
+
+    const phaseKey = `${ct.sessionId}:${ct.phase}:${ct.round}:${ct.phaseEndsAt ?? ""}`;
+    const left = round.secondsLeft;
+
+    // Fire once when we first enter the final 10s (handles skipped ticks)
+    if (left <= 10 && left > 0 && warnedPhaseRef.current !== phaseKey) {
+      warnedPhaseRef.current = phaseKey;
+      playTenSecondWarning();
+    }
+    if (left <= 0 && bellPhaseRef.current !== phaseKey) {
+      bellPhaseRef.current = phaseKey;
+      playRoundBell();
+    }
+  }, [
+    profile,
+    soundReady,
+    round.coachControlled,
+    round.paused,
+    round.secondsLeft,
+    board?.coachTimer,
+  ]);
 
   const tickerItems = board?.ticker?.length
     ? [...board.ticker, ...board.ticker]
@@ -412,7 +455,22 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
         round.phase === "work" ? styles.phaseWork : styles.phaseRest
       }`}
       data-profile={profile}
+      onClick={() => {
+        if (profile === "floor" && !soundReady) void enableSound();
+      }}
     >
+      {profile === "floor" && !soundReady ? (
+        <button
+          type="button"
+          className={styles.soundUnlock}
+          onClick={(e) => {
+            e.stopPropagation();
+            void enableSound();
+          }}
+        >
+          Tap to enable boxing timer sound
+        </button>
+      ) : null}
       {offline ? (
         <div className={styles.offlineBanner} role="status">
           Offline — showing last good board. Round timer keeps running.
@@ -812,7 +870,14 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
           {board?.manifesto?.[manifestoIndex] ??
             "Boxing is the engine. People are the purpose. Character is the legacy."}
         </p>
-        <p className={styles.hint}>Press F for fullscreen · Auto-refreshes</p>
+        <p className={styles.hint}>
+          Press F for fullscreen
+          {profile === "floor"
+            ? soundReady
+              ? " · Sound on · 10s wooden clap warning"
+              : " · Tap screen for timer sound"
+            : " · Auto-refreshes"}
+        </p>
       </footer>
     </div>
   );

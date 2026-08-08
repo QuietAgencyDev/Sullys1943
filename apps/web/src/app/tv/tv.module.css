@@ -29,6 +29,38 @@
   border: 1px solid rgba(243, 230, 200, 0.35);
 }
 
+.soundUnlock {
+  position: relative;
+  z-index: 3;
+  justify-self: center;
+  margin: 0 auto 0.35rem;
+  padding: 0.65rem 1.25rem;
+  border: 1px solid rgba(243, 230, 200, 0.45);
+  border-radius: 999px;
+  background: rgba(20, 15, 12, 0.85);
+  color: #f3e6c8;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  animation: soundPulse 1.6s ease-in-out infinite;
+}
+
+.soundUnlock:hover {
+  background: rgba(200, 32, 38, 0.35);
+}
+
+@keyframes soundPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(196, 160, 106, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(196, 160, 106, 0);
+  }
+}
+
 .shell::before {
   content: "";
   position: absolute;

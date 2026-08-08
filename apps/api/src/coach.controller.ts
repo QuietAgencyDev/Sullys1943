@@ -722,6 +722,34 @@ export class CoachController {
         };
         break;
       }
+      case "reset": {
+        // Back to round 1 / full work — paused so coach can START or RESUME
+        data = {
+          ...data,
+          status: "paused",
+          phase: "work",
+          round: 1,
+          blockIndex: 0,
+          phaseEndsAt: null,
+          pausedRemainSec: workSec,
+          tvMode: body.tvMode ?? "timer",
+        };
+        break;
+      }
+      case "stop": {
+        // Hard stop — no XP (unlike finish)
+        data = {
+          ...data,
+          status: "idle",
+          phase: "work",
+          round: 1,
+          blockIndex: 0,
+          phaseEndsAt: null,
+          pausedRemainSec: null,
+          tvMode: body.tvMode ?? "timer",
+        };
+        break;
+      }
       case "config": {
         data = {
           ...data,
@@ -742,7 +770,7 @@ export class CoachController {
       }
       default:
         throw new BadRequestException(
-          "Unknown action. Use start|pause|resume|next|back|rest|round|finish|tv|config",
+          "Unknown action. Use start|pause|resume|next|back|rest|round|finish|reset|stop|tv|config",
         );
     }
 
