@@ -95,6 +95,15 @@ function formatCountdown(totalSeconds: number) {
   return `${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
 }
 
+function floorTvHref() {
+  if (typeof window === "undefined") return "https://www.sullys1943.com/tv/floor";
+  const host = window.location.hostname;
+  if (host === "localhost" || host === "127.0.0.1") {
+    return "http://localhost:3000/tv/floor";
+  }
+  return "https://www.sullys1943.com/tv/floor";
+}
+
 export default function LiveClassPage() {
   const params = useParams<{ sessionId: string }>();
   const sessionId = params.sessionId;
@@ -491,30 +500,105 @@ export default function LiveClassPage() {
             <button type="button" disabled={busy} onClick={() => void startChallenge("challenge")}>
               CHALLENGE
             </button>
-            <button type="button" disabled={busy} onClick={() => void run("tv", { tvMode: "leaderboard" })}>
-              LEADERBOARD
-            </button>
             <button type="button" disabled={busy} onClick={() => void setupTeams()}>
               TEAMS
             </button>
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() =>
-                void run("tv", { tvMode: "achievement", tvMessage: "Achievement unlocked" })
-              }
-            >
-              ACHIEVEMENT
-            </button>
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() =>
-                void run("tv", { tvMode: "announcement", tvMessage: announce })
-              }
-            >
-              ANNOUNCEMENT
-            </button>
+          </div>
+
+          <div className={styles.tvStrip}>
+            <div className={styles.tvPreview}>
+              <p className={styles.tvPreviewLabel}>What&apos;s on TV</p>
+              <p className={styles.tvModeNow}>
+                {(live.tvMode || "timer").replace(/_/g, " ").toUpperCase()}
+              </p>
+              <p className={styles.hint}>
+                {live.tvMessage?.trim() ||
+                  (live.tvMode === "timer" || !live.tvMode
+                    ? "Round clock on floor"
+                    : "Live to /tv/floor")}
+              </p>
+              <a
+                className={styles.tvFloorLink}
+                href={floorTvHref()}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Open floor TV →
+              </a>
+            </div>
+            <p className={styles.phase}>TV mode</p>
+            <div className={styles.controls}>
+              {(
+                [
+                  "timer",
+                  "leaderboard",
+                  "teams",
+                  "challenge",
+                  "announcement",
+                  "achievement",
+                  "class_complete",
+                ] as const
+              ).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  className={live.tvMode === mode ? styles.primary : undefined}
+                  disabled={busy}
+                  onClick={() =>
+                    void run("tv", {
+                      tvMode: mode,
+                      tvMessage:
+                        mode === "announcement"
+                          ? announce
+                          : mode === "achievement"
+                            ? "Achievement unlocked"
+                            : mode === "class_complete"
+                              ? "XP awarded · see you next bell"
+                              : undefined,
+                    })
+                  }
+                >
+                  {mode.replace("_", " ").toUpperCase()}
+                </button>
+              ))}
+            </div>
+            <p className={styles.phase}>Celebrations</p>
+            <div className={styles.celebrateRow}>
+              <button
+                type="button"
+                className={styles.primary}
+                disabled={busy}
+                onClick={() =>
+                  void run("tv", {
+                    tvMode: "achievement",
+                    tvMessage: "Achievement unlocked",
+                  })
+                }
+              >
+                Show achievement
+              </button>
+              <button
+                type="button"
+                className={styles.primary}
+                disabled={busy}
+                onClick={() =>
+                  void run("tv", {
+                    tvMode: "class_complete",
+                    tvMessage: "XP awarded · see you next bell",
+                  })
+                }
+              >
+                Class complete
+              </button>
+            </div>
+            <label className={styles.hint}>
+              Announcement
+              <input
+                value={announce}
+                onChange={(e) => setAnnounce(e.target.value)}
+                className={styles.input}
+              />
+            </label>
           </div>
 
           <div className={styles.timingRow}>
@@ -555,45 +639,6 @@ export default function LiveClassPage() {
               Save timing
             </button>
           </div>
-
-          <p className={styles.phase} style={{ marginTop: "1rem" }}>
-            Floor TV
-          </p>
-          <div className={styles.controls}>
-            {(
-              [
-                "timer",
-                "leaderboard",
-                "teams",
-                "challenge",
-                "announcement",
-                "class_complete",
-              ] as const
-            ).map((mode) => (
-              <button
-                key={mode}
-                type="button"
-                className={live.tvMode === mode ? styles.primary : undefined}
-                disabled={busy}
-                onClick={() =>
-                  void run("tv", {
-                    tvMode: mode,
-                    tvMessage: mode === "announcement" ? announce : undefined,
-                  })
-                }
-              >
-                {mode.replace("_", " ").toUpperCase()}
-              </button>
-            ))}
-          </div>
-          <label className={styles.hint}>
-            Announcement
-            <input
-              value={announce}
-              onChange={(e) => setAnnounce(e.target.value)}
-              className={styles.input}
-            />
-          </label>
 
           {templates.length ? (
             <label className={styles.hint}>

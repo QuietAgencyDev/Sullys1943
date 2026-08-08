@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@rive-app/react-canvas": "^4.31.0",
     "@sullys/tokens": "*",
     "@sullys/types": "*",
     "@sullys/ui": "*",

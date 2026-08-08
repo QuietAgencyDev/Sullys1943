@@ -3,6 +3,19 @@
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import styles from "./tv.module.css";
+import {
+  TvRiveLayer,
+  readDemoCelebrate,
+  readRiveEnabled,
+} from "./tv-rive-layer";
+
+const DEMO_MODES = [
+  "achievement",
+  "teams",
+  "challenge",
+  "class_complete",
+  "timer",
+] as const;
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 
@@ -200,6 +213,9 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   const [now, setNow] = useState(() => new Date());
   const [manifestoIndex, setManifestoIndex] = useState(0);
   const [offline, setOffline] = useState(false);
+  const [riveEnabled, setRiveEnabled] = useState(true);
+  const [demoCelebrate, setDemoCelebrate] = useState(false);
+  const [demoModeIndex, setDemoModeIndex] = useState(0);
   const [timerCfg, setTimerCfg] = useState({
     workSec: 180,
     restSec: 60,
@@ -208,9 +224,21 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
 
   useEffect(() => {
     setTimerCfg(readTimerConfig());
+    setRiveEnabled(readRiveEnabled());
+    setDemoCelebrate(readDemoCelebrate());
     const cached = readCachedBoard(profile);
     if (cached) setBoard(cached);
   }, [profile]);
+
+  useEffect(() => {
+    if (!demoCelebrate || profile !== "floor") return;
+    const cycle = setInterval(() => {
+      setDemoModeIndex((i) => (i + 1) % DEMO_MODES.length);
+    }, 4000);
+    return () => clearInterval(cycle);
+  }, [demoCelebrate, profile]);
+
+  const coachLive = Boolean(board?.coachTimer);
 
   useEffect(() => {
     let cancelled = false;
@@ -240,13 +268,15 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       }
     }
     void load();
-    // Faster poll so coach timer controls reach the floor TV quickly
-    const poll = setInterval(load, profile === "floor" ? 3_000 : 15_000);
+    // 1s while coach live (mode flips); else 3s floor / 15s reception
+    const ms =
+      profile === "floor" ? (coachLive || demoCelebrate ? 1_000 : 3_000) : 15_000;
+    const poll = setInterval(load, ms);
     return () => {
       cancelled = true;
       clearInterval(poll);
     };
-  }, [profile]);
+  }, [profile, coachLive, demoCelebrate]);
 
   useEffect(() => {
     const tick = setInterval(() => setNow(new Date()), 250);
@@ -328,19 +358,21 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     ? [...board.ticker, ...board.ticker]
     : [];
 
-  const tvMode = board?.coachTimer?.tvMode ?? "timer";
+  const demoMode = DEMO_MODES[demoModeIndex] ?? "achievement";
+  const tvMode =
+    demoCelebrate && profile === "floor"
+      ? demoMode
+      : (board?.coachTimer?.tvMode ?? "timer");
+  const modeActive =
+    profile === "floor" && (Boolean(board?.coachTimer) || demoCelebrate);
   const showAnnouncement =
-    profile === "floor" && tvMode === "announcement" && board?.coachTimer;
+    modeActive && tvMode === "announcement" && (board?.coachTimer || demoCelebrate);
   const showLeaderboardHero =
-    profile === "floor" && tvMode === "leaderboard" && board?.coachTimer;
-  const showTeamsHero =
-    profile === "floor" && tvMode === "teams" && board?.coachTimer;
+    modeActive && tvMode === "leaderboard";
+  const showTeamsHero = modeActive && tvMode === "teams";
   const showChallengeHero =
-    profile === "floor" &&
-    (tvMode === "challenge" || tvMode === "achievement") &&
-    board?.coachTimer;
-  const showClassComplete =
-    profile === "floor" && tvMode === "class_complete" && board?.coachTimer;
+    modeActive && (tvMode === "challenge" || tvMode === "achievement");
+  const showClassComplete = modeActive && tvMode === "class_complete";
   const showRoundHero =
     !showAnnouncement &&
     !showLeaderboardHero &&
@@ -348,6 +380,8 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     !showChallengeHero &&
     !showClassComplete &&
     (profile === "floor" || board?.live?.phase === "live");
+  const riveActive =
+    profile === "floor" && (Boolean(board?.coachTimer) || demoCelebrate);
 
   return (
     <div
@@ -395,6 +429,14 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
 
       <div className={styles.main}>
         <section className={styles.hero} aria-live="polite">
+          <TvRiveLayer
+            active={riveActive}
+            enabled={riveEnabled}
+            tvMode={tvMode}
+            phase={round.phase === "rest" ? "rest" : "work"}
+            message={board?.coachTimer?.tvMessage}
+          />
+          <div className={styles.heroContent}>
           {showAnnouncement ? (
             <>
               <p className={styles.phase}>Coach announcement</p>
@@ -413,7 +455,8 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             <>
               <p className={styles.phase}>Class complete</p>
               <h1 className={styles.classTitle}>
-                {board?.coachTimer?.title ?? "Session done"}
+                {board?.coachTimer?.title ??
+                  (demoCelebrate ? "Demo class complete" : "Session done")}
               </h1>
               <p className={styles.meta}>
                 {board?.coachTimer?.tvMessage || "XP awarded · see you next bell"}
@@ -424,10 +467,29 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             <>
               <p className={styles.phase}>Team battle</p>
               <h1 className={styles.classTitle}>
-                {board?.coachTimer?.title ?? "Teams"}
+                {board?.coachTimer?.title ?? (demoCelebrate ? "Red vs Gold" : "Teams")}
               </h1>
               <ul className={styles.boardList} style={{ marginTop: "1.25rem" }}>
-                {(board?.coachTimer?.teams ?? []).map((t) => (
+                {(board?.coachTimer?.teams ??
+                  (demoCelebrate
+                    ? [
+                        {
+                          rank: 1,
+                          name: "Red Corner",
+                          color: "#c82026",
+                          points: 42,
+                          members: [],
+                        },
+                        {
+                          rank: 2,
+                          name: "Gold Corner",
+                          color: "#c4a06a",
+                          points: 38,
+                          members: [],
+                        },
+                      ]
+                    : [])
+                ).map((t) => (
                   <li key={t.name}>
                     <span>
                       #{t.rank} {t.name}
@@ -446,10 +508,15 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
               <h1 className={styles.classTitle}>
                 {board?.coachTimer?.tvMessage ||
                   board?.coachTimer?.challenges?.[0]?.name ||
-                  "Eyes on the prize"}
+                  (demoCelebrate
+                    ? tvMode === "achievement"
+                      ? "First bell of the day"
+                      : "30 clean jabs"
+                    : "Eyes on the prize")}
               </h1>
               <p className={styles.meta}>
-                {board?.coachTimer?.title}
+                {board?.coachTimer?.title ??
+                  (demoCelebrate ? "Celebration preview" : "")}
                 {board?.coachTimer?.currentExercise
                   ? ` · ${board.coachTimer.currentExercise.title}`
                   : ""}
@@ -587,6 +654,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
               )}
             </>
           )}
+          </div>
         </section>
 
         <aside className={styles.side}>

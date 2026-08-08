@@ -15,6 +15,7 @@ type Live = {
   phaseEndsAt?: string | null;
   pausedRemainSec?: number | null;
   tvMode?: string;
+  tvMessage?: string | null;
   workout?: {
     current: { title: string } | null;
     next: { title: string } | null;
@@ -72,6 +73,7 @@ export default function AppCoachLivePage() {
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [now, setNow] = useState(() => new Date());
+  const [announce, setAnnounce] = useState("Eyes up — listen in");
 
   const load = useCallback(async () => {
     setData(await get<Payload>(`/api/v1/coach/sessions/${sessionId}/live`));
@@ -301,14 +303,91 @@ export default function AppCoachLivePage() {
             <button type="button" disabled={busy} onClick={() => void setupTeams()}>
               TEAMS
             </button>
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() => void run("tv", { tvMode: "leaderboard" })}
-            >
-              BOARD
-            </button>
           </div>
+
+          <section className={styles.tvStrip}>
+            <p className={styles.eyebrow}>What&apos;s on TV</p>
+            <p className={styles.tvModeNow}>
+              {(live.tvMode || "timer").replace(/_/g, " ").toUpperCase()}
+            </p>
+            <p className={styles.meta}>
+              {live.tvMessage?.trim() || "Round clock on floor"}
+            </p>
+            <a className={styles.tvLink} href="/tv/floor" target="_blank" rel="noreferrer">
+              Open floor TV →
+            </a>
+            <div className={styles.controls}>
+              {(
+                [
+                  "timer",
+                  "leaderboard",
+                  "teams",
+                  "challenge",
+                  "announcement",
+                  "achievement",
+                  "class_complete",
+                ] as const
+              ).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  className={
+                    live.tvMode === mode ? styles.tvActive : undefined
+                  }
+                  disabled={busy}
+                  onClick={() =>
+                    void run("tv", {
+                      tvMode: mode,
+                      tvMessage:
+                        mode === "announcement"
+                          ? announce
+                          : mode === "achievement"
+                            ? "Achievement unlocked"
+                            : mode === "class_complete"
+                              ? "XP awarded · see you next bell"
+                              : undefined,
+                    })
+                  }
+                >
+                  {mode.replace("_", " ").toUpperCase()}
+                </button>
+              ))}
+            </div>
+            <div className={styles.celebrateRow}>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() =>
+                  void run("tv", {
+                    tvMode: "achievement",
+                    tvMessage: "Achievement unlocked",
+                  })
+                }
+              >
+                Show achievement
+              </button>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() =>
+                  void run("tv", {
+                    tvMode: "class_complete",
+                    tvMessage: "XP awarded · see you next bell",
+                  })
+                }
+              >
+                Class complete
+              </button>
+            </div>
+            <label className={styles.meta}>
+              Announcement
+              <input
+                value={announce}
+                onChange={(e) => setAnnounce(e.target.value)}
+                className={styles.input}
+              />
+            </label>
+          </section>
         </>
       ) : null}
 

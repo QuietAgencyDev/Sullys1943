@@ -40,6 +40,25 @@ export default function TvDemoKitPage() {
             </p>
             <span className={styles.cta}>Open fullscreen →</span>
           </Link>
+          <Link
+            href="/tv/floor?demo=celebrate"
+            className={styles.card}
+            target="_blank"
+          >
+            <Image
+              src="/brand/sullys-logo-primary.png"
+              alt=""
+              width={64}
+              height={80}
+              className={styles.cardLogo}
+            />
+            <h2>Celebration demo</h2>
+            <p>
+              Cycles achievement, teams, challenge, and class-complete with Rive
+              / CSS atmosphere — no live class required.
+            </p>
+            <span className={styles.cta}>Preview celebrations →</span>
+          </Link>
           <Link href="/tv/reception" className={styles.card} target="_blank">
             <Image
               src="/brand/sullys-logo-primary.png"
@@ -81,6 +100,12 @@ export default function TvDemoKitPage() {
           <ul className={styles.urls}>
             <li>
               <code>/tv/floor</code> — training floor + round timer
+            </li>
+            <li>
+              <code>/tv/floor?demo=celebrate</code> — Rive celebration preview
+            </li>
+            <li>
+              <code>/tv/floor?rive=0</code> — disable Rive (CSS only)
             </li>
             <li>
               <code>/tv/floor?work=180&rest=60&rounds=12</code> — tune intervals
