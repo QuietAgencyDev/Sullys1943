@@ -63,6 +63,7 @@ This folder is the **single source of truth** for architecture, product scope, a
 18. [Modular Product Architecture](./02-domain/18-modular-architecture.md)
 19. [Website & Public Platform](./02-domain/19-website-public-platform.md)
 20. [Legacy Experience](./02-domain/20-legacy-experience.md)
+21. [Legacy Board Research](./02-domain/21-legacy-board-research.md) — sourced visits + Boxing Canada dates
 
 ### 03 — Architecture
 1. [Technical Architecture & Stack](./03-architecture/01-technical-architecture.md)

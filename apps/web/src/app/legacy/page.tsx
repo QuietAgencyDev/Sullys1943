@@ -78,6 +78,16 @@ export default function LegacyPage() {
               <span className={styles.type}>{e.type}</span>
               <h2 className={styles.entryTitle}>{e.title}</h2>
               <p className={styles.entryBody}>{e.body}</p>
+              {e.mediaUrl &&
+              /\.(jpe?g|png|webp|gif)(\?|$)/i.test(e.mediaUrl) ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  className={styles.entryMedia}
+                  src={e.mediaUrl}
+                  alt=""
+                  loading="lazy"
+                />
+              ) : null}
             </li>
           ))}
         </ol>

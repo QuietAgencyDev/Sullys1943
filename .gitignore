@@ -32,3 +32,9 @@ npm-debug.log*
 infrastructure/docker/data
 .vercel
 .env*
+
+# Local AI upscale tooling + Woo scrape scratch
+tools/realesrgan/
+apps/web/public/store/_raw/
+apps/web/src/lib/store-products.generated.json
+cmd.exe

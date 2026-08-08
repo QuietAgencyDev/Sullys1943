@@ -1,0 +1,104 @@
+.main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: calc(96px + var(--space-6)) var(--space-5) var(--space-8);
+  display: grid;
+  gap: var(--space-6);
+}
+
+.intro {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--brand-red);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(2.6rem, 8vw, 4rem);
+  letter-spacing: 0.03em;
+  line-height: 0.95;
+  color: var(--brand-cream);
+}
+
+.lead,
+.copy {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.55;
+  font-size: 1.05rem;
+  max-width: 48ch;
+}
+
+.lead {
+  max-width: 36ch;
+}
+
+.section {
+  display: grid;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+.subhead {
+  margin: 0;
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(1.45rem, 4vw, 1.9rem);
+  letter-spacing: 0.04em;
+  color: var(--brand-cream);
+}
+
+.ways {
+  display: grid;
+  gap: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+.way {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.wayLabel {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--brand-glove);
+}
+
+.address {
+  margin: 0;
+  white-space: pre-line;
+  color: var(--brand-cream);
+  line-height: 1.5;
+  font-size: 1.05rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+}
+
+.link {
+  color: var(--brand-cream);
+  text-underline-offset: 3px;
+  width: fit-content;
+}
+
+.link:hover {
+  color: var(--brand-red);
+}

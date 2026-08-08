@@ -30,6 +30,8 @@ export function SiteFooter() {
           <Link href="/programs">Programs</Link>
           <Link href="/coaches">Coaches</Link>
           <Link href="/legacy">Legacy</Link>
+          <Link href="/store">Store</Link>
+          <Link href="/donate">Donate</Link>
           <Link href="/tv/demo">TV Demo</Link>
           <Link href="/manuals">Manuals</Link>
           <Link href="/join">Join</Link>

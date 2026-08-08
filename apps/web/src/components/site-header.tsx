@@ -23,6 +23,8 @@ export function SiteHeader() {
         <Link href="/programs">Programs</Link>
         <Link href="/coaches">Coaches</Link>
         <Link href="/legacy">Legacy</Link>
+        <Link href="/store">Store</Link>
+        <Link href="/donate">Donate</Link>
         <Link href="/contact">Visit</Link>
         <Link href="/join">Join</Link>
       </nav>

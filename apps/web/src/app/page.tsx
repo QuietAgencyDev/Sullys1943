@@ -9,6 +9,7 @@ import {
 } from "@/components/vision-sections";
 import { LiveClasses } from "@/components/live-classes";
 import { LegacyTeaser } from "@/components/legacy-teaser";
+import { StoreTeaser } from "@/components/store-teaser";
 import { SiteFooter } from "@/components/site-footer";
 
 export default function HomePage() {
@@ -24,6 +25,7 @@ export default function HomePage() {
         <ProgramsSection />
         <LiveClasses />
         <LegacyTeaser />
+        <StoreTeaser />
       </main>
       <SiteFooter />
     </>
