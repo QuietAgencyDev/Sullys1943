@@ -9,6 +9,18 @@ export class PortalController {
   /** Public coach directory for marketing. */
   @Get("coaches")
   async coaches() {
+    // Official site order — https://www.sullysboxinggym.com/trainers/
+    const ROSTER_ORDER = [
+      "tony morrison",
+      "rico mancini",
+      "winslow",
+      "jonathan bochner",
+      "anthony sky",
+      "lauren ramesbottom",
+      "jacklyne irvine",
+      "jack hemmings",
+    ];
+
     const coaches = await this.prisma.user.findMany({
       where: {
         role: "coach",
@@ -22,11 +34,21 @@ export class PortalController {
         bio: true,
         photoUrl: true,
       },
-      orderBy: { firstName: "asc" },
+    });
+
+    const sorted = [...coaches].sort((a, b) => {
+      const nameA = `${a.firstName} ${a.lastName}`.trim().toLowerCase();
+      const nameB = `${b.firstName} ${b.lastName}`.trim().toLowerCase();
+      const ia = ROSTER_ORDER.indexOf(nameA);
+      const ib = ROSTER_ORDER.indexOf(nameB);
+      const ra = ia === -1 ? 999 : ia;
+      const rb = ib === -1 ? 999 : ib;
+      if (ra !== rb) return ra - rb;
+      return nameA.localeCompare(nameB);
     });
 
     return {
-      coaches: coaches.map((c) => ({
+      coaches: sorted.map((c) => ({
         id: c.id,
         name: `${c.firstName} ${c.lastName}`.trim(),
         title: c.title ?? "Coach",

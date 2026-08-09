@@ -2,33 +2,45 @@ import { PrismaClient } from "@prisma/client";
 
 const p = new PrismaClient();
 
-const alex = await p.user.findFirst({ where: { email: "coach@sullys.local" } });
-const maria = await p.user.findFirst({
-  where: { email: "coach.maria@sullys.local" },
+const tony = await p.user.findFirst({ where: { email: "coach@sullys.local" } });
+const rico = await p.user.findFirst({
+  where: { email: "coach.rico@sullys.local" },
 });
-const jamal = await p.user.findFirst({
-  where: { email: "coach.jamal@sullys.local" },
+const winslow = await p.user.findFirst({
+  where: { email: "coach.winslow@sullys.local" },
+});
+const lauren = await p.user.findFirst({
+  where: { email: "coach.lauren@sullys.local" },
 });
 
-if (!alex || !maria || !jamal) {
-  console.error("missing coaches");
+if (!tony || !rico || !winslow || !lauren) {
+  console.error("missing coaches — run sync-sullys-coaches.mjs first");
   process.exit(1);
 }
 
 const kids = await p.session.updateMany({
   where: { title: "Kids Boxing" },
-  data: { coachUserId: maria.id, coachName: "Maria Reyes" },
+  data: { coachUserId: winslow.id, coachName: "Winslow" },
 });
 const competitive = await p.session.updateMany({
   where: { title: "Competitive Team" },
-  data: { coachUserId: jamal.id, coachName: "Jamal Wright" },
+  data: { coachUserId: rico.id, coachName: "Rico Mancini" },
+});
+const womens = await p.session.updateMany({
+  where: { title: "Women's Boxing" },
+  data: { coachUserId: lauren.id, coachName: "Lauren Ramesbottom" },
+});
+const beginner = await p.session.updateMany({
+  where: { title: { in: ["Beginner Boxing", "Open Gym"] } },
+  data: { coachUserId: tony.id, coachName: "Tony Morrison" },
 });
 
 console.log(
   JSON.stringify({
     kids: kids.count,
     competitive: competitive.count,
-    alexKept: true,
+    womens: womens.count,
+    beginnerOpen: beginner.count,
   }),
 );
 

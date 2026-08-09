@@ -17,6 +17,37 @@ type Coach = {
   photoUrl: string | null;
 };
 
+function CoachCard({ coach }: { coach: Coach }) {
+  const [imgFailed, setImgFailed] = useState(false);
+  const showPhoto = Boolean(coach.photoUrl) && !imgFailed;
+
+  return (
+    <li className={styles.card}>
+      <div className={styles.photoWrap}>
+        {showPhoto ? (
+          <Image
+            src={coach.photoUrl!}
+            alt={coach.name}
+            fill
+            className={styles.photo}
+            sizes="(max-width: 720px) 100vw, 320px"
+            onError={() => setImgFailed(true)}
+          />
+        ) : (
+          <div className={styles.photoFallback} aria-hidden>
+            {coach.name.slice(0, 1)}
+          </div>
+        )}
+      </div>
+      <div className={styles.body}>
+        <p className={styles.role}>{coach.title}</p>
+        <h2 className={styles.name}>{coach.name}</h2>
+        <p className={styles.bio}>{coach.bio}</p>
+      </div>
+    </li>
+  );
+}
+
 export default function CoachesPage() {
   const [coaches, setCoaches] = useState<Coach[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,8 +84,9 @@ export default function CoachesPage() {
         <p className={styles.eyebrow}>The floor</p>
         <h1 className={styles.title}>Coaches</h1>
         <p className={styles.copy}>
-          Faces and names behind the pad work — the people who make Sully&apos;s
-          feel like a gym, not a login screen.
+          The floor staff at Canada&apos;s oldest boxing gym — champions,
+          competitive coaches, and instructors who build craft and character
+          every round.
         </p>
 
         {loading ? (
@@ -76,28 +108,7 @@ export default function CoachesPage() {
         ) : (
           <ul className={styles.grid}>
             {coaches.map((coach) => (
-              <li key={coach.id} className={styles.card}>
-                <div className={styles.photoWrap}>
-                  {coach.photoUrl ? (
-                    <Image
-                      src={coach.photoUrl}
-                      alt={coach.name}
-                      fill
-                      className={styles.photo}
-                      sizes="(max-width: 720px) 100vw, 320px"
-                    />
-                  ) : (
-                    <div className={styles.photoFallback} aria-hidden>
-                      {coach.name.slice(0, 1)}
-                    </div>
-                  )}
-                </div>
-                <div className={styles.body}>
-                  <p className={styles.role}>{coach.title}</p>
-                  <h2 className={styles.name}>{coach.name}</h2>
-                  <p className={styles.bio}>{coach.bio}</p>
-                </div>
-              </li>
+              <CoachCard key={coach.id} coach={coach} />
             ))}
           </ul>
         )}

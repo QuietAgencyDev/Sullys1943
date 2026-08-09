@@ -95,47 +95,123 @@ async function main() {
     },
   });
 
+  // Official floor roster — https://www.sullysboxinggym.com/trainers/
   const coach = await prisma.user.create({
     data: {
       organizationId: org.id,
       email: "coach@sullys.local",
       passwordHash,
-      firstName: "Alex",
-      lastName: "Coach",
+      firstName: "Tony",
+      lastName: "Morrison",
       role: "coach",
-      title: "Head Coach",
-      bio: "Alex runs the floor with old-school discipline and modern care — pads, footwork, and the character work that happens between rounds.",
-      photoUrl: "/gym/heavy-bag.jpg",
+      title: "1991 Canadian Heavyweight Champion",
+      bio: "Tony Morrison, the former Canadian Heavyweight Champion who held the title in 1991, brings years of experience in the ring and as a trainer. Whether you’re a seasoned athlete or just starting out, Tony’s guidance helps you reach your full potential.",
+      photoUrl: "/coaches/tony-morrison.jpg",
       points: { create: { balance: 0 } },
     },
   });
 
-  const coachMaria = await prisma.user.create({
+  const coachRico = await prisma.user.create({
     data: {
       organizationId: org.id,
-      email: "coach.maria@sullys.local",
+      email: "coach.rico@sullys.local",
       passwordHash,
-      firstName: "Maria",
-      lastName: "Reyes",
+      firstName: "Rico",
+      lastName: "Mancini",
       role: "coach",
-      title: "Youth & Fundamentals",
-      bio: "Maria builds first timers and youth athletes — clear cues, high standards, and a gym that feels like home.",
-      photoUrl: "/gym/ring-rest.jpg",
+      title: "Boxing Canada Competitive Coach",
+      bio: "Rico prepares prospective fighters for competitive matches with a meticulous focus on mechanics and technique. His regimen covers mobility, strength, HIIT, ring, pad, and sparring work.",
+      photoUrl: "/coaches/rico-mancini.jpg",
       points: { create: { balance: 0 } },
     },
   });
 
-  const coachJamal = await prisma.user.create({
+  const coachWinslow = await prisma.user.create({
     data: {
       organizationId: org.id,
-      email: "coach.jamal@sullys.local",
+      email: "coach.winslow@sullys.local",
       passwordHash,
-      firstName: "Jamal",
-      lastName: "Wright",
+      firstName: "Winslow",
+      lastName: " ",
       role: "coach",
-      title: "Performance Coach",
-      bio: "Jamal sharpens competitive athletes — sparring prep, conditioning, and the mental game that wins late rounds.",
-      photoUrl: "/gym/hero-floor.jpg",
+      title: "Technical Boxing Coach",
+      bio: "Known for attention to detail and emphasis on footwork and weight shifting. You’ll find him at Sully’s at night training youth fighters — ask for help and he’ll teach you step by step.",
+      photoUrl: "/coaches/winslow.jpg",
+      points: { create: { balance: 0 } },
+    },
+  });
+
+  await prisma.user.create({
+    data: {
+      organizationId: org.id,
+      email: "coach.jonathan@sullys.local",
+      passwordHash,
+      firstName: "Jonathan",
+      lastName: "Bochner",
+      role: "coach",
+      title: "Chartered Professional Boxing Coach",
+      bio: "Jonathan brings three decades in boxing, 172 bouts, and training under high-performance and Olympic coaches. Former Canadian Champion, Chartered Professional Coach (ChPc), AIBA 1-star Coach, and former Team Canada coach.",
+      photoUrl: "/coaches/jonathan-bochner.jpg",
+      points: { create: { balance: 0 } },
+    },
+  });
+
+  await prisma.user.create({
+    data: {
+      organizationId: org.id,
+      email: "coach.anthony@sullys.local",
+      passwordHash,
+      firstName: "Anthony",
+      lastName: "Sky",
+      role: "coach",
+      title: "Professional Boxing Coach (Novice – Fighters)",
+      bio: "A Downtown Toronto native who started boxing at 13, Anthony supports athletes at every stage — sharing the mindset and craft that keep the next generation of boxers sharp.",
+      photoUrl: "/coaches/anthony-sky.jpg",
+      points: { create: { balance: 0 } },
+    },
+  });
+
+  const coachLauren = await prisma.user.create({
+    data: {
+      organizationId: org.id,
+      email: "coach.lauren@sullys.local",
+      passwordHash,
+      firstName: "Lauren",
+      lastName: "Ramesbottom",
+      role: "coach",
+      title: "Boxing & Fitness Instructor",
+      bio: "Lauren guides participants of all levels through boxing fundamentals and strength training. Her classes and private lessons blend conditioning, movement patterns, and intentional pad work.",
+      photoUrl: "/coaches/lauren-ramesbottom.jpg",
+      points: { create: { balance: 0 } },
+    },
+  });
+
+  await prisma.user.create({
+    data: {
+      organizationId: org.id,
+      email: "coach.jacklyne@sullys.local",
+      passwordHash,
+      firstName: "Jacklyne",
+      lastName: "Irvine",
+      role: "coach",
+      title: "Boxing & Fitness Instructor",
+      bio: "An undefeated amateur boxer from Toronto, Jacklyne coaches technique, form, and mental toughness in a supportive, challenging environment that brings out the best in her athletes.",
+      photoUrl: "/coaches/jacklyne-irvine.jpg",
+      points: { create: { balance: 0 } },
+    },
+  });
+
+  await prisma.user.create({
+    data: {
+      organizationId: org.id,
+      email: "coach.jack@sullys.local",
+      passwordHash,
+      firstName: "Jack",
+      lastName: "Hemmings",
+      role: "coach",
+      title: "Boxing & Fitness Instructor",
+      bio: "Jack has 9+ years in the sport, 50+ amateur tournaments, and is a 3x Ontario Champion. As a pro he is 5-1 with all wins by knockout — still chasing excellence every round.",
+      photoUrl: "/coaches/jack-hemmings.jpg",
       points: { create: { balance: 0 } },
     },
   });
@@ -382,7 +458,7 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
       end: atHour(today, 13, 0),
       capacity: 16,
       coachUserId: coach.id,
-      coachName: "Alex Coach",
+      coachName: "Tony Morrison",
     },
     {
       title: "Competitive Team",
@@ -390,8 +466,8 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
       start: atHour(today, 18, 0),
       end: atHour(today, 19, 30),
       capacity: 12,
-      coachUserId: coachJamal.id,
-      coachName: "Jamal Wright",
+      coachUserId: coachRico.id,
+      coachName: "Rico Mancini",
     },
     {
       title: "Women's Boxing",
@@ -399,8 +475,8 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
       start: atHour(today, 19, 0),
       end: atHour(today, 20, 0),
       capacity: 14,
-      coachUserId: coach.id,
-      coachName: "Alex Coach",
+      coachUserId: coachLauren.id,
+      coachName: "Lauren Ramesbottom",
     },
     {
       title: "Kids Boxing",
@@ -408,8 +484,8 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
       start: atHour(today, 16, 0),
       end: atHour(today, 17, 0),
       capacity: 12,
-      coachUserId: coachMaria.id,
-      coachName: "Maria Reyes",
+      coachUserId: coachWinslow.id,
+      coachName: "Winslow",
     },
   ];
 
@@ -452,7 +528,7 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
       startsAt: atHour(tomorrow, 17, 30),
       endsAt: atHour(tomorrow, 19, 0),
       capacity: 20,
-      coachName: "Alex Coach",
+      coachName: "Tony Morrison",
       coachUserId: coach.id,
     },
   });
