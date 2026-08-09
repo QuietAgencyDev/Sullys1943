@@ -29,6 +29,34 @@ export const HOME_CAROUSEL_SHOTS: CarouselShot[] = [
     alt: "Young athletes on the floor at Sully's",
   },
   {
+    src: "/carousel/kids-06.jpg",
+    alt: "Youth training session at Sully's Boxing Gym",
+  },
+  {
+    src: "/carousel/rival-01.jpg",
+    alt: "Athlete training at Sully's Boxing Gym",
+  },
+  {
+    src: "/carousel/rival-02.jpg",
+    alt: "Rival gloves and gear at Sully's",
+  },
+  {
+    src: "/carousel/rival-03.jpg",
+    alt: "Rival boxing gloves at Sully's Gym",
+  },
+  {
+    src: "/carousel/rival-04.jpg",
+    alt: "Boxer in sequence training at Sully's",
+  },
+  {
+    src: "/carousel/rival-05.jpg",
+    alt: "Boxer working technique at Sully's",
+  },
+  {
+    src: "/carousel/rival-06.jpg",
+    alt: "Boxer mid-combination at Sully's",
+  },
+  {
     src: "/gym/heavy-bag.jpg",
     alt: "Training on the heavy bag at Sully's Boxing Gym",
   },
