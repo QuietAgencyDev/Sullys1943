@@ -20,6 +20,7 @@ async function bootstrap() {
       "https://www.sullys1943.com",
       "https://sullys1943.com",
       "https://sullys1943-web.vercel.app",
+      "https://sullys1943-staff.vercel.app",
       process.env.WEB_ORIGIN ?? "",
       process.env.STAFF_ORIGIN ?? "",
       ...extraOrigins,
