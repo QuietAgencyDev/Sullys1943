@@ -17,6 +17,18 @@ export const HOME_CAROUSEL_SHOTS: CarouselShot[] = [
     alt: "Kids boxing session on the floor at Sully's",
   },
   {
+    src: "/carousel/kids-03.jpg",
+    alt: "Youth boxers training together at Sully's",
+  },
+  {
+    src: "/carousel/kids-04.jpg",
+    alt: "Kids class working pads at Sully's Boxing Gym",
+  },
+  {
+    src: "/carousel/kids-05.jpg",
+    alt: "Young athletes on the floor at Sully's",
+  },
+  {
     src: "/gym/heavy-bag.jpg",
     alt: "Training on the heavy bag at Sully's Boxing Gym",
   },
