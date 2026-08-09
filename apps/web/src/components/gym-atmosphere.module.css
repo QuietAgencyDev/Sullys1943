@@ -9,12 +9,17 @@
 .rail {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(72vw, 1fr);
+  grid-auto-columns: minmax(78vw, 1fr);
   gap: var(--space-3);
   overflow-x: auto;
   padding: 0 var(--space-5);
   scroll-snap-type: x mandatory;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
 }
 
 .frame {
@@ -22,7 +27,7 @@
   margin: 0;
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  scroll-snap-align: start;
+  scroll-snap-align: center;
   background: #140f0c;
 }
 
@@ -32,7 +37,31 @@
 }
 
 .frame:hover .img {
-  transform: scale(1.04);
+  transform: scale(1.03);
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0 var(--space-5);
+}
+
+.dot,
+.dotActive {
+  width: 0.55rem;
+  height: 0.55rem;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(243, 230, 200, 0.45);
+  background: transparent;
+  cursor: pointer;
+}
+
+.dotActive {
+  background: var(--brand-red);
+  border-color: var(--brand-red);
+  width: 1.35rem;
 }
 
 .caption {
@@ -60,17 +89,20 @@
   .frame:hover .img {
     transform: none;
   }
+
+  .rail {
+    scroll-behavior: auto;
+  }
 }
 
 @media (min-width: 900px) {
   .rail {
-    grid-auto-flow: unset;
-    grid-template-columns: repeat(3, 1fr);
-    overflow: visible;
+    grid-auto-columns: minmax(42vw, 1fr);
     padding-inline: var(--space-7);
   }
 
-  .caption {
+  .caption,
+  .dots {
     padding-inline: var(--space-7);
   }
 }
