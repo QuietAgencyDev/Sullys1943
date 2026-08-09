@@ -97,6 +97,7 @@ This folder is the **single source of truth** for architecture, product scope, a
 3. [Future Expansion Plan](./08-process/03-future-expansion.md)
 4. [Assumptions, Risks & Improvements](./08-process/04-assumptions-risks.md)
 5. [Implementation Sequence](./08-process/05-implementation-sequence.md)
+6. [Client Demo Test Guide](./08-process/06-client-demo-test-guide.md) — full Member / Coach / Staff / TV walkthrough
 
 ### Diagrams
 - [Architecture Diagrams (Mermaid)](./diagrams/architecture.md)
