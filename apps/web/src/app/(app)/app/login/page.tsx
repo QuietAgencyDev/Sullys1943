@@ -116,7 +116,26 @@ function LoginForm() {
               Fill member demo
             </button>
             {" · "}
-            <code>member@sullys.local</code> / <code>password123</code>
+            <button
+              type="button"
+              className={styles.link}
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                font: "inherit",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                setEmail("coach@sullys.local");
+                setPassword("password123");
+              }}
+            >
+              Fill coach demo
+            </button>
+          </p>
+          <p className={styles.muted}>
+            Coach: <code>coach@sullys.local</code> / <code>password123</code>
           </p>
         </div>
       </form>

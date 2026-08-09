@@ -318,7 +318,29 @@ export default function AppCoachLivePage() {
           ? `${data.session.checkedIn}/${data.session.booked} in · +${data.xpAvailable?.classComplete ?? 25} XP finish`
           : "Loading…"}
       </p>
-      {error ? <p className={styles.error}>{error}</p> : null}
+      {error ? (
+        <div className={styles.errorBox}>
+          <p className={styles.error}>{error}</p>
+          {/staff role|coach role|not authenticated|unauthorized/i.test(
+            error,
+          ) ? (
+            <>
+              <p className={styles.meta}>
+                Timer controls need a coach login. Sign in as{" "}
+                <code>coach@sullys.local</code> / <code>password123</code>
+              </p>
+              <p>
+                <Link
+                  className={styles.tvLink}
+                  href={`/app/login?next=${encodeURIComponent(`/app/coach/live/${sessionId}`)}`}
+                >
+                  Sign in as coach →
+                </Link>
+              </p>
+            </>
+          ) : null}
+        </div>
+      ) : null}
       {message ? <p className={styles.meta}>{message}</p> : null}
       {live ? (
         <>

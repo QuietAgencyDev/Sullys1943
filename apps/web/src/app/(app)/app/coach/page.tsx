@@ -48,7 +48,27 @@ export default function AppCoachHomePage() {
         Start class, control the round clock, finish and award XP. Tablet tools
         live on the staff app.
       </p>
-      {error ? <p className={styles.error}>{error}</p> : null}
+      {error ? (
+        <div className={styles.errorBox}>
+          <p className={styles.error}>{error}</p>
+          {/staff role|coach role|not authenticated|unauthorized/i.test(
+            error,
+          ) ? (
+            <>
+              <p className={styles.copy}>
+                Sign in as <code>coach@sullys.local</code> /{" "}
+                <code>password123</code> to run the timer.
+              </p>
+              <Link
+                className={styles.tvLink}
+                href="/app/login?next=%2Fapp%2Fcoach"
+              >
+                Sign in as coach →
+              </Link>
+            </>
+          ) : null}
+        </div>
+      ) : null}
       {home?.current || home?.next ? (
         <Link
           className={styles.hero}
