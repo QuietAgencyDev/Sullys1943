@@ -2,7 +2,9 @@
 
 Full client demo + test checklist (links, logins, timer, TV):
 
-**[docs/08-process/06-client-demo-test-guide.md](./docs/08-process/06-client-demo-test-guide.md)**
+- **PDF (branded):** [docs/08-process/Sullys-Client-Demo-Test-Guide.pdf](./docs/08-process/Sullys-Client-Demo-Test-Guide.pdf)
+- **Markdown:** [docs/08-process/06-client-demo-test-guide.md](./docs/08-process/06-client-demo-test-guide.md)
+- **HTML source:** [docs/08-process/06-client-demo-test-guide.html](./docs/08-process/06-client-demo-test-guide.html)
 
 ### Fast logins (`password123`)
 

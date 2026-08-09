@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sully’s Client Demo — Full Test Guide</title>
+  <style>
+    @page {
+      size: Letter;
+      margin: 0.55in 0.6in 0.65in;
+    }
+
+    :root {
+      --brand-cream: #f3e6c8;
+      --brand-red: #c82026;
+      --brand-brown: #3a2418;
+      --brand-glove: #c4a06a;
+      --ink: #1a120e;
+      --muted: #5c4638;
+      --line: rgba(58, 36, 24, 0.18);
+      --paper: #f7f1e6;
+      --card: #fffaf2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      font-size: 10.5pt;
+      line-height: 1.45;
+    }
+
+    .page-bg {
+      min-height: 100%;
+      background:
+        radial-gradient(ellipse at 0% 0%, rgba(200, 32, 38, 0.10), transparent 42%),
+        radial-gradient(ellipse at 100% 0%, rgba(196, 160, 106, 0.14), transparent 38%),
+        linear-gradient(180deg, #fbf6ec 0%, var(--paper) 40%, #f3ebe0 100%);
+    }
+
+    .wrap {
+      max-width: 8.2in;
+      margin: 0 auto;
+      padding: 0.15in 0.1in 0.25in;
+    }
+
+    header.hero {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 0.85rem;
+      align-items: center;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(196, 160, 106, 0.45);
+      background:
+        linear-gradient(135deg, rgba(58, 36, 24, 0.96), rgba(20, 15, 12, 0.94));
+      color: var(--brand-cream);
+      box-shadow: 0 10px 28px rgba(20, 15, 12, 0.18);
+    }
+
+    header.hero img {
+      width: 84px;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
+    }
+
+    .eyebrow {
+      margin: 0 0 0.2rem;
+      color: var(--brand-red);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.65rem;
+      line-height: 1.05;
+      letter-spacing: 0.02em;
+      color: var(--brand-cream);
+      font-weight: 800;
+    }
+
+    .subtitle {
+      margin: 0.4rem 0 0;
+      color: rgba(243, 230, 200, 0.78);
+      font-size: 0.92rem;
+    }
+
+    .meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem 1rem;
+      margin: 0.75rem 0 1.1rem;
+      padding: 0.55rem 0.75rem;
+      border-left: 4px solid var(--brand-red);
+      background: rgba(196, 160, 106, 0.12);
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    h2 {
+      margin: 1.35rem 0 0.55rem;
+      padding-bottom: 0.28rem;
+      border-bottom: 2px solid var(--brand-red);
+      color: var(--brand-brown);
+      font-size: 1.12rem;
+      letter-spacing: 0.03em;
+      page-break-after: avoid;
+    }
+
+    h3 {
+      margin: 0.95rem 0 0.4rem;
+      color: var(--brand-red);
+      font-size: 0.98rem;
+      page-break-after: avoid;
+    }
+
+    h4 {
+      margin: 0.75rem 0 0.3rem;
+      color: var(--brand-brown);
+      font-size: 0.92rem;
+      page-break-after: avoid;
+    }
+
+    p { margin: 0.35rem 0 0.55rem; }
+
+    a {
+      color: #8f1a1f;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    ul, ol {
+      margin: 0.25rem 0 0.7rem;
+      padding-left: 1.2rem;
+    }
+
+    li { margin: 0.18rem 0; }
+
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.88em;
+      background: rgba(58, 36, 24, 0.08);
+      border: 1px solid var(--line);
+      padding: 0.05rem 0.28rem;
+      color: var(--brand-brown);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.4rem 0 0.9rem;
+      background: var(--card);
+      page-break-inside: avoid;
+      font-size: 9.4pt;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 0.38rem 0.45rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--brand-brown);
+      color: var(--brand-cream);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(196, 160, 106, 0.08);
+    }
+
+    .callout {
+      margin: 0.7rem 0 1rem;
+      padding: 0.7rem 0.85rem;
+      border: 1px solid rgba(200, 32, 38, 0.35);
+      background: rgba(200, 32, 38, 0.07);
+      page-break-inside: avoid;
+    }
+
+    .callout strong { color: var(--brand-red); }
+
+    .section-card {
+      margin: 0.55rem 0 0.9rem;
+      padding: 0.7rem 0.85rem 0.35rem;
+      border: 1px solid rgba(196, 160, 106, 0.4);
+      background: rgba(255, 250, 242, 0.85);
+      page-break-inside: avoid;
+    }
+
+    .check {
+      width: 0.85rem;
+      height: 0.85rem;
+      display: inline-block;
+      border: 1.5px solid var(--brand-brown);
+      margin-right: 0.15rem;
+      vertical-align: -1px;
+      background: #fff;
+    }
+
+    footer {
+      margin-top: 1.4rem;
+      padding-top: 0.55rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.78rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .gold { color: var(--brand-glove); }
+  </style>
+</head>
+<body>
+  <div class="page-bg">
+    <div class="wrap">
+      <header class="hero">
+        <img src="../06-design/assets/sullys-logo-primary.png" alt="Sully's Boxing Gym" />
+        <div>
+          <p class="eyebrow">Sully’s Boxing Gym · EST 1943</p>
+          <h1>Client Demo — Full Test Guide</h1>
+          <p class="subtitle">Website → Member → Coach Live → Floor TV → Desk</p>
+        </div>
+      </header>
+
+      <div class="meta-bar">
+        <span><strong>Updated:</strong> 2026-08-09</span>
+        <span><strong>Password (all demos):</strong> <code>password123</code></span>
+        <span><strong>Site:</strong> www.sullys1943.com</span>
+      </div>
+
+      <h2>1. Quick links</h2>
+      <table>
+        <thead>
+          <tr><th>Surface</th><th>URL</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Public website</strong></td><td><a href="https://www.sullys1943.com">https://www.sullys1943.com</a></td></tr>
+          <tr><td><strong>Coaches page</strong></td><td><a href="https://www.sullys1943.com/coaches">https://www.sullys1943.com/coaches</a></td></tr>
+          <tr><td><strong>Member login</strong></td><td><a href="https://www.sullys1943.com/app/login">https://www.sullys1943.com/app/login</a></td></tr>
+          <tr><td><strong>Phone Coach</strong></td><td><a href="https://www.sullys1943.com/app/coach">https://www.sullys1943.com/app/coach</a></td></tr>
+          <tr><td><strong>Floor TV</strong></td><td><a href="https://www.sullys1943.com/tv/floor">https://www.sullys1943.com/tv/floor</a></td></tr>
+          <tr><td><strong>TV celebration preview</strong></td><td><a href="https://www.sullys1943.com/tv/floor?demo=celebrate">https://www.sullys1943.com/tv/floor?demo=celebrate</a></td></tr>
+          <tr><td><strong>Staff console</strong></td><td><a href="https://sullys1943-staff.vercel.app">https://sullys1943-staff.vercel.app</a></td></tr>
+          <tr><td><strong>API health</strong></td><td><a href="https://api.sullys1943.com/api/v1/health">https://api.sullys1943.com/api/v1/health</a></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Today’s Live shortcuts (2026-08-09)</h3>
+      <p>If a link 404s later, open Coach home and pick today’s class.</p>
+      <table>
+        <thead>
+          <tr><th>Class</th><th>Coach Live (phone)</th><th>Staff Live</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Demo Live Class</strong></td>
+            <td><a href="https://www.sullys1943.com/app/coach/live/cmslw1e2e0003ulgcl7ptkbiy">Open phone Live</a></td>
+            <td><a href="https://sullys1943-staff.vercel.app/coach/live/cmslw1e2e0003ulgcl7ptkbiy">Open staff Live</a></td>
+          </tr>
+          <tr>
+            <td><strong>Beginner Boxing</strong></td>
+            <td><a href="https://www.sullys1943.com/app/coach/live/cmslw1e0n0001ulgc3yr7rx1q">Open phone Live</a></td>
+            <td><a href="https://sullys1943-staff.vercel.app/coach/live/cmslw1e0n0001ulgc3yr7rx1q">Open staff Live</a></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>2. Demo logins</h2>
+      <table>
+        <thead>
+          <tr><th>Role</th><th>Email</th><th>Use for</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Member</strong></td><td><code>member@sullys.local</code></td><td>Book, card, passport (Gavin Sheppard / Gavin S)</td></tr>
+          <tr><td><strong>Coach</strong></td><td><code>coach@sullys.local</code></td><td>Timer, Live Mode, TV control (Tony Morrison)</td></tr>
+          <tr><td><strong>Front desk</strong></td><td><code>desk@sullys.local</code></td><td>Desk / kiosk / staff hub</td></tr>
+          <tr><td><strong>Admin</strong></td><td><code>admin@sullys.local</code></td><td>Admin users</td></tr>
+          <tr><td><strong>Owner</strong></td><td><code>owner@sullys.local</code></td><td>Owner console</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <strong>Important</strong>
+        <ul>
+          <li>Timer <strong>Start / Pause / Reset / Stop</strong> only appear when signed in as <strong>coach</strong> (or admin/owner).</li>
+          <li>If you see <strong>“Staff role required”</strong>, you are on a member session → sign out → log in as <code>coach@sullys.local</code>.</li>
+          <li>On member login, use <strong>Fill coach demo</strong> when testing Live Mode.</li>
+          <li>Use <strong>two screens</strong>: Coach Live + Floor TV.</li>
+        </ul>
+      </div>
+
+      <h2>3. Prep (2 minutes)</h2>
+      <ol>
+        <li>Open Floor TV: <a href="https://www.sullys1943.com/tv/floor">https://www.sullys1943.com/tv/floor</a></li>
+        <li>Hard refresh (<code>Ctrl+Shift+R</code>).</li>
+        <li>Tap <strong>Tap for sound / Test sound</strong> once (required for browser audio).</li>
+        <li>Optional: press <strong>F</strong> for fullscreen.</li>
+        <li>Keep speakers unmuted / volume up.</li>
+      </ol>
+
+      <h2>4. Full demo script</h2>
+
+      <div class="section-card">
+        <h3>A. Public website (brand + photos)</h3>
+        <ol>
+          <li>Open <a href="https://www.sullys1943.com">https://www.sullys1943.com</a></li>
+          <li>Confirm homepage <strong>photo carousel</strong> auto-scrolls (youth + Rival + gym shots).</li>
+          <li>Open <a href="https://www.sullys1943.com/coaches">/coaches</a> — real trainer roster (initials until headshots land).</li>
+          <li>Briefly show Programs / Join / Contact as needed.</li>
+        </ol>
+      </div>
+
+      <div class="section-card">
+        <h3>B. Member journey</h3>
+        <ol>
+          <li>Open <a href="https://www.sullys1943.com/app/login">Member login</a></li>
+          <li>Tap <strong>Fill member demo</strong> (or <code>member@sullys.local</code> / <code>password123</code>).</li>
+          <li>Sign in → Member home (Gavin).</li>
+          <li>Walk: <strong>Book a class</strong>, <strong>Digital card</strong>, <strong>Passport / XP</strong>.</li>
+          <li>Sign out from <strong>Profile</strong> before switching to coach.</li>
+        </ol>
+      </div>
+
+      <div class="section-card">
+        <h3>C. Coach Live + Boxing Timer (main demo)</h3>
+        <h4>Option 1 — Phone coach</h4>
+        <ol>
+          <li><a href="https://www.sullys1943.com/app/login">Login</a> → <strong>Fill coach demo</strong></li>
+          <li>Open <a href="https://www.sullys1943.com/app/coach">/app/coach</a></li>
+          <li>Tap <strong>Demo Live Class</strong> → Open Live Mode</li>
+        </ol>
+        <h4>Option 2 — Staff console</h4>
+        <ol>
+          <li><a href="https://sullys1943-staff.vercel.app">Staff console</a></li>
+          <li>Sign in: <code>coach@sullys.local</code> / <code>password123</code></li>
+          <li>Coach → today’s class → <strong>Live</strong></li>
+        </ol>
+        <h4>Timer test</h4>
+        <ol>
+          <li>Tap <strong>Demo · 45 / 15 / 3</strong></li>
+          <li>Optional: <strong>Enable sound</strong> on coach device</li>
+          <li><strong>START</strong> — Floor TV countdown follows</li>
+          <li>At <strong>0:10</strong> — wooden double clap on TV</li>
+          <li>At <strong>0:00</strong> — end bell</li>
+          <li>Test <strong>PAUSE</strong>, <strong>START</strong> (resume), <strong>RESET</strong>, <strong>STOP</strong>, then <strong>FINISH</strong> once at end</li>
+        </ol>
+        <h4>TV celebrations</h4>
+        <ol>
+          <li>Show achievement / XP bonus / Class complete</li>
+          <li>Confirm Floor TV flips modes</li>
+          <li>Return to <strong>TIMER</strong></li>
+        </ol>
+      </div>
+
+      <div class="section-card">
+        <h3>D. Floor TV alone (backup)</h3>
+        <ul>
+          <li><a href="https://www.sullys1943.com/tv/floor">/tv/floor</a> — ambient board</li>
+          <li><a href="https://www.sullys1943.com/tv/floor?demo=celebrate">?demo=celebrate</a> — celebration cycle</li>
+        </ul>
+      </div>
+
+      <div class="section-card">
+        <h3>E. Front desk (optional)</h3>
+        <ol>
+          <li><a href="https://sullys1943-staff.vercel.app">Staff console</a></li>
+          <li><code>desk@sullys.local</code> / <code>password123</code></li>
+          <li>Show desk / kiosk path in the staff hub</li>
+        </ol>
+      </div>
+
+      <h2>5. Pass / fail checklist</h2>
+      <table>
+        <thead>
+          <tr><th>#</th><th>Check</th><th>Pass?</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Homepage carousel scrolls with gym/youth photos</td><td><span class="check"></span></td></tr>
+          <tr><td>2</td><td><code>/coaches</code> shows Tony, Rico, Winslow, etc.</td><td><span class="check"></span></td></tr>
+          <tr><td>3</td><td>Member login works</td><td><span class="check"></span></td></tr>
+          <tr><td>4</td><td>Coach login works (no “Staff role required”)</td><td><span class="check"></span></td></tr>
+          <tr><td>5</td><td>Live Mode shows START / PAUSE / RESET / STOP</td><td><span class="check"></span></td></tr>
+          <tr><td>6</td><td>Floor TV follows coach timer</td><td><span class="check"></span></td></tr>
+          <tr><td>7</td><td>Sound unlock works; clap at 10 seconds</td><td><span class="check"></span></td></tr>
+          <tr><td>8</td><td>Pause / Reset / Stop update TV</td><td><span class="check"></span></td></tr>
+          <tr><td>9</td><td>Achievement / XP / Class complete show on TV</td><td><span class="check"></span></td></tr>
+          <tr><td>10</td><td>FINISH awards completion moment</td><td><span class="check"></span></td></tr>
+        </tbody>
+      </table>
+
+      <h2>6. Troubleshooting</h2>
+      <table>
+        <thead>
+          <tr><th>Symptom</th><th>Fix</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Staff role required</strong> / no timer buttons</td><td>Sign out → log in as <code>coach@sullys.local</code></td></tr>
+          <tr><td>No sound on TV</td><td>Tap Test sound on <code>/tv/floor</code>; unmute tab/device</td></tr>
+          <tr><td>TV not following timer</td><td>Confirm coach STARTed; hard refresh TV; wait ~1s</td></tr>
+          <tr><td>Staff login fails in browser</td><td>Use https://sullys1943-staff.vercel.app</td></tr>
+          <tr><td>No class on Coach home</td><td>Ask eng to seed a Demo Live Class for today</td></tr>
+          <tr><td>Coach photos are letters only</td><td>Drop JPGs into <code>apps/web/public/coaches/</code>, redeploy web</td></tr>
+        </tbody>
+      </table>
+
+      <h2>7. Suggested 8-minute client flow</h2>
+      <ol>
+        <li><strong>0:00</strong> — Homepage + carousel</li>
+        <li><strong>1:00</strong> — Coaches page</li>
+        <li><strong>2:00</strong> — Member login (Gavin) — book / card / passport</li>
+        <li><strong>3:30</strong> — Switch to coach login</li>
+        <li><strong>4:00</strong> — Live Mode + Floor TV side by side</li>
+        <li><strong>4:30</strong> — Demo preset → START → 10s clap</li>
+        <li><strong>6:00</strong> — Pause / Reset / celebrations</li>
+        <li><strong>7:30</strong> — FINISH / class complete on TV</li>
+        <li><strong>8:00</strong> — Q&amp;A / next steps (Helcim, headshots, Rive art)</li>
+      </ol>
+
+      <h2>8. Adding content later</h2>
+      <table>
+        <thead>
+          <tr><th>Asset</th><th>Where</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Homepage carousel photos</td><td><code>apps/web/public/carousel/</code> + <code>apps/web/src/lib/home-carousel.ts</code></td></tr>
+          <tr><td>Coach headshots</td><td><code>apps/web/public/coaches/</code></td></tr>
+          <tr><td>TV celebration art</td><td><code>apps/web/public/rive/</code> + <code>apps/web/public/tv/</code></td></tr>
+        </tbody>
+      </table>
+
+      <h2>9. Eng notes</h2>
+      <ul>
+        <li>Demo coach account maps to <strong>Tony Morrison</strong>.</li>
+        <li>API: Railway (<code>api.sullys1943.com</code>). Web/Staff: Vercel.</li>
+        <li>Floor TV polls ~500ms while coach timer is live.</li>
+        <li>Payments remain <strong>mock</strong> until Helcim keys are configured.</li>
+      </ul>
+
+      <footer>
+        <span>Sully’s Boxing Gym · Canada’s Oldest Boxing Gym · Toronto</span>
+        <span class="gold">Boxing is the engine. People are the purpose.</span>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>
