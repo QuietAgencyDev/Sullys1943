@@ -525,8 +525,8 @@ export class CoachController {
         data: {
           sessionId: session.id,
           startedById: auth.sub,
-          workSec: Math.max(30, body.workSec ?? 180),
-          restSec: Math.max(15, body.restSec ?? 60),
+          workSec: Math.max(20, body.workSec ?? 180),
+          restSec: Math.max(10, body.restSec ?? 60),
           totalRounds: Math.max(1, body.totalRounds ?? 12),
           kidsMode: body.kidsMode ?? session.program.kind === "kids",
           workoutTemplateId: body.workoutTemplateId,
@@ -539,8 +539,9 @@ export class CoachController {
       });
     }
 
-    const workSec = Math.max(30, body.workSec ?? live.workSec);
-    const restSec = Math.max(15, body.restSec ?? live.restSec);
+    // Allow short demo rounds (20s work / 10s rest) for client walkthroughs
+    const workSec = Math.max(20, body.workSec ?? live.workSec);
+    const restSec = Math.max(10, body.restSec ?? live.restSec);
     const totalRounds = Math.max(1, body.totalRounds ?? live.totalRounds);
 
     const remainingNow = (): number => {

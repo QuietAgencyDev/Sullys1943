@@ -281,9 +281,9 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       }
     }
     void load();
-    // 1s while coach live (mode flips); else 3s floor / 15s reception
+    // 500ms while coach live (tighter TV sync); else 3s floor / 15s reception
     const ms =
-      profile === "floor" ? (coachLive || demoCelebrate ? 1_000 : 3_000) : 15_000;
+      profile === "floor" ? (coachLive || demoCelebrate ? 500 : 3_000) : 15_000;
     const poll = setInterval(load, ms);
     return () => {
       cancelled = true;

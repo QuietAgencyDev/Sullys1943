@@ -115,11 +115,56 @@
   color: var(--text-muted);
 }
 
+.timerPrimary {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+.timerPrimary button {
+  min-height: 84px;
+  border: 1px solid var(--border);
+  background: rgba(200, 32, 38, 0.28);
+  color: var(--brand-cream);
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
+.timerPrimary button:disabled {
+  opacity: 0.45;
+}
+
+.timerPrimary .primary {
+  background: rgba(200, 32, 38, 0.55);
+  border-color: rgba(243, 230, 200, 0.45);
+}
+
+.demoBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+}
+
+.demoBar button {
+  min-height: 44px;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid rgba(196, 160, 106, 0.55);
+  background: rgba(196, 160, 106, 0.18);
+  color: var(--brand-cream);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
 .controlsLg {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.7rem;
-  margin-top: 1rem;
+  margin-top: 0.85rem;
 }
 
 @media (min-width: 800px) {
@@ -129,12 +174,12 @@
 }
 
 .controlsLg button {
-  min-height: 72px;
+  min-height: 64px;
   border: 1px solid var(--border);
   background: rgba(200, 32, 38, 0.2);
   color: var(--brand-cream);
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   letter-spacing: 0.05em;
   cursor: pointer;
 }

@@ -2,8 +2,13 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, get, post } from "@/lib/api";
+import {
+  playRoundBell,
+  playTenSecondWarning,
+  testBoxingTimerSound,
+} from "@/lib/boxing-timer-sounds";
 import styles from "../../coach.module.css";
 
 type Live = {
@@ -11,6 +16,8 @@ type Live = {
   phase: string;
   round: number;
   totalRounds: number;
+  workSec?: number;
+  restSec?: number;
   secondsLeft: number;
   phaseEndsAt?: string | null;
   pausedRemainSec?: number | null;
@@ -74,9 +81,19 @@ export default function AppCoachLivePage() {
   const [busy, setBusy] = useState(false);
   const [now, setNow] = useState(() => new Date());
   const [announce, setAnnounce] = useState("Eyes up — listen in");
+  const [workSec, setWorkSec] = useState(45);
+  const [restSec, setRestSec] = useState(15);
+  const [rounds, setRounds] = useState(3);
+  const [soundReady, setSoundReady] = useState(false);
+  const warnedPhaseRef = useRef<string | null>(null);
+  const bellPhaseRef = useRef<string | null>(null);
 
   const load = useCallback(async () => {
-    setData(await get<Payload>(`/api/v1/coach/sessions/${sessionId}/live`));
+    const res = await get<Payload>(`/api/v1/coach/sessions/${sessionId}/live`);
+    setData(res);
+    if (res.live.workSec) setWorkSec(res.live.workSec);
+    if (res.live.restSec) setRestSec(res.live.restSec);
+    if (res.live.totalRounds) setRounds(res.live.totalRounds);
   }, [sessionId]);
 
   const loadRoster = useCallback(async () => {
@@ -109,7 +126,7 @@ export default function AppCoachLivePage() {
       void loadRoster().catch(() => undefined);
       void loadGame().catch(() => undefined);
       void loadTeams().catch(() => undefined);
-    }, 2000);
+    }, 1000);
     return () => clearInterval(t);
   }, [load, loadRoster, loadGame, loadTeams]);
 
@@ -117,6 +134,30 @@ export default function AppCoachLivePage() {
     const t = setInterval(() => setNow(new Date()), 250);
     return () => clearInterval(t);
   }, []);
+
+  useEffect(() => {
+    if (!soundReady || !data?.live) return;
+    const liveState = data.live;
+    if (liveState.status !== "running") return;
+    let left = liveState.secondsLeft;
+    if (liveState.phaseEndsAt) {
+      left = Math.max(
+        0,
+        Math.ceil(
+          (new Date(liveState.phaseEndsAt).getTime() - now.getTime()) / 1000,
+        ),
+      );
+    }
+    const phaseKey = `${sessionId}:${liveState.phase}:${liveState.round}:${liveState.phaseEndsAt ?? ""}`;
+    if (left <= 10 && left > 0 && warnedPhaseRef.current !== phaseKey) {
+      warnedPhaseRef.current = phaseKey;
+      playTenSecondWarning();
+    }
+    if (left <= 0 && bellPhaseRef.current !== phaseKey) {
+      bellPhaseRef.current = phaseKey;
+      playRoundBell();
+    }
+  }, [soundReady, data?.live, now, sessionId]);
 
   async function run(action: string, body: Record<string, unknown> = {}) {
     setBusy(true);
@@ -128,6 +169,16 @@ export default function AppCoachLivePage() {
       );
       if (action === "finish") {
         setMessage(`Class complete · +${res.xpAwarded ?? 0} XP`);
+      } else if (action === "start") {
+        setMessage("Timer started — floor TV follows");
+      } else if (action === "reset") {
+        setMessage("Timer reset — Round 1 paused");
+      } else if (action === "stop") {
+        setMessage("Timer stopped");
+      } else if (action === "config") {
+        setMessage(
+          `Timing · ${Number(body.workSec ?? workSec)}s / ${Number(body.restSec ?? restSec)}s · ${Number(body.totalRounds ?? rounds)} rounds`,
+        );
       }
       await load();
     } catch (err) {
@@ -135,6 +186,19 @@ export default function AppCoachLivePage() {
     } finally {
       setBusy(false);
     }
+  }
+
+  async function enableCoachSound() {
+    const ok = await testBoxingTimerSound();
+    setSoundReady(ok);
+    if (ok) setMessage("Sound on — clap at 10s on this phone too");
+  }
+
+  async function applyDemoPreset() {
+    setWorkSec(45);
+    setRestSec(15);
+    setRounds(3);
+    await run("config", { workSec: 45, restSec: 15, totalRounds: 3 });
   }
 
   async function markPresent(userId: string) {
@@ -269,19 +333,49 @@ export default function AppCoachLivePage() {
               {live.workout.next ? ` · Next: ${live.workout.next.title}` : ""}
             </p>
           ) : null}
-          <div className={styles.controls}>
+          <div className={styles.demoBar}>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => void applyDemoPreset()}
+            >
+              Demo · 45 / 15 / 3
+            </button>
+            <button type="button" onClick={() => void enableCoachSound()}>
+              {soundReady ? "Sound on · test" : "Enable sound"}
+            </button>
+          </div>
+
+          <div className={styles.timerPrimary}>
             {(live.status === "idle" || live.status === "finished") && (
-              <button type="button" disabled={busy} onClick={() => void run("start")}>
+              <button
+                type="button"
+                className={styles.primary}
+                disabled={busy}
+                onClick={() =>
+                  void run("start", { workSec, restSec, totalRounds: rounds })
+                }
+              >
                 START
               </button>
             )}
             {live.status === "running" && (
-              <button type="button" disabled={busy} onClick={() => void run("pause")}>
+              <button
+                type="button"
+                className={styles.primary}
+                disabled={busy}
+                onClick={() => void run("pause")}
+              >
                 PAUSE
               </button>
             )}
             {live.status === "paused" && (
-              <button type="button" disabled={busy} onClick={() => void run("resume")}>
+              <button
+                type="button"
+                className={styles.primary}
+                disabled={busy}
+                onClick={() => void run("resume")}
+              >
                 START
               </button>
             )}
@@ -299,6 +393,9 @@ export default function AppCoachLivePage() {
             >
               STOP
             </button>
+          </div>
+
+          <div className={styles.controls}>
             <button type="button" disabled={busy} onClick={() => void run("next")}>
               NEXT
             </button>

@@ -2,8 +2,13 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, get, post } from "@/lib/api";
+import {
+  playRoundBell,
+  playTenSecondWarning,
+  testBoxingTimerSound,
+} from "@/lib/boxing-timer-sounds";
 import styles from "../../coach.module.css";
 
 type Live = {
@@ -124,6 +129,9 @@ export default function LiveClassPage() {
   const [workSec, setWorkSec] = useState(180);
   const [restSec, setRestSec] = useState(60);
   const [rounds, setRounds] = useState(12);
+  const [soundReady, setSoundReady] = useState(false);
+  const warnedPhaseRef = useRef<string | null>(null);
+  const bellPhaseRef = useRef<string | null>(null);
 
   const load = useCallback(async () => {
     const res = await get<Payload>(`/api/v1/coach/sessions/${sessionId}/live`);
@@ -192,7 +200,7 @@ export default function LiveClassPage() {
       loadGame().catch(() => undefined);
       loadTeams().catch(() => undefined);
       loadChallenges().catch(() => undefined);
-    }, 2500);
+    }, 1000);
     return () => {
       cancelled = true;
       clearInterval(t);
@@ -203,6 +211,31 @@ export default function LiveClassPage() {
     const t = setInterval(() => setNow(new Date()), 250);
     return () => clearInterval(t);
   }, []);
+
+  // Mirror floor TV cues on coach device (after sound unlock)
+  useEffect(() => {
+    if (!soundReady || !data?.live) return;
+    const liveState = data.live;
+    if (liveState.status !== "running") return;
+    let left = liveState.secondsLeft;
+    if (liveState.phaseEndsAt) {
+      left = Math.max(
+        0,
+        Math.ceil(
+          (new Date(liveState.phaseEndsAt).getTime() - now.getTime()) / 1000,
+        ),
+      );
+    }
+    const phaseKey = `${sessionId}:${liveState.phase}:${liveState.round}:${liveState.phaseEndsAt ?? ""}`;
+    if (left <= 10 && left > 0 && warnedPhaseRef.current !== phaseKey) {
+      warnedPhaseRef.current = phaseKey;
+      playTenSecondWarning();
+    }
+    if (left <= 0 && bellPhaseRef.current !== phaseKey) {
+      bellPhaseRef.current = phaseKey;
+      playRoundBell();
+    }
+  }, [soundReady, data?.live, now, sessionId]);
 
   async function run(action: string, body: Record<string, unknown> = {}) {
     setBusy(true);
@@ -227,6 +260,10 @@ export default function LiveClassPage() {
         setMessage("Timer reset — Round 1 · full work · paused");
       } else if (action === "stop") {
         setMessage("Timer stopped");
+      } else if (action === "config") {
+        setMessage(
+          `Timing saved · ${Number(body.workSec ?? workSec)}s / ${Number(body.restSec ?? restSec)}s · ${Number(body.totalRounds ?? rounds)} rounds`,
+        );
       } else if (action === "tv") {
         setMessage(`TV → ${String(body.tvMode ?? "timer")}`);
       }
@@ -236,6 +273,19 @@ export default function LiveClassPage() {
     } finally {
       setBusy(false);
     }
+  }
+
+  async function enableCoachSound() {
+    const ok = await testBoxingTimerSound();
+    setSoundReady(ok);
+    if (ok) setMessage("Coach sound on — clap at 10s on this device too");
+  }
+
+  async function applyDemoPreset() {
+    setWorkSec(45);
+    setRestSec(15);
+    setRounds(3);
+    await run("config", { workSec: 45, restSec: 15, totalRounds: 3 });
   }
 
   async function markPresent(userId: string) {
@@ -453,7 +503,20 @@ export default function LiveClassPage() {
               : ""}
           </p>
 
-          <div className={styles.controlsLg}>
+          <div className={styles.demoBar}>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => void applyDemoPreset()}
+            >
+              Demo preset · 45 / 15 / 3
+            </button>
+            <button type="button" onClick={() => void enableCoachSound()}>
+              {soundReady ? "Sound on · test clap" : "Enable coach sound"}
+            </button>
+          </div>
+
+          <div className={styles.timerPrimary}>
             {live.status === "idle" || live.status === "finished" ? (
               <button
                 type="button"
@@ -467,7 +530,12 @@ export default function LiveClassPage() {
               </button>
             ) : null}
             {live.status === "running" ? (
-              <button type="button" disabled={busy} onClick={() => void run("pause")}>
+              <button
+                type="button"
+                className={styles.primary}
+                disabled={busy}
+                onClick={() => void run("pause")}
+              >
                 PAUSE
               </button>
             ) : null}
@@ -496,6 +564,9 @@ export default function LiveClassPage() {
             >
               STOP
             </button>
+          </div>
+
+          <div className={styles.controlsLg}>
             <button type="button" disabled={busy || live.status === "idle"} onClick={() => void run("next")}>
               NEXT
             </button>
@@ -638,7 +709,7 @@ export default function LiveClassPage() {
               Work (s)
               <input
                 type="number"
-                min={30}
+                min={20}
                 value={workSec}
                 onChange={(e) => setWorkSec(Number(e.target.value) || 180)}
               />
@@ -647,7 +718,7 @@ export default function LiveClassPage() {
               Rest (s)
               <input
                 type="number"
-                min={15}
+                min={10}
                 value={restSec}
                 onChange={(e) => setRestSec(Number(e.target.value) || 60)}
               />
