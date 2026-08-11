@@ -11,7 +11,6 @@ Use these exact filenames (JPG or PNG — match the basename; prefer `.jpg`):
 | `winslow.jpg` | Winslow |
 | `jonathan-bochner.jpg` | Jonathan Bochner |
 | `anthony-sky.jpg` | Anthony Sky |
-| `lauren-ramesbottom.jpg` | Lauren Ramesbottom |
 | `jacklyne-irvine.jpg` | Jacklyne Irvine |
 | `jack-hemmings.jpg` | Jack Hemmings |
 

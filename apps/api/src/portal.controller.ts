@@ -16,7 +16,6 @@ export class PortalController {
       "winslow",
       "jonathan bochner",
       "anthony sky",
-      "lauren ramesbottom",
       "jacklyne irvine",
       "jack hemmings",
     ];

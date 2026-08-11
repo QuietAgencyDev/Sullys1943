@@ -9,11 +9,11 @@ const rico = await p.user.findFirst({
 const winslow = await p.user.findFirst({
   where: { email: "coach.winslow@sullys.local" },
 });
-const lauren = await p.user.findFirst({
-  where: { email: "coach.lauren@sullys.local" },
+const jacklyne = await p.user.findFirst({
+  where: { email: "coach.jacklyne@sullys.local" },
 });
 
-if (!tony || !rico || !winslow || !lauren) {
+if (!tony || !rico || !winslow || !jacklyne) {
   console.error("missing coaches — run sync-sullys-coaches.mjs first");
   process.exit(1);
 }
@@ -28,7 +28,7 @@ const competitive = await p.session.updateMany({
 });
 const womens = await p.session.updateMany({
   where: { title: "Women's Boxing" },
-  data: { coachUserId: lauren.id, coachName: "Lauren Ramesbottom" },
+  data: { coachUserId: jacklyne.id, coachName: "Jacklyne Irvine" },
 });
 const beginner = await p.session.updateMany({
   where: { title: { in: ["Beginner Boxing", "Open Gym"] } },

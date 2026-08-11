@@ -55,22 +55,13 @@ const ROSTER = [
     sort: 4,
   },
   {
-    email: "coach.lauren@sullys.local",
-    firstName: "Lauren",
-    lastName: "Ramesbottom",
-    title: "Boxing & Fitness Instructor",
-    bio: "Lauren guides participants of all levels through boxing fundamentals and strength training. Her classes and private lessons blend conditioning, movement patterns, and intentional pad work.",
-    photoUrl: "/coaches/lauren-ramesbottom.jpg",
-    sort: 5,
-  },
-  {
     email: "coach.jacklyne@sullys.local",
     firstName: "Jacklyne",
     lastName: "Irvine",
     title: "Boxing & Fitness Instructor",
     bio: "An undefeated amateur boxer from Toronto, Jacklyne coaches technique, form, and mental toughness in a supportive, challenging environment that brings out the best in her athletes.",
     photoUrl: "/coaches/jacklyne-irvine.jpg",
-    sort: 6,
+    sort: 5,
   },
   {
     email: "coach.jack@sullys.local",
@@ -79,12 +70,16 @@ const ROSTER = [
     title: "Boxing & Fitness Instructor",
     bio: "Jack has 9+ years in the sport, 50+ amateur tournaments, and is a 3x Ontario Champion. As a pro he is 5-1 with all wins by knockout — still chasing excellence every round.",
     photoUrl: "/coaches/jack-hemmings.jpg",
-    sort: 7,
+    sort: 6,
   },
 ];
 
-/** Old demo placeholders to retire from the public directory */
-const RETIRE = ["coach.maria@sullys.local", "coach.jamal@sullys.local"];
+/** Old demo placeholders / retired trainers to hide from the public directory */
+const RETIRE = [
+  "coach.maria@sullys.local",
+  "coach.jamal@sullys.local",
+  "coach.lauren@sullys.local",
+];
 
 async function main() {
   const org = await prisma.organization.findFirst({ orderBy: { createdAt: "asc" } });
@@ -139,7 +134,7 @@ async function main() {
   const tony = ids["coach@sullys.local"];
   const rico = ids["coach.rico@sullys.local"];
   const winslow = ids["coach.winslow@sullys.local"];
-  const lauren = ids["coach.lauren@sullys.local"];
+  const jacklyne = ids["coach.jacklyne@sullys.local"];
 
   if (tony) {
     await prisma.session.updateMany({
@@ -159,10 +154,10 @@ async function main() {
       data: { coachUserId: winslow, coachName: "Winslow" },
     });
   }
-  if (lauren) {
+  if (jacklyne) {
     await prisma.session.updateMany({
       where: { title: "Women's Boxing" },
-      data: { coachUserId: lauren, coachName: "Lauren Ramesbottom" },
+      data: { coachUserId: jacklyne, coachName: "Jacklyne Irvine" },
     });
   }
 

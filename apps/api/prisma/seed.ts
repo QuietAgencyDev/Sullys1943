@@ -171,22 +171,7 @@ async function main() {
     },
   });
 
-  const coachLauren = await prisma.user.create({
-    data: {
-      organizationId: org.id,
-      email: "coach.lauren@sullys.local",
-      passwordHash,
-      firstName: "Lauren",
-      lastName: "Ramesbottom",
-      role: "coach",
-      title: "Boxing & Fitness Instructor",
-      bio: "Lauren guides participants of all levels through boxing fundamentals and strength training. Her classes and private lessons blend conditioning, movement patterns, and intentional pad work.",
-      photoUrl: "/coaches/lauren-ramesbottom.jpg",
-      points: { create: { balance: 0 } },
-    },
-  });
-
-  await prisma.user.create({
+  const coachJacklyne = await prisma.user.create({
     data: {
       organizationId: org.id,
       email: "coach.jacklyne@sullys.local",
@@ -475,8 +460,8 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
       start: atHour(today, 19, 0),
       end: atHour(today, 20, 0),
       capacity: 14,
-      coachUserId: coachLauren.id,
-      coachName: "Lauren Ramesbottom",
+      coachUserId: coachJacklyne.id,
+      coachName: "Jacklyne Irvine",
     },
     {
       title: "Kids Boxing",
