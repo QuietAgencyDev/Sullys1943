@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { GYM, formatAddress } from "@/lib/gym-info";
 import styles from "./site-footer.module.css";
 
@@ -39,6 +40,24 @@ export function SiteFooter() {
             sullysboxinggym.com
           </a>
         </nav>
+
+        <div className={styles.partners}>
+          <a
+            className={styles.partnerLink}
+            href="https://boxingontario.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Boxing Ontario — visit boxingontario.com"
+          >
+            <Image
+              src="/partners/boxing-ontario.png"
+              alt="Boxing Ontario"
+              width={220}
+              height={146}
+              className={styles.partnerLogo}
+            />
+          </a>
+        </div>
       </div>
     </footer>
   );

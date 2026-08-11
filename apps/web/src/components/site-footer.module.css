@@ -58,6 +58,33 @@
   color: var(--brand-red);
 }
 
+.partners {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.partnerLink {
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.92;
+  transition: opacity 0.2s ease;
+}
+
+.partnerLink:hover {
+  opacity: 1;
+}
+
+.partnerLogo {
+  width: min(180px, 48vw);
+  height: auto;
+  display: block;
+}
+
 @media (min-width: 768px) {
   .footer {
     padding-inline: var(--space-7);
