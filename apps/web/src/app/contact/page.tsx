@@ -21,7 +21,7 @@ export default function ContactPage() {
           <p className={styles.eyebrow}>Visit</p>
           <h1 className={styles.title}>Come down the stairs</h1>
           <p className={styles.lead}>
-            Lower level at Dundas &amp; Sheridan. Ring, bags, and seventy-five
+            Lower level at Dundas &amp; Sheridan. Ring, bags, and eighty-plus
             years of Toronto boxing history.
           </p>
         </div>
