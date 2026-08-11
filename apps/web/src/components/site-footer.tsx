@@ -17,7 +17,7 @@ export function SiteFooter() {
         </p>
 
         <div className={styles.meta}>
-          <p className={styles.note}>
+          <p className={styles.address}>
             <a href={GYM.mapUrl} target="_blank" rel="noreferrer">
               {formatAddress(" · ")}
             </a>
