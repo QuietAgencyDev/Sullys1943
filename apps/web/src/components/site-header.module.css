@@ -56,28 +56,42 @@
 .nav {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: flex-end;
-  gap: 0.45rem 0.7rem;
-  font-size: 0.68rem;
+  gap: 0.55rem;
+  font-size: 0.62rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   min-width: 0;
+  max-width: min(72vw, 640px);
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  mask-image: linear-gradient(to right, #000 88%, transparent);
+}
+
+.nav::-webkit-scrollbar {
+  display: none;
+}
+
+.nav a {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .nav a:hover {
   color: var(--brand-cream);
 }
 
-/* Phone: logo on its own clear row, nav wraps below so mark never gets crushed */
+/* Phone: logo row + compact horizontal scroll nav */
 @media (max-width: 767px) {
   .header {
     flex-direction: column;
     align-items: stretch;
-    gap: 0.5rem;
-    padding: calc(0.55rem + env(safe-area-inset-top, 0px)) var(--space-4) 0.75rem;
-    /* Keep overlay from covering hero type when nav wraps */
+    gap: 0.4rem;
+    padding: calc(0.55rem + env(safe-area-inset-top, 0px)) var(--space-4) 0.65rem;
     max-height: none;
     background: linear-gradient(
       to bottom,
@@ -92,34 +106,21 @@
   }
 
   .logo {
-    width: 48px;
+    width: 44px;
     height: auto;
     aspect-ratio: 56 / 72;
   }
 
   .nav {
     width: 100%;
+    max-width: none;
     justify-content: flex-start;
-    flex-wrap: nowrap;
-    gap: 0.85rem;
-    font-size: 0.72rem;
-    letter-spacing: 0.03em;
-    line-height: 1.2;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding-bottom: 0.15rem;
-    mask-image: linear-gradient(to right, #000 85%, transparent);
-  }
-
-  .nav::-webkit-scrollbar {
-    display: none;
-  }
-
-  .nav a {
-    flex: 0 0 auto;
-    white-space: nowrap;
+    gap: 0.65rem;
+    font-size: 0.64rem;
+    letter-spacing: 0.02em;
+    line-height: 1.15;
+    padding-bottom: 0.2rem;
+    mask-image: linear-gradient(to right, #000 82%, transparent);
   }
 }
 
@@ -133,15 +134,32 @@
   }
 
   .logo {
-    width: 56px;
+    width: 52px;
   }
 
   .nav {
     position: absolute;
     left: 50%;
-    transform: translateX(calc(-50% - 1.25rem));
-    flex-wrap: nowrap;
-    font-size: 0.9rem;
-    gap: var(--space-4);
+    right: auto;
+    transform: translateX(calc(-50% - 0.5rem));
+    max-width: min(58vw, 720px);
+    font-size: 0.72rem;
+    gap: 0.7rem;
+    justify-content: center;
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 4%,
+      #000 96%,
+      transparent
+    );
+  }
+}
+
+@media (min-width: 1100px) {
+  .nav {
+    max-width: min(62vw, 780px);
+    font-size: 0.78rem;
+    gap: 0.85rem;
   }
 }

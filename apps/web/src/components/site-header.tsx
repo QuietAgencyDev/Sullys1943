@@ -2,6 +2,17 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./site-header.module.css";
 
+const NAV = [
+  { href: "/legacy", label: "Legacy" },
+  { href: "/coaches", label: "Coaches" },
+  { href: "/classes", label: "Classes" },
+  { href: "/programs", label: "Programs" },
+  { href: "/donate", label: "Donate" },
+  { href: "/store", label: "Store" },
+  { href: "/contact", label: "Visit" },
+  { href: "/join", label: "Join" },
+] as const;
+
 export function SiteHeader() {
   return (
     <header className={styles.header}>
@@ -21,13 +32,11 @@ export function SiteHeader() {
         </span>
       </Link>
       <nav className={styles.nav} aria-label="Primary">
-        <Link href="/programs">Programs</Link>
-        <Link href="/coaches">Coaches</Link>
-        <Link href="/legacy">Legacy</Link>
-        <Link href="/store">Store</Link>
-        <Link href="/donate">Donate</Link>
-        <Link href="/contact">Visit</Link>
-        <Link href="/join">Join</Link>
+        {NAV.map((item) => (
+          <Link key={item.href} href={item.href}>
+            {item.label}
+          </Link>
+        ))}
       </nav>
     </header>
   );

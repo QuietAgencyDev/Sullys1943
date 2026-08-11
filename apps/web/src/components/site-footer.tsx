@@ -7,6 +7,17 @@ const BOXING_ONTARIO_URL = "https://boxingon.ca";
 const QUIET_AGENCY_URL =
   process.env.NEXT_PUBLIC_QUIET_AGENCY_URL ?? "https://quietagency.co";
 
+const NAV = [
+  { href: "/legacy", label: "Legacy" },
+  { href: "/coaches", label: "Coaches" },
+  { href: "/classes", label: "Classes" },
+  { href: "/programs", label: "Programs" },
+  { href: "/donate", label: "Donate" },
+  { href: "/store", label: "Store" },
+  { href: "/contact", label: "Visit" },
+  { href: "/join", label: "Join" },
+] as const;
+
 export function SiteFooter() {
   return (
     <footer className={styles.footer}>
@@ -31,13 +42,11 @@ export function SiteFooter() {
         </div>
 
         <nav className={styles.links} aria-label="Footer">
-          <Link href="/contact">Visit</Link>
-          <Link href="/programs">Programs</Link>
-          <Link href="/coaches">Coaches</Link>
-          <Link href="/legacy">Legacy</Link>
-          <Link href="/store">Store</Link>
-          <Link href="/donate">Donate</Link>
-          <Link href="/join">Join</Link>
+          {NAV.map((item) => (
+            <Link key={item.href} href={item.href}>
+              {item.label}
+            </Link>
+          ))}
           <a href={GYM.website} target="_blank" rel="noreferrer">
             sullysboxinggym.com
           </a>
