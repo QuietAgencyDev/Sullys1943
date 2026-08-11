@@ -4,6 +4,7 @@ import { GYM, formatAddress } from "@/lib/gym-info";
 import styles from "./site-footer.module.css";
 
 const BOXING_ONTARIO_URL = "https://boxingon.ca";
+const BOXING_CANADA_URL = "https://boxingcanada.org";
 const QUIET_AGENCY_URL =
   process.env.NEXT_PUBLIC_QUIET_AGENCY_URL ?? "https://quietagency.co";
 
@@ -63,6 +64,21 @@ export function SiteFooter() {
             <Image
               src="/partners/boxing-ontario.png"
               alt="Boxing Ontario"
+              width={140}
+              height={93}
+              className={styles.partnerLogo}
+            />
+          </a>
+          <a
+            className={styles.partnerLink}
+            href={BOXING_CANADA_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Boxing Canada — visit boxingcanada.org"
+          >
+            <Image
+              src="/partners/boxing-canada.png"
+              alt="Boxing Canada"
               width={140}
               height={93}
               className={styles.partnerLogo}

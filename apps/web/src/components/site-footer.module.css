@@ -114,6 +114,9 @@
 .partnerLogo {
   width: min(112px, 36vw);
   height: auto;
+  max-height: 74px;
+  object-fit: contain;
+  object-position: left center;
   display: block;
 }
 
