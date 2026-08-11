@@ -37,8 +37,6 @@ export function SiteFooter() {
           <Link href="/legacy">Legacy</Link>
           <Link href="/store">Store</Link>
           <Link href="/donate">Donate</Link>
-          <Link href="/tv/demo">TV Demo</Link>
-          <Link href="/manuals">Manuals</Link>
           <Link href="/join">Join</Link>
           <a href={GYM.website} target="_blank" rel="noreferrer">
             sullysboxinggym.com
@@ -63,16 +61,28 @@ export function SiteFooter() {
           </a>
         </div>
 
-        <p className={styles.credit}>
-          System &amp; web developed by{" "}
-          <a
-            href={QUIET_AGENCY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Quiet Agency
-          </a>
-        </p>
+        <div className={styles.creditRow}>
+          <p className={styles.credit}>
+            System &amp; web developed by{" "}
+            <a
+              href={QUIET_AGENCY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Quiet Agency
+            </a>
+          </p>
+          <nav className={styles.opsIcons} aria-label="Internal tools">
+            <Link href="/tv/demo" className={styles.opsIcon} title="TV">
+              <span aria-hidden>📺</span>
+              <span className={styles.srOnly}>TV</span>
+            </Link>
+            <Link href="/manuals" className={styles.opsIcon} title="Manuals">
+              <span aria-hidden>📖</span>
+              <span className={styles.srOnly}>Manuals</span>
+            </Link>
+          </nav>
+        </div>
       </div>
     </footer>
   );
