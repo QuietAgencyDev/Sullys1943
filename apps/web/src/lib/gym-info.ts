@@ -14,6 +14,8 @@ export const GYM = {
   website: "https://www.sullysboxinggym.com",
   shopUrl: "https://www.sullysboxinggym.com/shop/",
   donationsUrl: "https://www.sullysboxinggym.com/donations/",
+  /** Official gym club page on BoxRec */
+  boxrecUrl: "https://boxrec.com/en/club/3854",
   mapUrl:
     "https://www.google.com/maps/search/?api=1&query=1554+Dundas+St+W+Toronto+ON+M6H+1Z6",
   mapEmbedQuery: "1554+Dundas+St+W,+Toronto,+ON+M6H+1Z6",

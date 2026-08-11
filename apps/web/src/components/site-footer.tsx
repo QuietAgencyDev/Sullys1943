@@ -84,6 +84,15 @@ export function SiteFooter() {
               className={styles.partnerLogo}
             />
           </a>
+          <a
+            className={styles.boxrecLink}
+            href={GYM.boxrecUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Sully's Boxing Gym on BoxRec"
+          >
+            BoxRec
+          </a>
         </div>
 
         <div className={styles.creditRow}>
