@@ -5,6 +5,7 @@ import styles from "./site-footer.module.css";
 
 const BOXING_ONTARIO_URL = "https://boxingon.ca";
 const BOXING_CANADA_URL = "https://boxingcanada.org";
+const EARLS_FIGHT_SHOP_URL = "https://www.earlsfightshop.com";
 const QUIET_AGENCY_URL =
   process.env.NEXT_PUBLIC_QUIET_AGENCY_URL ?? "https://quietagency.co";
 
@@ -85,7 +86,7 @@ export function SiteFooter() {
             />
           </a>
           <a
-            className={styles.boxrecLink}
+            className={`${styles.glowLink} ${styles.boxrecGlow}`}
             href={GYM.boxrecUrl}
             target="_blank"
             rel="noopener noreferrer"
@@ -96,7 +97,22 @@ export function SiteFooter() {
               alt="BoxRec"
               width={140}
               height={48}
-              className={styles.boxrecLogo}
+              className={styles.glowLogo}
+            />
+          </a>
+          <a
+            className={`${styles.glowLink} ${styles.earlsGlow}`}
+            href={EARLS_FIGHT_SHOP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Earl's Fight Shop — visit earlsfightshop.com"
+          >
+            <Image
+              src="/partners/earls-fight-shop.png"
+              alt="Earl's Fight Shop"
+              width={140}
+              height={140}
+              className={styles.glowLogo}
             />
           </a>
         </div>
