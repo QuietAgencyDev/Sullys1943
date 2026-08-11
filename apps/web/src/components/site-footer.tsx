@@ -91,7 +91,13 @@ export function SiteFooter() {
             rel="noopener noreferrer"
             aria-label="Sully's Boxing Gym on BoxRec"
           >
-            BoxRec
+            <Image
+              src="/partners/boxrec.png"
+              alt="BoxRec"
+              width={140}
+              height={48}
+              className={styles.boxrecLogo}
+            />
           </a>
         </div>
 
