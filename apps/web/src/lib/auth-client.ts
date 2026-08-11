@@ -6,6 +6,8 @@ export type AuthUser = {
   name: string;
   firstName?: string;
   lastName?: string;
+  /** Static or future AI member portrait path (e.g. /members/gavin-sheppard.png) */
+  photoUrl?: string | null;
 };
 
 export type AuthResponse = {

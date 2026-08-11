@@ -3,11 +3,17 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { get } from "@/lib/api";
+import { resolveMemberPhoto } from "@/lib/member-photo";
 import styles from "../ui.module.css";
 import passportStyles from "./passport.module.css";
 
 type Passport = {
-  member: { name: string; joinedAt: string; yearsAtGym: number };
+  member: {
+    name: string;
+    photoUrl?: string | null;
+    joinedAt: string;
+    yearsAtGym: number;
+  };
   progression: {
     xp: number;
     level: number;
@@ -87,15 +93,31 @@ export default function PassportPage() {
   }
 
   const pct = data.progression.progressPct ?? 0;
+  const photo = resolveMemberPhoto({
+    photoUrl: data.member.photoUrl,
+    name: data.member.name,
+  });
 
   return (
     <div className={styles.page}>
       <p className={styles.eyebrow}>Boxing Passport</p>
-      <h1 className={styles.title}>{data.member.name}</h1>
-      <p className={styles.muted}>
-        Member since {new Date(data.member.joinedAt).toLocaleDateString()} ·{" "}
-        {data.member.yearsAtGym} yrs in the gym
-      </p>
+
+      <header className={passportStyles.identity}>
+        {photo ? (
+          <img
+            className={passportStyles.portrait}
+            src={photo}
+            alt={data.member.name}
+          />
+        ) : null}
+        <div className={passportStyles.identityText}>
+          <h1 className={styles.title}>{data.member.name}</h1>
+          <p className={styles.muted}>
+            Member since {new Date(data.member.joinedAt).toLocaleDateString()} ·{" "}
+            {data.member.yearsAtGym} yrs in the gym
+          </p>
+        </div>
+      </header>
 
       <section className={passportStyles.hero}>
         <p className={passportStyles.rank}>{data.progression.rank}</p>

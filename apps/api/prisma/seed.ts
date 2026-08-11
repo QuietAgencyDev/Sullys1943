@@ -234,6 +234,8 @@ async function main() {
       firstName: "Gavin",
       lastName: "Sheppard",
       role: "member",
+      // Demo mascot portrait (AI member photos system comes later)
+      photoUrl: "/members/gavin-sheppard.png",
       points: { create: { balance: 20 } },
     },
   });

@@ -41,6 +41,41 @@
   border-radius: var(--radius-lg);
 }
 
+.identityRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.identityText {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.profilePhoto {
+  width: 112px;
+  height: 112px;
+  flex-shrink: 0;
+  object-fit: cover;
+  object-position: center 18%;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 480px) {
+  .identityRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .profilePhoto {
+    width: min(100%, 220px);
+    height: auto;
+    aspect-ratio: 3 / 4;
+  }
+}
+
 .list {
   list-style: none;
   margin: 0;

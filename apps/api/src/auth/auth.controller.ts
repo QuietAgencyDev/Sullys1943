@@ -34,6 +34,7 @@ function toAuthUser(user: {
   firstName: string;
   lastName: string;
   role?: string;
+  photoUrl?: string | null;
 }) {
   return {
     id: user.id,
@@ -42,6 +43,7 @@ function toAuthUser(user: {
     firstName: user.firstName,
     lastName: user.lastName,
     role: user.role ?? "member",
+    photoUrl: user.photoUrl ?? null,
   };
 }
 

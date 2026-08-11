@@ -6,6 +6,10 @@ import { useEffect, useState } from "react";
 import { Button } from "@sullys/ui";
 import { get } from "@/lib/api";
 import { getMe, logout, type AuthUser } from "@/lib/auth-client";
+import { resolveMemberPhoto } from "@/lib/member-photo";
+import { FighterRecordLinks } from "@/components/fighter-verification/FighterRecordLinks";
+import { FighterVerificationForm } from "@/components/fighter-verification/FighterVerificationForm";
+import type { FighterVerification } from "@/components/fighter-verification/types";
 import styles from "../ui.module.css";
 
 type Membership = {
@@ -21,10 +25,18 @@ type MembershipsResponse = {
   items?: Membership[];
 };
 
+const EMPTY_FIGHTER: FighterVerification = {
+  isCompetitiveFighter: false,
+  boxingOntarioRegNum: null,
+  boxrecIdPro: null,
+  boxrecIdAmateur: null,
+};
+
 export default function ProfilePage() {
   const router = useRouter();
   const [me, setMe] = useState<AuthUser | null>(null);
   const [memberships, setMemberships] = useState<Membership[]>([]);
+  const [fighter, setFighter] = useState<FighterVerification | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -42,10 +54,18 @@ export default function ProfilePage() {
         setMemberships(
           membershipData.memberships ?? membershipData.items ?? [],
         );
+
+        // Separate fighter payload — do not fold into getMe / auth-client
+        const fighterData = await get<FighterVerification>(
+          "/api/v1/fighter-verification/me",
+        ).catch(() => EMPTY_FIGHTER);
+        if (!active) return;
+        setFighter(fighterData);
       } catch {
         if (active) {
           setMe(null);
           setMemberships([]);
+          setFighter(null);
         }
       } finally {
         if (active) setLoading(false);
@@ -63,6 +83,13 @@ export default function ProfilePage() {
       router.push("/app/login");
     }
   }
+
+  // Demo member portrait until AI member-photo system lands
+  const profilePhoto = resolveMemberPhoto({
+    photoUrl: me?.photoUrl,
+    name: me?.name,
+    email: me?.email,
+  });
 
   return (
     <div className={styles.page}>
@@ -88,9 +115,26 @@ export default function ProfilePage() {
       ) : (
         <>
           <section className={styles.card}>
-            <p className={styles.rowTitle}>{me.name}</p>
-            <p className={styles.rowMeta}>{me.email}</p>
+            <div className={styles.identityRow}>
+              {profilePhoto ? (
+                <img
+                  className={styles.profilePhoto}
+                  src={profilePhoto}
+                  alt=""
+                />
+              ) : null}
+              <div className={styles.identityText}>
+                <p className={styles.rowTitle}>{me.name}</p>
+                <p className={styles.rowMeta}>{me.email}</p>
+              </div>
+            </div>
           </section>
+
+          <FighterRecordLinks profile={fighter} />
+          <FighterVerificationForm
+            initial={fighter}
+            onSaved={(next) => setFighter(next)}
+          />
 
           <section className={styles.page}>
             <h2 className={styles.rowTitle}>Memberships</h2>

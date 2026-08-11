@@ -50,6 +50,13 @@ model User {
   disabledAt     DateTime?
   invitedAt      DateTime?
   createdAt      DateTime @default(now())
+
+  // Competitive fighter verification (additive — Boxing Ontario / BoxRec deep links)
+  isCompetitiveFighter Boolean @default(false) @map("is_competitive_fighter")
+  boxingOntarioRegNum  String? @map("boxing_ontario_reg_num")
+  boxrecIdPro          String? @map("boxrec_id_pro")
+  boxrecIdAmateur      String? @map("boxrec_id_amateur")
+
   classTeamMembers ClassTeamMember[]
 
   membershipsAsPayer Membership[] @relation("Payer")
