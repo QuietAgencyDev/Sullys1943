@@ -1,7 +1,7 @@
 .main {
   max-width: 760px;
   margin: 0 auto;
-  padding: calc(148px + env(safe-area-inset-top, 0px)) var(--space-5) var(--space-8);
+  padding: calc(var(--site-header-clearance) + var(--space-4)) var(--space-5) var(--space-8);
   display: grid;
   gap: var(--space-6);
 }

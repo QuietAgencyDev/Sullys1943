@@ -4,6 +4,17 @@
   box-sizing: border-box;
 }
 
+:root {
+  /* SiteHeader is position:absolute — keep page titles clear of logo + mobile nav */
+  --site-header-clearance: calc(168px + env(safe-area-inset-top, 0px));
+}
+
+@media (min-width: 768px) {
+  :root {
+    --site-header-clearance: 112px;
+  }
+}
+
 html,
 body {
   margin: 0;

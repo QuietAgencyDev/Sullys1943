@@ -50,8 +50,8 @@
   align-items: flex-start;
   gap: var(--space-4);
   width: min(720px, 100%);
-  /* Clear absolute SiteHeader — mobile stacks logo + wrapping nav (~2 rows) */
-  padding: calc(196px + env(safe-area-inset-top, 0px)) var(--space-5) var(--space-7);
+  /* Clear absolute SiteHeader — mobile stacks logo + nav */
+  padding: calc(var(--site-header-clearance) + 2.5rem) var(--space-5) var(--space-7);
   animation: rise 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
@@ -152,7 +152,7 @@
 
 @media (max-width: 380px) {
   .content {
-    padding-top: calc(210px + env(safe-area-inset-top, 0px));
+    padding-top: calc(var(--site-header-clearance) + 3.25rem);
   }
 
   .manifesto {
