@@ -98,6 +98,8 @@ This folder is the **single source of truth** for architecture, product scope, a
 4. [Assumptions, Risks & Improvements](./08-process/04-assumptions-risks.md)
 5. [Implementation Sequence](./08-process/05-implementation-sequence.md)
 6. [Client Demo Test Guide](./08-process/06-client-demo-test-guide.md) — full Member / Coach / Staff / TV walkthrough ([PDF](./08-process/Sullys-Client-Demo-Test-Guide.pdf))
+7. [Banking & Payment Setup](./08-process/07-banking-payment-setup.md) — Helcim / bank / env cutover ([PDF](./08-process/Sullys-Banking-Payment-Setup.pdf))
+8. [QuickBooks Integration](./08-process/08-quickbooks-integration.md) — QBO mapping, OAuth, sync phases ([PDF](./08-process/Sullys-QuickBooks-Integration.pdf))
 
 ### Diagrams
 - [Architecture Diagrams (Mermaid)](./diagrams/architecture.md)

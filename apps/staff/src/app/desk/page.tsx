@@ -162,8 +162,8 @@ export default function DeskPage() {
     }
   }
 
-  async function sellDropIn(e: FormEvent) {
-    e.preventDefault();
+  async function sellDropIn(tender: "cash" | "card") {
+    if (!dropName.trim() || !dropEmail.trim() || busy) return;
     setBusy(true);
     setError(null);
     setMessage(null);
@@ -172,15 +172,23 @@ export default function DeskPage() {
         member: { name: string; email: string };
         amountCents: number;
         productName: string;
+        tender?: string;
         checkIn?: { xpAwarded?: number } | null;
       }>("/api/v1/desk/drop-in", {
         name: dropName.trim(),
         email: dropEmail.trim(),
         sessionId: sessionId || undefined,
         checkIn: dropCheckIn,
+        tender,
       });
+      const tenderLabel =
+        (res.tender || tender) === "cash"
+          ? "CASH"
+          : (res.tender || tender) === "card"
+            ? "CARD"
+            : String(res.tender || tender).toUpperCase();
       setMessage(
-        `Sold ${res.productName} ($${(res.amountCents / 100).toFixed(2)}) to ${res.member.name}${
+        `Sold ${res.productName} ($${(res.amountCents / 100).toFixed(2)}) · ${tenderLabel} · ${res.member.name}${
           res.checkIn ? ` · checked in +${res.checkIn.xpAwarded ?? 10} XP` : ""
         }`,
       );
@@ -338,10 +346,10 @@ export default function DeskPage() {
         </Button>
       </form>
 
-      <form className={styles.panel} onSubmit={sellDropIn}>
+      <div className={styles.panel}>
         <p className={styles.copy}>
           <strong>Sell drop-in</strong> — walk-in without membership ($25
-          same-day). Optional auto check-in with session attached.
+          same-day). Choose tender so owner analytics tracks cash vs card.
         </p>
         <label className={styles.field}>
           <span>Guest name</span>
@@ -350,7 +358,6 @@ export default function DeskPage() {
             value={dropName}
             onChange={(e) => setDropName(e.target.value)}
             placeholder="Alex Walkin"
-            required
           />
         </label>
         <label className={styles.field}>
@@ -361,7 +368,6 @@ export default function DeskPage() {
             value={dropEmail}
             onChange={(e) => setDropEmail(e.target.value)}
             placeholder="walkin@example.com"
-            required
           />
         </label>
         <label className={styles.field}>
@@ -374,10 +380,24 @@ export default function DeskPage() {
             Check in immediately after sale
           </span>
         </label>
-        <Button type="submit" disabled={busy}>
-          {busy ? "Selling…" : "Sell drop-in"}
-        </Button>
-      </form>
+        <div className={styles.actions}>
+          <Button
+            type="button"
+            disabled={busy || !dropName.trim() || !dropEmail.trim()}
+            onClick={() => sellDropIn("cash")}
+          >
+            {busy ? "Selling…" : "CASH"}
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={busy || !dropName.trim() || !dropEmail.trim()}
+            onClick={() => sellDropIn("card")}
+          >
+            {busy ? "Selling…" : "CARD"}
+          </Button>
+        </div>
+      </div>
 
       <form className={styles.panel} onSubmit={linkFamily}>
         <p className={styles.copy}>

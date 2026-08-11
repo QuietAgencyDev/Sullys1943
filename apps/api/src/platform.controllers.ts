@@ -38,6 +38,62 @@ function requireStaff(auth: AuthPayload) {
   }
 }
 
+async function resolveSegmentMemberIds(
+  prisma: PrismaService,
+  orgId: string,
+  segment: string,
+): Promise<string[]> {
+  if (segment === "unsigned_waiver") {
+    const packets = await prisma.signaturePacket.findMany({
+      where: { status: "required" },
+      select: { subjectUserId: true },
+    });
+    const ids = [...new Set(packets.map((p) => p.subjectUserId))];
+    if (ids.length === 0) return [];
+    const users = await prisma.user.findMany({
+      where: { id: { in: ids }, organizationId: orgId },
+      select: { id: true },
+    });
+    return users.map((u) => u.id);
+  }
+
+  if (segment === "all_active") {
+    const rows = await prisma.membershipMember.findMany({
+      where: {
+        membership: {
+          status: "active",
+          product: { organizationId: orgId },
+        },
+      },
+      select: { userId: true },
+    });
+    return [...new Set(rows.map((r) => r.userId))];
+  }
+
+  // Product codes: youth | monthly | trial | drop_in
+  // "adult" / "kids" aliases for owner messaging
+  const productCodes =
+    segment === "adult"
+      ? ["monthly", "trial"]
+      : segment === "kids" || segment === "youth"
+        ? ["youth"]
+        : [segment];
+
+  const rows = await prisma.membershipMember.findMany({
+    where: {
+      membership: {
+        status: "active",
+        product: {
+          organizationId: orgId,
+          code: { in: productCodes },
+        },
+      },
+    },
+    select: { userId: true },
+  });
+  return [...new Set(rows.map((r) => r.userId))];
+}
+
 @Controller("sessions")
 export class SessionsController {
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
@@ -1107,11 +1163,44 @@ export class MessagesController {
       body?: string;
       athleteId?: string;
       sessionId?: string;
-      kind?: "direct" | "class_broadcast";
+      kind?: "direct" | "class_broadcast" | "segment_broadcast";
+      /** youth | adult | monthly | trial | drop_in | all_active | unsigned_waiver */
+      segment?: string;
     },
   ) {
     const text = body.body?.trim();
     if (!text) throw new BadRequestException("Message body required");
+
+    if (body.kind === "segment_broadcast") {
+      if (!["owner", "admin", "front_desk", "coach"].includes(auth.role)) {
+        throw new ForbiddenException("Staff only");
+      }
+      const segment = (body.segment || "all_active").trim();
+      const memberIds = await resolveSegmentMemberIds(this.prisma, auth.orgId, segment);
+      if (memberIds.length === 0) {
+        throw new BadRequestException(`No members found for segment: ${segment}`);
+      }
+      const participantIds = [...new Set([auth.sub, ...memberIds])];
+      const thread = await this.prisma.messageThread.create({
+        data: {
+          subject: body.subject?.trim() || `Group · ${segment}`,
+          kind: "segment_broadcast",
+          createdById: auth.sub,
+          participants: {
+            create: participantIds.map((userId) => ({ userId })),
+          },
+          messages: {
+            create: { senderId: auth.sub, body: text },
+          },
+        },
+      });
+      return {
+        thread: { id: thread.id },
+        recipientCount: memberIds.length,
+        segment,
+      };
+    }
+
     const kind = body.kind === "class_broadcast" ? "class_broadcast" : "direct";
 
     if (kind === "class_broadcast") {
@@ -1671,11 +1760,15 @@ export class DeskController {
       sessionId?: string;
       checkIn?: boolean;
       productCode?: string;
+      /** Desk tender: cash | card | mock */
+      tender?: "cash" | "card" | "mock";
     },
   ) {
     requireStaff(auth);
     const email = body.email?.trim().toLowerCase();
     if (!email) throw new BadRequestException("email required");
+    const tender =
+      body.tender === "cash" || body.tender === "card" ? body.tender : "mock";
 
     const org = await this.prisma.organization.findFirst({
       where: { id: auth.orgId },
@@ -1808,11 +1901,12 @@ export class DeskController {
     await this.prisma.paymentEvent.create({
       data: {
         membershipId: membership.id,
-        provider: "mock",
-        externalId: `dropin_${membership.id}_${Date.now()}`,
+        provider: tender,
+        externalId: `dropin_${tender}_${membership.id}_${Date.now()}`,
         type: "drop_in.sale",
         status: "completed",
         amountCents: product.priceCents,
+        raw: JSON.stringify({ tender, soldBy: auth.sub, at: new Date().toISOString() }),
       },
     });
 
@@ -1827,6 +1921,7 @@ export class DeskController {
       checkIn,
       amountCents: product.priceCents,
       productName: product.name,
+      tender,
     };
   }
 
@@ -2195,11 +2290,15 @@ export class FamilyController {
 export class OwnerBriefController {
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
-  @Get("morning-brief")
-  async morningBrief(@CurrentUser() auth: AuthPayload) {
+  private requireOwnerOps(auth: AuthPayload) {
     if (!["owner", "admin", "front_desk"].includes(auth.role)) {
       throw new ForbiddenException("Owner / desk role required");
     }
+  }
+
+  @Get("morning-brief")
+  async morningBrief(@CurrentUser() auth: AuthPayload) {
+    this.requireOwnerOps(auth);
 
     const start = new Date();
     start.setHours(0, 0, 0, 0);
@@ -2221,10 +2320,7 @@ export class OwnerBriefController {
       this.prisma.attendanceEvent.findMany({
         where: {
           checkedInAt: { gte: start, lt: end },
-          OR: [
-            { method: "staff_override" },
-            { flags: { not: "" } },
-          ],
+          OR: [{ method: "staff_override" }, { flags: { not: "" } }],
         },
         include: {
           user: { select: { firstName: true, lastName: true } },
@@ -2285,6 +2381,224 @@ export class OwnerBriefController {
         flags: o.flags,
       })),
       stripeMode: process.env.STRIPE_SECRET_KEY ? "live_keys" : "mock",
+    };
+  }
+
+  /** Owner analytics — memberships, revenue to Sully's, waivers, walk-ins, demographics. */
+  @Get("analytics")
+  async analytics(@CurrentUser() auth: AuthPayload) {
+    this.requireOwnerOps(auth);
+
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(start);
+    end.setDate(end.getDate() + 1);
+    const monthStart = new Date(start.getFullYear(), start.getMonth(), 1);
+
+    const activeMemberships = await this.prisma.membership.findMany({
+      where: {
+        status: "active",
+        product: { organizationId: auth.orgId },
+      },
+      include: {
+        product: { select: { code: true, name: true, priceCents: true } },
+        members: { select: { userId: true } },
+      },
+    });
+
+    const byProduct: Record<
+      string,
+      { code: string; name: string; count: number; memberSeats: number }
+    > = {};
+    for (const m of activeMemberships) {
+      const code = m.product.code;
+      if (!byProduct[code]) {
+        byProduct[code] = {
+          code,
+          name: m.product.name,
+          count: 0,
+          memberSeats: 0,
+        };
+      }
+      byProduct[code]!.count += 1;
+      byProduct[code]!.memberSeats += m.members.length;
+    }
+
+    const youthCount =
+      (byProduct.youth?.count ?? 0) + (byProduct.kids?.count ?? 0);
+    const adultCount =
+      (byProduct.monthly?.count ?? 0) + (byProduct.trial?.count ?? 0);
+
+    const paymentsToday = await this.prisma.paymentEvent.findMany({
+      where: {
+        status: "completed",
+        createdAt: { gte: start, lt: end },
+      },
+      select: { amountCents: true, provider: true, type: true },
+    });
+    const paymentsMonth = await this.prisma.paymentEvent.findMany({
+      where: {
+        status: "completed",
+        createdAt: { gte: monthStart, lt: end },
+      },
+      select: { amountCents: true, provider: true, type: true },
+    });
+
+    const sumBy = (
+      rows: { amountCents: number; provider: string; type: string }[],
+    ) => {
+      const byTender: Record<string, number> = {};
+      let total = 0;
+      let walkIn = 0;
+      for (const r of rows) {
+        total += r.amountCents;
+        byTender[r.provider] = (byTender[r.provider] ?? 0) + r.amountCents;
+        if (r.type === "drop_in.sale") walkIn += r.amountCents;
+      }
+      return { totalCents: total, byTender, walkInCents: walkIn };
+    };
+
+    const todayRev = sumBy(paymentsToday);
+    const monthRev = sumBy(paymentsMonth);
+
+    const [waiversSigned, waiversPending, walkInCheckIns, walkInSales] =
+      await Promise.all([
+        this.prisma.signaturePacket.count({
+          where: {
+            status: "signed",
+            signedAt: { gte: start, lt: end },
+          },
+        }),
+        this.prisma.signaturePacket.count({ where: { status: "required" } }),
+        this.prisma.attendanceEvent.count({
+          where: {
+            checkedInAt: { gte: start, lt: end },
+            method: "drop_in_desk",
+          },
+        }),
+        this.prisma.paymentEvent.count({
+          where: {
+            type: "drop_in.sale",
+            status: "completed",
+            createdAt: { gte: start, lt: end },
+          },
+        }),
+      ]);
+
+    // Thin demographics from DOB when present
+    const members = await this.prisma.user.findMany({
+      where: {
+        organizationId: auth.orgId,
+        role: "member",
+        disabledAt: null,
+      },
+      select: { dateOfBirth: true },
+    });
+    const now = new Date();
+    let kidsYouth = 0;
+    let adults = 0;
+    let unknownAge = 0;
+    for (const m of members) {
+      if (!m.dateOfBirth) {
+        unknownAge += 1;
+        continue;
+      }
+      const age =
+        (now.getTime() - m.dateOfBirth.getTime()) /
+        (365.25 * 24 * 60 * 60 * 1000);
+      if (age < 18) kidsYouth += 1;
+      else adults += 1;
+    }
+
+    return {
+      asOf: new Date().toISOString(),
+      memberships: {
+        activeTotal: activeMemberships.length,
+        youthKids: youthCount,
+        adult: adultCount,
+        dropInActive: byProduct.drop_in?.count ?? 0,
+        byProduct: Object.values(byProduct),
+      },
+      revenue: {
+        todayCents: todayRev.totalCents,
+        todayByTender: todayRev.byTender,
+        todayWalkInCents: todayRev.walkInCents,
+        monthCents: monthRev.totalCents,
+        monthByTender: monthRev.byTender,
+        monthWalkInCents: monthRev.walkInCents,
+        currency: "CAD",
+      },
+      waivers: {
+        signedToday: waiversSigned,
+        pendingUnsigned: waiversPending,
+      },
+      walkIns: {
+        salesToday: walkInSales,
+        checkInsToday: walkInCheckIns,
+        amountCentsToday: todayRev.walkInCents,
+      },
+      demographics: {
+        membersWithDob: kidsYouth + adults,
+        kidsYouth,
+        adults,
+        unknownAge,
+        note: "Age buckets use date of birth when on file. Membership product mix is the primary kids vs adult signal.",
+      },
+      billingMode: process.env.STRIPE_SECRET_KEY
+        ? "stripe_keys"
+        : process.env.HELCIM_API_TOKEN
+          ? "helcim_keys"
+          : "mock",
+      quickbooks: {
+        connected: false,
+        status: "planned",
+        note: "QuickBooks Online export is planned after Helcim banking is live.",
+      },
+    };
+  }
+
+  @Post("messages/broadcast")
+  async broadcast(
+    @CurrentUser() auth: AuthPayload,
+    @Body()
+    body: {
+      segment?: string;
+      subject?: string;
+      body?: string;
+    },
+  ) {
+    if (!["owner", "admin"].includes(auth.role)) {
+      throw new ForbiddenException("Owner / admin only");
+    }
+    const text = body.body?.trim();
+    if (!text) throw new BadRequestException("Message body required");
+    const segment = (body.segment || "all_active").trim();
+    const memberIds = await resolveSegmentMemberIds(
+      this.prisma,
+      auth.orgId,
+      segment,
+    );
+    if (memberIds.length === 0) {
+      throw new BadRequestException(`No members in segment: ${segment}`);
+    }
+    const participantIds = [...new Set([auth.sub, ...memberIds])];
+    const thread = await this.prisma.messageThread.create({
+      data: {
+        subject: body.subject?.trim() || `Owner · ${segment}`,
+        kind: "segment_broadcast",
+        createdById: auth.sub,
+        participants: {
+          create: participantIds.map((userId) => ({ userId })),
+        },
+        messages: {
+          create: { senderId: auth.sub, body: text },
+        },
+      },
+    });
+    return {
+      thread: { id: thread.id },
+      segment,
+      recipientCount: memberIds.length,
     };
   }
 }

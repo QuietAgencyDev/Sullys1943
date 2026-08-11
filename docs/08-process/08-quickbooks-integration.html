@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sully’s — QuickBooks Integration Guide</title>
+  <style>
+    @page {
+      size: Letter;
+      margin: 0.55in 0.6in 0.65in;
+    }
+
+    :root {
+      --brand-cream: #f3e6c8;
+      --brand-red: #c82026;
+      --brand-brown: #3a2418;
+      --brand-glove: #c4a06a;
+      --ink: #1a120e;
+      --muted: #5c4638;
+      --line: rgba(58, 36, 24, 0.18);
+      --paper: #f7f1e6;
+      --card: #fffaf2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      font-size: 10.5pt;
+      line-height: 1.45;
+    }
+
+    .page-bg {
+      min-height: 100%;
+      background:
+        radial-gradient(ellipse at 0% 0%, rgba(200, 32, 38, 0.10), transparent 42%),
+        radial-gradient(ellipse at 100% 0%, rgba(196, 160, 106, 0.14), transparent 38%),
+        linear-gradient(180deg, #fbf6ec 0%, var(--paper) 40%, #f3ebe0 100%);
+    }
+
+    .wrap {
+      max-width: 8.2in;
+      margin: 0 auto;
+      padding: 0.15in 0.1in 0.25in;
+    }
+
+    header.hero {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 0.85rem;
+      align-items: center;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(196, 160, 106, 0.45);
+      background:
+        linear-gradient(135deg, rgba(58, 36, 24, 0.96), rgba(20, 15, 12, 0.94));
+      color: var(--brand-cream);
+      box-shadow: 0 10px 28px rgba(20, 15, 12, 0.18);
+    }
+
+    header.hero img {
+      width: 84px;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
+    }
+
+    .eyebrow {
+      margin: 0 0 0.2rem;
+      color: var(--brand-red);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.55rem;
+      line-height: 1.05;
+      letter-spacing: 0.02em;
+      color: var(--brand-cream);
+      font-weight: 800;
+    }
+
+    .subtitle {
+      margin: 0.4rem 0 0;
+      color: rgba(243, 230, 200, 0.78);
+      font-size: 0.92rem;
+    }
+
+    .meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem 1rem;
+      margin: 0.75rem 0 1.1rem;
+      padding: 0.55rem 0.75rem;
+      border-left: 4px solid var(--brand-red);
+      background: rgba(196, 160, 106, 0.12);
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    h2 {
+      margin: 1.35rem 0 0.55rem;
+      padding-bottom: 0.28rem;
+      border-bottom: 2px solid var(--brand-red);
+      color: var(--brand-brown);
+      font-size: 1.12rem;
+      letter-spacing: 0.03em;
+      page-break-after: avoid;
+    }
+
+    h3 {
+      margin: 0.95rem 0 0.4rem;
+      color: var(--brand-red);
+      font-size: 0.98rem;
+      page-break-after: avoid;
+    }
+
+    p { margin: 0.35rem 0 0.55rem; }
+
+    a {
+      color: #8f1a1f;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    ul, ol {
+      margin: 0.25rem 0 0.7rem;
+      padding-left: 1.2rem;
+    }
+
+    li { margin: 0.18rem 0; }
+
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.88em;
+      background: rgba(58, 36, 24, 0.08);
+      border: 1px solid var(--line);
+      padding: 0.05rem 0.28rem;
+      color: var(--brand-brown);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.4rem 0 0.9rem;
+      background: var(--card);
+      page-break-inside: avoid;
+      font-size: 9.4pt;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 0.38rem 0.45rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--brand-brown);
+      color: var(--brand-cream);
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(196, 160, 106, 0.08);
+    }
+
+    .callout {
+      margin: 0.7rem 0 1rem;
+      padding: 0.7rem 0.85rem;
+      border: 1px solid rgba(200, 32, 38, 0.35);
+      background: rgba(200, 32, 38, 0.07);
+      page-break-inside: avoid;
+    }
+
+    .callout strong { color: var(--brand-red); }
+
+    .check {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .check li::before {
+      content: "☐ ";
+      color: var(--brand-red);
+      font-weight: 700;
+    }
+
+    footer {
+      margin-top: 1.4rem;
+      padding-top: 0.6rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-bg">
+    <div class="wrap">
+      <header class="hero">
+        <img src="../06-design/assets/sullys-logo-primary.png" alt="Sully's Boxing Gym" />
+        <div>
+          <p class="eyebrow">Operations · Accounting</p>
+          <h1>QuickBooks Integration</h1>
+          <p class="subtitle">Sully’s ledger → QuickBooks Online · after Helcim banking is live</p>
+        </div>
+      </header>
+
+      <div class="meta-bar">
+        <span><strong>Gym:</strong> Sully’s Boxing Gym (1943)</span>
+        <span><strong>Doc:</strong> Separate from demo + banking PDFs</span>
+        <span><strong>Date:</strong> August 2026</span>
+        <span><strong>Audience:</strong> Owner + accountant + Quiet Agency</span>
+      </div>
+
+      <div class="callout">
+        <strong>Order of operations:</strong> Finish
+        <em>Banking &amp; Payment Setup (Helcim)</em> first.
+        QuickBooks receives <strong>settled totals</strong> from Sully’s —
+        never card numbers, never membership status as the source of truth.
+      </div>
+
+      <h2>1. Goal</h2>
+      <p>
+        Keep day-to-day gym ops in Sully’s (memberships, desk CASH/CARD, waivers,
+        walk-ins, owner analytics). Push clean accounting data into
+        <strong>QuickBooks Online (QBO)</strong> so bookkeeping stays accurate
+        without double-entry at the desk.
+      </p>
+
+      <h2>2. What stays in Sully’s vs QuickBooks</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Sully’s (source of truth)</th>
+            <th>QuickBooks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Member / youth / adult profiles</td>
+            <td>Yes</td>
+            <td>Optional Customer names only</td>
+          </tr>
+          <tr>
+            <td>Membership active / past_due</td>
+            <td>Yes</td>
+            <td>No (income only)</td>
+          </tr>
+          <tr>
+            <td>Waivers, check-ins, XP</td>
+            <td>Yes</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>Desk CASH / CARD / Helcim settlement</td>
+            <td>PaymentEvent ledger</td>
+            <td>Sales receipts / deposits</td>
+          </tr>
+          <tr>
+            <td>GST/HST, chart of accounts</td>
+            <td>No</td>
+            <td>Yes (accountant-owned)</td>
+          </tr>
+          <tr>
+            <td>Payroll, rent, vendors</td>
+            <td>No</td>
+            <td>Yes</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>3. Prerequisites (owner)</h2>
+      <ul class="check">
+        <li>QuickBooks Online company created for Sully’s Boxing Gym</li>
+        <li>Chart of accounts reviewed with accountant (CAD)</li>
+        <li>Helcim merchant live (or at least sandbox validated) — see Banking PDF</li>
+        <li>Owner desk showing cash vs card revenue correctly for 1–2 weeks</li>
+        <li>Admin Intuit account that can authorize apps (company admin)</li>
+      </ul>
+
+      <h2>4. Recommended account mapping</h2>
+      <p>Confirm labels with your bookkeeper before go-live. Typical CAD gym map:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Sully’s stream</th>
+            <th>Suggested QBO account</th>
+            <th>QBO type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Adult monthly / trial</td>
+            <td>Membership income — Adult</td>
+            <td>Income</td>
+          </tr>
+          <tr>
+            <td>Youth / kids membership</td>
+            <td>Membership income — Youth</td>
+            <td>Income</td>
+          </tr>
+          <tr>
+            <td>Drop-in / walk-in</td>
+            <td>Drop-in &amp; day pass</td>
+            <td>Income</td>
+          </tr>
+          <tr>
+            <td>Kitchen / merch (later)</td>
+            <td>Retail / F&amp;B sales</td>
+            <td>Income</td>
+          </tr>
+          <tr>
+            <td>Desk CASH</td>
+            <td>Undeposited Funds → Bank deposit</td>
+            <td>Asset / Bank</td>
+          </tr>
+          <tr>
+            <td>Card / Helcim payout</td>
+            <td>Helcim Clearing → Operating bank</td>
+            <td>Asset / Bank</td>
+          </tr>
+          <tr>
+            <td>Processor fees</td>
+            <td>Merchant / payment processing fees</td>
+            <td>Expense</td>
+          </tr>
+          <tr>
+            <td>Refunds</td>
+            <td>Same income account (negative) or Sales returns</td>
+            <td>Income / contra</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>5. Integration phases</h2>
+
+      <h3>Phase A — Manual export (fastest, safe)</h3>
+      <ol>
+        <li>Owner desk → review “Money to Sully’s” (today / month by tender).</li>
+        <li>Quiet Agency adds CSV export: date, type, tender, amount CAD, membership product, externalId.</li>
+        <li>Import into QBO via <strong>Sales → Import</strong> or accountant spreadsheet.</li>
+        <li>End of day: cash drawer count must match Owner “CASH” total.</li>
+      </ol>
+
+      <h3>Phase B — Nightly sync (recommended production)</h3>
+      <ol>
+        <li>Create Intuit Developer app → QuickBooks Online → OAuth 2.0.</li>
+        <li>Owner authorizes Sully’s app once (redirect to staff/owner admin).</li>
+        <li>Store tokens encrypted in Railway secrets (never in git / browser).</li>
+        <li>Nightly job posts SalesReceipts / JournalEntries for completed <code>PaymentEvent</code> rows not yet synced.</li>
+        <li>Idempotency key = <code>PaymentEvent.externalId</code> (no duplicates).</li>
+        <li>Owner UI shows QuickBooks: Connected · last sync · errors.</li>
+      </ol>
+
+      <h3>Phase C — Optional Helcim ↔ QBO</h3>
+      <p>
+        Helcim may offer its own QBO sync for card settlements. If enabled,
+        <strong>do not double-post</strong> the same card sale from Sully’s and Helcim.
+        Prefer: Sully’s posts membership/drop-in income; Helcim feeds bank deposit /
+        fee detail only — or Sully’s alone posts everything and Helcim sync stays off.
+      </p>
+
+      <h2>6. Secrets for Quiet Agency</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Env var</th>
+            <th>Where</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>QUICKBOOKS_CLIENT_ID</code></td>
+            <td>Railway API</td>
+            <td>Intuit app client id</td>
+          </tr>
+          <tr>
+            <td><code>QUICKBOOKS_CLIENT_SECRET</code></td>
+            <td>Railway API</td>
+            <td>Intuit app secret</td>
+          </tr>
+          <tr>
+            <td><code>QUICKBOOKS_REALM_ID</code></td>
+            <td>Railway API</td>
+            <td>Company id after OAuth</td>
+          </tr>
+          <tr>
+            <td><code>QUICKBOOKS_REFRESH_TOKEN</code></td>
+            <td>Railway API (encrypted)</td>
+            <td>Long-lived refresh</td>
+          </tr>
+          <tr>
+            <td><code>QUICKBOOKS_ENV=sandbox|production</code></td>
+            <td>Railway API</td>
+            <td>Target Intuit environment</td>
+          </tr>
+          <tr>
+            <td><code>QUICKBOOKS_SYNC_ENABLED=true</code></td>
+            <td>Railway API</td>
+            <td>Feature flag</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <strong>Never</strong> put QuickBooks secrets in Vercel web/staff public env.
+        OAuth callback may live on API: e.g.
+        <code>https://api.sullys1943.com/api/v1/integrations/quickbooks/callback</code>
+      </div>
+
+      <h2>7. Owner connect checklist (when Phase B ships)</h2>
+      <ol>
+        <li>Sign in Staff as <code>owner@sullys.local</code> (or live owner account).</li>
+        <li>Open Owner desk → QuickBooks → <strong>Connect</strong>.</li>
+        <li>Approve Intuit permissions for the Sully’s company.</li>
+        <li>Confirm chart mapping screen (income accounts).</li>
+        <li>Run <strong>Sync now</strong> for yesterday’s completed payments.</li>
+        <li>In QBO, verify one cash drop-in and one card/membership sample.</li>
+        <li>Turn on nightly sync; leave <code>QUICKBOOKS_ENV=sandbox</code> until samples look right.</li>
+      </ol>
+
+      <h2>8. What we will not sync</h2>
+      <ul>
+        <li>Card PANs / CVV / Helcim vault tokens</li>
+        <li>Waiver PDFs or medical notes</li>
+        <li>Coach notes, XP, class attendance</li>
+        <li>Passwords or QR check-in tokens</li>
+        <li>Pending / failed payments (only <code>completed</code>)</li>
+      </ul>
+
+      <h2>9. Acceptance tests</h2>
+      <ul class="check">
+        <li>Sandbox: one adult membership posts once to correct QBO income account</li>
+        <li>Sandbox: youth membership maps to Youth income</li>
+        <li>Desk CASH drop-in → Undeposited Funds (or agreed cash account)</li>
+        <li>Desk CARD / Helcim → clearing + fees treated correctly</li>
+        <li>Refund creates matching credit / negative sale</li>
+        <li>Re-run sync does not duplicate (same externalId)</li>
+        <li>Disconnect OAuth stops posts; reconnect resumes</li>
+        <li>Owner desk shows Connected + last successful sync time</li>
+      </ul>
+
+      <h2>10. Status today</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Owner desk QuickBooks panel</td>
+            <td>Shows “planned / not connected”</td>
+          </tr>
+          <tr>
+            <td>OAuth + nightly sync</td>
+            <td>Not built yet — this PDF is the build + ops plan</td>
+          </tr>
+          <tr>
+            <td>CSV export</td>
+            <td>Next engineering step if accountant needs numbers before OAuth</td>
+          </tr>
+          <tr>
+            <td>Related docs</td>
+            <td>Banking PDF · <code>08-proprietary-payment-platform.md</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>11. Contacts &amp; links</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Staff / Owner</td>
+            <td><a href="https://sullys1943-staff.vercel.app/owner">sullys1943-staff.vercel.app/owner</a></td>
+          </tr>
+          <tr>
+            <td>API</td>
+            <td><a href="https://api.sullys1943.com">api.sullys1943.com</a></td>
+          </tr>
+          <tr>
+            <td>Intuit Developer</td>
+            <td><a href="https://developer.intuit.com/">developer.intuit.com</a></td>
+          </tr>
+          <tr>
+            <td>Banking companion PDF</td>
+            <td><code>docs/08-process/Sullys-Banking-Payment-Setup.pdf</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <footer>
+        Sully’s Boxing Gym · QuickBooks Integration · Quiet Agency · Confidential ops handoff
+      </footer>
+    </div>
+  </div>
+</body>
+</html>

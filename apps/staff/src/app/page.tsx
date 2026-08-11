@@ -178,8 +178,11 @@ export default function StaffHome() {
                   <span>Allergen-aware tickets and status board</span>
                 </Link>
                 <Link className={styles.navCard} href="/owner">
-                  <strong>Owner morning brief</strong>
-                  <span>Check-ins, fill rates, waivers, overrides</span>
+                  <strong>Owner desk</strong>
+                  <span>
+                    Memberships, revenue, waivers, walk-ins, demographics,
+                    group messages
+                  </span>
                 </Link>
                 <Link className={styles.navCard} href="/admin/users">
                   <strong>Staff user admin</strong>

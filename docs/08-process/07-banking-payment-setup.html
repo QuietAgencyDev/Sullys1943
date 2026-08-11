@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sully’s — Banking &amp; Payment Setup (Helcim)</title>
+  <style>
+    @page {
+      size: Letter;
+      margin: 0.55in 0.6in 0.65in;
+    }
+
+    :root {
+      --brand-cream: #f3e6c8;
+      --brand-red: #c82026;
+      --brand-brown: #3a2418;
+      --brand-glove: #c4a06a;
+      --ink: #1a120e;
+      --muted: #5c4638;
+      --line: rgba(58, 36, 24, 0.18);
+      --paper: #f7f1e6;
+      --card: #fffaf2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      font-size: 10.5pt;
+      line-height: 1.45;
+    }
+
+    .page-bg {
+      min-height: 100%;
+      background:
+        radial-gradient(ellipse at 0% 0%, rgba(200, 32, 38, 0.10), transparent 42%),
+        radial-gradient(ellipse at 100% 0%, rgba(196, 160, 106, 0.14), transparent 38%),
+        linear-gradient(180deg, #fbf6ec 0%, var(--paper) 40%, #f3ebe0 100%);
+    }
+
+    .wrap {
+      max-width: 8.2in;
+      margin: 0 auto;
+      padding: 0.15in 0.1in 0.25in;
+    }
+
+    header.hero {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 0.85rem;
+      align-items: center;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(196, 160, 106, 0.45);
+      background:
+        linear-gradient(135deg, rgba(58, 36, 24, 0.96), rgba(20, 15, 12, 0.94));
+      color: var(--brand-cream);
+      box-shadow: 0 10px 28px rgba(20, 15, 12, 0.18);
+    }
+
+    header.hero img {
+      width: 84px;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
+    }
+
+    .eyebrow {
+      margin: 0 0 0.2rem;
+      color: var(--brand-red);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.55rem;
+      line-height: 1.05;
+      letter-spacing: 0.02em;
+      color: var(--brand-cream);
+      font-weight: 800;
+    }
+
+    .subtitle {
+      margin: 0.4rem 0 0;
+      color: rgba(243, 230, 200, 0.78);
+      font-size: 0.92rem;
+    }
+
+    .meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem 1rem;
+      margin: 0.75rem 0 1.1rem;
+      padding: 0.55rem 0.75rem;
+      border-left: 4px solid var(--brand-red);
+      background: rgba(196, 160, 106, 0.12);
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    h2 {
+      margin: 1.35rem 0 0.55rem;
+      padding-bottom: 0.28rem;
+      border-bottom: 2px solid var(--brand-red);
+      color: var(--brand-brown);
+      font-size: 1.12rem;
+      letter-spacing: 0.03em;
+      page-break-after: avoid;
+    }
+
+    h3 {
+      margin: 0.95rem 0 0.4rem;
+      color: var(--brand-red);
+      font-size: 0.98rem;
+      page-break-after: avoid;
+    }
+
+    p { margin: 0.35rem 0 0.55rem; }
+
+    a {
+      color: #8f1a1f;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    ul, ol {
+      margin: 0.25rem 0 0.7rem;
+      padding-left: 1.2rem;
+    }
+
+    li { margin: 0.18rem 0; }
+
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.88em;
+      background: rgba(58, 36, 24, 0.08);
+      border: 1px solid var(--line);
+      padding: 0.05rem 0.28rem;
+      color: var(--brand-brown);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.4rem 0 0.9rem;
+      background: var(--card);
+      page-break-inside: avoid;
+      font-size: 9.4pt;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 0.38rem 0.45rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--brand-brown);
+      color: var(--brand-cream);
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(196, 160, 106, 0.08);
+    }
+
+    .callout {
+      margin: 0.7rem 0 1rem;
+      padding: 0.7rem 0.85rem;
+      border: 1px solid rgba(200, 32, 38, 0.35);
+      background: rgba(200, 32, 38, 0.07);
+      page-break-inside: avoid;
+    }
+
+    .callout strong { color: var(--brand-red); }
+
+    .check {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .check li::before {
+      content: "☐ ";
+      color: var(--brand-red);
+      font-weight: 700;
+    }
+
+    footer {
+      margin-top: 1.4rem;
+      padding-top: 0.6rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-bg">
+    <div class="wrap">
+      <header class="hero">
+        <img src="../06-design/assets/sullys-logo-primary.png" alt="Sully's Boxing Gym" />
+        <div>
+          <p class="eyebrow">Operations · Payments</p>
+          <h1>Banking &amp; Payment Setup</h1>
+          <p class="subtitle">Helcim first · Sully’s remains source of truth · QuickBooks later</p>
+        </div>
+      </header>
+
+      <div class="meta-bar">
+        <span><strong>Gym:</strong> Sully’s Boxing Gym (1943)</span>
+        <span><strong>Doc:</strong> Separate from client demo guide</span>
+        <span><strong>Date:</strong> August 2026</span>
+        <span><strong>Audience:</strong> Owner + Quiet Agency</span>
+      </div>
+
+      <div class="callout">
+        <strong>Rule:</strong> Helcim (or any bank processor) is a <em>service</em>.
+        Membership status, waivers, XP, desk cash sales, and owner analytics live in
+        <strong>Sully’s</strong>. Never store card numbers in our app.
+      </div>
+
+      <h2>1. What is live today vs what this guide enables</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th>Today</th>
+            <th>After banking setup</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Desk drop-in <strong>CASH</strong> / <strong>CARD</strong></td>
+            <td>Live (cash logged; card = desk tender label)</td>
+            <td>CARD charges via Helcim terminal / HelcimPay</td>
+          </tr>
+          <tr>
+            <td>Owner revenue / walk-in analytics</td>
+            <td>Live from PaymentEvent ledger</td>
+            <td>Same ledger + Helcim settlement reports</td>
+          </tr>
+          <tr>
+            <td>Online membership checkout</td>
+            <td>Mock (or legacy Stripe if keys set)</td>
+            <td>Helcim recurring + vault</td>
+          </tr>
+          <tr>
+            <td>QuickBooks</td>
+            <td>Planned (not connected)</td>
+            <td>Export after Helcim is stable</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>2. Open Helcim (owner steps)</h2>
+      <ol>
+        <li>Go to <a href="https://www.helcim.com/">helcim.com</a> → create a <strong>Canadian merchant</strong> account for Sully’s Boxing Gym.</li>
+        <li>Complete business KYC: legal name, GST/HST, void cheque / bank account for deposits, owner ID.</li>
+        <li>Ask Helcim for a <strong>TEC quote</strong> using your mix (memberships ~70%, drop-in ~15%, kitchen/merch ~15%).</li>
+        <li>Enable products you need:
+          <ul>
+            <li>Online payments (HelcimPay.js / Payment API)</li>
+            <li>Recurring billing (plans + subscriptions)</li>
+            <li>Smart Terminal or card reader for front desk</li>
+            <li>Webhooks</li>
+          </ul>
+        </li>
+        <li>In Helcim dashboard → <strong>Integrations / API</strong>, create API credentials for <em>production</em> and keep a separate <em>sandbox</em> set for testing.</li>
+      </ol>
+
+      <h3>Banking checklist</h3>
+      <ul class="check">
+        <li>Business bank account ready for Helcim payouts</li>
+        <li>Void cheque / direct deposit form submitted</li>
+        <li>GST/HST number on file</li>
+        <li>Statement descriptor agreed (e.g. SULLYS BOXING)</li>
+        <li>Chargeback / fraud contacts named (owner + Quiet Agency)</li>
+      </ul>
+
+      <h2>3. Secrets to give Quiet Agency (never commit to git)</h2>
+      <p>Store only in Railway (API) and Vercel env — not in chat logs long-term.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Env var (recommended)</th>
+            <th>Where</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>PAYMENT_PROVIDER=helcim</code></td>
+            <td>Railway API</td>
+            <td>Feature flag off mock / Stripe-first path</td>
+          </tr>
+          <tr>
+            <td><code>HELCIM_API_TOKEN</code></td>
+            <td>Railway API</td>
+            <td>Server API auth</td>
+          </tr>
+          <tr>
+            <td><code>HELCIM_ACCOUNT_ID</code></td>
+            <td>Railway API</td>
+            <td>Merchant account id</td>
+          </tr>
+          <tr>
+            <td><code>HELCIM_WEBHOOK_SECRET</code></td>
+            <td>Railway API</td>
+            <td>Verify webhook signatures</td>
+          </tr>
+          <tr>
+            <td><code>HELCIM_TERMINAL_ID</code> (optional)</td>
+            <td>Railway API</td>
+            <td>Desk Smart Terminal</td>
+          </tr>
+          <tr>
+            <td><code>NEXT_PUBLIC_HELCIM_PAY_TOKEN</code> (if required)</td>
+            <td>Vercel web only</td>
+            <td>Hosted fields / HelcimPay.js — never the secret API token</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <strong>Do not</strong> put <code>HELCIM_API_TOKEN</code> in the staff or web client.
+        Desk CASH continues to write to Sully’s ledger without Helcim.
+      </div>
+
+      <h2>4. Engineering cutover (Quiet Agency)</h2>
+      <ol>
+        <li>Confirm architecture doc: <code>docs/03-architecture/08-proprietary-payment-platform.md</code></li>
+        <li>Sandbox: create test customer → charge → subscribe → refund → duplicate webhook.</li>
+        <li>Wire Helcim adapter behind <code>PaymentProvider</code>; keep mock for demos.</li>
+        <li>Webhook URL (example): <code>https://api.sullys1943.com/api/v1/webhooks/helcim</code></li>
+        <li>Idempotency on <code>PaymentEvent.externalId</code> — no double membership / XP.</li>
+        <li>Flip <code>PAYMENT_PROVIDER=helcim</code> for new memberships only; leave historical mock/Stripe rows alone.</li>
+        <li>Desk: CASH stays local ledger; CARD can call Helcim terminal when hardware is paired.</li>
+        <li>Smoke test Owner desk: cash vs card tenders appear in “Money to Sully’s”.</li>
+      </ol>
+
+      <h2>5. Front desk hardware</h2>
+      <ol>
+        <li>Order Helcim Smart Terminal (or approved reader) for reception.</li>
+        <li>Pair device to the Helcim account; note terminal ID for env.</li>
+        <li>Train desk staff:
+          <ul>
+            <li><strong>CASH</strong> → Staff app drop-in CASH (drawer + Sully ledger)</li>
+            <li><strong>CARD</strong> → Terminal tap/chip, then confirm in Staff (or auto via API)</li>
+          </ul>
+        </li>
+        <li>End-of-day: cash drawer count vs Owner “today · CASH” total.</li>
+      </ol>
+
+      <h2>6. QuickBooks (later — after Helcim is live)</h2>
+      <p>Not enabled yet. Planned path:</p>
+      <ol>
+        <li>Create QuickBooks Online company for Sully’s.</li>
+        <li>Connect via OAuth app (or nightly CSV export from Owner analytics).</li>
+        <li>Map: memberships → Income; drop-in cash/card → Sales; kitchen later.</li>
+        <li>Never push card PANs; only settled amounts + dates + tender type.</li>
+      </ol>
+
+      <h2>7. Go-live acceptance checklist</h2>
+      <ul class="check">
+        <li>Sandbox membership join succeeds + webhook idempotent</li>
+        <li>Failed card does not activate membership</li>
+        <li>Desk CASH drop-in shows under Owner revenue by tender</li>
+        <li>Desk CARD path posts to Helcim and matches ledger</li>
+        <li>Refund creates matching PaymentEvent</li>
+        <li>PCI: no card fields on sullys1943.com forms (hosted fields / terminal only)</li>
+        <li>Owner can still message youth / adult / unsigned-waiver groups</li>
+      </ul>
+
+      <h2>8. Contacts &amp; links</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Member site</td>
+            <td><a href="https://www.sullys1943.com">www.sullys1943.com</a></td>
+          </tr>
+          <tr>
+            <td>Staff / Owner</td>
+            <td><a href="https://sullys1943-staff.vercel.app">sullys1943-staff.vercel.app</a></td>
+          </tr>
+          <tr>
+            <td>API</td>
+            <td><a href="https://api.sullys1943.com">api.sullys1943.com</a></td>
+          </tr>
+          <tr>
+            <td>Architecture</td>
+            <td><code>docs/03-architecture/08-proprietary-payment-platform.md</code></td>
+          </tr>
+          <tr>
+            <td>Helcim support</td>
+            <td>Helcim dashboard → Support</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <footer>
+        Sully’s Boxing Gym · Banking &amp; Payment Setup · Quiet Agency · Confidential ops handoff
+      </footer>
+    </div>
+  </div>
+</body>
+</html>
