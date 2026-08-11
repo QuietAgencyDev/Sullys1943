@@ -71,7 +71,7 @@
 .partnerLink {
   display: inline-flex;
   align-items: center;
-  opacity: 0.92;
+  opacity: 0.88;
   transition: opacity 0.2s ease;
 }
 
@@ -80,9 +80,28 @@
 }
 
 .partnerLogo {
-  width: min(180px, 48vw);
+  width: min(112px, 36vw);
   height: auto;
   display: block;
+}
+
+.credit {
+  margin: var(--space-3) 0 0;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+}
+
+.credit a {
+  color: var(--brand-cream);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 600;
+}
+
+.credit a:hover {
+  color: var(--brand-red);
 }
 
 @media (min-width: 768px) {

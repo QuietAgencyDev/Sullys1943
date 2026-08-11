@@ -3,6 +3,10 @@ import Image from "next/image";
 import { GYM, formatAddress } from "@/lib/gym-info";
 import styles from "./site-footer.module.css";
 
+const BOXING_ONTARIO_URL = "https://boxingon.ca";
+const QUIET_AGENCY_URL =
+  process.env.NEXT_PUBLIC_QUIET_AGENCY_URL ?? "https://quietagency.co";
+
 export function SiteFooter() {
   return (
     <footer className={styles.footer}>
@@ -44,20 +48,31 @@ export function SiteFooter() {
         <div className={styles.partners}>
           <a
             className={styles.partnerLink}
-            href="https://boxingontario.com"
+            href={BOXING_ONTARIO_URL}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Boxing Ontario — visit boxingontario.com"
+            aria-label="Boxing Ontario — visit boxingon.ca"
           >
             <Image
               src="/partners/boxing-ontario.png"
               alt="Boxing Ontario"
-              width={220}
-              height={146}
+              width={140}
+              height={93}
               className={styles.partnerLogo}
             />
           </a>
         </div>
+
+        <p className={styles.credit}>
+          System &amp; web developed by{" "}
+          <a
+            href={QUIET_AGENCY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Quiet Agency
+          </a>
+        </p>
       </div>
     </footer>
   );
