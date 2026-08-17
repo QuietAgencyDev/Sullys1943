@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@sullys/ui";
 import { ApiError, downloadAuthenticated, get, post } from "@/lib/api";
 import { getMe } from "@/lib/auth-client";
+import { getBrand } from "@/lib/brand";
 import styles from "../ui.module.css";
 
 type Packet = {
@@ -17,6 +18,8 @@ type Packet = {
 };
 
 export default function WaiverPage() {
+  const brand = getBrand();
+  const pdfPrefix = brand.id === "red-owl" ? "redowl-waiver" : "sullys-waiver";
   const [packets, setPackets] = useState<Packet[]>([]);
   const [typedName, setTypedName] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
@@ -65,7 +68,7 @@ export default function WaiverPage() {
     try {
       await downloadAuthenticated(
         `/api/v1/documents/packets/${id}/pdf`,
-        `sullys-waiver-${id.slice(0, 8)}.pdf`,
+        `${pdfPrefix}-${id.slice(0, 8)}.pdf`,
       );
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Download failed");

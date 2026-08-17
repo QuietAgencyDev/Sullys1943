@@ -58,17 +58,29 @@ async function main() {
   await prisma.location.deleteMany();
   await prisma.organization.deleteMany();
 
+  const seedBrand = (process.env.SEED_BRAND ?? "sullys").trim().toLowerCase();
+  const isRedOwl = seedBrand === "red-owl";
+  const mail = (local: string) =>
+    `${local}@${isRedOwl ? "redowl.local" : "sullys.local"}`;
+
   const org = await prisma.organization.create({
-    data: {
-      name: "Sully's Boxing Gym",
-      slug: "sullys",
-    },
+    data: isRedOwl
+      ? {
+          name: "Red Owl Boxing Scarborough",
+          slug: "red-owl",
+        }
+      : {
+          name: "Sully's Boxing Gym",
+          slug: "sullys",
+        },
   });
 
   const location = await prisma.location.create({
     data: {
       organizationId: org.id,
-      name: "Sully's · 1554 Dundas St W",
+      name: isRedOwl
+        ? "Red Owl · 2206 Eglinton Ave E"
+        : "Sully's · 1554 Dundas St W",
       timezone: "America/Toronto",
     },
   });
@@ -86,7 +98,7 @@ async function main() {
   const owner = await prisma.user.create({
     data: {
       organizationId: org.id,
-      email: "owner@sullys.local",
+      email: mail("owner"),
       passwordHash,
       firstName: "Gym",
       lastName: "Owner",
@@ -99,7 +111,7 @@ async function main() {
   const coach = await prisma.user.create({
     data: {
       organizationId: org.id,
-      email: "coach@sullys.local",
+      email: mail("coach"),
       passwordHash,
       firstName: "Tony",
       lastName: "Morrison",
@@ -114,7 +126,7 @@ async function main() {
   const coachRico = await prisma.user.create({
     data: {
       organizationId: org.id,
-      email: "coach.rico@sullys.local",
+      email: mail("coach.rico"),
       passwordHash,
       firstName: "Rico",
       lastName: "Mancini",
@@ -129,7 +141,7 @@ async function main() {
   const coachWinslow = await prisma.user.create({
     data: {
       organizationId: org.id,
-      email: "coach.winslow@sullys.local",
+      email: mail("coach.winslow"),
       passwordHash,
       firstName: "Winslow",
       lastName: " ",
@@ -144,7 +156,7 @@ async function main() {
   await prisma.user.create({
     data: {
       organizationId: org.id,
-      email: "coach.jonathan@sullys.local",
+      email: mail("coach.jonathan"),
       passwordHash,
       firstName: "Jonathan",
       lastName: "Bochner",
@@ -159,7 +171,7 @@ async function main() {
   await prisma.user.create({
     data: {
       organizationId: org.id,
-      email: "coach.anthony@sullys.local",
+      email: mail("coach.anthony"),
       passwordHash,
       firstName: "Anthony",
       lastName: "Sky",
@@ -174,7 +186,7 @@ async function main() {
   const coachJacklyne = await prisma.user.create({
     data: {
       organizationId: org.id,
-      email: "coach.jacklyne@sullys.local",
+      email: mail("coach.jacklyne"),
       passwordHash,
       firstName: "Jacklyne",
       lastName: "Irvine",
@@ -189,7 +201,7 @@ async function main() {
   await prisma.user.create({
     data: {
       organizationId: org.id,
-      email: "coach.jack@sullys.local",
+      email: mail("coach.jack"),
       passwordHash,
       firstName: "Jack",
       lastName: "Hemmings",
@@ -204,7 +216,7 @@ async function main() {
   await prisma.user.create({
     data: {
       organizationId: org.id,
-      email: "desk@sullys.local",
+      email: mail("desk"),
       passwordHash,
       firstName: "Front",
       lastName: "Desk",
@@ -216,7 +228,7 @@ async function main() {
   await prisma.user.create({
     data: {
       organizationId: org.id,
-      email: "admin@sullys.local",
+      email: mail("admin"),
       passwordHash,
       firstName: "Ops",
       lastName: "Admin",
@@ -229,13 +241,13 @@ async function main() {
   const member = await prisma.user.create({
     data: {
       organizationId: org.id,
-      email: "member@sullys.local",
+      email: mail("member"),
       passwordHash,
-      firstName: "Gavin",
-      lastName: "Sheppard",
+      firstName: isRedOwl ? "Alex" : "Gavin",
+      lastName: isRedOwl ? "Boxer" : "Sheppard",
       role: "member",
-      // Demo mascot portrait (AI member photos system comes later)
-      photoUrl: "/members/gavin-sheppard.png",
+      // Demo mascot portrait (AI member photos system comes later) — Sully only for now
+      photoUrl: isRedOwl ? null : "/members/gavin-sheppard.png",
       points: { create: { balance: 20 } },
     },
   });
@@ -243,7 +255,7 @@ async function main() {
   const parent = await prisma.user.create({
     data: {
       organizationId: org.id,
-      email: "parent@sullys.local",
+      email: mail("parent"),
       passwordHash,
       firstName: "Sam",
       lastName: "Parent",
@@ -255,7 +267,7 @@ async function main() {
   const child = await prisma.user.create({
     data: {
       organizationId: org.id,
-      email: "kid@sullys.local",
+      email: mail("kid"),
       passwordHash,
       firstName: "Emma",
       lastName: "Kid",
@@ -435,6 +447,29 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
       kind: "youth",
     },
   });
+
+  if (isRedOwl) {
+    await prisma.program.create({
+      data: {
+        organizationId: org.id,
+        name: "Scarborough Smartbox",
+        kind: "youth",
+      },
+    });
+    await prisma.membershipProduct.create({
+      data: {
+        organizationId: org.id,
+        code: "smartbox-graduate-1y",
+        name: "Smartbox Graduate — 1 Year",
+        description:
+          "One-year Red Owl membership awarded after completing the 12-week Smartbox cohort",
+        interval: "annual",
+        priceCents: 0,
+        currency: "cad",
+        active: true,
+      },
+    });
+  }
 
   const today = new Date();
   const sessions = [
@@ -926,14 +961,23 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
     });
   }
 
-  console.log("Seeded Sully's flagship data");
+  console.log(
+    isRedOwl
+      ? "Seeded Red Owl Boxing Scarborough data"
+      : "Seeded Sully's flagship data",
+  );
   console.log("Logins (password: password123):");
-  console.log("  member@sullys.local");
-  console.log("  parent@sullys.local");
-  console.log("  coach@sullys.local");
-  console.log("  desk@sullys.local");
-  console.log("  admin@sullys.local");
-  console.log("  owner@sullys.local");
+  const domain = isRedOwl ? "redowl.local" : "sullys.local";
+  for (const local of [
+    "member",
+    "parent",
+    "coach",
+    "desk",
+    "admin",
+    "owner",
+  ]) {
+    console.log(`  ${local}@${domain}`);
+  }
   console.log(`Owner id: ${owner.id}, coach id: ${coach.id}`);
   console.log("Game: bag-battle");
 }

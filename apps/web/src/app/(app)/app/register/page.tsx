@@ -6,9 +6,11 @@ import { FormEvent, useState } from "react";
 import { Button } from "@sullys/ui";
 import { ApiError } from "@/lib/api";
 import { register } from "@/lib/auth-client";
+import { getBrand } from "@/lib/brand";
 import styles from "../ui.module.css";
 
 export default function RegisterPage() {
+  const brand = getBrand();
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -41,10 +43,11 @@ export default function RegisterPage() {
   return (
     <div className={styles.page}>
       <div className={styles.headerBlock}>
-        <p className={styles.eyebrow}>Join the gym</p>
+        <p className={styles.eyebrow}>Join {brand.copy.appName}</p>
         <h1 className={styles.title}>Create account</h1>
         <p className={styles.lead}>
-          Set up your member login. You can finish membership on the join flow.
+          Set up your {brand.copy.appName} member login. You can finish
+          membership on the join flow.
         </p>
       </div>
 

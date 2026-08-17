@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { getBrand } from "@/lib/brand";
+import { getPrograms } from "@/lib/programs";
 import styles from "./vision-sections.module.css";
-import { PROGRAMS } from "@/lib/programs";
 
 export function WhySection() {
   return (
@@ -66,18 +67,24 @@ export function CascadeSection() {
 }
 
 export function ProgramsSection() {
+  const brand = getBrand();
+  const isRedOwl = brand.id === "red-owl";
+  const programs = getPrograms();
+
   return (
     <section id="programs" className={styles.programs}>
       <div className={styles.programsInner}>
         <p className={styles.eyebrow}>Programs</p>
-        <h2 className={styles.title}>Vehicles for the work</h2>
+        <h2 className={styles.title}>
+          {isRedOwl ? "Strength. Structure. Support." : "Vehicles for the work"}
+        </h2>
         <p className={styles.copy}>
-          In a community where safe, structured after-school spaces are limited,
-          Sully&apos;s offers a consistent, stabilizing environment that keeps
-          young people engaged, supported, and on a positive path.
+          {isRedOwl
+            ? "Scarborough Smartbox and Red Owl gym pathways — boxing, mentorship, academics, counselling, nutrition, and open gym."
+            : "In a community where safe, structured after-school spaces are limited, Sully's offers a consistent, stabilizing environment that keeps young people engaged, supported, and on a positive path."}
         </p>
         <ul className={styles.programList}>
-          {PROGRAMS.map((p) => (
+          {programs.map((p) => (
             <li key={p.slug} className={styles.programRow}>
               <h3 className={styles.programName}>
                 <Link href={`/programs/${p.slug}`}>{p.name}</Link>
@@ -86,10 +93,17 @@ export function ProgramsSection() {
             </li>
           ))}
         </ul>
-        <p className={styles.standards}>
-          Standards without grace becomes judgement. Grace without standards
-          becomes complacency. When they exist together, people grow.
-        </p>
+        {isRedOwl ? (
+          <p className={styles.standards}>
+            After the 12-week Smartbox cohort, youth receive a full year
+            membership at Red Owl Boxing.
+          </p>
+        ) : (
+          <p className={styles.standards}>
+            Standards without grace becomes judgement. Grace without standards
+            becomes complacency. When they exist together, people grow.
+          </p>
+        )}
         <p className={styles.copy}>
           <Link href="/programs">Explore all programs →</Link>
         </p>

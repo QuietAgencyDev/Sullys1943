@@ -3,26 +3,32 @@ import { notFound } from "next/navigation";
 import { Button } from "@sullys/ui";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { getProgram, PROGRAMS } from "@/lib/programs";
+import { getBrand } from "@/lib/brand";
+import { getAllProgramSlugs, getProgram } from "@/lib/programs";
 import styles from "../programs.module.css";
 
 type Props = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
-  return PROGRAMS.map((p) => ({ slug: p.slug }));
+  return getAllProgramSlugs().map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props) {
+  const brand = getBrand();
   const { slug } = await params;
   const program = getProgram(slug);
-  if (!program) return { title: "Program | Sully's" };
+  const suffix =
+    brand.id === "red-owl" ? "Red Owl Boxing" : "Sully's Boxing Gym";
+  if (!program) return { title: `Program | ${suffix}` };
   return {
-    title: `${program.name} | Sully's Boxing Gym`,
+    title: `${program.name} | ${suffix}`,
     description: program.short,
   };
 }
 
 export default async function ProgramDetailPage({ params }: Props) {
+  const brand = getBrand();
+  const isRedOwl = brand.id === "red-owl";
   const { slug } = await params;
   const program = getProgram(slug);
   if (!program) notFound();
@@ -46,14 +52,23 @@ export default async function ProgramDetailPage({ params }: Props) {
           ))}
         </ul>
         <div className={styles.cta}>
-          <Link href="/join">
-            <Button type="button">Start training</Button>
+          <Link href={isRedOwl ? "/join" : "/join"}>
+            <Button type="button">
+              {isRedOwl ? "Ask about joining" : "Start training"}
+            </Button>
           </Link>
           <Link href="/programs">
             <Button type="button" variant="secondary">
               All programs
             </Button>
           </Link>
+          {isRedOwl && slug.startsWith("smartbox") ? (
+            <Link href="/smartbox">
+              <Button type="button" variant="ghost">
+                Smartbox overview
+              </Button>
+            </Link>
+          ) : null}
         </div>
       </main>
       <SiteFooter />

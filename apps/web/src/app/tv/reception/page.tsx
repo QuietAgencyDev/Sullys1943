@@ -1,7 +1,10 @@
 import { TvBoard } from "../tv-board";
+import { getBrand } from "@/lib/brand";
+
+const brand = getBrand();
 
 export const metadata = {
-  title: "Reception TV · Sully's Boxing Gym",
+  title: `Reception TV · ${brand.copy.appName}`,
   robots: { index: false, follow: false },
 };
 

@@ -1,0 +1,25 @@
+{
+  "name": "RED OWL 2021",
+  "short_name": "Red Owl",
+  "description": "RED OWL 2021 member app — book classes, digital card, passport. Platform by Quiet Agency.",
+  "start_url": "/app",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#E10600",
+  "lang": "en-CA",
+  "icons": [
+    {
+      "src": "/brand/red-owl/mark-red.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/red-owl/mark-red.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

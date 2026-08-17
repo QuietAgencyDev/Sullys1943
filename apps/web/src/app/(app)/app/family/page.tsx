@@ -6,6 +6,7 @@ import { Button } from "@sullys/ui";
 import { ApiError, get, post } from "@/lib/api";
 import QRCode from "qrcode";
 import { getMe } from "@/lib/auth-client";
+import { getBrand } from "@/lib/brand";
 import styles from "../ui.module.css";
 
 type Child = {
@@ -238,7 +239,7 @@ export default function FamilyPage() {
                         );
                         await downloadAuthenticated(
                           `/api/v1/documents/packets/${waiver.id}/pdf`,
-                          `sullys-youth-waiver-${waiver.id.slice(0, 8)}.pdf`,
+                          `${getBrand().id === "red-owl" ? "redowl" : "sullys"}-youth-waiver-${waiver.id.slice(0, 8)}.pdf`,
                         );
                       } catch (err) {
                         setError(

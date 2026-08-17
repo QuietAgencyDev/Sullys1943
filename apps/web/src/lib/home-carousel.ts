@@ -1,13 +1,17 @@
 /**
  * Homepage gym atmosphere carousel.
  * Drop files in apps/web/public/carousel/ then add an entry below.
+ * Red Owl uses getHomeCarouselShots() — never mix Sully photos into Red Owl.
  */
+import { getBrandId } from "./brand";
+import { RED_OWL_CAROUSEL_SHOTS } from "./home-carousel-red-owl";
+
 export type CarouselShot = {
   src: string;
   alt: string;
 };
 
-export const HOME_CAROUSEL_SHOTS: CarouselShot[] = [
+export const SULLYS_CAROUSEL_SHOTS: CarouselShot[] = [
   {
     src: "/carousel/kids-01.jpg",
     alt: "Youth class training at Sully's Boxing Gym",
@@ -69,3 +73,12 @@ export const HOME_CAROUSEL_SHOTS: CarouselShot[] = [
     alt: "Athletes resting ringside at Sully's Boxing Gym",
   },
 ];
+
+/** @deprecated Prefer getHomeCarouselShots() */
+export const HOME_CAROUSEL_SHOTS = SULLYS_CAROUSEL_SHOTS;
+
+export function getHomeCarouselShots(): CarouselShot[] {
+  return getBrandId() === "red-owl"
+    ? RED_OWL_CAROUSEL_SHOTS
+    : SULLYS_CAROUSEL_SHOTS;
+}

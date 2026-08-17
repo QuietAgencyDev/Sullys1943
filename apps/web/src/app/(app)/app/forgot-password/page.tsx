@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { Button } from "@sullys/ui";
 import { ApiError, post } from "@/lib/api";
+import { getBrand } from "@/lib/brand";
 import styles from "../ui.module.css";
 
 type ForgotResponse = {
@@ -14,6 +15,7 @@ type ForgotResponse = {
 };
 
 export default function ForgotPasswordPage() {
+  const brand = getBrand();
   const [email, setEmail] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,8 +48,8 @@ export default function ForgotPasswordPage() {
         <p className={styles.eyebrow}>Account recovery</p>
         <h1 className={styles.title}>Forgot password</h1>
         <p className={styles.lead}>
-          Enter the email on your Sully&apos;s account. We&apos;ll prepare a
-          reset link (demo shows it on screen).
+          Enter the email on your {brand.copy.appName} account. We&apos;ll
+          prepare a reset link (demo shows it on screen).
         </p>
       </div>
 

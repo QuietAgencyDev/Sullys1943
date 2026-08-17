@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button } from "@sullys/ui";
 import { ApiError, get } from "@/lib/api";
+import { getBrand } from "@/lib/brand";
 import styles from "./ui.module.css";
 
 type HomeData = {
@@ -36,6 +37,7 @@ function formatWhen(value: string) {
 }
 
 export default function MemberHomePage() {
+  const brand = getBrand();
   const [data, setData] = useState<HomeData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -101,7 +103,7 @@ export default function MemberHomePage() {
   return (
     <div className={styles.page}>
       <div className={styles.headerBlock}>
-        <p className={styles.eyebrow}>Member home</p>
+        <p className={styles.eyebrow}>{brand.copy.appName}</p>
         <h1 className={styles.title}>Hey, {first}</h1>
         <p className={styles.lead}>
           Your next class, card, and membership — one place before you hit the

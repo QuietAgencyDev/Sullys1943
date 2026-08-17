@@ -11,20 +11,28 @@ import { LiveClasses } from "@/components/live-classes";
 import { LegacyTeaser } from "@/components/legacy-teaser";
 import { StoreTeaser } from "@/components/store-teaser";
 import { SiteFooter } from "@/components/site-footer";
+import { getBrand } from "@/lib/brand";
 
 export default function HomePage() {
+  const brand = getBrand();
+  const isRedOwl = brand.id === "red-owl";
+
   return (
     <>
       <SiteHeader />
       <main>
         <Hero />
-        <ProofCounters />
+        {isRedOwl ? null : <ProofCounters />}
         <GymAtmosphere />
-        <WhySection />
-        <CascadeSection />
+        {isRedOwl ? null : (
+          <>
+            <WhySection />
+            <CascadeSection />
+          </>
+        )}
         <ProgramsSection />
         <LiveClasses />
-        <LegacyTeaser />
+        {isRedOwl ? null : <LegacyTeaser />}
         <StoreTeaser />
       </main>
       <SiteFooter />

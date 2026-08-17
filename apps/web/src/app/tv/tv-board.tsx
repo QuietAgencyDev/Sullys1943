@@ -8,6 +8,7 @@ import {
   playTenSecondWarning,
   testBoxingTimerSound,
 } from "../../lib/boxing-timer-sounds";
+import { getBrand } from "@/lib/brand";
 import styles from "./tv.module.css";
 import {
   TvRiveLayer,
@@ -26,6 +27,10 @@ const DEMO_MODES = [
 ] as const;
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+
+function floorLabel(brandName: string) {
+  return `${brandName} floor`;
+}
 
 type SessionCard = {
   id: string;
@@ -217,6 +222,8 @@ function writeCachedBoard(profile: string, data: Board) {
 }
 
 export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
+  const brand = getBrand();
+  const floor = floorLabel(brand.copy.appName);
   const [board, setBoard] = useState<Board | null>(null);
   const [now, setNow] = useState(() => new Date());
   const [manifestoIndex, setManifestoIndex] = useState(0);
@@ -497,17 +504,18 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       <header className={styles.top}>
         <div className={styles.brand}>
           <Image
-            src="/brand/sullys-logo-primary.png"
-            alt="Sully's"
+            src={brand.assets.logoPrimary}
+            alt={brand.assets.logoAlt}
             width={84}
             height={108}
             className={styles.logo}
             priority
           />
           <div className={styles.brandText}>
-            <p className={styles.brandName}>SULLY&apos;S</p>
+            <p className={styles.brandName}>{brand.copy.appName}</p>
             <p className={styles.brandSub}>
-              Boxing Gym · EST {board?.gym.established ?? 1943}
+              {brand.copy.brandSub} · EST{" "}
+              {board?.gym.established ?? brand.copy.established}
             </p>
             <p className={styles.profile}>
               {profile === "floor" ? "Training floor" : "Reception"}
@@ -652,7 +660,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
               <p className={styles.meta}>
                 {board?.coachTimer?.coach
                   ? `Coach ${board.coachTimer.coach}`
-                  : "Sully's floor"}
+                  : floor}
                 {" · coach controlled"}
               </p>
               <ul className={styles.boardList} style={{ marginTop: "1.25rem" }}>
@@ -695,7 +703,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                   ? `Coach ${board.coachTimer.coach}`
                   : focus?.coach
                     ? `Coach ${focus.coach}`
-                    : "Sully's floor"}
+                    : floor}
                 {board?.coachTimer?.nextExercise
                   ? ` · Next: ${board.coachTimer.nextExercise.title}`
                   : ""}
@@ -753,7 +761,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                 {focus?.title ?? "Train with purpose"}
               </h1>
               <p className={styles.meta}>
-                {focus?.coach ? `Coach ${focus.coach}` : "Sully's floor"}
+                {focus?.coach ? `Coach ${focus.coach}` : floor}
                 {focus
                   ? ` · ${focus.booked}/${focus.capacity} · ${focus.spotsLeft} spots`
                   : ""}

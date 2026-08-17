@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import { getBrand } from "@/lib/brand";
 import styles from "./shell.module.css";
 
 const NAV = [
@@ -15,6 +16,7 @@ const NAV = [
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
+  const brand = getBrand();
   const pathname = usePathname();
   const isAuthPage =
     pathname.startsWith("/app/login") ||
@@ -27,16 +29,16 @@ export function AppShell({ children }: { children: ReactNode }) {
       <header className={styles.header}>
         <Link href="/app" className={styles.brand}>
           <Image
-            src="/brand/sullys-logo-primary.png"
-            alt="Sully's Boxing Gym"
+            src={brand.assets.logoPrimary}
+            alt={brand.assets.logoAlt}
             width={40}
             height={52}
             priority
             className={styles.logo}
           />
           <span>
-            <span className={styles.brandName}>Sully&apos;s</span>
-            <span className={styles.brandSub}>Member Portal</span>
+            <span className={styles.brandName}>{brand.copy.appName}</span>
+            <span className={styles.brandSub}>{brand.copy.appSubtitle}</span>
           </span>
         </Link>
       </header>
