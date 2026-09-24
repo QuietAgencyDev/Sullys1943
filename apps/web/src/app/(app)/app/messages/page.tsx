@@ -5,12 +5,21 @@ import { FormEvent, useCallback, useEffect, useState } from "react";
 import { Button } from "@sullys/ui";
 import { ApiError, get, post } from "@/lib/api";
 import styles from "../ui.module.css";
+import messageStyles from "./messages.module.css";
 
 type Thread = {
   id: string;
   subject?: string | null;
   kind?: string;
+  unread?: boolean;
   messages?: { body?: string; createdAt?: string; sender?: string }[];
+};
+
+type Announcement = {
+  id: string;
+  title: string;
+  body: string;
+  startsAt: string;
 };
 
 type ThreadDetail = {
@@ -32,6 +41,7 @@ export default function MessagesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
 
   const loadThreads = useCallback(async () => {
     const data = await get<{ threads: Thread[] }>("/api/v1/messages/threads");
@@ -42,7 +52,11 @@ export default function MessagesPage() {
     let activeFlag = true;
     (async () => {
       try {
-        await loadThreads();
+        const [, news] = await Promise.all([
+          loadThreads(),
+          get<{ announcements: Announcement[] }>("/api/v1/announcements"),
+        ]);
+        setAnnouncements(news.announcements ?? []);
         if (activeFlag) setError(null);
       } catch (err) {
         if (activeFlag) {
@@ -56,8 +70,12 @@ export default function MessagesPage() {
         if (activeFlag) setLoading(false);
       }
     })();
+    const refresh = window.setInterval(() => {
+      loadThreads().catch(() => undefined);
+    }, 15_000);
     return () => {
       activeFlag = false;
+      window.clearInterval(refresh);
     };
   }, [loadThreads]);
 
@@ -104,6 +122,32 @@ export default function MessagesPage() {
         </p>
       </div>
 
+      {announcements.length ? (
+        <section className={messageStyles.news}>
+          <div className={messageStyles.newsHeading}>
+            <div>
+              <p className={styles.eyebrow}>GYM NEWS</p>
+              <h2>From Sully&apos;s</h2>
+            </div>
+            <span>Live updates</span>
+          </div>
+          <div className={messageStyles.newsGrid}>
+            {announcements.slice(0, 3).map((announcement) => (
+              <article key={announcement.id}>
+                <span>
+                  {new Date(announcement.startsAt).toLocaleDateString([], {
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </span>
+                <strong>{announcement.title}</strong>
+                <p>{announcement.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       {loading ? (
         <p className={styles.muted}>Loading inbox…</p>
       ) : error ? (
@@ -137,7 +181,12 @@ export default function MessagesPage() {
           {threads.map((thread) => {
             const preview = thread.messages?.[0]?.body ?? "Open thread";
             return (
-              <li key={thread.id} className={styles.row}>
+              <li
+                key={thread.id}
+                className={`${styles.row} ${
+                  thread.unread ? messageStyles.unreadThread : ""
+                }`}
+              >
                 <button
                   type="button"
                   onClick={() => void openThread(thread.id)}
@@ -153,6 +202,9 @@ export default function MessagesPage() {
                   }}
                 >
                   <p className={styles.rowTitle}>
+                    {thread.unread ? (
+                      <span className={messageStyles.unreadDot} aria-label="Unread" />
+                    ) : null}
                     {thread.subject ?? "Gym message"}
                     {thread.kind === "class_broadcast" ? " · class" : ""}
                   </p>
@@ -165,14 +217,17 @@ export default function MessagesPage() {
       )}
 
       {active ? (
-        <div className={styles.empty} style={{ marginTop: "1.25rem", textAlign: "left" }}>
+        <div className={messageStyles.threadPanel}>
           <p className={styles.eyebrow}>THREAD</p>
           <h2 className={styles.title} style={{ fontSize: "1.5rem" }}>
             {active.subject}
           </h2>
-          <ul className={styles.list}>
+          <ul className={messageStyles.conversation}>
             {active.messages.map((m) => (
-              <li key={m.id} className={styles.row}>
+              <li
+                key={m.id}
+                className={m.mine ? messageStyles.mine : messageStyles.theirs}
+              >
                 <p className={styles.rowMeta}>
                   {m.mine ? "You" : m.sender} ·{" "}
                   {new Date(m.createdAt).toLocaleString()}
@@ -181,19 +236,11 @@ export default function MessagesPage() {
               </li>
             ))}
           </ul>
-          <form onSubmit={sendReply} className={styles.actionsRow}>
+          <form onSubmit={sendReply} className={messageStyles.replyBar}>
             <input
               value={reply}
               onChange={(e) => setReply(e.target.value)}
               placeholder="Reply…"
-              style={{
-                flex: 1,
-                minWidth: 0,
-                padding: "0.65rem 0.75rem",
-                background: "rgba(0,0,0,0.25)",
-                border: "1px solid var(--border)",
-                color: "inherit",
-              }}
             />
             <Button type="submit" disabled={busy}>
               Send

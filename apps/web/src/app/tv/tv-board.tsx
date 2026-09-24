@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   isBoxingTimerSoundUnlocked,
+  playCelebrationCue,
   playRoundBell,
   playTenSecondWarning,
   testBoxingTimerSound,
@@ -230,9 +231,11 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     rounds: 12,
   });
   const [soundReady, setSoundReady] = useState(false);
+  const [arrivalName, setArrivalName] = useState<string | null>(null);
   const warnedPhaseRef = useRef<string | null>(null);
-  const bellPhaseRef = useRef<string | null>(null);
   const startBellRef = useRef<string | null>(null);
+  const previousTvModeRef = useRef<string | null>(null);
+  const lastArrivalRef = useRef<string | null>(null);
 
   useEffect(() => {
     setTimerCfg(readTimerConfig());
@@ -304,6 +307,21 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     return () => clearInterval(swap);
   }, [board?.manifesto]);
 
+  const latestArrivalName = board?.ticker?.[0]?.name ?? null;
+  const latestArrivalAt = board?.ticker?.[0]?.at ?? null;
+
+  useEffect(() => {
+    if (profile !== "reception" || !latestArrivalName || !latestArrivalAt) return;
+    const arrivalKey = `${latestArrivalName}:${latestArrivalAt}`;
+    if (lastArrivalRef.current === arrivalKey) return;
+    lastArrivalRef.current = arrivalKey;
+    const age = Date.now() - new Date(latestArrivalAt).getTime();
+    if (age < 0 || age > 60_000) return;
+    setArrivalName(latestArrivalName);
+    const hide = window.setTimeout(() => setArrivalName(null), 7_000);
+    return () => window.clearTimeout(hide);
+  }, [latestArrivalAt, latestArrivalName, profile]);
+
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key.toLowerCase() === "f") {
@@ -334,6 +352,12 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
         : new Date(focus.startsAt).getTime();
     return Math.max(0, Math.floor((target - now.getTime()) / 1000));
   }, [focus, now]);
+  const boardAgeSeconds = board?.asOf
+    ? Math.max(0, Math.floor((now.getTime() - new Date(board.asOf).getTime()) / 1000))
+    : null;
+  const bookingPercent = focus?.capacity
+    ? Math.min(100, Math.round((focus.booked / focus.capacity) * 100))
+    : 0;
 
   const round = useMemo(() => {
     const ct = board?.coachTimer;
@@ -373,7 +397,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     };
   }, [now, board?.live, board?.coachTimer, timerCfg]);
 
-  // Boxing timer SFX — start bell, 10s wooden double-clap, end bell (floor)
+  // Boxing timer SFX — one bell per phase and a 10s wooden double-clap.
   useEffect(() => {
     if (profile !== "floor" || !soundReady) return;
     if (round.paused) return;
@@ -401,10 +425,6 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     if (left <= 10 && left > 0 && warnedPhaseRef.current !== phaseKey) {
       warnedPhaseRef.current = phaseKey;
       playTenSecondWarning();
-    }
-    if (left <= 0 && bellPhaseRef.current !== phaseKey) {
-      bellPhaseRef.current = phaseKey;
-      playRoundBell();
     }
   }, [
     profile,
@@ -447,6 +467,25 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     (profile === "floor" || board?.live?.phase === "live");
   const riveActive =
     profile === "floor" && (Boolean(board?.coachTimer) || demoCelebrate);
+  const sceneKey = `${tvMode}:${round.phase}:${round.round}:${
+    board?.coachTimer?.currentExercise?.title ?? ""
+  }:${board?.coachTimer?.tvMessage ?? ""}`;
+
+  useEffect(() => {
+    if (profile !== "floor" || !soundReady) return;
+    const previous = previousTvModeRef.current;
+    previousTvModeRef.current = tvMode;
+    if (!previous || previous === tvMode) return;
+    if (
+      tvMode === "achievement" ||
+      tvMode === "class_complete" ||
+      tvMode === "xp_bonus" ||
+      tvMode === "challenge"
+    ) {
+      playCelebrationCue(tvMode);
+    }
+  }, [profile, soundReady, tvMode]);
+
   const topName = board?.leaderboard?.[0]?.displayName ?? null;
   const riveXp =
     tvMode === "class_complete"
@@ -489,6 +528,18 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
           {soundReady ? "🔊 Test sound (double clap)" : "Tap for sound — hear clap now"}
         </button>
       ) : null}
+      {profile === "reception" && arrivalName ? (
+        <div className={styles.arrivalMoment} role="status" aria-live="polite">
+          <div className={styles.arrivalMark} aria-hidden>
+            S
+          </div>
+          <div>
+            <p>Welcome to Sully&apos;s</p>
+            <strong>{arrivalName}</strong>
+            <span>Checked in · ready for the bell</span>
+          </div>
+        </div>
+      ) : null}
       {offline ? (
         <div className={styles.offlineBanner} role="status">
           Offline — showing last good board. Round timer keeps running.
@@ -512,6 +563,16 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             <p className={styles.profile}>
               {profile === "floor" ? "Training floor" : "Reception"}
             </p>
+            {profile === "reception" ? (
+              <p className={styles.deskStatus}>
+                <span aria-hidden />
+                {offline
+                  ? "Saved board"
+                  : boardAgeSeconds == null
+                    ? "Connecting"
+                    : `Live desk · ${boardAgeSeconds}s`}
+              </p>
+            ) : null}
           </div>
         </div>
         <div className={styles.clockBlock}>
@@ -544,7 +605,18 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                   : null
             }
           />
-          <div className={styles.heroContent}>
+          {showRoundHero ? (
+            <div className={styles.phaseCurtain} key={`curtain-${sceneKey}`}>
+              <span>{round.phase === "work" ? "WORK" : "REST"}</span>
+              <strong>ROUND {String(round.round).padStart(2, "0")}</strong>
+            </div>
+          ) : null}
+          <div
+            key={sceneKey}
+            className={`${styles.heroContent} ${
+              showRoundHero ? styles.sceneRound : styles.sceneCelebration
+            }`}
+          >
           {showXpBonusHero ? (
             <>
               <p className={styles.phase}>XP bonus</p>
@@ -740,40 +812,95 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                 {String(timerCfg.restSec % 60).padStart(2, "0")} rest
               </p>
             </>
-          ) : (
-            <>
-              <p className={styles.phase}>
-                {focus?.phase === "live"
-                  ? "Live now"
-                  : focus
-                    ? "Up next"
-                    : "Open gym"}
-              </p>
-              <h1 className={styles.classTitle}>
-                {focus?.title ?? "Train with purpose"}
-              </h1>
-              <p className={styles.meta}>
-                {focus?.coach ? `Coach ${focus.coach}` : "Sully's floor"}
-                {focus
-                  ? ` · ${focus.booked}/${focus.capacity} · ${focus.spotsLeft} spots`
-                  : ""}
-              </p>
-              {classCountdown !== null ? (
-                <>
-                  <p className={styles.timerLabel}>
-                    {focus?.phase === "live"
-                      ? "Class time remaining"
-                      : "Starts in"}
+          ) : !modeActive ? (
+            profile === "reception" ? (
+              <>
+                <div className={styles.receptionStatus}>
+                  <span aria-hidden />
+                  {focus?.phase === "live"
+                    ? "Class in progress"
+                    : focus
+                      ? "Next on the floor"
+                      : "Open gym"}
+                </div>
+                <p className={styles.phase}>
+                  {focus?.program ?? "Today at Sully's"}
+                </p>
+                <h1 className={styles.classTitle}>
+                  {focus?.title ?? "Welcome to the gym"}
+                </h1>
+                <p className={styles.meta}>
+                  {focus?.coach ? `Coach ${focus.coach}` : "Front desk ready"}
+                  {focus
+                    ? ` · ${new Date(focus.startsAt).toLocaleTimeString([], {
+                        hour: "numeric",
+                        minute: "2-digit",
+                      })}`
+                    : " · Come in and say hello"}
+                </p>
+                {classCountdown !== null ? (
+                  <div className={styles.receptionCountdown}>
+                    <div>
+                      <span>
+                        {focus?.phase === "live" ? "Time left" : "Starts in"}
+                      </span>
+                      <strong>{formatCountdown(classCountdown)}</strong>
+                    </div>
+                    <div className={styles.capacityStatus}>
+                      <span>
+                        {focus?.booked ?? 0} of {focus?.capacity ?? 0} booked
+                      </span>
+                      <div aria-hidden>
+                        <i style={{ width: `${bookingPercent}%` }} />
+                      </div>
+                      <strong>
+                        {focus?.spotsLeft
+                          ? `${focus.spotsLeft} spots available`
+                          : "Class is full"}
+                      </strong>
+                    </div>
+                  </div>
+                ) : (
+                  <p className={styles.receptionWelcome}>
+                    Lace up · show respect · build character
                   </p>
-                  <p className={styles.timer}>
-                    {formatCountdown(classCountdown)}
-                  </p>
-                </>
-              ) : (
-                <p className={styles.meta}>Character before the bell.</p>
-              )}
-            </>
-          )}
+                )}
+              </>
+            ) : (
+              <>
+                <p className={styles.phase}>
+                  {focus?.phase === "live"
+                    ? "Live now"
+                    : focus
+                      ? "Up next"
+                      : "Open gym"}
+                </p>
+                <h1 className={styles.classTitle}>
+                  {focus?.title ?? "Train with purpose"}
+                </h1>
+                <p className={styles.meta}>
+                  {focus?.coach ? `Coach ${focus.coach}` : "Sully's floor"}
+                  {focus
+                    ? ` · ${focus.booked}/${focus.capacity} · ${focus.spotsLeft} spots`
+                    : ""}
+                </p>
+                {classCountdown !== null ? (
+                  <>
+                    <p className={styles.timerLabel}>
+                      {focus?.phase === "live"
+                        ? "Class time remaining"
+                        : "Starts in"}
+                    </p>
+                    <p className={styles.timer}>
+                      {formatCountdown(classCountdown)}
+                    </p>
+                  </>
+                ) : (
+                  <p className={styles.meta}>Character before the bell.</p>
+                )}
+              </>
+            )
+          ) : null}
           </div>
         </section>
 

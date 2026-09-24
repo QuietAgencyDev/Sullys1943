@@ -24,6 +24,7 @@ type Live = {
   syncedToCoach: boolean;
   tvMode: string;
   tvMessage?: string | null;
+  updatedAt?: string;
   kidsMode?: boolean;
   workout?: {
     current: { title: string; phase: string; notes: string } | null;
@@ -130,15 +131,28 @@ export default function LiveClassPage() {
   const [restSec, setRestSec] = useState(60);
   const [rounds, setRounds] = useState(12);
   const [soundReady, setSoundReady] = useState(false);
+  const [lastSyncAt, setLastSyncAt] = useState<Date | null>(null);
+  const [syncFailures, setSyncFailures] = useState(0);
+  const [online, setOnline] = useState(true);
+  const [confirmFinish, setConfirmFinish] = useState(false);
   const warnedPhaseRef = useRef<string | null>(null);
   const bellPhaseRef = useRef<string | null>(null);
 
   const load = useCallback(async () => {
-    const res = await get<Payload>(`/api/v1/coach/sessions/${sessionId}/live`);
-    setData(res);
-    setWorkSec(res.live.workSec);
-    setRestSec(res.live.restSec);
-    setRounds(res.live.totalRounds);
+    try {
+      const res = await get<Payload>(
+        `/api/v1/coach/sessions/${sessionId}/live`,
+      );
+      setData(res);
+      setWorkSec(res.live.workSec);
+      setRestSec(res.live.restSec);
+      setRounds(res.live.totalRounds);
+      setLastSyncAt(new Date());
+      setSyncFailures(0);
+    } catch (err) {
+      setSyncFailures((count) => count + 1);
+      throw err;
+    }
   }, [sessionId]);
 
   const loadRoster = useCallback(async () => {
@@ -194,16 +208,32 @@ export default function LiveClassPage() {
           setError(err instanceof ApiError ? err.message : "Load failed");
         }
       });
-    const t = setInterval(() => {
+    const livePoll = setInterval(() => {
       load().catch(() => undefined);
+    }, 750);
+    const contextPoll = setInterval(() => {
       loadRoster().catch(() => undefined);
       loadGame().catch(() => undefined);
       loadTeams().catch(() => undefined);
       loadChallenges().catch(() => undefined);
-    }, 1000);
+    }, 3000);
+    const recover = () => {
+      setOnline(navigator.onLine);
+      if (document.visibilityState === "visible" && navigator.onLine) {
+        load().catch(() => undefined);
+      }
+    };
+    setOnline(navigator.onLine);
+    window.addEventListener("online", recover);
+    window.addEventListener("offline", recover);
+    document.addEventListener("visibilitychange", recover);
     return () => {
       cancelled = true;
-      clearInterval(t);
+      clearInterval(livePoll);
+      clearInterval(contextPoll);
+      window.removeEventListener("online", recover);
+      window.removeEventListener("offline", recover);
+      document.removeEventListener("visibilitychange", recover);
     };
   }, [load, loadRoster, loadGame, loadTeams, loadChallenges]);
 
@@ -433,6 +463,15 @@ export default function LiveClassPage() {
         : live?.phase === "cooldown"
           ? "Cooldown"
           : "Work";
+  const phaseDuration = live?.phase === "rest" ? live.restSec : live?.workSec;
+  const phaseProgress = phaseDuration
+    ? Math.max(0, Math.min(100, (1 - secondsLeft / phaseDuration) * 100))
+    : 0;
+  const syncStale =
+    !online ||
+    syncFailures > 1 ||
+    !lastSyncAt ||
+    now.getTime() - lastSyncAt.getTime() > 5_000;
 
   return (
     <main className={styles.shell}>
@@ -444,17 +483,52 @@ export default function LiveClassPage() {
         <Link href="/">Staff hub</Link>
       </nav>
 
-      <p className={styles.eyebrow}>LIVE CLASS MODE</p>
-      <h1 className={styles.title}>{data?.session.title ?? "Class"}</h1>
-      <p className={styles.meta}>
-        {data
-          ? `${data.session.coachName ?? "Coach"} · ${data.session.checkedIn}/${data.session.booked} in · +${data.xpAvailable?.classComplete ?? 25} XP on finish`
-          : "Loading…"}
-        {data?.session.kidsMode || live?.kidsMode ? " · KIDS MODE" : ""}
-      </p>
+      <header className={styles.liveHeader}>
+        <div>
+          <p className={styles.eyebrow}>LIVE CLASS MODE</p>
+          <h1 className={styles.title}>{data?.session.title ?? "Class"}</h1>
+          <p className={styles.meta}>
+            {data
+              ? `${data.session.coachName ?? "Coach"} · ${
+                  data.session.checkedIn
+                }/${data.session.booked} checked in · +${
+                  data.xpAvailable?.classComplete ?? 25
+                } XP on finish`
+              : "Loading class…"}
+            {data?.session.kidsMode || live?.kidsMode ? " · KIDS MODE" : ""}
+          </p>
+        </div>
+        <div
+          className={`${styles.syncPill} ${
+            syncStale ? styles.syncStale : styles.syncHealthy
+          }`}
+          role="status"
+        >
+          <span aria-hidden />
+          <div>
+            <strong>{syncStale ? "TV sync recovering" : "Floor TV synced"}</strong>
+            <small>
+              {!online
+                ? "Device offline"
+                : lastSyncAt
+                  ? `Updated ${Math.max(
+                      0,
+                      Math.floor(
+                        (now.getTime() - lastSyncAt.getTime()) / 1000,
+                      ),
+                    )}s ago`
+                  : "Connecting…"}
+            </small>
+          </div>
+        </div>
+      </header>
 
-      {error ? <p className={styles.error}>{error}</p> : null}
-      {message ? <p className={`${styles.ok} ${styles.toast}`}>{message}</p> : null}
+      <div aria-live="polite">
+        {error ? <p className={styles.error}>{error}</p> : null}
+        {message ? (
+          <p className={`${styles.ok} ${styles.toast}`}>{message}</p>
+        ) : null}
+      </div>
 
       {completion ? (
         <section className={`${styles.card} ${styles.celebrate}`}>
@@ -481,27 +555,65 @@ export default function LiveClassPage() {
 
       {live ? (
         <section className={`${styles.card} ${styles.liveCard}`}>
-          <p className={`${styles.phase} ${styles.roundFlash}`}>
-            {live.status === "paused" ? "Paused · " : ""}
-            {phaseLabel} · Round {live.round}/{live.totalRounds}
-          </p>
-          <p className={`${styles.timerHuge} ${styles.timerPulse}`}>
-            {formatCountdown(secondsLeft)}
-          </p>
-          {live.workout?.current ? (
-            <p className={styles.exerciseNow}>
-              Now: {live.workout.current.title}
-              {live.workout.next
-                ? ` · Next: ${live.workout.next.title}`
-                : ""}
-            </p>
-          ) : null}
-          <p className={styles.hint}>
-            {live.workSec}s work / {live.restSec}s rest · TV: {live.tvMode}
-            {live.workout?.templateName
-              ? ` · ${live.workout.templateName}`
-              : ""}
-          </p>
+          <div className={styles.liveStage}>
+            <div
+              className={`${styles.clockPanel} ${
+                live.phase === "rest" ? styles.clockRest : styles.clockWork
+              }`}
+            >
+              <p className={`${styles.phase} ${styles.roundFlash}`}>
+                {live.status === "paused" ? "Paused · " : ""}
+                {phaseLabel}
+              </p>
+              <p className={`${styles.timerHuge} ${styles.timerPulse}`}>
+                {formatCountdown(secondsLeft)}
+              </p>
+              <div className={styles.phaseProgress} aria-hidden>
+                <span style={{ width: `${phaseProgress}%` }} />
+              </div>
+              <div className={styles.roundMeta}>
+                <strong>
+                  Round {live.round} of {live.totalRounds}
+                </strong>
+                <span>
+                  {live.workSec}s work · {live.restSec}s rest
+                </span>
+              </div>
+            </div>
+
+            <div className={styles.drillPanel}>
+              <p className={styles.drillLabel}>Current drill</p>
+              <h2>
+                {live.workout?.current?.title ??
+                  (live.status === "idle"
+                    ? "Ready when you are"
+                    : `${phaseLabel} round`)}
+              </h2>
+              <p className={styles.drillNotes}>
+                {live.workout?.current?.notes ||
+                  live.workout?.templateName ||
+                  "Coach controls the room. Floor TV follows every change."}
+              </p>
+              <div className={styles.nextDrill}>
+                <span>Next</span>
+                <strong>{live.workout?.next?.title ?? "Next round"}</strong>
+              </div>
+              <div className={styles.classPulse}>
+                <div>
+                  <strong>{data?.session.checkedIn ?? 0}</strong>
+                  <span>In gym</span>
+                </div>
+                <div>
+                  <strong>{data?.session.booked ?? 0}</strong>
+                  <span>Booked</span>
+                </div>
+                <div>
+                  <strong>{(live.tvMode || "timer").replace(/_/g, " ")}</strong>
+                  <span>On TV</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <div className={styles.demoBar}>
             <button
@@ -516,83 +628,122 @@ export default function LiveClassPage() {
             </button>
           </div>
 
-          <div className={styles.timerPrimary}>
+          <div className={styles.commandDeck}>
+            <div className={styles.timerPrimary}>
             {live.status === "idle" || live.status === "finished" ? (
               <button
                 type="button"
-                className={styles.primary}
+                className={`${styles.primary} ${styles.heroControl}`}
                 disabled={busy}
                 onClick={() =>
                   void run("start", { workSec, restSec, totalRounds: rounds })
                 }
               >
-                START
+                <span>Start class</span>
+                <small>Ring the opening bell</small>
               </button>
             ) : null}
             {live.status === "running" ? (
               <button
                 type="button"
-                className={styles.primary}
+                className={`${styles.primary} ${styles.heroControl}`}
                 disabled={busy}
                 onClick={() => void run("pause")}
               >
-                PAUSE
+                <span>Pause clock</span>
+                <small>Hold the room</small>
               </button>
             ) : null}
             {live.status === "paused" ? (
               <button
                 type="button"
-                className={styles.primary}
+                className={`${styles.primary} ${styles.heroControl}`}
                 disabled={busy}
                 onClick={() => void run("resume")}
               >
-                START
+                <span>Resume class</span>
+                <small>Continue this round</small>
               </button>
             ) : null}
-            <button
-              type="button"
-              disabled={busy || live.status === "idle" || live.status === "finished"}
-              onClick={() => void run("reset")}
-            >
-              RESET
-            </button>
-            <button
-              type="button"
-              className={styles.danger}
-              disabled={busy || live.status === "idle" || live.status === "finished"}
-              onClick={() => void run("stop")}
-            >
-              STOP
-            </button>
+            </div>
+
+            <div className={styles.controlsLg}>
+              <button
+                type="button"
+                disabled={busy || live.status === "idle"}
+                onClick={() => void run("back")}
+              >
+                <span>←</span> Back
+              </button>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => void run("round")}
+              >
+                Round
+              </button>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => void run("rest")}
+              >
+                Rest
+              </button>
+              <button
+                type="button"
+                className={styles.nextControl}
+                disabled={busy || live.status === "idle"}
+                onClick={() => void run("next")}
+              >
+                Next <span>→</span>
+              </button>
+            </div>
           </div>
 
-          <div className={styles.controlsLg}>
-            <button type="button" disabled={busy || live.status === "idle"} onClick={() => void run("next")}>
-              NEXT
-            </button>
-            <button type="button" disabled={busy || live.status === "idle"} onClick={() => void run("back")}>
-              BACK
-            </button>
-            <button type="button" disabled={busy} onClick={() => void run("round")}>
-              ROUND
-            </button>
-            <button type="button" disabled={busy} onClick={() => void run("rest")}>
-              REST
-            </button>
+          <div className={styles.sessionActions}>
             <button
               type="button"
-              className={styles.danger}
-              disabled={busy || live.status === "finished"}
-              onClick={() => void run("finish")}
+              disabled={
+                busy || live.status === "idle" || live.status === "finished"
+              }
+              onClick={() => void run("reset")}
             >
-              FINISH
+              Reset timer
             </button>
             <button type="button" disabled={busy} onClick={() => void startChallenge("challenge")}>
-              CHALLENGE
+              Launch challenge
             </button>
             <button type="button" disabled={busy} onClick={() => void setupTeams()}>
-              TEAMS
+              Set up teams
             </button>
+            {confirmFinish ? (
+              <div className={styles.finishConfirm}>
+                <span>Finish class and award XP?</span>
+                <button
+                  type="button"
+                  className={styles.danger}
+                  disabled={busy}
+                  onClick={() => {
+                    setConfirmFinish(false);
+                    void run("finish");
+                  }}
+                >
+                  Yes, finish
+                </button>
+                <button type="button" onClick={() => setConfirmFinish(false)}>
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                className={styles.finishButton}
+                disabled={busy || live.status === "finished"}
+                onClick={() => setConfirmFinish(true)}
+              >
+                Finish class
+              </button>
+            )}
           </div>
 
           <div className={styles.tvStrip}>
@@ -765,8 +916,17 @@ export default function LiveClassPage() {
         </section>
       ) : null}
 
-      <section className={styles.card} style={{ marginTop: "1rem" }}>
-        <h2>Roster</h2>
+      <section className={`${styles.card} ${styles.rosterCard}`}>
+        <div className={styles.rosterHeader}>
+          <div>
+            <p className={styles.eyebrow}>CLASS FLOOR</p>
+            <h2>Roster</h2>
+          </div>
+          <p>
+            <strong>{roster.filter((member) => member.checkedIn).length}</strong>
+            <span>of {roster.length} present</span>
+          </p>
+        </div>
         <ul className={styles.list}>
           {roster.map((r) => (
             <li key={r.userId} className={styles.row}>

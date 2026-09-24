@@ -1,0 +1,715 @@
+.rosterMain {
+  max-width: 1320px;
+}
+
+.rosterHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.rosterHeader h1 {
+  max-width: 12ch;
+}
+
+.rosterHeader p {
+  margin-bottom: 0;
+}
+
+.rosterNav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.rosterNav a {
+  min-height: 42px;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.rosterNav .liveLink {
+  border-color: var(--brand-red);
+  color: var(--brand-cream);
+  background: rgba(200, 32, 38, 0.18);
+}
+
+.sessionRail {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  padding-bottom: 0.3rem;
+  overflow-x: auto;
+}
+
+.sessionRail button {
+  flex: 0 0 auto;
+}
+
+.rosterPulse {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 1rem;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-sm), var(--shadow-inset);
+}
+
+.rosterPulse > div {
+  display: grid;
+  min-height: 96px;
+  align-content: center;
+  padding: 0.9rem 1rem;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.rosterPulse strong {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.rosterPulse span {
+  margin-top: 0.25rem;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.rosterPulse .pulseAttention {
+  background: rgba(200, 32, 38, 0.1);
+}
+
+.pulseAttention strong {
+  color: var(--brand-red-bright);
+}
+
+.rosterToolbar {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.searchField {
+  display: grid;
+  flex: 1;
+  gap: 0.3rem;
+}
+
+.searchField span {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.searchField input {
+  width: 100%;
+  min-height: var(--touch-min);
+  padding: 0 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-sunken);
+  color: var(--text-primary);
+  font: inherit;
+}
+
+.finalizeTools {
+  min-width: min(100%, 260px);
+  padding: 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+}
+
+.finalizeTools summary {
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.finalizeTools[open] {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.successMessage {
+  margin: 0.8rem 0 0;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid rgba(98, 201, 151, 0.38);
+  border-radius: var(--radius-md);
+  color: var(--success);
+  background: var(--success-surface);
+}
+
+.athleteList {
+  display: grid;
+  gap: 0.6rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.athleteRow {
+  display: grid;
+  gap: 0.85rem;
+  align-items: center;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.02), transparent),
+    var(--bg-elevated);
+  box-shadow: var(--shadow-sm), var(--shadow-inset);
+}
+
+.athleteLate {
+  border-color: rgba(225, 182, 79, 0.5);
+}
+
+.athleteVoided {
+  border-color: rgba(200, 32, 38, 0.5);
+  opacity: 0.72;
+}
+
+.athleteIdentity {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.athleteIdentity > div {
+  display: grid;
+  min-width: 0;
+}
+
+.athleteIdentity > div > span,
+.athleteProgress > span,
+.coachRead p {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  text-overflow: ellipsis;
+}
+
+.athleteIdentity > div > span {
+  white-space: nowrap;
+}
+
+.athleteAvatar,
+.cardIdentity > span {
+  display: grid;
+  width: 46px;
+  aspect-ratio: 1;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(196, 160, 106, 0.5);
+  border-radius: 50%;
+  color: var(--brand-glove);
+  background: rgba(196, 160, 106, 0.08);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+}
+
+.athleteProgress,
+.coachRead {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.attendanceChip {
+  width: fit-content;
+  padding: 0.16rem 0.38rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  font-size: 0.6rem !important;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.coachRead > span {
+  color: var(--brand-glove);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.coachRead p {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.athleteActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.athleteActions button,
+.cardHeader > button {
+  min-height: 42px;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--brand-cream);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.presentButton {
+  border-color: rgba(98, 201, 151, 0.45) !important;
+  color: var(--success) !important;
+}
+
+.cardButton {
+  border-color: var(--brand-red) !important;
+  background: rgba(200, 32, 38, 0.2) !important;
+}
+
+.voidButton {
+  color: var(--text-subtle) !important;
+}
+
+.emptyRoster {
+  padding: 2rem;
+  border: 1px dashed var(--border);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.boxingCard {
+  margin-top: 1.25rem;
+  overflow: hidden;
+  border: 1px solid rgba(196, 160, 106, 0.52);
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(circle at 0 0, rgba(200, 32, 38, 0.18), transparent 34%),
+    linear-gradient(145deg, rgba(35, 20, 13, 0.88), rgba(5, 5, 5, 0.96));
+  box-shadow: var(--shadow-lg), var(--shadow-inset);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: clamp(1rem, 3vw, 1.6rem);
+  border-bottom: 1px solid var(--border);
+}
+
+.cardIdentity {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.cardIdentity > span {
+  width: clamp(56px, 8vw, 76px);
+  font-size: clamp(1.3rem, 3vw, 2rem);
+}
+
+.cardIdentity h2 {
+  margin: 0.1rem 0;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 400;
+  line-height: 0.95;
+}
+
+.cardIdentity small {
+  color: var(--text-muted);
+}
+
+.rankBanner {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.rankBanner > div {
+  display: grid;
+  min-height: 100px;
+  align-content: center;
+  padding: 1rem;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.rankBanner span,
+.levelProgress span {
+  color: var(--text-muted);
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.rankBanner strong {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  font-weight: 400;
+  text-transform: capitalize;
+}
+
+.rankBanner .levelProgress {
+  grid-column: 1 / -1;
+  min-height: 80px;
+}
+
+.levelProgress > div {
+  height: 7px;
+  margin: 0.45rem 0;
+  overflow: hidden;
+  background: rgba(243, 230, 200, 0.1);
+}
+
+.levelProgress i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--brand-red), var(--brand-glove));
+}
+
+.levelProgress small {
+  color: var(--brand-glove);
+}
+
+.developmentRead {
+  background: linear-gradient(
+    145deg,
+    rgba(196, 160, 106, 0.1),
+    rgba(200, 32, 38, 0.07)
+  );
+}
+
+.rankBanner .developmentRead strong {
+  display: flex;
+  align-items: baseline;
+  gap: 0.2rem;
+}
+
+.developmentRead strong small {
+  color: var(--brand-glove);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+}
+
+.developmentRead > small {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+}
+
+.skillMatrix {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.55rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+}
+
+.skillMatrix button {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: rgba(0, 0, 0, 0.18);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.skillMatrix .skillSelected {
+  border-color: rgba(196, 160, 106, 0.72);
+  background:
+    linear-gradient(145deg, rgba(196, 160, 106, 0.13), transparent),
+    rgba(0, 0, 0, 0.24);
+  box-shadow: inset 0 0 0 1px rgba(196, 160, 106, 0.12);
+}
+
+.skillMatrix button > span {
+  color: var(--brand-glove);
+  font-size: 0.67rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.skillMatrix button > div {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 3px;
+}
+
+.skillMatrix i {
+  height: 5px;
+  background: rgba(243, 230, 200, 0.1);
+}
+
+.skillMatrix .skillActive {
+  background: linear-gradient(90deg, var(--brand-red), var(--brand-glove));
+}
+
+.skillMatrix button > strong {
+  font-size: 0.68rem;
+}
+
+.skillFocus {
+  display: grid;
+  gap: 1px;
+  margin: 0 clamp(1rem, 3vw, 1.5rem) clamp(1rem, 3vw, 1.5rem);
+  border: 1px solid rgba(196, 160, 106, 0.38);
+  background: rgba(196, 160, 106, 0.22);
+}
+
+.skillFocus > div {
+  display: grid;
+  align-content: center;
+  min-height: 88px;
+  padding: 0.85rem 1rem;
+  background: rgba(7, 6, 5, 0.92);
+}
+
+.skillFocus h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 400;
+  text-transform: capitalize;
+}
+
+.skillFocus span {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.skillFocus strong {
+  margin-top: 0.3rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.cardColumns {
+  display: grid;
+  border-top: 1px solid var(--border);
+}
+
+.assessmentPanel,
+.recognitionPanel {
+  display: grid;
+  align-content: start;
+  gap: 0.8rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+}
+
+.recognitionPanel {
+  border-top: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.cardSectionHeading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.cardSectionHeading h3 {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+.cardSectionHeading > span {
+  color: var(--text-subtle);
+  font-size: 0.65rem;
+}
+
+.assessmentPair {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.7rem;
+}
+
+.noteInput {
+  min-height: 94px;
+  padding-top: 0.65rem;
+  padding-bottom: 0.65rem;
+  resize: vertical;
+}
+
+.achievementShelf {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding-top: 0.5rem;
+}
+
+.achievementShelf span {
+  padding: 0.4rem 0.55rem;
+  border: 1px solid rgba(196, 160, 106, 0.45);
+  border-radius: var(--radius-pill);
+  color: var(--brand-glove);
+  background: rgba(196, 160, 106, 0.08);
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.achievementShelf p {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.cardHistory {
+  display: grid;
+  border-top: 1px solid var(--border);
+}
+
+.cardHistory section {
+  padding: clamp(1rem, 3vw, 1.5rem);
+}
+
+.cardHistory section + section {
+  border-top: 1px solid var(--border);
+}
+
+.cardHistory h3 {
+  margin: 0 0 0.7rem;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 400;
+}
+
+.cardHistory ul {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cardHistory li {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.78rem;
+}
+
+.cardHistory li span {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+}
+
+.cardLoading {
+  padding: 2rem;
+  color: var(--text-muted);
+}
+
+@media (min-width: 760px) {
+  .rosterPulse {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .athleteRow {
+    grid-template-columns: minmax(210px, 1fr) minmax(130px, 0.55fr) minmax(
+        180px,
+        0.8fr
+      ) auto;
+  }
+
+  .rankBanner {
+    grid-template-columns: repeat(3, 0.62fr) minmax(210px, 1.45fr) minmax(
+        150px,
+        0.8fr
+      );
+  }
+
+  .rankBanner .levelProgress {
+    grid-column: auto;
+  }
+
+  .skillMatrix {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .skillFocus {
+    grid-template-columns: minmax(190px, 0.8fr) repeat(2, minmax(0, 1fr));
+  }
+
+  .cardColumns,
+  .cardHistory {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cardHistory {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .recognitionPanel,
+  .cardHistory section + section {
+    border-top: 0;
+    border-left: 1px solid var(--border);
+  }
+}
+
+@media (max-width: 680px) {
+  .rosterHeader,
+  .rosterToolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .rosterNav {
+    justify-content: flex-start;
+  }
+
+  .finalizeTools {
+    min-width: 0;
+  }
+
+  .assessmentPair {
+    grid-template-columns: 1fr;
+  }
+
+  .coachRead p {
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .athleteRow,
+  .skillMatrix button {
+    scroll-behavior: auto;
+  }
+}

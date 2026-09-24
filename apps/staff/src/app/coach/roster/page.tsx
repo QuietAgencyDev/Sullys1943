@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@sullys/ui";
 import { ApiError, get, post } from "@/lib/api";
 import styles from "../../staff.module.css";
+import rosterStyles from "./roster.module.css";
 
 type HomeSession = {
   id: string;
@@ -47,6 +48,43 @@ type Note = {
 };
 
 type Badge = { code: string; name: string };
+
+type AthleteCard = {
+  athlete: {
+    id: string;
+    name: string;
+    photoUrl?: string | null;
+    initials: string;
+    joinedAt: string;
+  };
+  progression: {
+    xp: number;
+    level: number;
+    rank: string;
+    xpToNextLevel?: number;
+    progressPct?: number;
+  };
+  notes: { body: string; author: string; at: string }[];
+  assessments: {
+    category: string;
+    level: string | null;
+    score?: number | null;
+    goal?: string | null;
+    recommendedDrill?: string | null;
+    notes?: string | null;
+    at?: string;
+    nextAt?: string | null;
+  }[];
+  achievements: { code: string; name: string; earnedAt: string }[];
+  recentXp: { delta: number; reason: string; at: string }[];
+  games: {
+    name: string;
+    score: number;
+    xpAwarded: number;
+    classTitle: string;
+    at: string;
+  }[];
+};
 
 const SKILL_CATS = [
   "stance",
@@ -97,12 +135,11 @@ export default function CoachRosterPage() {
   const [category, setCategory] = useState("jab");
   const [goal, setGoal] = useState("");
   const [drill, setDrill] = useState("");
+  const [nextReview, setNextReview] = useState("");
   const [badges, setBadges] = useState<Badge[]>([]);
   const [xpCode, setXpCode] = useState("coach.choice");
-  const [card, setCard] = useState<{
-    progression: { xp: number; level: number; rank: string };
-    assessments: { category: string; level: string | null }[];
-  } | null>(null);
+  const [search, setSearch] = useState("");
+  const [card, setCard] = useState<AthleteCard | null>(null);
 
   const loadRoster = useCallback(async (sessionId: string) => {
     const res = await get<{
@@ -166,16 +203,14 @@ export default function CoachRosterPage() {
     setNoteBody("");
     setGoal("");
     setDrill("");
+    setNextReview("");
     setCard(null);
     try {
       const [notesRes, cardRes] = await Promise.all([
         get<{ notes: Note[] }>(
           `/api/v1/coach/athletes/${row.userId}/notes?limit=3`,
         ),
-        get<{
-          progression: { xp: number; level: number; rank: string };
-          assessments: { category: string; level: string | null }[];
-        }>(`/api/v1/coach/athletes/${row.userId}/card`),
+        get<AthleteCard>(`/api/v1/coach/athletes/${row.userId}/card`),
       ]);
       setNotes(notesRes.notes);
       setCard(cardRes);
@@ -203,6 +238,9 @@ export default function CoachRosterPage() {
         notes: noteBody.trim() || undefined,
         goal: goal.trim() || undefined,
         recommendedDrill: drill.trim() || undefined,
+        nextAt: nextReview
+          ? new Date(`${nextReview}T12:00:00`).toISOString()
+          : undefined,
       });
       setMessage(`Assessment saved for ${drawerUser.name}`);
       await openAthlete(drawerUser);
@@ -296,26 +334,61 @@ export default function CoachRosterPage() {
     }
   }
 
-  return (
-    <main className={styles.main}>
-      <p className={styles.eyebrow}>COACH</p>
-      <h1 className={styles.title}>Live roster</h1>
-      <p className={styles.copy}>
-        Present · Boxing Card · XP · assessments — one or two taps.
-      </p>
-      <p>
-        <Link href="/coach">← Coach home</Link>
-        {" · "}
-        <Link href="/coach/builder">Builder</Link>
-        {activeId ? (
-          <>
-            {" · "}
-            <Link href={`/coach/live/${activeId}`}>Live Class Mode</Link>
-          </>
-        ) : null}
-      </p>
+  const filteredRoster = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    if (!term) return roster;
+    return roster.filter((athlete) =>
+      [athlete.name, athlete.email, athlete.rank, athlete.skillLevel]
+        .filter(Boolean)
+        .some((value) => value!.toLowerCase().includes(term)),
+    );
+  }, [roster, search]);
 
-      <div className={styles.row}>
+  const selectedAssessment = card?.assessments.find(
+    (item) => item.category === category,
+  );
+  const ratedSkills = card
+    ? SKILL_CATS.filter((skill) =>
+        card.assessments.some((item) => item.category === skill),
+      ).length
+    : 0;
+  const averageSkill = card
+    ? (() => {
+        const latest = SKILL_CATS.map((skill) =>
+          card.assessments.find((item) => item.category === skill),
+        ).filter((item): item is NonNullable<typeof item> => Boolean(item));
+        return latest.length
+          ? (
+              latest.reduce((sum, item) => sum + (item.score ?? 0), 0) /
+              latest.length
+            ).toFixed(1)
+          : "—";
+      })()
+    : "—";
+
+  return (
+    <main className={`${styles.main} ${rosterStyles.rosterMain}`}>
+      <header className={rosterStyles.rosterHeader}>
+        <div>
+          <p className={styles.eyebrow}>ATHLETE DEVELOPMENT</p>
+          <h1 className={styles.title}>Roster &amp; Boxing Cards</h1>
+          <p className={styles.copy}>
+            See who is ready, capture what changed, and give every athlete a
+            clear next step.
+          </p>
+        </div>
+        <nav className={rosterStyles.rosterNav} aria-label="Coach navigation">
+          <Link href="/coach">Coach home</Link>
+          <Link href="/coach/builder">Builder</Link>
+          {activeId ? (
+            <Link className={rosterStyles.liveLink} href={`/coach/live/${activeId}`}>
+              Open Live Mode →
+            </Link>
+          ) : null}
+        </nav>
+      </header>
+
+      <section className={rosterStyles.sessionRail} aria-label="Today's classes">
         {sessions.map((s) => (
           <Button
             key={s.id}
@@ -326,61 +399,99 @@ export default function CoachRosterPage() {
             {s.title} · {s.checkedIn}/{s.booked}
           </Button>
         ))}
-      </div>
+      </section>
 
-      <p className={styles.meta}>
-        {counts.checkedIn}/{counts.booked} checked in · {counts.late} late ·{" "}
-        {counts.noShow} no-show
-      </p>
+      <section className={rosterStyles.rosterPulse} aria-label="Roster status">
+        <div>
+          <strong>{counts.checkedIn}</strong>
+          <span>In the gym</span>
+        </div>
+        <div>
+          <strong>{counts.booked}</strong>
+          <span>Booked</span>
+        </div>
+        <div className={counts.late ? rosterStyles.pulseAttention : ""}>
+          <strong>{counts.late}</strong>
+          <span>Late</span>
+        </div>
+        <div className={counts.noShow ? rosterStyles.pulseAttention : ""}>
+          <strong>{counts.noShow}</strong>
+          <span>No-show</span>
+        </div>
+      </section>
 
-      <div className={styles.row}>
-        <Button type="button" disabled={busy || !activeId} onClick={finalize}>
-          Finalize no-shows
-        </Button>
-        <label className={styles.field} style={{ flex: 1, minWidth: 200 }}>
-          <span>Void reason</span>
+      <div className={rosterStyles.rosterToolbar}>
+        <label className={rosterStyles.searchField}>
+          <span>Find an athlete</span>
           <input
-            className={styles.input}
-            value={voidReason}
-            onChange={(e) => setVoidReason(e.target.value)}
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Name, email, rank or skill…"
           />
         </label>
+        <details className={rosterStyles.finalizeTools}>
+          <summary>Attendance tools</summary>
+          <label className={styles.field}>
+            <span>Void reason</span>
+            <input
+              className={styles.input}
+              value={voidReason}
+              onChange={(event) => setVoidReason(event.target.value)}
+            />
+          </label>
+          <Button type="button" disabled={busy || !activeId} onClick={finalize}>
+            Finalize no-shows
+          </Button>
+        </details>
       </div>
 
-      {message ? <p className={styles.copy}>{message}</p> : null}
-      {error ? <p className={styles.error}>{error}</p> : null}
+      <div aria-live="polite">
+        {message ? <p className={rosterStyles.successMessage}>{message}</p> : null}
+        {error ? <p className={styles.error}>{error}</p> : null}
+      </div>
 
-      <ul className={styles.list}>
-        {roster.map((r) => (
+      <ul className={rosterStyles.athleteList}>
+        {filteredRoster.map((r) => (
           <li
             key={r.userId}
-            className={`${styles.item} ${r.late ? styles.late : ""} ${r.voided ? styles.warn : ""}`}
+            className={`${rosterStyles.athleteRow} ${
+              r.late ? rosterStyles.athleteLate : ""
+            } ${r.voided ? rosterStyles.athleteVoided : ""}`}
           >
-            <strong>
-              {r.initials ? `[${r.initials}] ` : ""}
-              {r.name}
-            </strong>
-            <div className={styles.meta}>
-              {r.voided
-                ? "VOIDED"
-                : r.noShow
-                  ? "No-show"
-                  : r.checkedIn
-                    ? "Checked in"
-                    : "Booked"}
-              {r.rank ? ` · ${r.rank} L${r.level}` : ""}
-              {r.xp != null ? ` · ${r.xp} XP` : ""}
-              {r.chips?.new ? " · NEW" : ""}
-              {r.chips?.late ? " · LATE" : ""}
-              {r.streak && r.streak >= 3 ? ` · ${r.streak}d streak` : ""}
-              {r.skillLevel ? ` · ${r.skillLevel}` : ""}
-              {r.lastNote ? ` · “${r.lastNote}”` : ""}
+            <div className={rosterStyles.athleteIdentity}>
+              <span className={rosterStyles.athleteAvatar}>
+                {r.initials ?? r.name.slice(0, 2).toUpperCase()}
+              </span>
+              <div>
+                <strong>{r.name}</strong>
+                <span>{r.email}</span>
+              </div>
             </div>
-            <div className={styles.actions}>
+            <div className={rosterStyles.athleteProgress}>
+              <span className={rosterStyles.attendanceChip}>
+                {r.voided
+                  ? "Voided"
+                  : r.noShow
+                    ? "No-show"
+                    : r.checkedIn
+                      ? "In gym"
+                      : "Booked"}
+              </span>
+              <strong>{r.rank ?? "Rookie"} · L{r.level ?? 1}</strong>
+              <span>
+                {r.xp ?? 0} XP
+                {r.streak && r.streak >= 3 ? ` · ${r.streak}d streak` : ""}
+              </span>
+            </div>
+            <div className={rosterStyles.coachRead}>
+              <span>{r.skillLevel ?? "No skill rating yet"}</span>
+              <p>{r.lastNote ? `“${r.lastNote}”` : "Open the card to add a coach note."}</p>
+            </div>
+            <div className={rosterStyles.athleteActions}>
               {!r.checkedIn && !r.voided && !r.noShow ? (
                 <button
                   type="button"
-                  className={styles.buttonish}
+                  className={rosterStyles.presentButton}
                   disabled={busy}
                   onClick={() => void markPresent(r.userId)}
                 >
@@ -389,16 +500,16 @@ export default function CoachRosterPage() {
               ) : null}
               <button
                 type="button"
-                className={styles.buttonish}
+                className={rosterStyles.cardButton}
                 disabled={busy}
                 onClick={() => void openAthlete(r)}
               >
-                Boxing Card
+                Open Boxing Card
               </button>
               {r.attendanceId && r.checkedIn ? (
                 <button
                   type="button"
-                  className={styles.buttonish}
+                  className={rosterStyles.voidButton}
                   disabled={busy}
                   onClick={() => void voidCheckIn(r.attendanceId!)}
                 >
@@ -408,148 +519,343 @@ export default function CoachRosterPage() {
             </div>
           </li>
         ))}
-        {roster.length === 0 ? (
-          <li className={styles.item}>
-            <span className={styles.meta}>No bookings for this session.</span>
+        {filteredRoster.length === 0 ? (
+          <li className={rosterStyles.emptyRoster}>
+            <span>
+              {roster.length === 0
+                ? "No bookings for this session."
+                : "No athletes match that search."}
+            </span>
           </li>
         ) : null}
       </ul>
 
       {drawerUser ? (
-        <div className={styles.panel} style={{ marginTop: "1.25rem" }}>
-          <p className={styles.eyebrow}>BOXING CARD</p>
-          <h2 className={styles.title} style={{ fontSize: "1.6rem" }}>
-            {drawerUser.name}
-          </h2>
+        <section className={rosterStyles.boxingCard}>
+          <header className={rosterStyles.cardHeader}>
+            <div className={rosterStyles.cardIdentity}>
+              <span>{drawerUser.initials ?? drawerUser.name.slice(0, 2)}</span>
+              <div>
+                <p className={styles.eyebrow}>SULLY&apos;S BOXING CARD</p>
+                <h2>{drawerUser.name}</h2>
+                <small>
+                  Athlete since{" "}
+                  {card
+                    ? new Date(card.athlete.joinedAt).toLocaleDateString([], {
+                        month: "short",
+                        year: "numeric",
+                      })
+                    : "—"}
+                </small>
+              </div>
+            </div>
+            <button type="button" onClick={() => setDrawerUser(null)}>
+              Close ×
+            </button>
+          </header>
+
           {card ? (
-            <p className={styles.meta}>
-              {card.progression.rank} · Level {card.progression.level} ·{" "}
-              {card.progression.xp} XP
-            </p>
-          ) : null}
-
-          <div className={styles.row}>
-            <label className={styles.field}>
-              <span>Award XP</span>
-              <select
-                className={styles.input}
-                value={xpCode}
-                onChange={(e) => setXpCode(e.target.value)}
-              >
-                {XP_CODES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <Button type="button" disabled={busy} onClick={() => void awardXp()}>
-              Award XP
-            </Button>
-          </div>
-
-          <label className={styles.field}>
-            <span>Achievement</span>
-            <select
-              className={styles.input}
-              defaultValue=""
-              onChange={(e) => {
-                if (e.target.value) void grantBadge(e.target.value);
-                e.target.value = "";
-              }}
-            >
-              <option value="">Give achievement…</option>
-              {badges.map((b) => (
-                <option key={b.code} value={b.code}>
-                  {b.name}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className={styles.field}>
-            <span>Coach note</span>
-            <textarea
-              className={styles.input}
-              rows={3}
-              value={noteBody}
-              onChange={(e) => setNoteBody(e.target.value)}
-              placeholder="Footwork cleaned up in round 3…"
-            />
-          </label>
-          <div className={styles.row}>
-            <label className={styles.field}>
-              <span>Skill</span>
-              <select
-                className={styles.input}
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              >
-                {SKILL_CATS.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className={styles.field}>
-              <span>Level</span>
-              <select
-                className={styles.input}
-                value={level}
-                onChange={(e) => setLevel(e.target.value)}
-              >
-                {LEVELS.map((l) => (
-                  <option key={l} value={l}>
-                    {l}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-          <label className={styles.field}>
-            <span>Goal</span>
-            <input
-              className={styles.input}
-              value={goal}
-              onChange={(e) => setGoal(e.target.value)}
-            />
-          </label>
-          <label className={styles.field}>
-            <span>Recommended drill</span>
-            <input
-              className={styles.input}
-              value={drill}
-              onChange={(e) => setDrill(e.target.value)}
-            />
-          </label>
-          <div className={styles.row}>
-            <Button
-              type="button"
-              disabled={busy}
-              onClick={() => void saveAssessment()}
-            >
-              Save assessment
-            </Button>
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => setDrawerUser(null)}
-            >
-              Close
-            </Button>
-          </div>
-          <ul className={styles.list}>
-            {notes.map((n) => (
-              <li key={n.id} className={styles.item}>
-                <div className={styles.meta}>
-                  {n.author} · {new Date(n.createdAt).toLocaleString()}
+            <>
+              <div className={rosterStyles.rankBanner}>
+                <div>
+                  <span>Current rank</span>
+                  <strong>{card.progression.rank}</strong>
                 </div>
-                <strong>{n.body}</strong>
-              </li>
-            ))}
-          </ul>
-        </div>
+                <div>
+                  <span>Level</span>
+                  <strong>{card.progression.level}</strong>
+                </div>
+                <div>
+                  <span>Total XP</span>
+                  <strong>{card.progression.xp}</strong>
+                </div>
+                <div className={rosterStyles.levelProgress}>
+                  <span>Next level</span>
+                  <div aria-hidden>
+                    <i
+                      style={{
+                        width: `${card.progression.progressPct ?? 0}%`,
+                      }}
+                    />
+                  </div>
+                  <small>
+                    {card.progression.xpToNextLevel ?? 0} XP to go
+                  </small>
+                </div>
+                <div className={rosterStyles.developmentRead}>
+                  <span>Development read</span>
+                  <strong>{averageSkill}<small>/5</small></strong>
+                  <small>{ratedSkills} of {SKILL_CATS.length} skills rated</small>
+                </div>
+              </div>
+
+              <div className={rosterStyles.skillMatrix}>
+                {SKILL_CATS.map((skill) => {
+                  const assessment = card.assessments.find(
+                    (item) => item.category === skill,
+                  );
+                  const levelIndex = Math.max(
+                    0,
+                    LEVELS.indexOf(assessment?.level ?? "LEARNING"),
+                  );
+                  return (
+                    <button
+                      key={skill}
+                      type="button"
+                      className={
+                        category === skill ? rosterStyles.skillSelected : ""
+                      }
+                      onClick={() => {
+                        setCategory(skill);
+                        setLevel(assessment?.level ?? "DEVELOPING");
+                        setGoal(assessment?.goal ?? "");
+                        setDrill(assessment?.recommendedDrill ?? "");
+                        setNextReview(
+                          assessment?.nextAt
+                            ? assessment.nextAt.slice(0, 10)
+                            : "",
+                        );
+                      }}
+                    >
+                      <span>{skill}</span>
+                      <div aria-hidden>
+                        {LEVELS.map((skillLevel, index) => (
+                          <i
+                            key={skillLevel}
+                            className={
+                              index <= levelIndex ? rosterStyles.skillActive : ""
+                            }
+                          />
+                        ))}
+                      </div>
+                      <strong>{assessment?.level ?? "Not rated"}</strong>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <section className={rosterStyles.skillFocus}>
+                <div>
+                  <p className={styles.eyebrow}>ACTIVE DEVELOPMENT FOCUS</p>
+                  <h3>{category}</h3>
+                  <span>
+                    {selectedAssessment?.level
+                      ? `${selectedAssessment.level} · last reviewed ${
+                          selectedAssessment.at
+                            ? new Date(selectedAssessment.at).toLocaleDateString()
+                            : "recently"
+                        }`
+                      : "No formal assessment yet"}
+                  </span>
+                </div>
+                <div>
+                  <span>Current goal</span>
+                  <strong>
+                    {selectedAssessment?.goal ?? "Set the athlete’s next target"}
+                  </strong>
+                </div>
+                <div>
+                  <span>Coach prescription</span>
+                  <strong>
+                    {selectedAssessment?.recommendedDrill ??
+                      "Add a recommended drill"}
+                  </strong>
+                </div>
+              </section>
+
+              <div className={rosterStyles.cardColumns}>
+                <div className={rosterStyles.assessmentPanel}>
+                  <div className={rosterStyles.cardSectionHeading}>
+                    <div>
+                      <p className={styles.eyebrow}>COACH ASSESSMENT</p>
+                      <h3>Capture today&apos;s progress</h3>
+                    </div>
+                    <span>Saved to athlete history</span>
+                  </div>
+                  <div className={rosterStyles.assessmentPair}>
+                    <label className={styles.field}>
+                      <span>Skill</span>
+                      <select
+                        className={styles.input}
+                        value={category}
+                        onChange={(event) => setCategory(event.target.value)}
+                      >
+                        {SKILL_CATS.map((skill) => (
+                          <option key={skill} value={skill}>
+                            {skill}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className={styles.field}>
+                      <span>Level</span>
+                      <select
+                        className={styles.input}
+                        value={level}
+                        onChange={(event) => setLevel(event.target.value)}
+                      >
+                        {LEVELS.map((skillLevel) => (
+                          <option key={skillLevel} value={skillLevel}>
+                            {skillLevel}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+                  <label className={styles.field}>
+                    <span>Coach note</span>
+                    <textarea
+                      className={`${styles.input} ${rosterStyles.noteInput}`}
+                      rows={3}
+                      value={noteBody}
+                      onChange={(event) => setNoteBody(event.target.value)}
+                      placeholder="What changed today?"
+                    />
+                  </label>
+                  <label className={styles.field}>
+                    <span>Next goal</span>
+                    <input
+                      className={styles.input}
+                      value={goal}
+                      onChange={(event) => setGoal(event.target.value)}
+                      placeholder="Example: Keep the rear heel light"
+                    />
+                  </label>
+                  <label className={styles.field}>
+                    <span>Recommended drill</span>
+                    <input
+                      className={styles.input}
+                      value={drill}
+                      onChange={(event) => setDrill(event.target.value)}
+                      placeholder="Example: Mirror footwork, 3 × 2 min"
+                    />
+                  </label>
+                  <label className={styles.field}>
+                    <span>Review again</span>
+                    <input
+                      className={styles.input}
+                      type="date"
+                      value={nextReview}
+                      onChange={(event) => setNextReview(event.target.value)}
+                    />
+                  </label>
+                  <Button
+                    type="button"
+                    disabled={busy}
+                    onClick={() => void saveAssessment()}
+                  >
+                    Save to Boxing Card
+                  </Button>
+                </div>
+
+                <div className={rosterStyles.recognitionPanel}>
+                  <div className={rosterStyles.cardSectionHeading}>
+                    <div>
+                      <p className={styles.eyebrow}>RECOGNITION</p>
+                      <h3>Reward the work</h3>
+                    </div>
+                  </div>
+                  <label className={styles.field}>
+                    <span>XP reason</span>
+                    <select
+                      className={styles.input}
+                      value={xpCode}
+                      onChange={(event) => setXpCode(event.target.value)}
+                    >
+                      {XP_CODES.map((code) => (
+                        <option key={code} value={code}>
+                          {code.replace(".", " ")}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <Button type="button" disabled={busy} onClick={() => void awardXp()}>
+                    Award XP
+                  </Button>
+                  <label className={styles.field}>
+                    <span>Achievement</span>
+                    <select
+                      className={styles.input}
+                      defaultValue=""
+                      onChange={(event) => {
+                        if (event.target.value) void grantBadge(event.target.value);
+                        event.target.value = "";
+                      }}
+                    >
+                      <option value="">Give achievement…</option>
+                      {badges.map((badge) => (
+                        <option key={badge.code} value={badge.code}>
+                          {badge.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <div className={rosterStyles.achievementShelf}>
+                    {card.achievements.slice(0, 4).map((achievement) => (
+                      <span key={achievement.code}>{achievement.name}</span>
+                    ))}
+                    {card.achievements.length === 0 ? (
+                      <p>No achievements yet—watch for the next breakthrough.</p>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+
+              <div className={rosterStyles.cardHistory}>
+                <section>
+                  <h3>Coach notes</h3>
+                  <ul>
+                    {notes.map((note) => (
+                      <li key={note.id}>
+                        <span>
+                          {note.author} ·{" "}
+                          {new Date(note.createdAt).toLocaleDateString()}
+                        </span>
+                        <strong>{note.body}</strong>
+                      </li>
+                    ))}
+                    {notes.length === 0 ? <li>No coach notes yet.</li> : null}
+                  </ul>
+                </section>
+                <section>
+                  <h3>Recent momentum</h3>
+                  <ul>
+                    {card.recentXp.slice(0, 4).map((entry, index) => (
+                      <li key={`${entry.at}-${index}`}>
+                        <span>{new Date(entry.at).toLocaleDateString()}</span>
+                        <strong>
+                          +{entry.delta} XP · {entry.reason}
+                        </strong>
+                      </li>
+                    ))}
+                    {card.recentXp.length === 0 ? <li>No XP history yet.</li> : null}
+                  </ul>
+                </section>
+                <section>
+                  <h3>Game performance</h3>
+                  <ul>
+                    {card.games.slice(0, 4).map((game, index) => (
+                      <li key={`${game.at}-${game.name}-${index}`}>
+                        <span>
+                          {game.classTitle} ·{" "}
+                          {new Date(game.at).toLocaleDateString()}
+                        </span>
+                        <strong>
+                          {game.name} · {game.score} pts · +{game.xpAwarded} XP
+                        </strong>
+                      </li>
+                    ))}
+                    {card.games.length === 0 ? (
+                      <li>No game results yet.</li>
+                    ) : null}
+                  </ul>
+                </section>
+              </div>
+            </>
+          ) : (
+            <p className={rosterStyles.cardLoading}>Loading Boxing Card…</p>
+          )}
+        </section>
       ) : null}
     </main>
   );

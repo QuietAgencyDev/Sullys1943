@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { Button } from "@sullys/ui";
 import { ApiError, post } from "@/lib/api";
 import styles from "../../ui.module.css";
 import arriveStyles from "./arrive.module.css";
@@ -24,15 +25,20 @@ const ARRIVE_PATH = "/app/check-in/arrive";
 
 export default function ArriveCheckInPage() {
   const [state, setState] = useState<State>({ kind: "checking" });
-  const ran = useRef(false);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    if (ran.current) return;
-    ran.current = true;
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 10_000);
+    setState({ kind: "checking" });
 
     (async () => {
       try {
-        const res = await post<CheckInRes>("/api/v1/check-in", {});
+        const res = await post<CheckInRes>(
+          "/api/v1/check-in",
+          {},
+          { signal: controller.signal },
+        );
         const name = res.member?.name;
         const session = res.sessionTitle;
         if (res.duplicate) {
@@ -52,7 +58,11 @@ export default function ArriveCheckInPage() {
           return;
         }
         const message =
-          err instanceof ApiError ? err.message : "Check-in failed";
+          err instanceof ApiError
+            ? err.message
+            : err instanceof DOMException && err.name === "AbortError"
+              ? "The check-in service took too long to respond."
+              : "Check-in failed";
         const blocked =
           /waiver|membership/i.test(message) ||
           (err instanceof ApiError && err.status === 400);
@@ -60,15 +70,24 @@ export default function ArriveCheckInPage() {
           kind: blocked ? "blocked" : "err",
           message,
         });
+      } finally {
+        window.clearTimeout(timeoutId);
       }
     })();
-  }, []);
+    return () => {
+      window.clearTimeout(timeoutId);
+      controller.abort();
+    };
+  }, [attempt]);
 
   return (
     <div className={styles.page}>
       <div className={styles.headerBlock}>
-        <p className={styles.eyebrow}>Walk-in</p>
-        <h1 className={styles.title}>Gym check-in</h1>
+        <p className={styles.eyebrow}>Sully&apos;s front door</p>
+        <h1 className={styles.title}>Step Into Your Corner</h1>
+        <p className={styles.lead}>
+          We&apos;re checking your membership, waiver, and today&apos;s class.
+        </p>
       </div>
 
       <section
@@ -78,13 +97,19 @@ export default function ArriveCheckInPage() {
       >
         {state.kind === "checking" ? (
           <>
-            <p className={arriveStyles.status}>Checking in…</p>
-            <p className={styles.muted}>One moment — no button needed.</p>
+            <span className={arriveStyles.spinner} aria-hidden />
+            <p className={arriveStyles.status}>Finding your round…</p>
+            <p className={styles.muted}>
+              Keep this screen open. No button needed.
+            </p>
           </>
         ) : null}
 
         {state.kind === "ok" ? (
           <>
+            <span className={arriveStyles.resultIcon} aria-hidden>
+              ✓
+            </span>
             <p className={arriveStyles.ok}>You’re in</p>
             {state.name ? (
               <p className={arriveStyles.name}>{state.name}</p>
@@ -93,11 +118,20 @@ export default function ArriveCheckInPage() {
               +{state.xp} XP
               {state.session ? ` · ${state.session}` : ""}
             </p>
+            <Link href="/app/card" className={arriveStyles.primaryLink}>
+              Open your corner card
+            </Link>
           </>
         ) : null}
 
         {state.kind === "dup" ? (
           <>
+            <span
+              className={`${arriveStyles.resultIcon} ${arriveStyles.resultIconDup}`}
+              aria-hidden
+            >
+              ✓
+            </span>
             <p className={arriveStyles.dup}>Already checked in</p>
             {state.name ? (
               <p className={arriveStyles.name}>{state.name}</p>
@@ -112,17 +146,23 @@ export default function ArriveCheckInPage() {
 
         {state.kind === "blocked" ? (
           <>
+            <span
+              className={`${arriveStyles.resultIcon} ${arriveStyles.resultIconError}`}
+              aria-hidden
+            >
+              !
+            </span>
             <p className={arriveStyles.err}>Can’t check in yet</p>
             <p className={styles.lead}>{state.message}</p>
             <p className={styles.muted}>
               Sign your waiver or renew membership in the app, or see the desk.
             </p>
-            <div className={styles.actions}>
-              <Link className={styles.link} href="/app/waiver">
-                Open waiver
+            <div className={arriveStyles.actions}>
+              <Link className={arriveStyles.primaryLink} href="/app/waiver">
+                Fix waiver
               </Link>
-              <Link className={styles.link} href="/app">
-                Member home
+              <Link className={arriveStyles.secondaryLink} href="/app">
+                Return home
               </Link>
             </div>
           </>
@@ -130,11 +170,25 @@ export default function ArriveCheckInPage() {
 
         {state.kind === "err" ? (
           <>
+            <span
+              className={`${arriveStyles.resultIcon} ${arriveStyles.resultIconError}`}
+              aria-hidden
+            >
+              !
+            </span>
             <p className={arriveStyles.err}>See desk</p>
             <p className={styles.lead}>{state.message}</p>
-            <Link className={styles.link} href="/app">
-              Back to member home
-            </Link>
+            <div className={arriveStyles.actions}>
+              <Button
+                type="button"
+                onClick={() => setAttempt((value) => value + 1)}
+              >
+                Try again
+              </Button>
+              <Link className={arriveStyles.secondaryLink} href="/app">
+                Member home
+              </Link>
+            </div>
           </>
         ) : null}
       </section>

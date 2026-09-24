@@ -12,15 +12,40 @@ import {
 import { Button } from "@sullys/ui";
 import { ApiError, get, post } from "@/lib/api";
 import styles from "../staff.module.css";
+import deskStyles from "./desk.module.css";
 import { GYM } from "@/lib/gym-info";
 
+const WEB_ORIGIN =
+  process.env.NEXT_PUBLIC_WEB_ORIGIN ?? "https://www.sullys1943.com";
+
 type MemberHit = { id: string; name: string; email: string };
+type ScanFeedback = {
+  kind: "ok" | "duplicate" | "blocked" | "error";
+  title: string;
+  detail: string;
+};
 type Session = {
   id: string;
   title: string;
   startsAt: string;
   booked: number;
   capacity: number;
+};
+type DeskPulse = {
+  kpis: {
+    checkInsToday: number;
+    pendingWaivers: number;
+    pendingPayments: number;
+    classesToday: number;
+  };
+  classes: {
+    id: string;
+    title: string;
+    startsAt: string;
+    booked: number;
+    capacity: number;
+    fillPct: number;
+  }[];
 };
 
 function isToday(iso: string) {
@@ -37,10 +62,12 @@ export default function DeskPage() {
   const [token, setToken] = useState("");
   const [sessionId, setSessionId] = useState("");
   const [sessions, setSessions] = useState<Session[]>([]);
+  const [pulse, setPulse] = useState<DeskPulse | null>(null);
   const [query, setQuery] = useState("");
   const [hits, setHits] = useState<MemberHit[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [scanFeedback, setScanFeedback] = useState<ScanFeedback | null>(null);
   const [busy, setBusy] = useState(false);
   const [override, setOverride] = useState(false);
   const [overrideReason, setOverrideReason] = useState("");
@@ -70,7 +97,14 @@ export default function DeskPage() {
         if (today[0]) setSessionId(today[0].id);
       })
       .catch(() => setSessions([]));
+    const loadPulse = () =>
+      get<DeskPulse>("/api/v1/owner/morning-brief")
+        .then(setPulse)
+        .catch(() => undefined);
+    loadPulse();
+    const refresh = window.setInterval(loadPulse, 15_000);
     inputRef.current?.focus();
+    return () => window.clearInterval(refresh);
   }, []);
 
   const submitScan = useCallback(
@@ -80,6 +114,7 @@ export default function DeskPage() {
       setBusy(true);
       setError(null);
       setMessage(null);
+      setScanFeedback(null);
       try {
         const res = await post<{
           member?: { name: string };
@@ -104,6 +139,21 @@ export default function DeskPage() {
             ? `Already checked in: ${res.member?.name ?? "member"}`
             : `Checked in ${res.member?.name ?? "member"} · +${res.xpAwarded ?? 10} XP${flagNote}`,
         );
+        setScanFeedback(
+          res.duplicate
+            ? {
+                kind: "duplicate",
+                title: "Already on the floor",
+                detail: res.member?.name ?? "Member",
+              }
+            : {
+                kind: "ok",
+                title: res.overridden ? "Override accepted" : "Check-in complete",
+                detail: `${res.member?.name ?? "Member"} · +${
+                  res.xpAwarded ?? 10
+                } XP${flagNote}`,
+              },
+        );
         setToken("");
         setLastFailedEmail(null);
         setOverride(false);
@@ -111,12 +161,17 @@ export default function DeskPage() {
       } catch (err) {
         const msg = err instanceof ApiError ? err.message : "Scan failed";
         setError(msg);
+        const blocked =
+          msg.toLowerCase().includes("waiver") ||
+          msg.toLowerCase().includes("membership");
+        setScanFeedback({
+          kind: blocked ? "blocked" : "error",
+          title: blocked ? "Member needs attention" : "Scan not accepted",
+          detail: msg,
+        });
         setToken("");
         if (email) setLastFailedEmail(email);
-        if (
-          msg.toLowerCase().includes("waiver") ||
-          msg.toLowerCase().includes("membership")
-        ) {
+        if (blocked) {
           setOverride(true);
         }
       } finally {
@@ -237,17 +292,24 @@ export default function DeskPage() {
   }
 
   return (
-    <main className={styles.main}>
-      <div className={styles.softLaunch}>
-        <p className={styles.softLaunchTitle}>{GYM.name}</p>
-        <p className={styles.softLaunchMeta}>
-          <a href={GYM.mapUrl} target="_blank" rel="noreferrer">
-            {GYM.addressLine1}
-          </a>
-          {" · "}
-          <a href={`tel:${GYM.phoneTel}`}>{GYM.phoneDisplay}</a>
-        </p>
-        <p className={styles.softLaunchMeta}>{GYM.hoursSummary}</p>
+    <main className={`${styles.main} ${deskStyles.receptionFrame}`}>
+      <div className={deskStyles.receptionBrand}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={`${WEB_ORIGIN}/brand/sullys-logo-primary.png`}
+          alt="Sully's Boxing Gym"
+        />
+        <div className={styles.softLaunch}>
+          <p className={styles.softLaunchTitle}>{GYM.name}</p>
+          <p className={styles.softLaunchMeta}>
+            <a href={GYM.mapUrl} target="_blank" rel="noreferrer">
+              {GYM.addressLine1}
+            </a>
+            {" · "}
+            <a href={`tel:${GYM.phoneTel}`}>{GYM.phoneDisplay}</a>
+          </p>
+          <p className={styles.softLaunchMeta}>{GYM.hoursSummary}</p>
+        </div>
       </div>
       <p className={styles.eyebrow}>FRONT DESK</p>
       <h1 className={styles.title}>Scanner</h1>
@@ -259,7 +321,67 @@ export default function DeskPage() {
         <Link href="/">← Staff home</Link>
       </p>
 
-      <form className={styles.panel} onSubmit={scanToken}>
+      {pulse ? (
+        <section className={deskStyles.deskPulse} aria-label="Reception pulse">
+          <div>
+            <strong>{pulse.kpis.checkInsToday}</strong>
+            <span>Checked in today</span>
+          </div>
+          <div>
+            <strong>{pulse.kpis.classesToday}</strong>
+            <span>Classes today</span>
+          </div>
+          <div
+            className={
+              pulse.kpis.pendingWaivers ? deskStyles.pulseAttention : ""
+            }
+          >
+            <strong>{pulse.kpis.pendingWaivers}</strong>
+            <span>Waivers needed</span>
+          </div>
+          <div
+            className={
+              pulse.kpis.pendingPayments ? deskStyles.pulseAttention : ""
+            }
+          >
+            <strong>{pulse.kpis.pendingPayments}</strong>
+            <span>Payments pending</span>
+          </div>
+          <div className={deskStyles.nextClassPulse}>
+            <span>Next room</span>
+            <strong>
+              {pulse.classes.find(
+                (item) => new Date(item.startsAt).getTime() >= Date.now(),
+              )?.title ?? "Open gym"}
+            </strong>
+            <small>
+              {pulse.classes.find(
+                (item) => new Date(item.startsAt).getTime() >= Date.now(),
+              )?.fillPct ?? 0}
+              % filled
+            </small>
+          </div>
+        </section>
+      ) : null}
+
+      <section className={deskStyles.commandGrid}>
+        <form
+          className={`${styles.panel} ${deskStyles.scannerPanel}`}
+          onSubmit={scanToken}
+        >
+          <div className={deskStyles.panelHeading}>
+            <div>
+              <p className={styles.eyebrow}>Live scanner</p>
+              <h2>Ready for the next member</h2>
+            </div>
+            <span
+              className={`${deskStyles.focusStatus} ${
+                busy ? deskStyles.focusBusy : ""
+              }`}
+            >
+              {busy ? "Checking" : "Focused"}
+            </span>
+          </div>
         <label className={styles.field}>
           <span>Today&apos;s session</span>
           <select
@@ -329,7 +451,58 @@ export default function DeskPage() {
             Override check-in for {lastFailedEmail}
           </Button>
         ) : null}
-      </form>
+        </form>
+
+        <aside
+          className={`${deskStyles.scanFeedback} ${
+            scanFeedback
+              ? deskStyles[
+                  `feedback${scanFeedback.kind
+                    .charAt(0)
+                    .toUpperCase()}${scanFeedback.kind.slice(1)}` as keyof typeof deskStyles
+                ]
+              : ""
+          }`}
+          aria-live="assertive"
+          aria-atomic="true"
+        >
+          {scanFeedback ? (
+            <>
+              <span className={deskStyles.feedbackIcon} aria-hidden>
+                {scanFeedback.kind === "ok"
+                  ? "✓"
+                  : scanFeedback.kind === "duplicate"
+                    ? "↺"
+                    : "!"}
+              </span>
+              <p className={deskStyles.feedbackLabel}>
+                {scanFeedback.kind === "ok"
+                  ? "Admitted"
+                  : scanFeedback.kind === "duplicate"
+                    ? "Duplicate protected"
+                    : "Hold at desk"}
+              </p>
+              <h2>{scanFeedback.title}</h2>
+              <p>{scanFeedback.detail}</p>
+            </>
+          ) : (
+            <>
+              <span
+                className={`${deskStyles.feedbackIcon} ${deskStyles.feedbackIconIdle}`}
+                aria-hidden
+              >
+                ◇
+              </span>
+              <p className={deskStyles.feedbackLabel}>Scanner standing by</p>
+              <h2>Present member QR</h2>
+              <p>
+                The next scan result will appear here with a clear admit or
+                hold decision.
+              </p>
+            </>
+          )}
+        </aside>
+      </section>
 
       <form className={styles.panel} onSubmit={search}>
         <label className={styles.field}>

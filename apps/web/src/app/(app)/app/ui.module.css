@@ -32,6 +32,421 @@
   gap: var(--space-2);
 }
 
+.homeHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.classReminder {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.2rem 0.8rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(196, 160, 106, 0.5);
+  border-radius: var(--radius-lg);
+  background: rgba(196, 160, 106, 0.1);
+}
+
+.classReminder > span {
+  grid-row: span 2;
+  color: var(--brand-glove);
+  font-size: 1.15rem;
+}
+
+.classReminder strong {
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+.classReminder p {
+  margin: 0.2rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
+.classReminder a {
+  grid-column: 2;
+  color: var(--brand-cream);
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+.classReminderSoon {
+  border-color: rgba(200, 32, 38, 0.62);
+  background: rgba(200, 32, 38, 0.14);
+}
+
+.classReminderSoon > span {
+  color: var(--brand-red-bright);
+  text-shadow: 0 0 12px rgba(200, 32, 38, 0.7);
+}
+
+.journeyCard {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  overflow: hidden;
+  border: 1px solid rgba(196, 160, 106, 0.5);
+  border-radius: var(--radius-xl);
+  color: var(--text-primary);
+  background:
+    radial-gradient(circle at 0 0, rgba(200, 32, 38, 0.22), transparent 38%),
+    var(--bg-elevated);
+  text-decoration: none;
+  box-shadow: var(--shadow-lg), var(--shadow-inset);
+}
+
+.journeyRank,
+.journeyProgress,
+.journeyStat {
+  display: grid;
+  min-width: 0;
+  min-height: 108px;
+  align-content: center;
+  padding: var(--space-4);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.journeyRank {
+  grid-column: 1 / -1;
+  min-height: 156px;
+}
+
+.journeyRank > span,
+.journeyProgress span,
+.journeyStat span {
+  color: var(--brand-glove);
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.journeyRank > strong {
+  margin-top: 0.15rem;
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(3.3rem, 14vw, 6.2rem);
+  font-weight: 400;
+  line-height: 0.82;
+  text-transform: capitalize;
+}
+
+.journeyRank p {
+  margin: 0.65rem 0 0;
+  color: var(--text-muted);
+  font-weight: 800;
+}
+
+.journeyProgress {
+  grid-column: 1 / -1;
+}
+
+.journeyProgress > div:first-child {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.journeyProgress strong {
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 400;
+}
+
+.journeyProgress small {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
+.journeyStat strong {
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.journeyLink {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  color: var(--brand-cream);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.journeyCard:hover {
+  border-color: rgba(196, 160, 106, 0.8);
+}
+
+.coachFocus {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid rgba(196, 160, 106, 0.38);
+  border-radius: var(--radius-lg);
+  background: rgba(196, 160, 106, 0.2);
+}
+
+.coachFocus > div {
+  display: grid;
+  min-height: 88px;
+  align-content: center;
+  padding: var(--space-4);
+  background: var(--bg-elevated);
+}
+
+.coachFocus h2 {
+  margin: 0.1rem 0;
+  color: var(--brand-glove);
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 400;
+  text-transform: capitalize;
+}
+
+.coachFocus > div > span {
+  color: var(--text-muted);
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.coachFocus > div > strong {
+  margin-top: 0.25rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.coachFocus > a {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 var(--space-4);
+  color: var(--brand-cream);
+  background: var(--bg-elevated);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.nextActionCard {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(200, 32, 38, 0.2), transparent 44%),
+    linear-gradient(145deg, rgba(196, 160, 106, 0.08), transparent 55%),
+    var(--bg-elevated);
+}
+
+.actionTitle {
+  max-width: 14ch;
+  margin: var(--space-2) 0 var(--space-1);
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(2rem, 8vw, 3.25rem);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: 0.025em;
+}
+
+.actionNumber {
+  color: rgba(196, 160, 106, 0.22);
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(3.5rem, 14vw, 5.5rem);
+  line-height: 0.8;
+}
+
+.fullAction {
+  display: block;
+  text-decoration: none;
+}
+
+.fullAction > button {
+  width: 100%;
+}
+
+.sectionHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.sectionHeading > div {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.classDetails {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3) 0;
+  border-block: 1px solid var(--border);
+}
+
+.classWhen {
+  margin: 0;
+  color: var(--brand-cream);
+  font-family: var(--font-heritage);
+  font-size: 1.05rem;
+  line-height: 1.4;
+}
+
+.progressTrack {
+  height: 7px;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background: rgba(243, 230, 200, 0.08);
+}
+
+.progressTrack > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--brand-red), var(--brand-glove));
+  transition: width var(--motion-slow) var(--ease-emphasized);
+}
+
+.checklist {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.checklist > li {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 68px;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.checklist > li:last-child {
+  border-bottom: 0;
+}
+
+.checklist a {
+  color: var(--brand-cream);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-underline-offset: 4px;
+}
+
+.stepComplete {
+  opacity: 0.64;
+}
+
+.stepMarker {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  color: var(--brand-cream);
+  background: var(--bg-sunken);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.stepComplete .stepMarker {
+  border-color: rgba(98, 201, 151, 0.48);
+  color: var(--success);
+  background: var(--success-surface);
+}
+
+.stepCopy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.stepCopy strong {
+  color: var(--text-primary);
+  font-size: 0.92rem;
+}
+
+.stepCopy small {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.quickGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.quickAction {
+  display: grid;
+  min-width: 0;
+  min-height: 142px;
+  align-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.025), transparent 52%),
+    var(--bg-surface);
+  text-decoration: none;
+  box-shadow: var(--shadow-sm), var(--shadow-inset);
+  transition:
+    transform var(--motion-normal) var(--ease-standard),
+    border-color var(--motion-normal) var(--ease-standard),
+    background var(--motion-normal) var(--ease-standard);
+}
+
+.quickAction:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+  background: var(--bg-surface-strong);
+}
+
+.quickAction:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  box-shadow: var(--focus-ring);
+}
+
+.quickAction strong {
+  align-self: end;
+  line-height: 1.15;
+}
+
+.quickAction small {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+}
+
+.quickIcon,
+.quickStat {
+  color: var(--brand-glove);
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.quickStat {
+  color: var(--brand-cream);
+}
+
 .card {
   display: grid;
   gap: var(--space-3);
@@ -64,6 +479,23 @@
 }
 
 @media (max-width: 480px) {
+  .quickGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .quickAction {
+    min-height: 112px;
+  }
+
+  .checklist > li {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+
+  .checklist a {
+    grid-column: 2;
+    justify-self: start;
+  }
+
   .identityRow {
     flex-direction: column;
     align-items: flex-start;
@@ -73,6 +505,32 @@
     width: min(100%, 220px);
     height: auto;
     aspect-ratio: 3 / 4;
+  }
+}
+
+@media (min-width: 700px) {
+  .journeyCard {
+    grid-template-columns: 1.35fr 1fr 0.55fr 0.55fr;
+  }
+
+  .journeyRank,
+  .journeyProgress {
+    grid-column: auto;
+    min-height: 190px;
+  }
+
+  .journeyRank,
+  .journeyProgress,
+  .journeyStat {
+    border-bottom: 0;
+  }
+
+  .coachFocus {
+    grid-template-columns: 0.7fr 1fr 1fr;
+  }
+
+  .coachFocus > a {
+    grid-column: 1 / -1;
   }
 }
 
