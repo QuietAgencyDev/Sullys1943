@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   isBoxingTimerSoundUnlocked,
+  playCelebrationCue,
   playRoundBell,
   playTenSecondWarning,
   testBoxingTimerSound,
@@ -231,8 +232,8 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   });
   const [soundReady, setSoundReady] = useState(false);
   const warnedPhaseRef = useRef<string | null>(null);
-  const bellPhaseRef = useRef<string | null>(null);
   const startBellRef = useRef<string | null>(null);
+  const previousTvModeRef = useRef<string | null>(null);
 
   useEffect(() => {
     setTimerCfg(readTimerConfig());
@@ -373,7 +374,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     };
   }, [now, board?.live, board?.coachTimer, timerCfg]);
 
-  // Boxing timer SFX — start bell, 10s wooden double-clap, end bell (floor)
+  // Boxing timer SFX — one bell per phase and a 10s wooden double-clap.
   useEffect(() => {
     if (profile !== "floor" || !soundReady) return;
     if (round.paused) return;
@@ -401,10 +402,6 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     if (left <= 10 && left > 0 && warnedPhaseRef.current !== phaseKey) {
       warnedPhaseRef.current = phaseKey;
       playTenSecondWarning();
-    }
-    if (left <= 0 && bellPhaseRef.current !== phaseKey) {
-      bellPhaseRef.current = phaseKey;
-      playRoundBell();
     }
   }, [
     profile,
@@ -447,6 +444,25 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     (profile === "floor" || board?.live?.phase === "live");
   const riveActive =
     profile === "floor" && (Boolean(board?.coachTimer) || demoCelebrate);
+  const sceneKey = `${tvMode}:${round.phase}:${round.round}:${
+    board?.coachTimer?.currentExercise?.title ?? ""
+  }:${board?.coachTimer?.tvMessage ?? ""}`;
+
+  useEffect(() => {
+    if (profile !== "floor" || !soundReady) return;
+    const previous = previousTvModeRef.current;
+    previousTvModeRef.current = tvMode;
+    if (!previous || previous === tvMode) return;
+    if (
+      tvMode === "achievement" ||
+      tvMode === "class_complete" ||
+      tvMode === "xp_bonus" ||
+      tvMode === "challenge"
+    ) {
+      playCelebrationCue(tvMode);
+    }
+  }, [profile, soundReady, tvMode]);
+
   const topName = board?.leaderboard?.[0]?.displayName ?? null;
   const riveXp =
     tvMode === "class_complete"
@@ -544,7 +560,18 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                   : null
             }
           />
-          <div className={styles.heroContent}>
+          {showRoundHero ? (
+            <div className={styles.phaseCurtain} key={`curtain-${sceneKey}`}>
+              <span>{round.phase === "work" ? "WORK" : "REST"}</span>
+              <strong>ROUND {String(round.round).padStart(2, "0")}</strong>
+            </div>
+          ) : null}
+          <div
+            key={sceneKey}
+            className={`${styles.heroContent} ${
+              showRoundHero ? styles.sceneRound : styles.sceneCelebration
+            }`}
+          >
           {showXpBonusHero ? (
             <>
               <p className={styles.phase}>XP bonus</p>
@@ -740,7 +767,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                 {String(timerCfg.restSec % 60).padStart(2, "0")} rest
               </p>
             </>
-          ) : (
+          ) : !modeActive ? (
             <>
               <p className={styles.phase}>
                 {focus?.phase === "live"
@@ -773,7 +800,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                 <p className={styles.meta}>Character before the bell.</p>
               )}
             </>
-          )}
+          ) : null}
           </div>
         </section>
 

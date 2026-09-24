@@ -578,3 +578,40 @@
     transform: translateY(0) scale(1);
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .vignette,
+  .flash,
+  .ring,
+  .ringDelay,
+  .burst,
+  .impact::before,
+  .impact::after,
+  .spark,
+  .confetti,
+  .glove,
+  .dockIcon,
+  .xpPop,
+  .xpName,
+  .badge {
+    animation: none !important;
+  }
+
+  .dockIcon,
+  .xpPop,
+  .xpName,
+  .badge {
+    opacity: 0.95;
+    transform: none;
+  }
+
+  .ring,
+  .ringDelay,
+  .burst,
+  .flash,
+  .impact,
+  .spark,
+  .confetti {
+    display: none;
+  }
+}
