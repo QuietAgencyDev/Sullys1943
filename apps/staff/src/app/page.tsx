@@ -2,17 +2,122 @@
 
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
-import { Button } from "@sullys/ui";
+import { Badge, Button } from "@sullys/ui";
 import { login, me } from "@/lib/auth";
 import { GYM } from "@/lib/gym-info";
 import styles from "./staff.module.css";
 
+type Role = "coach" | "front_desk" | "admin" | "owner";
 type User = { email: string; role: string; firstName?: string; lastName?: string };
+
+const ACTIONS: {
+  href: string;
+  title: string;
+  description: string;
+  group: "Today" | "Floor" | "Operations";
+  roles: readonly Role[];
+  priority?: boolean;
+}[] = [
+  {
+    href: "/coach",
+    title: "Coach command",
+    description: "Today’s classes, roster and Live Class Mode",
+    group: "Today",
+    roles: ["coach", "front_desk", "admin", "owner"],
+    priority: true,
+  },
+  {
+    href: "/desk",
+    title: "Desk check-in",
+    description: "Scan member cards, review blockers and record overrides",
+    group: "Today",
+    roles: ["front_desk", "admin", "owner"],
+    priority: true,
+  },
+  {
+    href: "/coach/roster",
+    title: "Coach roster",
+    description: "Attendance, boxing cards, XP and assessments",
+    group: "Floor",
+    roles: ["coach", "admin", "owner"],
+  },
+  {
+    href: "/coach/builder",
+    title: "Class builder",
+    description: "Prepare reusable workouts for Live Mode",
+    group: "Floor",
+    roles: ["coach", "admin", "owner"],
+  },
+  {
+    href: "/coach/messages",
+    title: "Messages",
+    description: "Member threads and class broadcasts",
+    group: "Today",
+    roles: ["coach", "admin", "owner"],
+  },
+  {
+    href: "/desk/kiosk",
+    title: "Door kiosk",
+    description: "Launch the fullscreen member check-in station",
+    group: "Floor",
+    roles: ["front_desk", "admin", "owner"],
+  },
+  {
+    href: "/desk/dry-run",
+    title: "Opening check",
+    description: "Test scanner, API and floor readiness",
+    group: "Operations",
+    roles: ["front_desk", "admin", "owner"],
+  },
+  {
+    href: "/coach/analytics",
+    title: "Coach analytics",
+    description: "Classes taught, attendance and challenge results",
+    group: "Operations",
+    roles: ["coach", "admin", "owner"],
+  },
+  {
+    href: "/kitchen",
+    title: "Kitchen display",
+    description: "Allergen-aware orders and ticket status",
+    group: "Operations",
+    roles: ["admin", "owner"],
+  },
+  {
+    href: "/owner",
+    title: "Owner brief",
+    description: "Membership, revenue, waivers and broadcasts",
+    group: "Operations",
+    roles: ["admin", "owner"],
+    priority: true,
+  },
+  {
+    href: "/admin/users",
+    title: "People and access",
+    description: "Invite staff, change roles and disable access",
+    group: "Operations",
+    roles: ["admin", "owner"],
+  },
+];
+
+const ROLE_LABEL: Record<Role, string> = {
+  coach: "Coach",
+  front_desk: "Front desk",
+  admin: "Administrator",
+  owner: "Owner",
+};
+
+const ROLE_TITLE: Record<Role, string> = {
+  coach: "Coach Corner",
+  front_desk: "Front Desk",
+  admin: "Gym Operations",
+  owner: "Owner Command",
+};
 
 export default function StaffHome() {
   const [user, setUser] = useState<User | null>(null);
-  const [email, setEmail] = useState("desk@sullys.local");
-  const [password, setPassword] = useState("password123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -38,12 +143,25 @@ export default function StaffHome() {
     }
   }
 
+  const role =
+    user && user.role in ROLE_LABEL ? (user.role as Role) : null;
+  const visibleActions = role
+    ? ACTIONS.filter((action) => action.roles.includes(role))
+    : [];
+
   return (
     <main className={styles.main}>
-      <p className={styles.eyebrow}>STAFF / COMMAND CENTER</p>
-      <h1 className={styles.title}>Front Desk</h1>
+      <div className={styles.headingRow}>
+        <div>
+          <p className={styles.eyebrow}>STAFF / COMMAND CENTER</p>
+          <h1 className={styles.title}>
+            {role ? ROLE_TITLE[role] : "Gym Operations"}
+          </h1>
+        </div>
+        {role ? <Badge tone="accent">{ROLE_LABEL[role]}</Badge> : null}
+      </div>
       <p className={styles.copy}>
-        Desk scanner, coach roster, and kitchen KDS for the live floor.
+        Everything needed to open the gym, run the floor and recover quickly.
       </p>
       <div className={styles.softLaunch}>
         <p className={styles.softLaunchTitle}>{GYM.name}</p>
@@ -67,6 +185,8 @@ export default function StaffHome() {
               className={styles.input}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@sullys1943.com"
+              autoComplete="email"
             />
           </label>
           <label className={styles.field}>
@@ -76,133 +196,131 @@ export default function StaffHome() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
             />
           </label>
           {error ? <p className={styles.error}>{error}</p> : null}
           <Button type="submit" disabled={pending}>
             {pending ? "Signing in…" : "Sign in"}
           </Button>
-          <p className={styles.hint}>
-            Try desk@ / coach@ / admin@ / owner@sullys.local · password123
-          </p>
+          <p className={styles.hint}>Use your assigned Sully&apos;s staff account.</p>
         </form>
       ) : (
         <>
-          <p className={styles.copy}>
-            Signed in as {user.email} ({user.role})
-          </p>
-          <nav className={styles.nav}>
-            {(user.role === "coach" ||
-              user.role === "admin" ||
-              user.role === "owner" ||
-              user.role === "front_desk") && (
-              <Link className={styles.navCard} href="/coach">
-                <strong>Coach Command Center</strong>
-                <span>
-                  Today&apos;s classes · Live Class Mode · coach timer control
-                </span>
-              </Link>
-            )}
-            {(user.role === "coach" ||
-              user.role === "admin" ||
-              user.role === "owner") && (
-              <>
-                <Link className={styles.navCard} href="/coach/roster">
-                  <strong>Coach roster</strong>
-                  <span>Boxing Card · XP · assessments · present</span>
-                </Link>
-                <Link className={styles.navCard} href="/coach/builder">
-                  <strong>Class builder</strong>
-                  <span>Workout templates for Live Mode</span>
-                </Link>
-                <Link className={styles.navCard} href="/coach/analytics">
-                  <strong>Coach analytics</strong>
-                  <span>Classes taught · attendance · challenges</span>
-                </Link>
-                <Link className={styles.navCard} href="/coach/messages">
-                  <strong>Coach messages</strong>
-                  <span>Direct threads + class broadcast</span>
-                </Link>
-              </>
-            )}
-            {(user.role === "front_desk" ||
-              user.role === "admin" ||
-              user.role === "owner") && (
-              <>
-                <Link className={styles.navCard} href="/desk">
-                  <strong>Desk scanner</strong>
-                  <span>QR / USB wedge + session + staff override</span>
-                </Link>
-                <Link className={styles.navCard} href="/desk/kiosk">
-                  <strong>Door kiosk mode</strong>
-                  <span>Fullscreen auto-scan · member QR → check-in</span>
-                </Link>
-                <Link className={styles.navCard} href="/desk/dry-run">
-                  <strong>Scanner dry-run</strong>
-                  <span>API checks + floor checklist before USB arrives</span>
-                </Link>
-              </>
-            )}
-            <a
-              className={styles.navCard}
-              href={
-                (process.env.NEXT_PUBLIC_WEB_ORIGIN ?? "http://localhost:3000") +
-                "/tv/floor"
-              }
-              target="_blank"
-              rel="noreferrer"
-            >
-              <strong>Floor TV</strong>
-              <span>Coach-synced timer · leaderboard · announcements</span>
-            </a>
-            {(user.role === "admin" ||
-              user.role === "owner" ||
-              user.role === "front_desk") && (
-              <a
-                className={styles.navCard}
-                href={
-                  (process.env.NEXT_PUBLIC_WEB_ORIGIN ??
-                    "http://localhost:3000") + "/tv/reception"
-                }
-                target="_blank"
-                rel="noreferrer"
-              >
-                <strong>Reception TV</strong>
-                <span>Welcome ticker + today&apos;s schedule</span>
-              </a>
-            )}
-            {(user.role === "admin" || user.role === "owner") && (
-              <>
-                <Link className={styles.navCard} href="/kitchen">
-                  <strong>Kitchen KDS</strong>
-                  <span>Allergen-aware tickets and status board</span>
-                </Link>
-                <Link className={styles.navCard} href="/owner">
-                  <strong>Owner desk</strong>
-                  <span>
-                    Memberships, revenue, waivers, walk-ins, demographics,
-                    group messages
-                  </span>
-                </Link>
-                <Link className={styles.navCard} href="/admin/users">
-                  <strong>Staff user admin</strong>
-                  <span>Invite, role change, disable desk/coach accounts</span>
-                </Link>
-              </>
-            )}
-            <a
-              className={styles.navCard}
-              href={
-                (process.env.NEXT_PUBLIC_WEB_ORIGIN ?? "http://localhost:3000") +
-                "/manuals"
-              }
-              target="_blank"
-              rel="noreferrer"
-            >
-              <strong>PDF manuals</strong>
-              <span>Owner/staff ops + member/family user guides</span>
-            </a>
-          </nav>
+          <div className={styles.sessionBar}>
+            <span className={styles.sessionDot} aria-hidden />
+            <span>
+              Signed in as{" "}
+              <strong>
+                {[user.firstName, user.lastName].filter(Boolean).join(" ") ||
+                  user.email}
+              </strong>
+            </span>
+          </div>
+
+          {role ? (
+            <nav className={styles.commandSections} aria-label="Staff tools">
+              {(["Today", "Floor", "Operations"] as const).map((group) => {
+                const actions = visibleActions.filter(
+                  (action) => action.group === group,
+                );
+                if (actions.length === 0) return null;
+                return (
+                  <section key={group} className={styles.commandSection}>
+                    <div className={styles.sectionHeading}>
+                      <h2>{group}</h2>
+                      <span>{actions.length} tools</span>
+                    </div>
+                    <div className={styles.nav}>
+                      {actions.map((action) => (
+                        <Link
+                          key={action.href}
+                          className={`${styles.navCard} ${
+                            action.priority ? styles.navCardPriority : ""
+                          }`}
+                          href={action.href}
+                        >
+                          <span className={styles.navCardCopy}>
+                            <strong>{action.title}</strong>
+                            <span>{action.description}</span>
+                          </span>
+                          <span className={styles.navArrow} aria-hidden>
+                            →
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  </section>
+                );
+              })}
+
+              <section className={styles.commandSection}>
+                <div className={styles.sectionHeading}>
+                  <h2>Screens &amp; help</h2>
+                  <span>New window</span>
+                </div>
+                <div className={styles.nav}>
+                  <a
+                    className={styles.navCard}
+                    href={
+                      (process.env.NEXT_PUBLIC_WEB_ORIGIN ??
+                        "http://localhost:3000") + "/tv/floor"
+                    }
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <span className={styles.navCardCopy}>
+                      <strong>Floor TV</strong>
+                      <span>Timer, leaderboard and live class moments</span>
+                    </span>
+                    <span className={styles.navArrow} aria-hidden>
+                      ↗
+                    </span>
+                  </a>
+                  {role !== "coach" ? (
+                    <a
+                      className={styles.navCard}
+                      href={
+                        (process.env.NEXT_PUBLIC_WEB_ORIGIN ??
+                          "http://localhost:3000") + "/tv/reception"
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <span className={styles.navCardCopy}>
+                        <strong>Reception TV</strong>
+                        <span>Schedule, announcements and welcome ticker</span>
+                      </span>
+                      <span className={styles.navArrow} aria-hidden>
+                        ↗
+                      </span>
+                    </a>
+                  ) : null}
+                  <a
+                    className={styles.navCard}
+                    href={
+                      (process.env.NEXT_PUBLIC_WEB_ORIGIN ??
+                        "http://localhost:3000") + "/manuals"
+                    }
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <span className={styles.navCardCopy}>
+                      <strong>Guides and recovery</strong>
+                      <span>Task guides for staff, coaches and screens</span>
+                    </span>
+                    <span className={styles.navArrow} aria-hidden>
+                      ↗
+                    </span>
+                  </a>
+                </div>
+              </section>
+            </nav>
+          ) : (
+            <p className={styles.error}>
+              This account does not have a supported staff role.
+            </p>
+          )}
         </>
       )}
     </main>
