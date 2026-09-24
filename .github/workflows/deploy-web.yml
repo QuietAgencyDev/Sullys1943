@@ -1,5 +1,6 @@
-# Deploy apps/web to Vercel on every push to main.
-# Bypasses Hobby "commit author" git collaboration blocks.
+# Manual fallback deployment. The connected Vercel project deploys main
+# automatically; this workflow is retained only for an operator-triggered
+# recovery deployment.
 #
 # One-time setup (Quiet Agency Vercel account):
 # 1) https://vercel.com/account/tokens → Create Token → copy
@@ -13,14 +14,6 @@
 name: Deploy web (Vercel)
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "apps/web/**"
-      - "packages/**"
-      - "package.json"
-      - "package-lock.json"
-      - ".github/workflows/deploy-web.yml"
   workflow_dispatch:
 
 jobs:
