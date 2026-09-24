@@ -32,6 +32,221 @@
   gap: var(--space-2);
 }
 
+.homeHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.nextActionCard {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(200, 32, 38, 0.2), transparent 44%),
+    linear-gradient(145deg, rgba(196, 160, 106, 0.08), transparent 55%),
+    var(--bg-elevated);
+}
+
+.actionTitle {
+  max-width: 14ch;
+  margin: var(--space-2) 0 var(--space-1);
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(2rem, 8vw, 3.25rem);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: 0.025em;
+}
+
+.actionNumber {
+  color: rgba(196, 160, 106, 0.22);
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(3.5rem, 14vw, 5.5rem);
+  line-height: 0.8;
+}
+
+.fullAction {
+  display: block;
+  text-decoration: none;
+}
+
+.fullAction > button {
+  width: 100%;
+}
+
+.sectionHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.sectionHeading > div {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.classDetails {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3) 0;
+  border-block: 1px solid var(--border);
+}
+
+.classWhen {
+  margin: 0;
+  color: var(--brand-cream);
+  font-family: var(--font-heritage);
+  font-size: 1.05rem;
+  line-height: 1.4;
+}
+
+.progressTrack {
+  height: 7px;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background: rgba(243, 230, 200, 0.08);
+}
+
+.progressTrack > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--brand-red), var(--brand-glove));
+  transition: width var(--motion-slow) var(--ease-emphasized);
+}
+
+.checklist {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.checklist > li {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 68px;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.checklist > li:last-child {
+  border-bottom: 0;
+}
+
+.checklist a {
+  color: var(--brand-cream);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-underline-offset: 4px;
+}
+
+.stepComplete {
+  opacity: 0.64;
+}
+
+.stepMarker {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  color: var(--brand-cream);
+  background: var(--bg-sunken);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.stepComplete .stepMarker {
+  border-color: rgba(98, 201, 151, 0.48);
+  color: var(--success);
+  background: var(--success-surface);
+}
+
+.stepCopy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.stepCopy strong {
+  color: var(--text-primary);
+  font-size: 0.92rem;
+}
+
+.stepCopy small {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.quickGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.quickAction {
+  display: grid;
+  min-width: 0;
+  min-height: 142px;
+  align-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.025), transparent 52%),
+    var(--bg-surface);
+  text-decoration: none;
+  box-shadow: var(--shadow-sm), var(--shadow-inset);
+  transition:
+    transform var(--motion-normal) var(--ease-standard),
+    border-color var(--motion-normal) var(--ease-standard),
+    background var(--motion-normal) var(--ease-standard);
+}
+
+.quickAction:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+  background: var(--bg-surface-strong);
+}
+
+.quickAction:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  box-shadow: var(--focus-ring);
+}
+
+.quickAction strong {
+  align-self: end;
+  line-height: 1.15;
+}
+
+.quickAction small {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+}
+
+.quickIcon,
+.quickStat {
+  color: var(--brand-glove);
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.quickStat {
+  color: var(--brand-cream);
+}
+
 .card {
   display: grid;
   gap: var(--space-3);
@@ -64,6 +279,23 @@
 }
 
 @media (max-width: 480px) {
+  .quickGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .quickAction {
+    min-height: 112px;
+  }
+
+  .checklist > li {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+
+  .checklist a {
+    grid-column: 2;
+    justify-self: start;
+  }
+
   .identityRow {
     flex-direction: column;
     align-items: flex-start;
