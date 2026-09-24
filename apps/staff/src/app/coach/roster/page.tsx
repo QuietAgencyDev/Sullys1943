@@ -73,6 +73,7 @@ type AthleteCard = {
     recommendedDrill?: string | null;
     notes?: string | null;
     at?: string;
+    nextAt?: string | null;
   }[];
   achievements: { code: string; name: string; earnedAt: string }[];
   recentXp: { delta: number; reason: string; at: string }[];
@@ -134,6 +135,7 @@ export default function CoachRosterPage() {
   const [category, setCategory] = useState("jab");
   const [goal, setGoal] = useState("");
   const [drill, setDrill] = useState("");
+  const [nextReview, setNextReview] = useState("");
   const [badges, setBadges] = useState<Badge[]>([]);
   const [xpCode, setXpCode] = useState("coach.choice");
   const [search, setSearch] = useState("");
@@ -201,6 +203,7 @@ export default function CoachRosterPage() {
     setNoteBody("");
     setGoal("");
     setDrill("");
+    setNextReview("");
     setCard(null);
     try {
       const [notesRes, cardRes] = await Promise.all([
@@ -235,6 +238,9 @@ export default function CoachRosterPage() {
         notes: noteBody.trim() || undefined,
         goal: goal.trim() || undefined,
         recommendedDrill: drill.trim() || undefined,
+        nextAt: nextReview
+          ? new Date(`${nextReview}T12:00:00`).toISOString()
+          : undefined,
       });
       setMessage(`Assessment saved for ${drawerUser.name}`);
       await openAthlete(drawerUser);
@@ -337,6 +343,28 @@ export default function CoachRosterPage() {
         .some((value) => value!.toLowerCase().includes(term)),
     );
   }, [roster, search]);
+
+  const selectedAssessment = card?.assessments.find(
+    (item) => item.category === category,
+  );
+  const ratedSkills = card
+    ? SKILL_CATS.filter((skill) =>
+        card.assessments.some((item) => item.category === skill),
+      ).length
+    : 0;
+  const averageSkill = card
+    ? (() => {
+        const latest = SKILL_CATS.map((skill) =>
+          card.assessments.find((item) => item.category === skill),
+        ).filter((item): item is NonNullable<typeof item> => Boolean(item));
+        return latest.length
+          ? (
+              latest.reduce((sum, item) => sum + (item.score ?? 0), 0) /
+              latest.length
+            ).toFixed(1)
+          : "—";
+      })()
+    : "—";
 
   return (
     <main className={`${styles.main} ${rosterStyles.rosterMain}`}>
@@ -554,6 +582,11 @@ export default function CoachRosterPage() {
                     {card.progression.xpToNextLevel ?? 0} XP to go
                   </small>
                 </div>
+                <div className={rosterStyles.developmentRead}>
+                  <span>Development read</span>
+                  <strong>{averageSkill}<small>/5</small></strong>
+                  <small>{ratedSkills} of {SKILL_CATS.length} skills rated</small>
+                </div>
               </div>
 
               <div className={rosterStyles.skillMatrix}>
@@ -569,9 +602,19 @@ export default function CoachRosterPage() {
                     <button
                       key={skill}
                       type="button"
+                      className={
+                        category === skill ? rosterStyles.skillSelected : ""
+                      }
                       onClick={() => {
                         setCategory(skill);
-                        if (assessment?.level) setLevel(assessment.level);
+                        setLevel(assessment?.level ?? "DEVELOPING");
+                        setGoal(assessment?.goal ?? "");
+                        setDrill(assessment?.recommendedDrill ?? "");
+                        setNextReview(
+                          assessment?.nextAt
+                            ? assessment.nextAt.slice(0, 10)
+                            : "",
+                        );
                       }}
                     >
                       <span>{skill}</span>
@@ -590,6 +633,35 @@ export default function CoachRosterPage() {
                   );
                 })}
               </div>
+
+              <section className={rosterStyles.skillFocus}>
+                <div>
+                  <p className={styles.eyebrow}>ACTIVE DEVELOPMENT FOCUS</p>
+                  <h3>{category}</h3>
+                  <span>
+                    {selectedAssessment?.level
+                      ? `${selectedAssessment.level} · last reviewed ${
+                          selectedAssessment.at
+                            ? new Date(selectedAssessment.at).toLocaleDateString()
+                            : "recently"
+                        }`
+                      : "No formal assessment yet"}
+                  </span>
+                </div>
+                <div>
+                  <span>Current goal</span>
+                  <strong>
+                    {selectedAssessment?.goal ?? "Set the athlete’s next target"}
+                  </strong>
+                </div>
+                <div>
+                  <span>Coach prescription</span>
+                  <strong>
+                    {selectedAssessment?.recommendedDrill ??
+                      "Add a recommended drill"}
+                  </strong>
+                </div>
+              </section>
 
               <div className={rosterStyles.cardColumns}>
                 <div className={rosterStyles.assessmentPanel}>
@@ -656,6 +728,15 @@ export default function CoachRosterPage() {
                       value={drill}
                       onChange={(event) => setDrill(event.target.value)}
                       placeholder="Example: Mirror footwork, 3 × 2 min"
+                    />
+                  </label>
+                  <label className={styles.field}>
+                    <span>Review again</span>
+                    <input
+                      className={styles.input}
+                      type="date"
+                      value={nextReview}
+                      onChange={(event) => setNextReview(event.target.value)}
                     />
                   </label>
                   <Button
@@ -748,6 +829,25 @@ export default function CoachRosterPage() {
                       </li>
                     ))}
                     {card.recentXp.length === 0 ? <li>No XP history yet.</li> : null}
+                  </ul>
+                </section>
+                <section>
+                  <h3>Game performance</h3>
+                  <ul>
+                    {card.games.slice(0, 4).map((game, index) => (
+                      <li key={`${game.at}-${game.name}-${index}`}>
+                        <span>
+                          {game.classTitle} ·{" "}
+                          {new Date(game.at).toLocaleDateString()}
+                        </span>
+                        <strong>
+                          {game.name} · {game.score} pts · +{game.xpAwarded} XP
+                        </strong>
+                      </li>
+                    ))}
+                    {card.games.length === 0 ? (
+                      <li>No game results yet.</li>
+                    ) : null}
                   </ul>
                 </section>
               </div>

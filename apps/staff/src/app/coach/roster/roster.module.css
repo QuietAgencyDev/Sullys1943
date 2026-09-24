@@ -399,6 +399,31 @@
   color: var(--brand-glove);
 }
 
+.developmentRead {
+  background: linear-gradient(
+    145deg,
+    rgba(196, 160, 106, 0.1),
+    rgba(200, 32, 38, 0.07)
+  );
+}
+
+.rankBanner .developmentRead strong {
+  display: flex;
+  align-items: baseline;
+  gap: 0.2rem;
+}
+
+.developmentRead strong small {
+  color: var(--brand-glove);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+}
+
+.developmentRead > small {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+}
+
 .skillMatrix {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -416,6 +441,14 @@
   color: inherit;
   text-align: left;
   cursor: pointer;
+}
+
+.skillMatrix .skillSelected {
+  border-color: rgba(196, 160, 106, 0.72);
+  background:
+    linear-gradient(145deg, rgba(196, 160, 106, 0.13), transparent),
+    rgba(0, 0, 0, 0.24);
+  box-shadow: inset 0 0 0 1px rgba(196, 160, 106, 0.12);
 }
 
 .skillMatrix button > span {
@@ -443,6 +476,44 @@
 
 .skillMatrix button > strong {
   font-size: 0.68rem;
+}
+
+.skillFocus {
+  display: grid;
+  gap: 1px;
+  margin: 0 clamp(1rem, 3vw, 1.5rem) clamp(1rem, 3vw, 1.5rem);
+  border: 1px solid rgba(196, 160, 106, 0.38);
+  background: rgba(196, 160, 106, 0.22);
+}
+
+.skillFocus > div {
+  display: grid;
+  align-content: center;
+  min-height: 88px;
+  padding: 0.85rem 1rem;
+  background: rgba(7, 6, 5, 0.92);
+}
+
+.skillFocus h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 400;
+  text-transform: capitalize;
+}
+
+.skillFocus span {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.skillFocus strong {
+  margin-top: 0.3rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
 }
 
 .cardColumns {
@@ -578,7 +649,10 @@
   }
 
   .rankBanner {
-    grid-template-columns: repeat(3, 0.7fr) minmax(240px, 1.9fr);
+    grid-template-columns: repeat(3, 0.62fr) minmax(210px, 1.45fr) minmax(
+        150px,
+        0.8fr
+      );
   }
 
   .rankBanner .levelProgress {
@@ -589,9 +663,17 @@
     grid-template-columns: repeat(5, 1fr);
   }
 
+  .skillFocus {
+    grid-template-columns: minmax(190px, 0.8fr) repeat(2, minmax(0, 1fr));
+  }
+
   .cardColumns,
   .cardHistory {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cardHistory {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .recognitionPanel,
