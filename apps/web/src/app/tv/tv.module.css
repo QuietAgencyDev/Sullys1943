@@ -100,15 +100,33 @@
 }
 
 .brand {
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: clamp(0.85rem, 1.3vw, 1.35rem);
+}
+
+.brand::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -2rem -4rem;
+  background: radial-gradient(
+    ellipse at 32% 50%,
+    rgba(200, 32, 38, 0.42) 0%,
+    rgba(196, 160, 106, 0.18) 38%,
+    transparent 72%
+  );
+  pointer-events: none;
 }
 
 .logo {
-  width: clamp(52px, 7vw, 84px);
+  width: clamp(76px, 8.5vw, 126px);
   height: auto;
-  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.55));
+  filter:
+    drop-shadow(0 0 18px rgba(200, 32, 38, 0.38))
+    drop-shadow(0 10px 24px rgba(0, 0, 0, 0.65));
 }
 
 .brandText {
@@ -119,15 +137,18 @@
 .brandName {
   margin: 0;
   font-family: var(--font-display-loaded), var(--font-display), Impact, sans-serif;
-  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  font-size: clamp(2.1rem, 4.8vw, 3.5rem);
   letter-spacing: 0.06em;
   line-height: 0.95;
+  text-shadow:
+    0 0 22px rgba(200, 32, 38, 0.42),
+    0 3px 16px rgba(0, 0, 0, 0.72);
 }
 
 .brandSub {
   margin: 0;
   color: #c4a06a;
-  font-size: clamp(0.75rem, 1.4vw, 0.95rem);
+  font-size: clamp(0.85rem, 1.5vw, 1.08rem);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
