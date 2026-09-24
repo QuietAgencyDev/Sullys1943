@@ -1,49 +1,166 @@
 .panel {
+  position: relative;
+  overflow: hidden;
   display: grid;
-  gap: var(--space-3);
-  padding: var(--space-5) var(--space-4);
-  min-height: 12rem;
+  gap: var(--space-4);
+  min-height: 25rem;
   place-content: center;
+  justify-items: center;
+  padding: clamp(var(--space-5), 8vw, var(--space-8)) var(--space-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xl);
   text-align: center;
   background:
-    radial-gradient(ellipse 70% 80% at 50% 0%, rgba(200, 32, 38, 0.12), transparent),
-    var(--bg-elevated);
-  border: 1px solid var(--border);
+    radial-gradient(
+      ellipse 70% 80% at 50% 0%,
+      rgba(200, 32, 38, 0.2),
+      transparent
+    ),
+    linear-gradient(145deg, rgba(196, 160, 106, 0.06), transparent 54%),
+    var(--bg-surface);
+  box-shadow: var(--shadow-lg), var(--shadow-inset);
+}
+
+.panel::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  opacity: 0.08;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+}
+
+.panel > * {
+  position: relative;
+  z-index: 1;
 }
 
 .status {
   margin: 0;
   font-family: var(--font-display-loaded), var(--font-display);
-  font-size: clamp(1.8rem, 6vw, 2.4rem);
+  font-size: clamp(2.2rem, 8vw, 3.4rem);
   letter-spacing: 0.03em;
+}
+
+.spinner {
+  width: 70px;
+  height: 70px;
+  border: 5px solid rgba(243, 230, 200, 0.12);
+  border-top-color: var(--brand-red);
+  border-radius: 50%;
+  animation: spin 900ms linear infinite;
+}
+
+.resultIcon {
+  display: grid;
+  width: 72px;
+  height: 72px;
+  place-items: center;
+  border: 1px solid rgba(98, 201, 151, 0.48);
+  border-radius: 50%;
+  color: var(--success);
+  background: var(--success-surface);
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 2.5rem;
+  box-shadow: 0 0 34px rgba(47, 158, 107, 0.18);
+}
+
+.resultIconDup {
+  border-color: rgba(225, 182, 79, 0.48);
+  color: var(--warning);
+  background: var(--warning-surface);
+  box-shadow: 0 0 34px rgba(212, 160, 23, 0.16);
+}
+
+.resultIconError {
+  border-color: var(--border-accent);
+  color: var(--brand-red-bright);
+  background: rgba(200, 32, 38, 0.12);
+  box-shadow: 0 0 34px rgba(200, 32, 38, 0.16);
 }
 
 .ok {
   margin: 0;
   font-family: var(--font-display-loaded), var(--font-display);
-  font-size: clamp(2.2rem, 8vw, 3rem);
+  font-size: clamp(3rem, 12vw, 5rem);
   letter-spacing: 0.03em;
-  color: #2f7a4d;
+  line-height: 0.9;
+  color: var(--success);
 }
 
 .dup {
   margin: 0;
   font-family: var(--font-display-loaded), var(--font-display);
-  font-size: clamp(1.8rem, 6vw, 2.4rem);
+  font-size: clamp(2.3rem, 9vw, 3.6rem);
   letter-spacing: 0.03em;
-  color: #b07a28;
+  line-height: 0.95;
+  color: var(--warning);
 }
 
 .err {
   margin: 0;
   font-family: var(--font-display-loaded), var(--font-display);
-  font-size: clamp(1.8rem, 6vw, 2.4rem);
+  font-size: clamp(2.3rem, 9vw, 3.6rem);
   letter-spacing: 0.03em;
+  line-height: 0.95;
   color: var(--brand-red);
 }
 
 .name {
   margin: 0;
-  font-size: 1.15rem;
-  font-weight: 600;
+  font-family: var(--font-heritage);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.primaryLink,
+.secondaryLink {
+  display: inline-flex;
+  min-height: var(--touch-min);
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.primaryLink {
+  color: var(--text-on-accent);
+  background: var(--brand-red);
+}
+
+.secondaryLink {
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+  background: rgba(243, 230, 200, 0.045);
+}
+
+.primaryLink:focus-visible,
+.secondaryLink:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  box-shadow: var(--focus-ring);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+    border-color: var(--brand-red);
+  }
 }
