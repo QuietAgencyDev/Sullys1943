@@ -26,20 +26,25 @@ export function FighterRecordLinks({ profile }: Props) {
 
   const boxrecPro =
     profile.boxrecIdPro &&
-    normalizeBoxrecHref(profile.boxrecIdPro);
+    normalizeBoxrecHref(profile.boxrecIdPro, "pro");
   const boxrecAmateur =
     profile.boxrecIdAmateur &&
-    normalizeBoxrecHref(profile.boxrecIdAmateur);
+    normalizeBoxrecHref(profile.boxrecIdAmateur, "amateur");
   const ontario = profile.boxingOntarioRegNum
-    ? "https://boxingon.ca"
+    ? "https://boxingontario.com"
     : null;
 
   if (!boxrecPro && !boxrecAmateur && !ontario) return null;
 
   return (
-    <div className={styles.wrap}>
-      <p className={styles.eyebrow}>Competitive fighter</p>
-      <p className={styles.title}>Official records</p>
+    <section className={`${styles.wrap} ${styles.recordCard}`}>
+      <div className={styles.cardHeader}>
+        <div>
+          <p className={styles.eyebrow}>Competitive fighter</p>
+          <h2 className={styles.title}>Official records</h2>
+        </div>
+        <span className={styles.verified}>Records linked</span>
+      </div>
       <div className={styles.badges}>
         {boxrecPro ? (
           <a
@@ -47,9 +52,13 @@ export function FighterRecordLinks({ profile }: Props) {
             href={boxrecPro}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Open BoxRec Pro record in a new tab"
           >
-            BoxRec Pro
-            <span className={styles.badgeMeta}>{profile.boxrecIdPro}</span>
+            <span>
+              <strong>BoxRec Pro</strong>
+              <small>{profile.boxrecIdPro}</small>
+            </span>
+            <span className={styles.external} aria-hidden="true">↗</span>
           </a>
         ) : null}
         {boxrecAmateur ? (
@@ -58,9 +67,13 @@ export function FighterRecordLinks({ profile }: Props) {
             href={boxrecAmateur}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Open BoxRec Amateur record in a new tab"
           >
-            BoxRec Amateur
-            <span className={styles.badgeMeta}>{profile.boxrecIdAmateur}</span>
+            <span>
+              <strong>BoxRec Amateur</strong>
+              <small>{profile.boxrecIdAmateur}</small>
+            </span>
+            <span className={styles.external} aria-hidden="true">↗</span>
           </a>
         ) : null}
         {ontario ? (
@@ -69,14 +82,16 @@ export function FighterRecordLinks({ profile }: Props) {
             href={ontario}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Open Boxing Ontario in a new tab"
           >
-            Boxing Ontario
-            <span className={styles.badgeMeta}>
-              #{profile.boxingOntarioRegNum}
+            <span>
+              <strong>Boxing Ontario</strong>
+              <small>#{profile.boxingOntarioRegNum}</small>
             </span>
+            <span className={styles.external} aria-hidden="true">↗</span>
           </a>
         ) : null}
       </div>
-    </div>
+    </section>
   );
 }

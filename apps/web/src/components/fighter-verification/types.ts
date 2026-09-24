@@ -15,9 +15,18 @@ export type FighterVerification = {
   };
 };
 
-export function normalizeBoxrecHref(id: string | null | undefined): string | null {
+export function normalizeBoxrecHref(
+  id: string | null | undefined,
+  recordType: "pro" | "amateur",
+): string | null {
   if (!id) return null;
-  if (id.startsWith("http://") || id.startsWith("https://")) return id;
-  const path = id.startsWith("/") ? id : `/${id}`;
+  if (/^\d+$/.test(id)) {
+    const division = recordType === "pro" ? "box-pro" : "box-am";
+    return `https://boxrec.com/en/${division}/${id}`;
+  }
+  let path = id.startsWith("/") ? id : `/${id}`;
+  if (path.startsWith("/box-pro/") || path.startsWith("/box-am/")) {
+    path = `/en${path}`;
+  }
   return `https://boxrec.com${path}`;
 }

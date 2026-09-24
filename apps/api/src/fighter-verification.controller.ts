@@ -38,10 +38,19 @@ function cleanId(raw: string | null, field: string): string | null {
   return trimmed;
 }
 
-function normalizeBoxrecHref(id: string | null | undefined): string | null {
+function normalizeBoxrecHref(
+  id: string | null | undefined,
+  recordType: "pro" | "amateur",
+): string | null {
   if (!id) return null;
-  if (id.startsWith("http://") || id.startsWith("https://")) return id;
-  const path = id.startsWith("/") ? id : `/${id}`;
+  if (/^\d+$/.test(id)) {
+    const division = recordType === "pro" ? "box-pro" : "box-am";
+    return `https://boxrec.com/en/${division}/${id}`;
+  }
+  let path = id.startsWith("/") ? id : `/${id}`;
+  if (path.startsWith("/box-pro/") || path.startsWith("/box-am/")) {
+    path = `/en${path}`;
+  }
   return `https://boxrec.com${path}`;
 }
 
@@ -69,10 +78,13 @@ export class FighterVerificationController {
       boxrecIdPro: user.boxrecIdPro,
       boxrecIdAmateur: user.boxrecIdAmateur,
       links: {
-        boxrecPro: normalizeBoxrecHref(user.boxrecIdPro),
-        boxrecAmateur: normalizeBoxrecHref(user.boxrecIdAmateur),
+        boxrecPro: normalizeBoxrecHref(user.boxrecIdPro, "pro"),
+        boxrecAmateur: normalizeBoxrecHref(
+          user.boxrecIdAmateur,
+          "amateur",
+        ),
         boxingOntario: user.boxingOntarioRegNum
-          ? "https://boxingon.ca"
+          ? "https://boxingontario.com"
           : null,
       },
     };
@@ -167,10 +179,13 @@ export class FighterVerificationController {
       boxrecIdPro: user.boxrecIdPro,
       boxrecIdAmateur: user.boxrecIdAmateur,
       links: {
-        boxrecPro: normalizeBoxrecHref(user.boxrecIdPro),
-        boxrecAmateur: normalizeBoxrecHref(user.boxrecIdAmateur),
+        boxrecPro: normalizeBoxrecHref(user.boxrecIdPro, "pro"),
+        boxrecAmateur: normalizeBoxrecHref(
+          user.boxrecIdAmateur,
+          "amateur",
+        ),
         boxingOntario: user.boxingOntarioRegNum
-          ? "https://boxingon.ca"
+          ? "https://boxingontario.com"
           : null,
       },
     };
