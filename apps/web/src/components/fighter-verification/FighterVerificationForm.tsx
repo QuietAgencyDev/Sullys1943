@@ -87,61 +87,79 @@ export function FighterVerificationForm({ initial, onSaved }: Props) {
   }
 
   return (
-    <form className={styles.wrap} onSubmit={onSubmit}>
-      <p className={styles.eyebrow}>Verification</p>
-      <p className={styles.title}>Competitive fighter IDs</p>
-      <p className={styles.hint}>
-        Optional. Link your Boxing Ontario registration and BoxRec profiles so
-        coaches and the gym can verify competitive status. Find BoxRec IDs in
-        the numbers (or path) at the end of your BoxRec URL — e.g.
-        boxrec.com/en/box-pro/<strong>123456</strong> → store{" "}
-        <code>/box-pro/123456</code> or <code>123456</code>.
+    <form className={`${styles.wrap} ${styles.formCard}`} onSubmit={onSubmit}>
+      <div className={styles.cardHeader}>
+        <div>
+          <p className={styles.eyebrow}>Verification</p>
+          <h2 className={styles.title}>Competitive fighter IDs</h2>
+        </div>
+        <span className={styles.optional}>Optional</span>
+      </div>
+      <p className={styles.hint} id="fighter-id-help">
+        Connect your official Boxing Ontario and BoxRec records. Enter the
+        number or path at the end of the profile URL, such as{" "}
+        <code>/en/box-pro/123456</code>.
       </p>
 
       <label className={styles.checkboxRow}>
         <input
+          className={styles.checkbox}
           type="checkbox"
           checked={isCompetitive}
           onChange={(e) => setIsCompetitive(e.target.checked)}
+          disabled={busy}
         />
-        I am a competitive fighter
+        <span>
+          <strong>Competitive fighter</strong>
+          <small>Show verified record links on my member profile.</small>
+        </span>
       </label>
 
-      <label className={styles.field}>
-        <span className={styles.label}>Boxing Ontario registration #</span>
-        <input
-          className={styles.input}
-          value={ontario}
-          onChange={(e) => setOntario(e.target.value)}
-          placeholder="e.g. BO-12345"
-          autoComplete="off"
-        />
-      </label>
+      <div className={styles.fieldGrid}>
+        <label className={`${styles.field} ${styles.fieldWide}`}>
+          <span className={styles.label}>Boxing Ontario registration</span>
+          <input
+            className={styles.input}
+            value={ontario}
+            onChange={(e) => setOntario(e.target.value)}
+            placeholder="BO-12345"
+            autoComplete="off"
+            aria-describedby="fighter-id-help"
+            disabled={busy}
+          />
+        </label>
 
-      <label className={styles.field}>
-        <span className={styles.label}>BoxRec Pro ID / path</span>
-        <input
-          className={styles.input}
-          value={boxrecPro}
-          onChange={(e) => setBoxrecPro(e.target.value)}
-          placeholder="/box-pro/123456"
-          autoComplete="off"
-        />
-      </label>
+        <label className={styles.field}>
+          <span className={styles.label}>BoxRec Pro</span>
+          <input
+            className={styles.input}
+            value={boxrecPro}
+            onChange={(e) => setBoxrecPro(e.target.value)}
+            placeholder="123456"
+            autoComplete="off"
+            aria-describedby="fighter-id-help"
+            disabled={busy}
+          />
+        </label>
 
-      <label className={styles.field}>
-        <span className={styles.label}>BoxRec Amateur ID / path</span>
-        <input
-          className={styles.input}
-          value={boxrecAmateur}
-          onChange={(e) => setBoxrecAmateur(e.target.value)}
-          placeholder="/box-am/123456"
-          autoComplete="off"
-        />
-      </label>
+        <label className={styles.field}>
+          <span className={styles.label}>BoxRec Amateur</span>
+          <input
+            className={styles.input}
+            value={boxrecAmateur}
+            onChange={(e) => setBoxrecAmateur(e.target.value)}
+            placeholder="123456"
+            autoComplete="off"
+            aria-describedby="fighter-id-help"
+            disabled={busy}
+          />
+        </label>
+      </div>
 
-      {error ? <p className={styles.error}>{error}</p> : null}
-      {success ? <p className={styles.success}>{success}</p> : null}
+      <div className={styles.status} aria-live="polite">
+        {error ? <p className={styles.error}>{error}</p> : null}
+        {success ? <p className={styles.success}>{success}</p> : null}
+      </div>
 
       <div className={styles.actions}>
         <Button type="submit" disabled={busy}>
