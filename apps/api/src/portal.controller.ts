@@ -1,10 +1,15 @@
 import { Controller, Get, Inject, UseGuards } from "@nestjs/common";
 import { PrismaService } from "./prisma.service";
 import { AuthGuard, CurrentUser, type AuthPayload } from "./auth/auth.guard";
+import { ProgressionService } from "./progression.service";
 
 @Controller("portal")
 export class PortalController {
-  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
+  constructor(
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(ProgressionService)
+    private readonly progression: ProgressionService,
+  ) {}
 
   /** Public coach directory for marketing. */
   @Get("coaches")
@@ -68,7 +73,16 @@ export class PortalController {
       select: { firstName: true, lastName: true, email: true, role: true },
     });
 
-    const [membership, waiver, nextBooking, xp, points] = await Promise.all([
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const [
+      membership,
+      waiver,
+      nextBooking,
+      progression,
+      points,
+      development,
+      recentAttendance,
+    ] = await Promise.all([
       this.prisma.membership.findFirst({
         where: {
           status: "active",
@@ -99,14 +113,27 @@ export class PortalController {
         },
         orderBy: { session: { startsAt: "asc" } },
       }),
-      this.prisma.xpLedger.aggregate({
-        where: { userId: auth.sub },
-        _sum: { delta: true },
-      }),
+      this.progression.summary(auth.sub),
       this.prisma.pointsAccount.findUnique({ where: { userId: auth.sub } }),
+      this.prisma.coachAssessment.findFirst({
+        where: { athleteId: auth.sub },
+        orderBy: { createdAt: "desc" },
+        select: {
+          category: true,
+          level: true,
+          goal: true,
+          recommendedDrill: true,
+          createdAt: true,
+        },
+      }),
+      this.prisma.attendanceEvent.count({
+        where: {
+          userId: auth.sub,
+          status: { not: "voided" },
+          checkedInAt: { gte: thirtyDaysAgo },
+        },
+      }),
     ]);
-
-    const totalXp = xp._sum.delta ?? 0;
 
     return {
       user: {
@@ -137,9 +164,24 @@ export class PortalController {
               : nextBooking.session.coachName,
           }
         : null,
-      xp: totalXp,
+      xp: progression.xp,
       points: points?.balance ?? 0,
-      level: Math.floor(totalXp / 100) + 1,
+      level: progression.level,
+      progression: {
+        rank: progression.rank,
+        xpToNextLevel: progression.xpToNextLevel,
+        progressPct: progression.progressPct,
+      },
+      development: development
+        ? {
+            category: development.category,
+            level: development.level,
+            goal: development.goal,
+            recommendedDrill: development.recommendedDrill,
+            reviewedAt: development.createdAt.toISOString(),
+          }
+        : null,
+      recentAttendance,
     };
   }
 }

@@ -21,6 +21,19 @@ type HomeData = {
   xp: number;
   points: number;
   level: number;
+  progression: {
+    rank: string;
+    xpToNextLevel: number;
+    progressPct: number;
+  };
+  development: {
+    category: string;
+    level: string | null;
+    goal: string | null;
+    recommendedDrill: string | null;
+    reviewedAt: string;
+  } | null;
+  recentAttendance: number;
 };
 
 function formatWhen(value: string) {
@@ -170,22 +183,79 @@ export default function MemberHomePage() {
           <h1 className={styles.title}>Hey, {first}</h1>
           <p className={styles.lead}>Know what&apos;s next. Get fight ready.</p>
         </div>
-        <Badge tone="accent">Level {data.level}</Badge>
+        <Badge tone="accent">
+          {data.progression.rank} · L{data.level}
+        </Badge>
       </div>
 
-      <Card accent className={styles.nextActionCard}>
-        <div className={styles.rowTop}>
-          <div>
-            <p className={styles.eyebrow}>Do this next</p>
-            <h2 className={styles.actionTitle}>{nextAction.label}</h2>
-            <p className={styles.muted}>{nextAction.note}</p>
-          </div>
-          <span className={styles.actionNumber}>01</span>
+      <Link href="/app/passport" className={styles.journeyCard}>
+        <div className={styles.journeyRank}>
+          <span>YOUR BOXING JOURNEY</span>
+          <strong>{data.progression.rank}</strong>
+          <p>
+            Level {data.level} · {data.xp} XP
+          </p>
         </div>
-        <Link href={nextAction.href} className={styles.fullAction}>
-          <Button type="button">{nextAction.label} →</Button>
-        </Link>
-      </Card>
+        <div className={styles.journeyProgress}>
+          <div>
+            <span>Next level</span>
+            <strong>{data.progression.progressPct}%</strong>
+          </div>
+          <div className={styles.progressTrack} aria-hidden>
+            <span style={{ width: `${data.progression.progressPct}%` }} />
+          </div>
+          <small>{data.progression.xpToNextLevel} XP to go</small>
+        </div>
+        <div className={styles.journeyStat}>
+          <strong>{data.recentAttendance}</strong>
+          <span>Classes · 30 days</span>
+        </div>
+        <div className={styles.journeyStat}>
+          <strong>{data.points}</strong>
+          <span>Sully&apos;s points</span>
+        </div>
+        <span className={styles.journeyLink}>Open passport →</span>
+      </Link>
+
+      {data.development ? (
+        <section className={styles.coachFocus}>
+          <div>
+            <p className={styles.eyebrow}>COACH&apos;S FOCUS</p>
+            <h2>{data.development.category}</h2>
+            <span>{data.development.level ?? "In development"}</span>
+          </div>
+          <div>
+            <span>Your next target</span>
+            <strong>
+              {data.development.goal ?? "Keep sharpening the fundamentals"}
+            </strong>
+          </div>
+          <div>
+            <span>Put in the work</span>
+            <strong>
+              {data.development.recommendedDrill ??
+                "Ask your coach for today’s drill"}
+            </strong>
+          </div>
+          <Link href="/app/passport">View development →</Link>
+        </section>
+      ) : null}
+
+      {completedSteps < checklist.length ? (
+        <Card accent className={styles.nextActionCard}>
+          <div className={styles.rowTop}>
+            <div>
+              <p className={styles.eyebrow}>Do this next</p>
+              <h2 className={styles.actionTitle}>{nextAction.label}</h2>
+              <p className={styles.muted}>{nextAction.note}</p>
+            </div>
+            <span className={styles.actionNumber}>01</span>
+          </div>
+          <Link href={nextAction.href} className={styles.fullAction}>
+            <Button type="button">{nextAction.label} →</Button>
+          </Link>
+        </Card>
+      ) : null}
 
       <Card>
         <div className={styles.sectionHeading}>
@@ -275,11 +345,7 @@ export default function MemberHomePage() {
             ))}
           </ol>
         </Card>
-      ) : (
-        <Alert title="You’re fight ready" tone="success">
-          Your waiver, membership, booking and digital card are set.
-        </Alert>
-      )}
+      ) : null}
 
       <div className={styles.quickGrid}>
         <Link href="/app/card" className={styles.quickAction}>

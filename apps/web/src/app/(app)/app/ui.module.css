@@ -39,6 +39,159 @@
   gap: var(--space-4);
 }
 
+.journeyCard {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  overflow: hidden;
+  border: 1px solid rgba(196, 160, 106, 0.5);
+  border-radius: var(--radius-xl);
+  color: var(--text-primary);
+  background:
+    radial-gradient(circle at 0 0, rgba(200, 32, 38, 0.22), transparent 38%),
+    var(--bg-elevated);
+  text-decoration: none;
+  box-shadow: var(--shadow-lg), var(--shadow-inset);
+}
+
+.journeyRank,
+.journeyProgress,
+.journeyStat {
+  display: grid;
+  min-width: 0;
+  min-height: 108px;
+  align-content: center;
+  padding: var(--space-4);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.journeyRank {
+  grid-column: 1 / -1;
+  min-height: 156px;
+}
+
+.journeyRank > span,
+.journeyProgress span,
+.journeyStat span {
+  color: var(--brand-glove);
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.journeyRank > strong {
+  margin-top: 0.15rem;
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(3.3rem, 14vw, 6.2rem);
+  font-weight: 400;
+  line-height: 0.82;
+  text-transform: capitalize;
+}
+
+.journeyRank p {
+  margin: 0.65rem 0 0;
+  color: var(--text-muted);
+  font-weight: 800;
+}
+
+.journeyProgress {
+  grid-column: 1 / -1;
+}
+
+.journeyProgress > div:first-child {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.journeyProgress strong {
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 400;
+}
+
+.journeyProgress small {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
+.journeyStat strong {
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.journeyLink {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  color: var(--brand-cream);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.journeyCard:hover {
+  border-color: rgba(196, 160, 106, 0.8);
+}
+
+.coachFocus {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid rgba(196, 160, 106, 0.38);
+  border-radius: var(--radius-lg);
+  background: rgba(196, 160, 106, 0.2);
+}
+
+.coachFocus > div {
+  display: grid;
+  min-height: 88px;
+  align-content: center;
+  padding: var(--space-4);
+  background: var(--bg-elevated);
+}
+
+.coachFocus h2 {
+  margin: 0.1rem 0;
+  color: var(--brand-glove);
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 400;
+  text-transform: capitalize;
+}
+
+.coachFocus > div > span {
+  color: var(--text-muted);
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.coachFocus > div > strong {
+  margin-top: 0.25rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.coachFocus > a {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 var(--space-4);
+  color: var(--brand-cream);
+  background: var(--bg-elevated);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
 .nextActionCard {
   background:
     radial-gradient(circle at 100% 0%, rgba(200, 32, 38, 0.2), transparent 44%),
@@ -305,6 +458,32 @@
     width: min(100%, 220px);
     height: auto;
     aspect-ratio: 3 / 4;
+  }
+}
+
+@media (min-width: 700px) {
+  .journeyCard {
+    grid-template-columns: 1.35fr 1fr 0.55fr 0.55fr;
+  }
+
+  .journeyRank,
+  .journeyProgress {
+    grid-column: auto;
+    min-height: 190px;
+  }
+
+  .journeyRank,
+  .journeyProgress,
+  .journeyStat {
+    border-bottom: 0;
+  }
+
+  .coachFocus {
+    grid-template-columns: 0.7fr 1fr 1fr;
+  }
+
+  .coachFocus > a {
+    grid-column: 1 / -1;
   }
 }
 
