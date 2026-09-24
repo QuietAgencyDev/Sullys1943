@@ -1361,7 +1361,8 @@ export class PassportController {
       take: 365,
     });
     const progression = await this.progression.summary(auth.sub);
-    const [badges, points, recentXp, lastClassRow, games] = await Promise.all([
+    const [badges, points, recentXp, lastClassRow, games, assessments] =
+      await Promise.all([
       this.prisma.userBadge.findMany({
         where: { userId: auth.sub },
         include: { badge: true },
@@ -1391,6 +1392,11 @@ export class PassportController {
             },
           },
         },
+      }),
+      this.prisma.coachAssessment.findMany({
+        where: { athleteId: auth.sub },
+        orderBy: { createdAt: "desc" },
+        take: 50,
       }),
     ]);
 
@@ -1482,6 +1488,22 @@ export class PassportController {
         classTitle: g.gameSession.session.title,
         at: g.gameSession.session.startsAt.toISOString(),
       })),
+      development: assessments
+        .filter(
+          (assessment, index, all) =>
+            all.findIndex(
+              (candidate) => candidate.category === assessment.category,
+            ) === index,
+        )
+        .map((assessment) => ({
+          category: assessment.category,
+          level: assessment.level,
+          score: assessment.score,
+          goal: assessment.goal,
+          recommendedDrill: assessment.recommendedDrill,
+          reviewedAt: assessment.createdAt.toISOString(),
+          nextReviewAt: assessment.nextAt?.toISOString() ?? null,
+        })),
       attendance: {
         total: attendance.length,
         uniqueDays: dayKeys.size,
