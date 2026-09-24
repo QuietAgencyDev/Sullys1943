@@ -164,6 +164,28 @@ export class PortalController {
               : nextBooking.session.coachName,
           }
         : null,
+      reminder: nextBooking
+        ? (() => {
+            const hoursUntil =
+              (nextBooking.session.startsAt.getTime() - now.getTime()) /
+              (60 * 60 * 1000);
+            if (hoursUntil < 0 || hoursUntil > 26) return null;
+            return {
+              urgency: hoursUntil <= 3 ? "soon" : "tomorrow",
+              title:
+                hoursUntil <= 3
+                  ? "Your class starts soon"
+                  : "You’re training tomorrow",
+              detail:
+                hoursUntil <= 3
+                  ? `Be ready for ${nextBooking.session.title} in about ${Math.max(
+                      1,
+                      Math.round(hoursUntil),
+                    )} hour${Math.round(hoursUntil) === 1 ? "" : "s"}.`
+                  : `${nextBooking.session.title} is booked for tomorrow. Pack your gear and arrive early.`,
+            };
+          })()
+        : null,
       xp: progression.xp,
       points: points?.balance ?? 0,
       level: progression.level,

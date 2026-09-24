@@ -1081,7 +1081,7 @@ export class MessagesController {
           take: 1,
           orderBy: { createdAt: "desc" },
           include: {
-            sender: { select: { firstName: true, lastName: true } },
+            sender: { select: { id: true, firstName: true, lastName: true } },
           },
         },
         participants: {
@@ -1094,23 +1094,78 @@ export class MessagesController {
       take: 40,
     });
     return {
-      threads: threads.map((t) => ({
-        id: t.id,
-        subject: t.subject,
-        kind: t.kind,
-        sessionId: t.sessionId,
-        createdAt: t.createdAt.toISOString(),
-        participants: t.participants.map((p) => ({
-          id: p.user.id,
-          name: `${p.user.firstName} ${p.user.lastName}`,
-        })),
-        messages: t.messages.map((m) => ({
-          body: m.body,
-          createdAt: m.createdAt.toISOString(),
-          sender: `${m.sender.firstName} ${m.sender.lastName}`,
-        })),
-      })),
+      threads: threads
+        .map((t) => {
+          const latest = t.messages[0];
+          const mine = t.participants.find((p) => p.user.id === auth.sub);
+          const unread = Boolean(
+            latest &&
+              latest.sender.id !== auth.sub &&
+              (!mine?.lastReadAt || latest.createdAt > mine.lastReadAt),
+          );
+          return {
+            id: t.id,
+            subject: t.subject,
+            kind: t.kind,
+            sessionId: t.sessionId,
+            createdAt: t.createdAt.toISOString(),
+            unread,
+            participants: t.participants.map((p) => ({
+              id: p.user.id,
+              name: `${p.user.firstName} ${p.user.lastName}`,
+            })),
+            messages: t.messages.map((m) => ({
+              body: m.body,
+              createdAt: m.createdAt.toISOString(),
+              sender: `${m.sender.firstName} ${m.sender.lastName}`,
+            })),
+          };
+        })
+        .sort((a, b) => {
+          const aAt = a.messages[0]?.createdAt ?? a.createdAt;
+          const bAt = b.messages[0]?.createdAt ?? b.createdAt;
+          return bAt.localeCompare(aAt);
+        }),
     };
+  }
+
+  @Get("inbox-summary")
+  async inboxSummary(@CurrentUser() auth: AuthPayload) {
+    const participations = await this.prisma.messageParticipant.findMany({
+      where: { userId: auth.sub },
+      select: {
+        lastReadAt: true,
+        thread: {
+          select: {
+            id: true,
+            subject: true,
+            messages: {
+              orderBy: { createdAt: "desc" },
+              take: 1,
+              select: { body: true, createdAt: true, senderId: true },
+            },
+          },
+        },
+      },
+    });
+    const unread = participations
+      .filter((participant) => {
+        const latest = participant.thread.messages[0];
+        return Boolean(
+          latest &&
+            latest.senderId !== auth.sub &&
+            (!participant.lastReadAt ||
+              latest.createdAt > participant.lastReadAt),
+        );
+      })
+      .map((participant) => ({
+        id: participant.thread.id,
+        subject: participant.thread.subject,
+        preview: participant.thread.messages[0]?.body ?? "",
+        createdAt:
+          participant.thread.messages[0]?.createdAt.toISOString() ?? null,
+      }));
+    return { unreadCount: unread.length, unread: unread.slice(0, 5) };
   }
 
   @Get("threads/:id")
@@ -1135,6 +1190,12 @@ export class MessagesController {
     const isStaff = STAFF_ROLES.has(auth.role);
     if (!isParticipant && thread.createdById !== auth.sub && !isStaff) {
       throw new ForbiddenException("Not in this thread");
+    }
+    if (isParticipant) {
+      await this.prisma.messageParticipant.updateMany({
+        where: { threadId: id, userId: auth.sub },
+        data: { lastReadAt: new Date() },
+      });
     }
     return {
       thread: {
@@ -1187,7 +1248,10 @@ export class MessagesController {
           kind: "segment_broadcast",
           createdById: auth.sub,
           participants: {
-            create: participantIds.map((userId) => ({ userId })),
+            create: participantIds.map((userId) => ({
+              userId,
+              lastReadAt: userId === auth.sub ? new Date() : null,
+            })),
           },
           messages: {
             create: { senderId: auth.sub, body: text },
@@ -1231,7 +1295,10 @@ export class MessagesController {
           sessionId: session.id,
           createdById: auth.sub,
           participants: {
-            create: participantIds.map((userId) => ({ userId })),
+            create: participantIds.map((userId) => ({
+              userId,
+              lastReadAt: userId === auth.sub ? new Date() : null,
+            })),
           },
           messages: {
             create: { senderId: auth.sub, body: text },
@@ -1261,7 +1328,7 @@ export class MessagesController {
         createdById: auth.sub,
         participants: {
           create: [
-            { userId: auth.sub },
+            { userId: auth.sub, lastReadAt: new Date() },
             ...(athleteId === auth.sub ? [] : [{ userId: athleteId }]),
           ],
         },
@@ -1292,11 +1359,15 @@ export class MessagesController {
     }
     if (!isParticipant) {
       await this.prisma.messageParticipant.create({
-        data: { threadId: id, userId: auth.sub },
+        data: { threadId: id, userId: auth.sub, lastReadAt: new Date() },
       });
     }
     const message = await this.prisma.message.create({
       data: { threadId: id, senderId: auth.sub, body: text },
+    });
+    await this.prisma.messageParticipant.updateMany({
+      where: { threadId: id, userId: auth.sub },
+      data: { lastReadAt: new Date() },
     });
     return {
       message: {
@@ -2118,7 +2189,11 @@ export class DeskController {
 @Controller("family")
 @UseGuards(AuthGuard)
 export class FamilyController {
-  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
+  constructor(
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(ProgressionService)
+    private readonly progression: ProgressionService,
+  ) {}
 
   @Get("children")
   async children(@CurrentUser() auth: AuthPayload) {
@@ -2140,23 +2215,49 @@ export class FamilyController {
 
     const children = await Promise.all(
       links.map(async (l) => {
-        const membership = await this.prisma.membership.findFirst({
-          where: {
-            status: "active",
-            OR: [
-              { payerUserId: l.childUserId },
-              { members: { some: { userId: l.childUserId } } },
-            ],
-          },
-          include: { product: true },
-        });
-        const waiver = await this.prisma.signaturePacket.findFirst({
-          where: { subjectUserId: l.childUserId },
-          orderBy: { id: "desc" },
-        });
-        const attendance = await this.prisma.attendanceEvent.count({
-          where: { userId: l.childUserId },
-        });
+        const [membership, waiver, attendance, progression, assessments, booking] =
+          await Promise.all([
+            this.prisma.membership.findFirst({
+              where: {
+                status: "active",
+                OR: [
+                  { payerUserId: l.childUserId },
+                  { members: { some: { userId: l.childUserId } } },
+                ],
+              },
+              include: { product: true },
+            }),
+            this.prisma.signaturePacket.findFirst({
+              where: { subjectUserId: l.childUserId },
+              orderBy: { id: "desc" },
+            }),
+            this.prisma.attendanceEvent.count({
+              where: { userId: l.childUserId, status: { not: "voided" } },
+            }),
+            this.progression.summary(l.childUserId),
+            this.prisma.coachAssessment.findMany({
+              where: { athleteId: l.childUserId },
+              orderBy: { createdAt: "desc" },
+              take: 20,
+            }),
+            this.prisma.booking.findFirst({
+              where: {
+                userId: l.childUserId,
+                status: { in: ["confirmed", "waitlisted", "checked_in"] },
+                session: { startsAt: { gte: new Date() } },
+              },
+              include: { session: true },
+              orderBy: { session: { startsAt: "asc" } },
+            }),
+          ]);
+        const development = assessments
+          .filter(
+            (assessment, index, all) =>
+              all.findIndex(
+                (candidate) => candidate.category === assessment.category,
+              ) === index,
+          )
+          .slice(0, 4);
         return {
           id: l.child.id,
           name: `${l.child.firstName} ${l.child.lastName}`,
@@ -2168,6 +2269,28 @@ export class FamilyController {
             : null,
           waiverStatus: waiver?.status ?? "missing",
           attendanceCount: attendance,
+          progression: {
+            xp: progression.xp,
+            level: progression.level,
+            rank: progression.rank,
+            xpToNextLevel: progression.xpToNextLevel,
+            progressPct: progression.progressPct,
+          },
+          development: development.map((assessment) => ({
+            category: assessment.category,
+            level: assessment.level,
+            score: assessment.score,
+            goal: assessment.goal,
+            recommendedDrill: assessment.recommendedDrill,
+          })),
+          nextClass: booking
+            ? {
+                id: booking.session.id,
+                title: booking.session.title,
+                startsAt: booking.session.startsAt.toISOString(),
+                status: booking.status,
+              }
+            : null,
         };
       }),
     );
@@ -2415,6 +2538,8 @@ export class OwnerBriefController {
     start.setHours(0, 0, 0, 0);
     const end = new Date(start);
     end.setDate(end.getDate() + 1);
+    const yesterdayStart = new Date(start);
+    yesterdayStart.setDate(yesterdayStart.getDate() - 1);
     const monthStart = new Date(start.getFullYear(), start.getMonth(), 1);
 
     const activeMemberships = await this.prisma.membership.findMany({
@@ -2465,6 +2590,13 @@ export class OwnerBriefController {
       },
       select: { amountCents: true, provider: true, type: true },
     });
+    const paymentsYesterday = await this.prisma.paymentEvent.findMany({
+      where: {
+        status: "completed",
+        createdAt: { gte: yesterdayStart, lt: start },
+      },
+      select: { amountCents: true, provider: true, type: true },
+    });
 
     const sumBy = (
       rows: { amountCents: number; provider: string; type: string }[],
@@ -2481,9 +2613,17 @@ export class OwnerBriefController {
     };
 
     const todayRev = sumBy(paymentsToday);
+    const yesterdayRev = sumBy(paymentsYesterday);
     const monthRev = sumBy(paymentsMonth);
 
-    const [waiversSigned, waiversPending, walkInCheckIns, walkInSales] =
+    const [
+      waiversSigned,
+      waiversPending,
+      walkInCheckIns,
+      walkInSales,
+      checkInsToday,
+      checkInsYesterday,
+    ] =
       await Promise.all([
         this.prisma.signaturePacket.count({
           where: {
@@ -2504,6 +2644,12 @@ export class OwnerBriefController {
             status: "completed",
             createdAt: { gte: start, lt: end },
           },
+        }),
+        this.prisma.attendanceEvent.count({
+          where: { checkedInAt: { gte: start, lt: end } },
+        }),
+        this.prisma.attendanceEvent.count({
+          where: { checkedInAt: { gte: yesterdayStart, lt: start } },
         }),
       ]);
 
@@ -2545,10 +2691,17 @@ export class OwnerBriefController {
         todayCents: todayRev.totalCents,
         todayByTender: todayRev.byTender,
         todayWalkInCents: todayRev.walkInCents,
+        yesterdayCents: yesterdayRev.totalCents,
         monthCents: monthRev.totalCents,
         monthByTender: monthRev.byTender,
         monthWalkInCents: monthRev.walkInCents,
         currency: "CAD",
+      },
+      comparison: {
+        checkInsToday,
+        checkInsYesterday,
+        revenueDeltaCents: todayRev.totalCents - yesterdayRev.totalCents,
+        checkInDelta: checkInsToday - checkInsYesterday,
       },
       waivers: {
         signedToday: waiversSigned,
@@ -2610,7 +2763,10 @@ export class OwnerBriefController {
         kind: "segment_broadcast",
         createdById: auth.sub,
         participants: {
-          create: participantIds.map((userId) => ({ userId })),
+          create: participantIds.map((userId) => ({
+            userId,
+            lastReadAt: userId === auth.sub ? new Date() : null,
+          })),
         },
         messages: {
           create: { senderId: auth.sub, body: text },

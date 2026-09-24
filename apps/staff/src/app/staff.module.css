@@ -529,6 +529,14 @@
   font-size: 0.8rem;
 }
 
+.revenueLead > small,
+.ownerPulse small {
+  margin-top: 0.35rem;
+  color: var(--brand-glove);
+  font-size: 0.66rem;
+  font-weight: 800;
+}
+
 .ownerPulse {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

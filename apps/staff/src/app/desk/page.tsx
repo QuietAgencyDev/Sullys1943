@@ -31,6 +31,22 @@ type Session = {
   booked: number;
   capacity: number;
 };
+type DeskPulse = {
+  kpis: {
+    checkInsToday: number;
+    pendingWaivers: number;
+    pendingPayments: number;
+    classesToday: number;
+  };
+  classes: {
+    id: string;
+    title: string;
+    startsAt: string;
+    booked: number;
+    capacity: number;
+    fillPct: number;
+  }[];
+};
 
 function isToday(iso: string) {
   const d = new Date(iso);
@@ -46,6 +62,7 @@ export default function DeskPage() {
   const [token, setToken] = useState("");
   const [sessionId, setSessionId] = useState("");
   const [sessions, setSessions] = useState<Session[]>([]);
+  const [pulse, setPulse] = useState<DeskPulse | null>(null);
   const [query, setQuery] = useState("");
   const [hits, setHits] = useState<MemberHit[]>([]);
   const [message, setMessage] = useState<string | null>(null);
@@ -80,7 +97,14 @@ export default function DeskPage() {
         if (today[0]) setSessionId(today[0].id);
       })
       .catch(() => setSessions([]));
+    const loadPulse = () =>
+      get<DeskPulse>("/api/v1/owner/morning-brief")
+        .then(setPulse)
+        .catch(() => undefined);
+    loadPulse();
+    const refresh = window.setInterval(loadPulse, 15_000);
     inputRef.current?.focus();
+    return () => window.clearInterval(refresh);
   }, []);
 
   const submitScan = useCallback(
@@ -296,6 +320,49 @@ export default function DeskPage() {
       <p>
         <Link href="/">← Staff home</Link>
       </p>
+
+      {pulse ? (
+        <section className={deskStyles.deskPulse} aria-label="Reception pulse">
+          <div>
+            <strong>{pulse.kpis.checkInsToday}</strong>
+            <span>Checked in today</span>
+          </div>
+          <div>
+            <strong>{pulse.kpis.classesToday}</strong>
+            <span>Classes today</span>
+          </div>
+          <div
+            className={
+              pulse.kpis.pendingWaivers ? deskStyles.pulseAttention : ""
+            }
+          >
+            <strong>{pulse.kpis.pendingWaivers}</strong>
+            <span>Waivers needed</span>
+          </div>
+          <div
+            className={
+              pulse.kpis.pendingPayments ? deskStyles.pulseAttention : ""
+            }
+          >
+            <strong>{pulse.kpis.pendingPayments}</strong>
+            <span>Payments pending</span>
+          </div>
+          <div className={deskStyles.nextClassPulse}>
+            <span>Next room</span>
+            <strong>
+              {pulse.classes.find(
+                (item) => new Date(item.startsAt).getTime() >= Date.now(),
+              )?.title ?? "Open gym"}
+            </strong>
+            <small>
+              {pulse.classes.find(
+                (item) => new Date(item.startsAt).getTime() >= Date.now(),
+              )?.fillPct ?? 0}
+              % filled
+            </small>
+          </div>
+        </section>
+      ) : null}
 
       <section className={deskStyles.commandGrid}>
         <form

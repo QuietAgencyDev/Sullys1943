@@ -50,6 +50,42 @@ function dayLabel(d: Date) {
   return d.toLocaleDateString([], { weekday: "short" });
 }
 
+function calendarStamp(value: string) {
+  return new Date(value).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+}
+
+function downloadCalendarEvent(session: Session) {
+  const title = (session.name ?? session.title ?? "Sully's Boxing Class")
+    .replace(/\\/g, "\\\\")
+    .replace(/,/g, "\\,");
+  const startsAt = calendarStamp(session.startsAt);
+  const endsAt = calendarStamp(
+    session.endsAt ??
+      new Date(new Date(session.startsAt).getTime() + 60 * 60 * 1000).toISOString(),
+  );
+  const body = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Sullys Boxing Gym//Member App//EN",
+    "BEGIN:VEVENT",
+    `UID:${session.id}@sullys1943.com`,
+    `DTSTAMP:${calendarStamp(new Date().toISOString())}`,
+    `DTSTART:${startsAt}`,
+    `DTEND:${endsAt}`,
+    `SUMMARY:${title}`,
+    "LOCATION:Sully's Boxing Gym",
+    "DESCRIPTION:Booked through the Sully's member app. Arrive early and bring your gear.",
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\r\n");
+  const url = URL.createObjectURL(new Blob([body], { type: "text/calendar" }));
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = `sullys-${session.id}.ics`;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function BookPage() {
   const weekDays = useMemo(() => {
     const start = startOfDay(new Date());
@@ -66,6 +102,7 @@ export default function BookPage() {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [confirmCancelId, setConfirmCancelId] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [calendarSession, setCalendarSession] = useState<Session | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -118,6 +155,7 @@ export default function BookPage() {
             ? "You're on the waitlist."
             : "Booked. See you on the floor."),
       );
+      setCalendarSession(res.waitlisted ? null : session);
       await load();
     } catch (err) {
       setError(
@@ -142,6 +180,7 @@ export default function BookPage() {
           ? "Cancelled — next waitlisted member was promoted."
           : "Booking cancelled.",
       );
+      setCalendarSession(null);
       setConfirmCancelId(null);
       await load();
     } catch (err) {
@@ -200,7 +239,16 @@ export default function BookPage() {
       <div aria-live="polite">
         {message ? (
           <Alert title="Corner updated" tone="success">
-            {message}
+            <span>{message}</span>
+            {calendarSession ? (
+              <button
+                type="button"
+                className={bookStyles.calendarButton}
+                onClick={() => downloadCalendarEvent(calendarSession)}
+              >
+                Add to calendar
+              </button>
+            ) : null}
           </Alert>
         ) : null}
         {error && sessions.length > 0 ? (

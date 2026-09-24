@@ -39,6 +39,53 @@
   gap: var(--space-4);
 }
 
+.classReminder {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.2rem 0.8rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(196, 160, 106, 0.5);
+  border-radius: var(--radius-lg);
+  background: rgba(196, 160, 106, 0.1);
+}
+
+.classReminder > span {
+  grid-row: span 2;
+  color: var(--brand-glove);
+  font-size: 1.15rem;
+}
+
+.classReminder strong {
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+.classReminder p {
+  margin: 0.2rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
+.classReminder a {
+  grid-column: 2;
+  color: var(--brand-cream);
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+.classReminderSoon {
+  border-color: rgba(200, 32, 38, 0.62);
+  background: rgba(200, 32, 38, 0.14);
+}
+
+.classReminderSoon > span {
+  color: var(--brand-red-bright);
+  text-shadow: 0 0 12px rgba(200, 32, 38, 0.7);
+}
+
 .journeyCard {
   position: relative;
   display: grid;

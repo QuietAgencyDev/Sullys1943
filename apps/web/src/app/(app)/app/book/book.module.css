@@ -1,3 +1,17 @@
+.calendarButton {
+  min-height: 38px;
+  margin-top: 0.65rem;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid rgba(98, 201, 151, 0.5);
+  border-radius: var(--radius-md);
+  color: var(--brand-cream);
+  background: rgba(98, 201, 151, 0.12);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
 .weekStrip {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));

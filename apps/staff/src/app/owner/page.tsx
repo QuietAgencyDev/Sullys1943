@@ -54,10 +54,17 @@ type Analytics = {
     todayCents: number;
     todayByTender: Record<string, number>;
     todayWalkInCents: number;
+    yesterdayCents: number;
     monthCents: number;
     monthByTender: Record<string, number>;
     monthWalkInCents: number;
     currency: string;
+  };
+  comparison: {
+    checkInsToday: number;
+    checkInsYesterday: number;
+    revenueDeltaCents: number;
+    checkInDelta: number;
   };
   waivers: { signedToday: number; pendingUnsigned: number };
   walkIns: {
@@ -209,11 +216,19 @@ export default function OwnerBriefPage() {
                   analytics.revenue.currency,
                 )}
               </span>
+              <small>
+                {analytics.comparison.revenueDeltaCents >= 0 ? "+" : ""}
+                {money(analytics.comparison.revenueDeltaCents)} vs yesterday
+              </small>
             </div>
             <div className={styles.ownerPulse}>
               <div>
                 <strong>{brief.kpis.checkInsToday}</strong>
                 <span>Check-ins</span>
+                <small>
+                  {analytics.comparison.checkInDelta >= 0 ? "+" : ""}
+                  {analytics.comparison.checkInDelta} vs yesterday
+                </small>
               </div>
               <div>
                 <strong>{brief.kpis.classesToday}</strong>

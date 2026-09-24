@@ -34,6 +34,11 @@ type HomeData = {
     reviewedAt: string;
   } | null;
   recentAttendance: number;
+  reminder: {
+    urgency: "soon" | "tomorrow";
+    title: string;
+    detail: string;
+  } | null;
 };
 
 function formatWhen(value: string) {
@@ -187,6 +192,22 @@ export default function MemberHomePage() {
           {data.progression.rank} · L{data.level}
         </Badge>
       </div>
+
+      {data.reminder ? (
+        <section
+          className={`${styles.classReminder} ${
+            data.reminder.urgency === "soon" ? styles.classReminderSoon : ""
+          }`}
+          aria-live="polite"
+        >
+          <span aria-hidden>{data.reminder.urgency === "soon" ? "●" : "◷"}</span>
+          <div>
+            <strong>{data.reminder.title}</strong>
+            <p>{data.reminder.detail}</p>
+          </div>
+          <Link href="/app/card">Get check-in ready →</Link>
+        </section>
+      ) : null}
 
       <Link href="/app/passport" className={styles.journeyCard}>
         <div className={styles.journeyRank}>

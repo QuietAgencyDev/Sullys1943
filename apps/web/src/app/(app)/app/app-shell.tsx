@@ -3,7 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { get } from "@/lib/api";
 import styles from "./shell.module.css";
 
 const NAV = [
@@ -57,11 +58,24 @@ function NavIcon({ name }: { name: (typeof NAV)[number]["icon"] }) {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const [unreadCount, setUnreadCount] = useState(0);
   const isAuthPage =
     pathname.startsWith("/app/login") ||
     pathname.startsWith("/app/register") ||
     pathname.startsWith("/app/forgot-password") ||
     pathname.startsWith("/app/reset-password");
+
+  useEffect(() => {
+    if (isAuthPage) return;
+    const load = () => {
+      get<{ unreadCount: number }>("/api/v1/messages/inbox-summary")
+        .then((result) => setUnreadCount(result.unreadCount))
+        .catch(() => undefined);
+    };
+    load();
+    const refresh = window.setInterval(load, 30_000);
+    return () => window.clearInterval(refresh);
+  }, [isAuthPage, pathname]);
 
   return (
     <div className={styles.shell}>
@@ -90,6 +104,11 @@ export function AppShell({ children }: { children: ReactNode }) {
               <path d="M8 9h8M8 12h5" />
             </svg>
             <span>Messages</span>
+            {unreadCount > 0 ? (
+              <b className={styles.unreadBadge} aria-label={`${unreadCount} unread`}>
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </b>
+            ) : null}
           </Link>
         ) : null}
       </header>

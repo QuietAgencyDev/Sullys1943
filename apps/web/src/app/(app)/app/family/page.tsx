@@ -7,6 +7,7 @@ import { ApiError, get, post } from "@/lib/api";
 import QRCode from "qrcode";
 import { getMe } from "@/lib/auth-client";
 import styles from "../ui.module.css";
+import familyStyles from "./family.module.css";
 
 type Child = {
   id: string;
@@ -17,6 +18,26 @@ type Child = {
   membership: { status: string; plan: string } | null;
   waiverStatus: string;
   attendanceCount: number;
+  progression: {
+    xp: number;
+    level: number;
+    rank: string;
+    xpToNextLevel: number;
+    progressPct: number;
+  };
+  development: {
+    category: string;
+    level: string | null;
+    score: number;
+    goal: string | null;
+    recommendedDrill: string | null;
+  }[];
+  nextClass: {
+    id: string;
+    title: string;
+    startsAt: string;
+    status: string;
+  } | null;
 };
 
 type Session = {
@@ -109,8 +130,24 @@ export default function FamilyPage() {
         forUserId: activeChild,
       });
       setMessage("Booked for your child.");
+      await refreshFamily();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Booking failed");
+    }
+  }
+
+  async function cancelChildBooking(sessionId: string) {
+    if (!activeChild) return;
+    setError(null);
+    setMessage(null);
+    try {
+      await post(`/api/v1/sessions/${sessionId}/bookings/cancel`, {
+        forUserId: activeChild,
+      });
+      setMessage("Child booking cancelled.");
+      await refreshFamily();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Cancellation failed");
     }
   }
 
@@ -137,7 +174,7 @@ export default function FamilyPage() {
   const child = children.find((c) => c.id === activeChild);
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${familyStyles.page}`}>
       <div className={styles.headerBlock}>
         <p className={styles.eyebrow}>Parent portal</p>
         <h1 className={styles.title}>Family</h1>
@@ -190,13 +227,44 @@ export default function FamilyPage() {
               </select>
             </label>
             {child ? (
-              <p className={styles.muted}>
-                {child.membership
-                  ? `${child.membership.plan} · ${child.membership.status}`
-                  : "No active membership"}{" "}
-                · Waiver {child.waiverStatus} · {child.attendanceCount}{" "}
-                check-ins
-              </p>
+              <div className={familyStyles.childSummary}>
+                <div>
+                  <span>Current rank</span>
+                  <strong>{child.progression.rank}</strong>
+                  <small>
+                    Level {child.progression.level} · {child.progression.xp} XP
+                  </small>
+                </div>
+                <div>
+                  <span>Training record</span>
+                  <strong>{child.attendanceCount}</strong>
+                  <small>Check-ins</small>
+                </div>
+                <div>
+                  <span>Ready status</span>
+                  <strong>
+                    {child.membership?.status === "active" &&
+                    child.waiverStatus === "signed"
+                      ? "Ready"
+                      : "Action"}
+                  </strong>
+                  <small>
+                    {child.membership
+                      ? child.membership.plan
+                      : "Membership needed"}{" "}
+                    · waiver {child.waiverStatus}
+                  </small>
+                </div>
+                <div className={familyStyles.childProgress}>
+                  <span>Next level</span>
+                  <div aria-hidden>
+                    <i
+                      style={{ width: `${child.progression.progressPct}%` }}
+                    />
+                  </div>
+                  <small>{child.progression.xpToNextLevel} XP to go</small>
+                </div>
+              </div>
             ) : null}
             <div className={styles.actionsRow}>
               <Button type="button" onClick={issueChildQr}>
@@ -213,6 +281,66 @@ export default function FamilyPage() {
               </p>
             ) : null}
           </section>
+
+          {child?.nextClass ? (
+            <section className={familyStyles.nextClass}>
+              <div>
+                <p className={styles.eyebrow}>NEXT YOUTH CLASS</p>
+                <h2>{child.nextClass.title}</h2>
+                <span>
+                  {new Date(child.nextClass.startsAt).toLocaleString([], {
+                    weekday: "long",
+                    month: "short",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "2-digit",
+                  })}{" "}
+                  · {child.nextClass.status}
+                </span>
+              </div>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => void cancelChildBooking(child.nextClass!.id)}
+              >
+                Cancel booking
+              </Button>
+            </section>
+          ) : null}
+
+          {child?.development.length ? (
+            <section className={familyStyles.development}>
+              <div className={familyStyles.sectionHeading}>
+                <div>
+                  <p className={styles.eyebrow}>COACH DEVELOPMENT</p>
+                  <h2>What {child.name.split(" ")[0]} is building</h2>
+                </div>
+                <span>Shared with guardian</span>
+              </div>
+              <div className={familyStyles.skillGrid}>
+                {child.development.map((skill) => (
+                  <div key={skill.category}>
+                    <span>{skill.category}</span>
+                    <strong>{skill.level ?? "In development"}</strong>
+                    <div aria-hidden>
+                      {[1, 2, 3, 4, 5].map((score) => (
+                        <i
+                          key={score}
+                          className={
+                            score <= skill.score ? familyStyles.activeSkill : ""
+                          }
+                        />
+                      ))}
+                    </div>
+                    {skill.goal ? <p>{skill.goal}</p> : null}
+                    {skill.recommendedDrill ? (
+                      <small>Drill: {skill.recommendedDrill}</small>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            </section>
+          ) : null}
 
           {waiver ? (
             <section className={styles.card}>
