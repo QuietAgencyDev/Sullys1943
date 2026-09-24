@@ -180,6 +180,85 @@
   font-size: 0.72rem;
 }
 
+.deskStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.15rem 0 0;
+  color: rgba(243, 230, 200, 0.6);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.deskStatus span {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: #74d68b;
+  box-shadow: 0 0 10px rgba(116, 214, 139, 0.8);
+}
+
+.arrivalMoment {
+  position: fixed;
+  z-index: 45;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  width: min(680px, calc(100vw - (var(--tv-frame-width) * 2) - 3rem));
+  align-items: center;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  padding: clamp(1.3rem, 3vw, 2.2rem);
+  border: 2px solid rgba(243, 230, 200, 0.48);
+  background:
+    linear-gradient(135deg, rgba(200, 32, 38, 0.94), rgba(43, 12, 10, 0.98)),
+    #140f0c;
+  box-shadow:
+    0 28px 80px rgba(0, 0, 0, 0.72),
+    inset 0 0 0 5px rgba(196, 160, 106, 0.12);
+  transform: translate(-50%, -50%);
+  animation: arrivalMoment 7s cubic-bezier(0.18, 0.82, 0.28, 1) both;
+}
+
+.arrivalMark {
+  display: grid;
+  width: clamp(70px, 9vw, 108px);
+  aspect-ratio: 1;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 2px solid #c4a06a;
+  border-radius: 50%;
+  background: rgba(20, 15, 12, 0.72);
+  color: #f3e6c8;
+  font-family: var(--font-heritage-loaded), var(--font-heritage), Georgia, serif;
+  font-size: clamp(2.5rem, 5vw, 4.2rem);
+  font-style: italic;
+  box-shadow: 0 0 28px rgba(196, 160, 106, 0.24);
+}
+
+.arrivalMoment > div:last-child {
+  display: grid;
+}
+
+.arrivalMoment p,
+.arrivalMoment span {
+  margin: 0;
+  color: rgba(243, 230, 200, 0.72);
+  font-size: clamp(0.72rem, 1.2vw, 0.9rem);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.arrivalMoment strong {
+  font-family: var(--font-display-loaded), var(--font-display), Impact, sans-serif;
+  font-size: clamp(2.4rem, 6vw, 4.8rem);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 0.92;
+}
+
 .main {
   display: grid;
   grid-template-columns: 1.4fr 1fr;
@@ -210,6 +289,104 @@
   /* Keep titles readable above celebration FX; leave room for raised bottom dock */
   padding-bottom: clamp(6rem, 16vh, 9.5rem);
   text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55);
+}
+
+.shell[data-profile="reception"] .heroContent {
+  padding-bottom: 0;
+}
+
+.shell[data-profile="reception"] .hero {
+  background:
+    linear-gradient(120deg, rgba(200, 32, 38, 0.3), transparent 64%),
+    linear-gradient(155deg, rgba(196, 160, 106, 0.1), rgba(0, 0, 0, 0.46));
+}
+
+.receptionStatus {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: clamp(0.8rem, 2vw, 1.4rem);
+  padding: 0.45rem 0.7rem;
+  border: 1px solid rgba(243, 230, 200, 0.22);
+  background: rgba(0, 0, 0, 0.22);
+  color: #f3e6c8;
+  font-size: clamp(0.68rem, 1.1vw, 0.8rem);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.receptionStatus span {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #c82026;
+  box-shadow: 0 0 14px rgba(200, 32, 38, 0.9);
+}
+
+.receptionCountdown {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.8fr) minmax(220px, 1.2fr);
+  gap: clamp(1rem, 3vw, 2.2rem);
+  margin-top: clamp(1.4rem, 4vw, 2.6rem);
+  padding-top: clamp(1rem, 2.5vw, 1.6rem);
+  border-top: 1px solid rgba(243, 230, 200, 0.18);
+}
+
+.receptionCountdown > div:first-child {
+  display: grid;
+  align-content: end;
+}
+
+.receptionCountdown span {
+  color: #c4a06a;
+  font-size: clamp(0.68rem, 1.2vw, 0.82rem);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.receptionCountdown > div:first-child strong {
+  font-family: var(--font-display-loaded), var(--font-display), Impact, sans-serif;
+  font-size: clamp(3rem, 7vw, 5.4rem);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 0.94;
+}
+
+.capacityStatus {
+  display: grid;
+  align-content: end;
+  gap: 0.5rem;
+}
+
+.capacityStatus > div {
+  height: 9px;
+  overflow: hidden;
+  border: 1px solid rgba(243, 230, 200, 0.18);
+  background: rgba(0, 0, 0, 0.38);
+}
+
+.capacityStatus i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #8e1419, #c82026, #c4a06a);
+  transition: width 500ms ease;
+}
+
+.capacityStatus strong {
+  color: rgba(243, 230, 200, 0.82);
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+}
+
+.receptionWelcome {
+  margin: clamp(1.4rem, 4vw, 2.6rem) 0 0;
+  padding-top: clamp(1rem, 2.5vw, 1.6rem);
+  border-top: 1px solid rgba(243, 230, 200, 0.18);
+  color: #c4a06a;
+  font-family: var(--font-heritage-loaded), var(--font-heritage), Georgia, serif;
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
 }
 
 .sceneRound {
@@ -508,6 +685,24 @@
   }
 }
 
+@keyframes arrivalMoment {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -42%) scale(0.9);
+    filter: blur(8px);
+  }
+  8%,
+  82% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    filter: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -56%) scale(0.98);
+  }
+}
+
 @keyframes sceneRoundIn {
   from {
     opacity: 0;
@@ -600,6 +795,10 @@
   .timer {
     font-size: clamp(2.4rem, 14vw, 4rem);
   }
+
+  .receptionCountdown {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -611,7 +810,8 @@
   .sceneCelebration,
   .phaseCurtain,
   .phaseCurtain::before,
-  .phaseCurtain::after {
+  .phaseCurtain::after,
+  .arrivalMoment {
     animation: none;
   }
 
