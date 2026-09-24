@@ -163,7 +163,11 @@ export default function BookPage() {
         </p>
       </div>
 
-      <div className={bookStyles.weekStrip} role="tablist" aria-label="Week">
+      <div
+        className={bookStyles.weekStrip}
+        role="group"
+        aria-label="Choose a class date"
+      >
         {weekDays.map((d) => {
           const key = isoDate(d);
           const active = key === selectedDay;
@@ -174,8 +178,12 @@ export default function BookPage() {
             <button
               key={key}
               type="button"
-              role="tab"
-              aria-selected={active}
+              aria-pressed={active}
+              aria-label={`${d.toLocaleDateString([], {
+                weekday: "long",
+                month: "long",
+                day: "numeric",
+              })}, ${count} ${count === 1 ? "class" : "classes"}`}
               className={`${bookStyles.dayChip} ${active ? bookStyles.dayChipActive : ""}`}
               onClick={() => setSelectedDay(key)}
             >
