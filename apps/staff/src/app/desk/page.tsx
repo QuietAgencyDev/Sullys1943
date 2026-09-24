@@ -15,6 +15,9 @@ import styles from "../staff.module.css";
 import deskStyles from "./desk.module.css";
 import { GYM } from "@/lib/gym-info";
 
+const WEB_ORIGIN =
+  process.env.NEXT_PUBLIC_WEB_ORIGIN ?? "https://www.sullys1943.com";
+
 type MemberHit = { id: string; name: string; email: string };
 type ScanFeedback = {
   kind: "ok" | "duplicate" | "blocked" | "error";
@@ -265,17 +268,24 @@ export default function DeskPage() {
   }
 
   return (
-    <main className={styles.main}>
-      <div className={styles.softLaunch}>
-        <p className={styles.softLaunchTitle}>{GYM.name}</p>
-        <p className={styles.softLaunchMeta}>
-          <a href={GYM.mapUrl} target="_blank" rel="noreferrer">
-            {GYM.addressLine1}
-          </a>
-          {" · "}
-          <a href={`tel:${GYM.phoneTel}`}>{GYM.phoneDisplay}</a>
-        </p>
-        <p className={styles.softLaunchMeta}>{GYM.hoursSummary}</p>
+    <main className={`${styles.main} ${deskStyles.receptionFrame}`}>
+      <div className={deskStyles.receptionBrand}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={`${WEB_ORIGIN}/brand/sullys-logo-primary.png`}
+          alt="Sully's Boxing Gym"
+        />
+        <div className={styles.softLaunch}>
+          <p className={styles.softLaunchTitle}>{GYM.name}</p>
+          <p className={styles.softLaunchMeta}>
+            <a href={GYM.mapUrl} target="_blank" rel="noreferrer">
+              {GYM.addressLine1}
+            </a>
+            {" · "}
+            <a href={`tel:${GYM.phoneTel}`}>{GYM.phoneDisplay}</a>
+          </p>
+          <p className={styles.softLaunchMeta}>{GYM.hoursSummary}</p>
+        </div>
       </div>
       <p className={styles.eyebrow}>FRONT DESK</p>
       <h1 className={styles.title}>Scanner</h1>

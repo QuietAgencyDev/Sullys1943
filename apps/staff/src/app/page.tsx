@@ -114,6 +114,9 @@ const ROLE_TITLE: Record<Role, string> = {
   owner: "Owner Command",
 };
 
+const WEB_ORIGIN =
+  process.env.NEXT_PUBLIC_WEB_ORIGIN ?? "https://www.sullys1943.com";
+
 export default function StaffHome() {
   const [user, setUser] = useState<User | null>(null);
   const [email, setEmail] = useState("");
@@ -150,13 +153,23 @@ export default function StaffHome() {
     : [];
 
   return (
-    <main className={styles.main}>
+    <main
+      className={`${styles.main} ${!user ? styles.woodFrameScreen : ""}`}
+    >
       <div className={styles.headingRow}>
-        <div>
-          <p className={styles.eyebrow}>STAFF / COMMAND CENTER</p>
-          <h1 className={styles.title}>
-            {role ? ROLE_TITLE[role] : "Gym Operations"}
-          </h1>
+        <div className={styles.staffBrandHero}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={`${WEB_ORIGIN}/brand/sullys-logo-primary.png`}
+            alt="Sully's Boxing Gym"
+            className={styles.staffLogo}
+          />
+          <div>
+            <p className={styles.eyebrow}>STAFF / COMMAND CENTER</p>
+            <h1 className={styles.title}>
+              {role ? ROLE_TITLE[role] : "Gym Operations"}
+            </h1>
+          </div>
         </div>
         {role ? <Badge tone="accent">{ROLE_LABEL[role]}</Badge> : null}
       </div>

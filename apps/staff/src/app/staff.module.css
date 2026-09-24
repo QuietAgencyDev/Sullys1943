@@ -11,6 +11,58 @@
   gap: 1rem;
 }
 
+.staffBrandHero {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 2.5vw, 1.7rem);
+}
+
+.staffLogo {
+  width: clamp(78px, 10vw, 118px);
+  height: auto;
+  flex: 0 0 auto;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 0 22px rgba(200, 32, 38, 0.34))
+    drop-shadow(0 12px 24px rgba(0, 0, 0, 0.55));
+}
+
+.woodFrameScreen {
+  --staff-frame-width: clamp(18px, 2.4vw, 38px);
+  min-height: 100svh;
+  padding-top: calc(var(--staff-frame-width) + clamp(1rem, 3vw, 2rem));
+  padding-bottom: calc(var(--staff-frame-width) + 3rem);
+}
+
+.woodFrameScreen::after {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  box-sizing: border-box;
+  padding: var(--staff-frame-width);
+  background:
+    repeating-linear-gradient(
+      7deg,
+      transparent 0 3px,
+      rgba(71, 36, 14, 0.32) 4px,
+      transparent 6px 11px
+    ),
+    repeating-linear-gradient(
+      94deg,
+      transparent 0 18px,
+      rgba(255, 229, 170, 0.16) 20px,
+      transparent 24px 42px
+    ),
+    linear-gradient(105deg, #6f3e1b, #c18a4d 22%, #e0b871 48%, #8a5127 76%, #d0a05f);
+  content: "";
+  pointer-events: none;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
 .softLaunch {
   margin: 1.25rem 0 0;
   padding: 1rem 1.1rem;
@@ -247,6 +299,14 @@
 @media (max-width: 560px) {
   .headingRow {
     align-items: flex-start;
+  }
+
+  .staffBrandHero {
+    align-items: flex-start;
+  }
+
+  .staffLogo {
+    width: 64px;
   }
 
   .title {
