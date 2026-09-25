@@ -19,7 +19,7 @@ type Announcement = {
   id: string;
   title: string;
   body: string;
-  startsAt: string;
+  createdAt: string;
 };
 
 type ThreadDetail = {
@@ -135,7 +135,7 @@ export default function MessagesPage() {
             {announcements.slice(0, 3).map((announcement) => (
               <article key={announcement.id}>
                 <span>
-                  {new Date(announcement.startsAt).toLocaleDateString([], {
+                  {new Date(announcement.createdAt).toLocaleDateString([], {
                     month: "short",
                     day: "numeric",
                   })}
