@@ -153,9 +153,7 @@ export default function StaffHome() {
     : [];
 
   return (
-    <main
-      className={`${styles.main} ${!user ? styles.woodFrameScreen : ""}`}
-    >
+    <main className={`${styles.main} ${styles.woodFrameScreen}`}>
       <div className={styles.headingRow}>
         <div className={styles.staffBrandHero}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
