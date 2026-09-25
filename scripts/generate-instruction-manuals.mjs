@@ -17,6 +17,7 @@ const BROWN = "#3A2418";
 const CREAM = "#F3E6C8";
 const MUTED = "#666666";
 const INK = "#1a120e";
+const VERSION = "Version 2.0 · September 2026 · Production";
 
 const outDir = path.join(root, "docs", "09-manuals");
 const publicDir = path.join(root, "apps", "web", "public", "docs");
@@ -97,35 +98,35 @@ function ensureSpace(doc, need = 80) {
 function h1(doc, text) {
   ensureSpace(doc, 60);
   doc.moveDown(0.4);
-  doc.fillColor(RED).fontSize(18).font("Helvetica-Bold").text(text);
+  doc.fillColor(RED).fontSize(20).font("Helvetica-Bold").text(text);
   doc.moveDown(0.35);
 }
 
 function h2(doc, text) {
   ensureSpace(doc, 48);
   doc.moveDown(0.3);
-  doc.fillColor(BROWN).fontSize(13).font("Helvetica-Bold").text(text);
+  doc.fillColor(BROWN).fontSize(15).font("Helvetica-Bold").text(text);
   doc.moveDown(0.2);
 }
 
 function p(doc, text) {
-  ensureSpace(doc, 36);
+  ensureSpace(doc, 46);
   doc
     .fillColor(INK)
-    .fontSize(10)
-    .font("Helvetica")
-    .text(text, { align: "left", lineGap: 2 });
+    .fontSize(11.5)
+    .font("Helvetica-Bold")
+    .text(text, { align: "left", lineGap: 3 });
   doc.moveDown(0.35);
 }
 
 function bullet(doc, lines) {
   for (const line of lines) {
-    ensureSpace(doc, 28);
+    ensureSpace(doc, 36);
     doc
       .fillColor(INK)
-      .fontSize(10)
-      .font("Helvetica")
-      .text(`•  ${line}`, { indent: 8, lineGap: 1 });
+      .fontSize(11.5)
+      .font("Helvetica-Bold")
+      .text(`•  ${line}`, { indent: 8, lineGap: 3 });
   }
   doc.moveDown(0.3);
 }
@@ -138,19 +139,24 @@ function note(doc, text) {
   doc.rect(x, doc.y, w, h).fill("#F7F0E4");
   doc
     .fillColor(BROWN)
-    .fontSize(9)
-    .font("Helvetica-Oblique")
-    .text(text, x + 8, doc.y + 7, { width: w - 16 });
+    .fontSize(10.5)
+    .font("Helvetica-Bold")
+    .text(text, x + 8, doc.y + 7, { width: w - 16, lineGap: 2 });
   doc.y += h + 8;
 }
 
 function cover(doc, title, audience, version) {
-  doc.rect(0, 0, doc.page.width, doc.page.height).fill("#140F0C");
+  doc.rect(0, 0, doc.page.width, doc.page.height).fill("#FFFFFF");
   doc.rect(0, 0, 12, doc.page.height).fill(RED);
   doc
-    .fillColor(CREAM)
-    .fontSize(11)
-    .font("Helvetica")
+    .lineWidth(3)
+    .strokeColor(BROWN)
+    .rect(34, 88, doc.page.width - 68, 300)
+    .stroke();
+  doc
+    .fillColor(BROWN)
+    .fontSize(12)
+    .font("Helvetica-Bold")
     .text("SULLY'S BOXING GYM · EST 1943", 54, 120);
   doc
     .fillColor(RED)
@@ -158,30 +164,33 @@ function cover(doc, title, audience, version) {
     .font("Helvetica-Bold")
     .text("DIGITAL PERFORMANCE PLATFORM", 54, 140);
   doc
-    .fillColor(CREAM)
-    .fontSize(28)
+    .fillColor(INK)
+    .fontSize(30)
     .font("Helvetica-Bold")
     .text(title, 54, 180, { width: 480 });
   doc
-    .fillColor("#C4A06A")
-    .fontSize(12)
-    .font("Helvetica")
+    .fillColor(BROWN)
+    .fontSize(14)
+    .font("Helvetica-Bold")
     .text(audience, 54, 280);
   doc
     .fillColor(MUTED)
-    .fontSize(10)
+    .fontSize(11)
+    .font("Helvetica-Bold")
     .text(version, 54, 310);
   doc
-    .fillColor("#888888")
-    .fontSize(9)
+    .fillColor(BROWN)
+    .fontSize(10)
+    .font("Helvetica-Bold")
     .text(
       "Web & system development by Quiet Agency · quietagency.co",
       54,
       700,
     );
   doc
-    .fillColor("#666666")
-    .fontSize(9)
+    .fillColor(BROWN)
+    .fontSize(10)
+    .font("Helvetica-Bold")
     .text(
       "Boxing is the engine. People are the purpose. Character is the legacy.",
       54,
@@ -196,7 +205,7 @@ function buildMemberManual(doc) {
     doc,
     "Member & Family\nUser Guide",
     "For members, parents / guardians, and new joiners",
-    "Version 1.1 · August 2026 · AAA pack",
+    VERSION,
   );
   headerBar(doc, "Member & Family User Guide");
 
@@ -240,10 +249,11 @@ function buildMemberManual(doc) {
     "See your next class, membership status, and waiver status at a glance.",
     "Open your digital card for desk check-in.",
     "Tap Book a class to grab or waitlist a session.",
+    "Open Messages for Gym News, coach updates, and unread notices.",
   ]);
   note(
     doc,
-    "On your phone: use the browser menu → Add to Home Screen for an installable Sully's portal icon (PWA).",
+    "On your phone: use the browser menu, then choose Add to Home Screen for an installable Sully's portal icon (PWA).",
   );
 
   h1(doc, "5. Liability waiver");
@@ -274,6 +284,7 @@ function buildMemberManual(doc) {
     "Book an open class, or Join waitlist when the room is full.",
     "Cancel in-policy from the same card — if you had a confirmed spot, the next waitlisted member is promoted.",
     "Parents can book for a linked child from Family tools.",
+    "Use Add to calendar after booking and watch Member Home for class reminders.",
     "Today's schedule lives at /app/calendar; home is always /app.",
   ]);
 
@@ -284,6 +295,7 @@ function buildMemberManual(doc) {
     "Sign the youth waiver as guardian.",
     "Issue a temporary child check-in QR for the desk.",
     "Book classes for your child when available.",
+    "Review each child's progress, next class, and current booking state.",
   ]);
 
   h1(doc, "9. Billing");
@@ -298,6 +310,7 @@ function buildMemberManual(doc) {
   bullet(doc, [
     "Meet coaches on the public site: /coaches.",
     "Passport (/app/passport) — your progression story and milestones.",
+    "Messages (/app/messages) — Gym News, direct threads, and unread updates.",
     "Legacy Wall (/legacy) — Sully's history and culture.",
     "Nutrition (/app/nutrition) — profile and meal plan info when assigned.",
     "Attendance (/app/attendance) — your check-in history.",
@@ -338,7 +351,7 @@ function buildOwnerManual(doc) {
     doc,
     "Owner & Staff\nOperations Manual",
     "For owners, admins, front desk, coaches, and kitchen",
-    "Version 1.1 · August 2026 · AAA pack",
+    VERSION,
   );
   headerBar(doc, "Owner & Staff Operations Manual");
 
@@ -365,7 +378,8 @@ function buildOwnerManual(doc) {
     "admin@sullys.local — Staff user admin",
     "desk@sullys.local — Front desk scanner",
     "coach@sullys.local — Class roster",
-    "Staff shell URL (local): http://localhost:3001",
+    "Live staff console: https://staff.sullys1943.com",
+    "Member app: https://www.sullys1943.com/app",
   ]);
 
   h1(doc, "3. Front desk — scanner");
@@ -373,14 +387,14 @@ function buildOwnerManual(doc) {
   bullet(doc, [
     "Keep the Scan target field focused — USB HID scanners type like a keyboard and press Enter.",
     "Select today's session to attach late flags for coaches.",
-    "Member shows /app/card QR → scan → check-in + XP.",
+    "Member shows the /app/card QR; scan it to complete check-in and award XP.",
     "If blocked (waiver / membership), enable Staff override, enter a reason (min 4 characters), then retry.",
     "Sell Drop-in for walk-ins ($25 seed product) with optional immediate check-in.",
     "Link Family: connect child to parent email, create youth profile, waiver packet, optional membership attach.",
   ]);
   h2(doc, "Dry-run before the scanner arrives");
   bullet(doc, [
-    "Open /desk/dry-run → Run API dry-run (auto checks).",
+    "Open /desk/dry-run, then choose Run API dry-run for automatic checks.",
     "Walk the manual floor checklist on that page.",
   ]);
 
@@ -395,7 +409,7 @@ function buildOwnerManual(doc) {
   h1(doc, "5. Kitchen KDS");
   h2(doc, "Path: /kitchen");
   bullet(doc, [
-    "View allergen-aware tickets and advance order status (placed → preparing → ready → completed).",
+    "View allergen-aware tickets and advance order status: placed, preparing, ready, completed.",
     "Coordinate with Floor/Reception TV kitchen specials when those boards are on.",
   ]);
 
@@ -403,11 +417,23 @@ function buildOwnerManual(doc) {
   h2(doc, "Path: /owner");
   bullet(doc, [
     "Today's check-ins, class fill rates, pending waivers, pending payments.",
+    "Revenue today, this month, tender split, and comparison with yesterday.",
+    "Membership mix, youth/adult counts, demographics, and walk-in totals.",
     "Recent staff overrides (audit trail).",
     "Billing mode indicator (mock vs Stripe keys).",
+    "Send a message to active, youth, adult, trial, monthly, or unsigned-waiver groups.",
   ]);
 
-  h1(doc, "7. Staff user admin");
+  h1(doc, "7. Staff messages");
+  h2(doc, "Path: /coach/messages");
+  bullet(doc, [
+    "Review member threads and coach follow-ups.",
+    "Use the Owner Brief to broadcast important updates to a selected membership group.",
+    "Members receive updates in Messages and see unread notices in the member shell.",
+    "Never include sensitive medical or payment-card information in a message.",
+  ]);
+
+  h1(doc, "8. Staff user admin");
   h2(doc, "Path: /admin/users · roles: owner or admin");
   bullet(doc, [
     "Invite front desk, coach, admin, or owner accounts with a temporary password.",
@@ -416,12 +442,13 @@ function buildOwnerManual(doc) {
     "You cannot disable your own account.",
   ]);
 
-  h1(doc, "8. Gym TV — second screens");
+  h1(doc, "9. Gym TV — second screens");
   bullet(doc, [
-    "Demo kit: /tv/demo",
-    "Floor board: /tv/floor — round timer hero, live/next class, leaderboard, welcome ticker",
-    "Reception board: /tv/reception — schedule + welcome",
+    "Demo kit: https://www.sullys1943.com/tv/demo",
+    "Floor board: https://www.sullys1943.com/tv/floor — timer, class, leaderboard, and celebrations",
+    "Reception board: https://www.sullys1943.com/tv/reception — schedule, arrivals, and welcome",
     "Press F for fullscreen on a spare monitor, Fire TV, or Chromecast.",
+    "Tap the Floor TV once after opening it to enable bells and wooden clap audio.",
     "Boards refresh about every 15 seconds. Public feed uses first names / initials only.",
     "Offline hardening: last-good board is cached in the browser; a branded banner appears if the API drops — the round timer keeps running.",
   ]);
@@ -430,7 +457,7 @@ function buildOwnerManual(doc) {
     "Booking: when a class is full, members join a waitlist. Cancelling a confirmed booking promotes the next waitlisted athlete automatically.",
   );
 
-  h1(doc, "9. Waivers & compliance");
+  h1(doc, "10. Waivers & compliance");
   bullet(doc, [
     "Hard gate: no QR / check-in without a signed liability packet (unless staff override).",
     "Members download PDFs from /app/waiver; guardians from family tools.",
@@ -438,16 +465,16 @@ function buildOwnerManual(doc) {
     "Always record a real override reason — it appears on the owner brief.",
   ]);
 
-  h1(doc, "10. Memberships & billing");
+  h1(doc, "11. Memberships & billing");
   bullet(doc, [
     "Plans and drop-ins are seeded products (monthly, youth, trial, drop-in, etc.).",
     "Mock mode: /join/pay simulates payment.",
-    "Stripe test: set STRIPE_SECRET_KEY=sk_test_… on the API, restart, run Checkout.",
+    "Stripe test: set STRIPE_SECRET_KEY=sk_test_... on the API, restart, then run Checkout.",
     "Success page confirms Stripe via confirm-checkout; webhooks optional for local.",
     "Members see history at /app/billing.",
   ]);
 
-  h1(doc, "11. Soft-launch gym facts");
+  h1(doc, "12. Gym facts");
   bullet(doc, [
     "1554 Dundas St W (lower level), Toronto, ON M6H 1Z6",
     "Mon–Fri 7:30 AM–9:00 PM · Sat 12–5 PM",
@@ -455,27 +482,38 @@ function buildOwnerManual(doc) {
     "Shown on marketing /contact, footer, and desk banner.",
   ]);
 
-  h1(doc, "12. Going live (cheap demo stack)");
+  h1(doc, "13. Production system");
   bullet(doc, [
     "Domain: Cloudflare",
-    "Web: Vercel (apps/web)",
-    "API: Railway (apps/api)",
-    "Database: Neon Postgres (or keep SQLite for local-only demos)",
-    "Follow docs/05-devops/03-go-live-today.md",
-    "Set NEXT_PUBLIC_API_URL, WEB_ORIGIN, CORS_ORIGINS, Quiet Agency URL",
+    "Member website and TV screens: Vercel — https://www.sullys1943.com",
+    "Staff console: Vercel — https://staff.sullys1943.com",
+    "API: Railway — https://api.sullys1943.com/api/v1/health",
+    "Database: Neon Postgres",
+    "If sign-in and live data both fail, check Railway first.",
   ]);
 
-  h1(doc, "13. Daily owner checklist");
+  h1(doc, "14. Daily opening checklist");
   bullet(doc, [
-    "Open /owner — scan KPIs and overrides.",
+    "Turn on the front-desk mini PC, scanner, network, splitter, and screens.",
+    "Open https://staff.sullys1943.com and sign in.",
+    "Open /owner — scan KPIs, waivers, payments, and overrides.",
     "Confirm today's sessions exist for desk late flags.",
-    "Glance at pending waivers / pending payments.",
-    "Turn on Floor TV before peak classes (/tv/floor).",
-    "Desk: focused scan field + session selected.",
-    "After close: spot-check kitchen tickets cleared.",
+    "Open Reception TV and Floor TV; press F for fullscreen.",
+    "Tap Floor TV once for sound, then test the timer/audio.",
+    "Open Desk Check-in; select the current class and focus the scan field.",
+    "Scan one test QR before members arrive.",
   ]);
 
-  h1(doc, "14. Support & credits");
+  h1(doc, "15. Daily closing checklist");
+  bullet(doc, [
+    "Finalize attendance and review no-shows.",
+    "Confirm kitchen tickets and staff overrides are resolved.",
+    "Review the Owner Brief for anything requiring follow-up.",
+    "Close member records before leaving the desk unattended.",
+    "Turn off or lock the desk PC and displays according to gym policy.",
+  ]);
+
+  h1(doc, "16. Support & credits");
   p(
     doc,
     "Platform web & system development: Quiet Agency — https://quietagency.co",
