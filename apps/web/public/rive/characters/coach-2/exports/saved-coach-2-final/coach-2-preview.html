@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sullys Coach 2</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #1c1c1c;
+        color: #f4f0ea;
+        font-family: Georgia, "Times New Roman", serif;
+      }
+      body {
+        display: grid;
+        place-items: center;
+      }
+      .stage {
+        width: min(92vw, 640px);
+        display: grid;
+        gap: 12px;
+        justify-items: center;
+      }
+      .ring {
+        width: min(92vw, 640px);
+        aspect-ratio: 599 / 801;
+        position: relative;
+        overflow: hidden;
+        background: #2a2a2a;
+        border-radius: 8px;
+      }
+      .fighter {
+        position: absolute;
+        inset: 0;
+        animation: bounce 3s ease-in-out infinite;
+      }
+      .fighter img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: fill;
+        pointer-events: none;
+      }
+      .torso {
+        left: -0.45%;
+        top: 0.5%;
+        transform: scale(0.968);
+        transform-origin: 50% 24%;
+        z-index: 8;
+      }
+      .neck {
+        left: -0.45%;
+        top: 0.5%;
+        transform: scale(0.968);
+        transform-origin: 50% 24%;
+        z-index: 7;
+      }
+      .upperarm-r { left: 13.4%; top: -4.55%; z-index: 9; }
+      .upperarm-l { left: -9.4%; top: -5.85%; z-index: 10; }
+      .forearm-r { left: 13.4%; top: -4.55%; z-index: 11; }
+      .forearm-l { left: -9.4%; top: -5.85%; z-index: 12; }
+      .shoe-r { top: -1.5%; z-index: 1; }
+      .shoe-l { left: 0.33%; top: -3.1%; z-index: 1; }
+      .shin-r { top: -0.37%; z-index: 2; }
+      .thigh-r { z-index: 3; }
+      .shin-l { top: -0.37%; z-index: 4; }
+      .pelvis { z-index: 5; }
+      .thigh-l { z-index: 6; }
+      .head {
+        transform-origin: 50% 24%;
+        animation: nod 3s ease-in-out infinite;
+        z-index: 13;
+      }
+      .glove-r {
+        left: 12.17%;
+        top: -0.35%;
+        transform-origin: 33.72% 28.71%;
+        animation: punch-r 3s ease-in-out infinite;
+        z-index: 14;
+      }
+      .glove-l {
+        left: -7.17%;
+        top: -0.7%;
+        transform-origin: 60.77% 30.09%;
+        animation: punch-l 3s ease-in-out infinite;
+        z-index: 15;
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        16.6%,
+        50%,
+        83.3% {
+          transform: translateY(14px);
+        }
+        33.3%,
+        66.6% {
+          transform: translateY(0);
+        }
+      }
+      @keyframes nod {
+        0%,
+        33%,
+        68%,
+        100% {
+          transform: translateX(2.2%) scale(1.15) rotate(0deg);
+        }
+        44% {
+          transform: translateX(2.2%) scale(1.15) rotate(5deg);
+        }
+        55% {
+          transform: translateX(2.2%) scale(1.15) rotate(-5deg);
+        }
+      }
+      @keyframes punch-r {
+        0%,
+        67%,
+        100% {
+          transform: rotate(0deg);
+        }
+        71.6% {
+          transform: rotate(15deg);
+        }
+        76% {
+          transform: rotate(-10deg);
+        }
+        81% {
+          transform: rotate(6deg);
+        }
+        87% {
+          transform: rotate(-10deg);
+        }
+        92% {
+          transform: rotate(6deg);
+        }
+        98% {
+          transform: rotate(8deg);
+        }
+      }
+      @keyframes punch-l {
+        0%,
+        67%,
+        100% {
+          transform: rotate(0deg);
+        }
+        71.6% {
+          transform: rotate(-8deg);
+        }
+        76% {
+          transform: rotate(5deg);
+        }
+        81% {
+          transform: rotate(-8deg);
+        }
+        87% {
+          transform: rotate(5deg);
+        }
+        92% {
+          transform: rotate(-8deg);
+        }
+        98% {
+          transform: rotate(-4deg);
+        }
+      }
+      .meta {
+        font-size: 14px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <div class="meta">Sullys Coach 2</div>
+      <div class="ring">
+        <div class="fighter">
+          <img class="shoe-r" src="./characters/coach-2/03_Aligned_599x801/shoe_R.png" alt="" />
+          <img class="shoe-l" src="./characters/coach-2/03_Aligned_599x801/shoe_L.png" alt="" />
+          <img class="shin-r" src="./characters/coach-2/03_Aligned_599x801/shin_R.png" alt="" />
+          <img class="shin-l" src="./characters/coach-2/03_Aligned_599x801/shin_L.png" alt="" />
+          <img class="pelvis" src="./characters/coach-2/03_Aligned_599x801/pelvis.png" alt="" />
+          <img class="thigh-r" src="./characters/coach-2/03_Aligned_599x801/thigh_R.png" alt="" />
+          <img class="thigh-l" src="./characters/coach-2/03_Aligned_599x801/thigh_L.png" alt="" />
+          <img class="upperarm-r" src="./characters/coach-2/03_Aligned_599x801/upperarm_R.png" alt="" />
+          <img class="neck" src="./characters/coach-2/03_Aligned_599x801/neck.png" alt="" />
+          <img class="torso" src="./characters/coach-2/03_Aligned_599x801/torso.png" alt="" />
+          <img class="upperarm-l" src="./characters/coach-2/03_Aligned_599x801/upperarm_L.png" alt="" />
+          <img class="forearm-r" src="./characters/coach-2/03_Aligned_599x801/forearm_R.png" alt="" />
+          <img class="forearm-l" src="./characters/coach-2/03_Aligned_599x801/forearm_L.png" alt="" />
+          <img class="head" src="./characters/coach-2/03_Aligned_599x801/head.png" alt="" />
+          <img class="glove-r" src="./characters/coach-2/03_Aligned_599x801/glove_R.png" alt="" />
+          <img class="glove-l" src="./characters/coach-2/03_Aligned_599x801/glove_L.png" alt="" />
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

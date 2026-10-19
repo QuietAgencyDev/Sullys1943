@@ -1,0 +1,59 @@
+{
+  "name": "floor-achievement",
+  "canvas": [
+    1600,
+    900
+  ],
+  "layer_order": [
+    "01_panel",
+    "02_effects",
+    "03_hero",
+    "04_accent",
+    "05_logo"
+  ],
+  "layer_position": [
+    0,
+    0
+  ],
+  "text_fields": [
+    {
+      "id": "headline_1",
+      "text": "FIRST",
+      "x": 110,
+      "baseline_y": 350,
+      "font_size": 108,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "headline_2",
+      "text": "BELL!",
+      "x": 110,
+      "baseline_y": 462,
+      "font_size": 108,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "member_name",
+      "text": "JORDAN M.",
+      "x": 118,
+      "baseline_y": 543,
+      "font_size": 49,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "reward",
+      "text": "+50 XP",
+      "x": 118,
+      "baseline_y": 665,
+      "font_size": 96,
+      "fill": "#F7C963"
+    }
+  ],
+  "static_text": {
+    "brand": "SULLY\u2019S BOXING GYM",
+    "event_kind": "ACHIEVEMENT UNLOCKED",
+    "footer": "YOUR NEXT CHAPTER STARTS HERE."
+  },
+  "live_text_max_width": 810,
+  "text_note": "Coordinates are left x and baseline y; recreate as native text for live values."
+}

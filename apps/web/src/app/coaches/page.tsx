@@ -7,6 +7,8 @@ import { Button } from "@sullys/ui";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ApiError, get } from "@/lib/api";
+import { getBrand } from "@/lib/brand";
+import { RED_OWL_TEAM } from "@/lib/programs-red-owl";
 import styles from "./coaches.module.css";
 
 type Coach = {
@@ -49,11 +51,27 @@ function CoachCard({ coach }: { coach: Coach }) {
 }
 
 export default function CoachesPage() {
+  const brand = getBrand();
+  const isRedOwl = brand.id === "red-owl";
   const [coaches, setCoaches] = useState<Coach[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!isRedOwl);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (isRedOwl) {
+      setCoaches(
+        RED_OWL_TEAM.map((t) => ({
+          id: t.id,
+          name: t.name,
+          title: t.title,
+          bio: t.bio,
+          photoUrl: t.photoUrl,
+        })),
+      );
+      setLoading(false);
+      return;
+    }
+
     let active = true;
     (async () => {
       try {
@@ -75,18 +93,22 @@ export default function CoachesPage() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [isRedOwl]);
 
   return (
     <>
       <SiteHeader />
       <main className={styles.main}>
-        <p className={styles.eyebrow}>The floor</p>
-        <h1 className={styles.title}>Coaches</h1>
+        <p className={styles.eyebrow}>
+          {isRedOwl ? "Smartbox & gym" : "The floor"}
+        </p>
+        <h1 className={styles.title}>
+          {isRedOwl ? "The team" : "Coaches"}
+        </h1>
         <p className={styles.copy}>
-          The floor staff at Canada&apos;s oldest boxing gym — champions,
-          competitive coaches, and instructors who build craft and character
-          every round.
+          {isRedOwl
+            ? "Boxing coaches, mentors, tutors, counselling, career and nutrition partners — the Smartbox model powered by Red Owl Boxing and Scarberian Boxing Club. Named coach portraits come next."
+            : "The floor staff at Canada's oldest boxing gym — champions, competitive coaches, and instructors who build craft and character every round."}
         </p>
 
         {loading ? (
@@ -100,9 +122,13 @@ export default function CoachesPage() {
           </div>
         ) : coaches.length === 0 ? (
           <div className={styles.empty}>
-            <p>Coach profiles are being updated. Visit the gym or join a class.</p>
+            <p>
+              Coach profiles are being updated. Visit the gym or join a class.
+            </p>
             <Link href="/join">
-              <Button type="button">Join Sully&apos;s</Button>
+              <Button type="button">
+                {isRedOwl ? "Join Red Owl" : "Join Sully's"}
+              </Button>
             </Link>
           </div>
         ) : (
@@ -114,8 +140,10 @@ export default function CoachesPage() {
         )}
 
         <div className={styles.cta}>
-          <Link href="/join">
-            <Button type="button">Train with us</Button>
+          <Link href={isRedOwl ? "/smartbox" : "/join"}>
+            <Button type="button">
+              {isRedOwl ? "Smartbox program" : "Train with us"}
+            </Button>
           </Link>
           <Link href="/programs" className={styles.secondaryLink}>
             See programs →

@@ -1,0 +1,25 @@
+/**
+ * Red Owl Boxing — CSS token overrides (red / black).
+ * Applied via html[data-brand="red-owl"] in the web app — does not change Sully defaults.
+ */
+html[data-brand="red-owl"] {
+  --brand-cream: #f5f5f5;
+  --brand-red: #e10600;
+  --brand-brown: #0a0a0a;
+  --brand-glove: #ff3b30;
+
+  --bg-canvas: #000000;
+  --bg-elevated: #111111;
+  --bg-cream: #f5f5f5;
+  --bg-glass: rgba(17, 17, 17, 0.86);
+
+  --text-primary: #f5f5f5;
+  --text-muted: #a3a3a3;
+  --text-on-cream: #0a0a0a;
+
+  --accent: var(--brand-red);
+  --accent-contrast: #ffffff;
+
+  --border: rgba(255, 255, 255, 0.12);
+  --focus: rgba(225, 6, 0, 0.85);
+}

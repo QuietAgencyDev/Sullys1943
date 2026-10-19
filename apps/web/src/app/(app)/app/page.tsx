@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Alert, Badge, Button, Card, Skeleton } from "@sullys/ui";
 import { ApiError, get } from "@/lib/api";
+import { getBrand } from "@/lib/brand";
 import styles from "./ui.module.css";
 
 type HomeData = {
@@ -54,6 +55,7 @@ function formatWhen(value: string) {
 }
 
 export default function MemberHomePage() {
+  const brand = getBrand();
   const [data, setData] = useState<HomeData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -366,6 +368,26 @@ export default function MemberHomePage() {
             ))}
           </ol>
         </Card>
+      ) : null}
+
+      {brand.id === "red-owl" ? (
+        <section className={styles.card}>
+          <p className={styles.eyebrow}>Visit</p>
+          <h2 className={styles.sectionTitle}>Red Owl Scarborough</h2>
+          <p className={styles.muted}>
+            {brand.gym.addressLine1}
+            <br />
+            {brand.gym.addressLine2}
+          </p>
+          <p className={styles.muted}>{brand.gym.addressHint}</p>
+          <div className={styles.actionsRow}>
+            <a href={brand.gym.mapUrl} target="_blank" rel="noreferrer">
+              <Button type="button" variant="secondary">
+                Open in Google Maps
+              </Button>
+            </a>
+          </div>
+        </section>
       ) : null}
 
       <div className={styles.quickGrid}>

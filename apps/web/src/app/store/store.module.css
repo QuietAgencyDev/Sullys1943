@@ -226,6 +226,13 @@
   color: var(--brand-red);
 }
 
+.buy[aria-disabled] {
+  opacity: 0.55;
+  border-bottom-color: transparent;
+  pointer-events: none;
+  cursor: default;
+}
+
 @media (max-width: 640px) {
   .main {
     padding-left: var(--space-4);

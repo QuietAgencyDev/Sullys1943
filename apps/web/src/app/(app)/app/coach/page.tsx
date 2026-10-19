@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ApiError, get } from "@/lib/api";
+import { getBrand } from "@/lib/brand";
 import styles from "./coach.module.css";
 
 type SessionRow = {
@@ -29,6 +30,7 @@ function fmtTime(iso: string) {
 }
 
 export default function AppCoachHomePage() {
+  const brand = getBrand();
   const [home, setHome] = useState<Home | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -56,7 +58,7 @@ export default function AppCoachHomePage() {
           ) ? (
             <>
               <p className={styles.copy}>
-                Sign in as <code>coach@sullys.local</code> /{" "}
+                Sign in as <code>{brand.copy.demoCoachEmail}</code> /{" "}
                 <code>password123</code> to run the timer.
               </p>
               <Link

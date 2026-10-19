@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sullys Coach 3</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #1c1c1c;
+        color: #f4f0ea;
+        font-family: Georgia, "Times New Roman", serif;
+      }
+      body {
+        display: grid;
+        place-items: center;
+      }
+      .stage {
+        width: min(92vw, 640px);
+        display: grid;
+        gap: 12px;
+        justify-items: center;
+      }
+      .ring {
+        width: min(92vw, 640px);
+        aspect-ratio: 599 / 801;
+        position: relative;
+        overflow: hidden;
+        background: #2a2a2a;
+        border-radius: 8px;
+      }
+      .fighter {
+        position: absolute;
+        inset: 0;
+        animation: bounce 3s ease-in-out infinite;
+      }
+      .fighter img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: fill;
+        pointer-events: none;
+      }
+      /* Boots are painted onto shins in this pack. Hide leftover separate shoes. */
+      .shoe-r,
+      .shoe-l { display: none; }
+      .shin-r { z-index: 1; }
+      .thigh-r { z-index: 2; }
+      .shin-l { z-index: 3; }
+      .thigh-l { z-index: 4; }
+      .pelvis { z-index: 5; }
+      .neck { top: 2.9%; z-index: 6; }
+      .torso { top: 2.9%; z-index: 7; }
+      .upperarm-r { top: 2.4%; z-index: 8; }
+      .upperarm-l { top: 2.4%; z-index: 9; }
+      .forearm-r { top: 2.4%; z-index: 10; }
+      .forearm-l { top: 2.4%; z-index: 11; }
+      .head {
+        top: 2.5%;
+        transform-origin: 50% 24%;
+        animation: nod 3s ease-in-out infinite;
+        z-index: 12;
+      }
+      .glove-r {
+        top: 2.4%;
+        transform-origin: 33.72% 28.71%;
+        z-index: 13;
+      }
+      .glove-l {
+        top: 2.4%;
+        transform-origin: 60.77% 30.09%;
+        z-index: 14;
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        16.6%,
+        50%,
+        83.3% {
+          transform: translateY(14px);
+        }
+        33.3%,
+        66.6% {
+          transform: translateY(0);
+        }
+      }
+      @keyframes nod {
+        0%,
+        33%,
+        68%,
+        100% {
+          transform: rotate(0deg);
+        }
+        44% {
+          transform: rotate(5deg);
+        }
+        55% {
+          transform: rotate(-5deg);
+        }
+      }
+      @keyframes punch-r {
+        0%,
+        67%,
+        100% {
+          transform: rotate(0deg);
+        }
+        71.6% {
+          transform: rotate(15deg);
+        }
+        76% {
+          transform: rotate(-10deg);
+        }
+        81% {
+          transform: rotate(6deg);
+        }
+        87% {
+          transform: rotate(-10deg);
+        }
+        92% {
+          transform: rotate(6deg);
+        }
+        98% {
+          transform: rotate(8deg);
+        }
+      }
+      @keyframes punch-l {
+        0%,
+        67%,
+        100% {
+          transform: rotate(0deg);
+        }
+        71.6% {
+          transform: rotate(-8deg);
+        }
+        76% {
+          transform: rotate(5deg);
+        }
+        81% {
+          transform: rotate(-8deg);
+        }
+        87% {
+          transform: rotate(5deg);
+        }
+        92% {
+          transform: rotate(-8deg);
+        }
+        98% {
+          transform: rotate(-4deg);
+        }
+      }
+      .meta {
+        font-size: 14px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <div class="meta">Sullys Coach 3</div>
+      <div class="ring">
+        <div class="fighter">
+          <img class="shoe-r" src="./characters/coach-3/03_Aligned_599x801/shoe_R.png" alt="" />
+          <img class="shoe-l" src="./characters/coach-3/03_Aligned_599x801/shoe_L.png" alt="" />
+          <img class="shin-r" src="./characters/coach-3/03_Aligned_599x801/shin_R.png?v=prop" alt="" />
+          <img class="shin-l" src="./characters/coach-3/03_Aligned_599x801/shin_L.png?v=prop" alt="" />
+          <img class="pelvis" src="./characters/coach-3/03_Aligned_599x801/pelvis.png?v=prop" alt="" />
+          <img class="thigh-r" src="./characters/coach-3/03_Aligned_599x801/thigh_R.png?v=prop" alt="" />
+          <img class="thigh-l" src="./characters/coach-3/03_Aligned_599x801/thigh_L.png?v=prop" alt="" />
+          <img class="upperarm-r" src="./characters/coach-3/03_Aligned_599x801/upperarm_R.png?v=prop" alt="" />
+          <img class="neck" src="./characters/coach-3/03_Aligned_599x801/neck.png?v=prop" alt="" />
+          <img class="torso" src="./characters/coach-3/03_Aligned_599x801/torso.png?v=prop" alt="" />
+          <img class="upperarm-l" src="./characters/coach-3/03_Aligned_599x801/upperarm_L.png?v=prop" alt="" />
+          <img class="forearm-r" src="./characters/coach-3/03_Aligned_599x801/forearm_R.png?v=prop" alt="" />
+          <img class="forearm-l" src="./characters/coach-3/03_Aligned_599x801/forearm_L.png?v=prop" alt="" />
+          <img class="head" src="./characters/coach-3/03_Aligned_599x801/head.png?v=prop" alt="" />
+          <img class="glove-r" src="./characters/coach-3/03_Aligned_599x801/glove_R.png?v=prop" alt="" />
+          <img class="glove-l" src="./characters/coach-3/03_Aligned_599x801/glove_L.png?v=prop" alt="" />
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

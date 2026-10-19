@@ -1,0 +1,474 @@
+{
+  "version": 1,
+  "artboard": {
+    "width": 599,
+    "height": 801
+  },
+  "units": "pixels; origin top-left; x right, y down",
+  "reference": "05_References/SampleScaleBoxerPose.png",
+  "status": "14 import layers, including two merged shin-and-boot parts. Female-specific transforms and pivots. Not tested in Rive.",
+  "sides": "Anatomical L = viewer right/front; R = viewer left/back",
+  "joint_positions": {
+    "root": [
+      291,
+      381
+    ],
+    "chest": [
+      291,
+      273
+    ],
+    "neck": [
+      284,
+      192
+    ],
+    "head": [
+      284,
+      192
+    ],
+    "upperarm_R": [
+      231,
+      211
+    ],
+    "upperarm_L": [
+      347,
+      211
+    ],
+    "forearm_R": [
+      208,
+      310
+    ],
+    "forearm_L": [
+      374,
+      310
+    ],
+    "glove_R": [
+      231,
+      257
+    ],
+    "glove_L": [
+      348,
+      257
+    ],
+    "thigh_R": [
+      260,
+      395
+    ],
+    "thigh_L": [
+      321,
+      397
+    ],
+    "shin_R": [
+      231,
+      548
+    ],
+    "shin_L": [
+      347,
+      567
+    ],
+    "shoe_R": [
+      245,
+      657
+    ],
+    "shoe_L": [
+      382,
+      684
+    ]
+  },
+  "parts": [
+    {
+      "name": "head",
+      "file": "02_Parts_PNG/head.png",
+      "aligned_file": "03_Aligned_599x801/head.png",
+      "parent": "neck",
+      "draw_order": 15,
+      "pixel_size": [
+        108,
+        135
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        230,
+        67
+      ],
+      "pivot_artboard": [
+        284,
+        192
+      ],
+      "pivot_local": [
+        54,
+        125
+      ]
+    },
+    {
+      "name": "neck",
+      "file": "02_Parts_PNG/neck.png",
+      "aligned_file": "03_Aligned_599x801/neck.png",
+      "parent": "chest",
+      "draw_order": 7,
+      "pixel_size": [
+        80,
+        54
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        250,
+        181
+      ],
+      "pivot_artboard": [
+        284,
+        192
+      ],
+      "pivot_local": [
+        34,
+        11
+      ]
+    },
+    {
+      "name": "torso",
+      "file": "02_Parts_PNG/torso.png",
+      "aligned_file": "03_Aligned_599x801/torso.png",
+      "parent": "chest",
+      "draw_order": 8,
+      "pixel_size": [
+        138,
+        176
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        222,
+        192
+      ],
+      "pivot_artboard": [
+        291,
+        273
+      ],
+      "pivot_local": [
+        69,
+        81
+      ]
+    },
+    {
+      "name": "pelvis",
+      "file": "02_Parts_PNG/pelvis.png",
+      "aligned_file": "03_Aligned_599x801/pelvis.png",
+      "parent": "root",
+      "draw_order": 5.5,
+      "pixel_size": [
+        118,
+        33
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        231,
+        352
+      ],
+      "pivot_artboard": [
+        291,
+        381
+      ],
+      "pivot_local": [
+        60,
+        29
+      ]
+    },
+    {
+      "name": "upperarm_R",
+      "file": "02_Parts_PNG/upperarm_R.png",
+      "aligned_file": "03_Aligned_599x801/upperarm_R.png",
+      "parent": "chest",
+      "draw_order": 6,
+      "pixel_size": [
+        52,
+        132
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        195,
+        193
+      ],
+      "pivot_artboard": [
+        231,
+        211
+      ],
+      "pivot_local": [
+        36,
+        18
+      ]
+    },
+    {
+      "name": "upperarm_L",
+      "file": "02_Parts_PNG/upperarm_L.png",
+      "aligned_file": "03_Aligned_599x801/upperarm_L.png",
+      "parent": "chest",
+      "draw_order": 9,
+      "pixel_size": [
+        55,
+        132
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        333,
+        193
+      ],
+      "pivot_artboard": [
+        347,
+        211
+      ],
+      "pivot_local": [
+        14,
+        18
+      ]
+    },
+    {
+      "name": "forearm_R",
+      "file": "02_Parts_PNG/forearm_R.png",
+      "aligned_file": "03_Aligned_599x801/forearm_R.png",
+      "parent": "upperarm_R",
+      "draw_order": 11,
+      "pixel_size": [
+        40,
+        70
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        201,
+        249
+      ],
+      "pivot_artboard": [
+        208,
+        310
+      ],
+      "pivot_local": [
+        7,
+        61
+      ]
+    },
+    {
+      "name": "forearm_L",
+      "file": "02_Parts_PNG/forearm_L.png",
+      "aligned_file": "03_Aligned_599x801/forearm_L.png",
+      "parent": "upperarm_L",
+      "draw_order": 12,
+      "pixel_size": [
+        43,
+        71
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        339,
+        248
+      ],
+      "pivot_artboard": [
+        374,
+        310
+      ],
+      "pivot_local": [
+        35,
+        62
+      ]
+    },
+    {
+      "name": "glove_R",
+      "file": "02_Parts_PNG/glove_R.png",
+      "aligned_file": "03_Aligned_599x801/glove_R.png",
+      "parent": "forearm_R",
+      "draw_order": 16,
+      "pixel_size": [
+        77,
+        97
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        194,
+        183
+      ],
+      "pivot_artboard": [
+        231,
+        257
+      ],
+      "pivot_local": [
+        37,
+        74
+      ]
+    },
+    {
+      "name": "glove_L",
+      "file": "02_Parts_PNG/glove_L.png",
+      "aligned_file": "03_Aligned_599x801/glove_L.png",
+      "parent": "forearm_L",
+      "draw_order": 17,
+      "pixel_size": [
+        81,
+        99
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        311,
+        183
+      ],
+      "pivot_artboard": [
+        348,
+        257
+      ],
+      "pivot_local": [
+        37,
+        74
+      ]
+    },
+    {
+      "name": "thigh_R",
+      "file": "02_Parts_PNG/thigh_R.png",
+      "aligned_file": "03_Aligned_599x801/thigh_R.png",
+      "parent": "root",
+      "draw_order": 3,
+      "pixel_size": [
+        103,
+        213
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        200,
+        357
+      ],
+      "pivot_artboard": [
+        260,
+        395
+      ],
+      "pivot_local": [
+        60,
+        38
+      ]
+    },
+    {
+      "name": "thigh_L",
+      "file": "02_Parts_PNG/thigh_L.png",
+      "aligned_file": "03_Aligned_599x801/thigh_L.png",
+      "parent": "root",
+      "draw_order": 4,
+      "pixel_size": [
+        103,
+        230
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        280,
+        362
+      ],
+      "pivot_artboard": [
+        321,
+        397
+      ],
+      "pivot_local": [
+        41,
+        35
+      ]
+    },
+    {
+      "name": "shin_R",
+      "file": "02_Parts_PNG/shin_R.png",
+      "aligned_file": "03_Aligned_599x801/shin_R.png",
+      "parent": "thigh_R",
+      "draw_order": 5,
+      "pixel_size": [
+        112,
+        171
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        167,
+        552
+      ],
+      "pivot_artboard": [
+        231,
+        548
+      ],
+      "pivot_local": [
+        64,
+        -4
+      ],
+      "contents": "Lower leg and boot merged into one transparent PNG; pivots at knee"
+    },
+    {
+      "name": "shin_L",
+      "file": "02_Parts_PNG/shin_L.png",
+      "aligned_file": "03_Aligned_599x801/shin_L.png",
+      "parent": "thigh_L",
+      "draw_order": 5,
+      "pixel_size": [
+        86,
+        212
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        329,
+        568
+      ],
+      "pivot_artboard": [
+        347,
+        567
+      ],
+      "pivot_local": [
+        18,
+        -1
+      ],
+      "contents": "Lower leg and boot merged into one transparent PNG; pivots at knee"
+    }
+  ],
+  "character": "Sullys_Female_Coach_Proportioned_Boots_Attached",
+  "compatible_template": null,
+  "shared_assets": [],
+  "head_note": "Enlarged head and bun to follow original female reference proportions.",
+  "revision": "Corrected proportions; boots fused to lower legs",
+  "merged_parts": {
+    "shin_R": [
+      "shin_R",
+      "shoe_R"
+    ],
+    "shin_L": [
+      "shin_L",
+      "shoe_L"
+    ]
+  }
+}

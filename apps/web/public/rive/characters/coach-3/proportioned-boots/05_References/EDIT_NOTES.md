@@ -1,0 +1,3 @@
+Proportions and assembly: deterministic transforms of the existing separate artwork; no flattened replacement preview. Each assembled preview is rendered from the delivered parts. Boots are composited into the matching shin assets.
+
+Knee art cleanup used the built-in image generation tool. Prompt: preserve the transparent 4-by-4 atlas layout, sprite positions, sizes, logos and art style; remove circular brown knee end-cap shading on both thighs and upper shin oval cap lines, replacing them with matching warm skin. Only the four thigh/shin sprites from the edited atlas were used. Joint-overlap masks remove the upper shin cap boundaries.

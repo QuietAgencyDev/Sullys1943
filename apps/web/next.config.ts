@@ -7,7 +7,12 @@ const apiTarget = (
 ).replace(/\/$/, "");
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@sullys/ui", "@sullys/tokens", "@sullys/types"],
+  transpilePackages: [
+    "@sullys/ui",
+    "@sullys/tokens",
+    "@sullys/types",
+    "@sullys/brand-red-owl",
+  ],
   async rewrites() {
     // Same-origin /api/v1/* → Railway, so auth cookies are first-party on www
     // (required for iOS Safari / mobile login).

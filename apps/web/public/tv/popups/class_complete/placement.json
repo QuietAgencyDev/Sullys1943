@@ -1,0 +1,67 @@
+{
+  "name": "floor-class-complete",
+  "canvas": [
+    1600,
+    900
+  ],
+  "layer_order": [
+    "01_panel",
+    "02_effects",
+    "03_hero",
+    "04_accent",
+    "05_logo"
+  ],
+  "layer_position": [
+    0,
+    0
+  ],
+  "text_fields": [
+    {
+      "id": "headline_1",
+      "text": "SESSION",
+      "x": 110,
+      "baseline_y": 350,
+      "font_size": 108,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "headline_2",
+      "text": "DONE!",
+      "x": 110,
+      "baseline_y": 462,
+      "font_size": 108,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "message",
+      "text": "GREAT WORK. SEE YOU NEXT BELL.",
+      "x": 118,
+      "baseline_y": 537,
+      "font_size": 30,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "reward",
+      "text": "+25 XP",
+      "x": 118,
+      "baseline_y": 652,
+      "font_size": 92,
+      "fill": "#F7C963"
+    },
+    {
+      "id": "reward_label",
+      "text": "CLASS BONUS",
+      "x": 118,
+      "baseline_y": 704,
+      "font_size": 28,
+      "fill": "#FFF1D6"
+    }
+  ],
+  "static_text": {
+    "brand": "SULLY\u2019S BOXING GYM",
+    "event_kind": "CLASS COMPLETE",
+    "footer": "BOXING IS THE ENGINE. PEOPLE ARE THE PURPOSE."
+  },
+  "live_text_max_width": 810,
+  "text_note": "Coordinates are left x and baseline y; recreate as native text for live values."
+}

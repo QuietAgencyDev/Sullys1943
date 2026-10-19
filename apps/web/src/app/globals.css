@@ -1,4 +1,5 @@
 @import "@sullys/tokens/css";
+@import "@sullys/brand-red-owl/css";
 
 * {
   box-sizing: border-box;
@@ -9,10 +10,33 @@
   --site-header-clearance: calc(168px + env(safe-area-inset-top, 0px));
 }
 
+html[data-brand="sullys"] {
+  --sullys-frame-width: clamp(16px, 2.1vw, 40px);
+  --site-header-clearance: calc(
+    168px + env(safe-area-inset-top, 0px) + var(--sullys-frame-width)
+  );
+}
+
 @media (min-width: 768px) {
   :root {
     --site-header-clearance: 112px;
   }
+
+  html[data-brand="sullys"] {
+    --site-header-clearance: calc(112px + var(--sullys-frame-width));
+  }
+}
+
+/* Oak frame on every Sully’s screen except Floor/Reception TV (those use .shell). */
+html[data-brand="sullys"]:not(:has([data-profile])) body::after {
+  content: "";
+  position: fixed;
+  z-index: 80;
+  inset: 0;
+  box-sizing: border-box;
+  border: var(--sullys-frame-width) solid transparent;
+  border-image: url("/tv/wood-frame.jpg") 44 52 44 52 stretch;
+  pointer-events: none;
 }
 
 html,

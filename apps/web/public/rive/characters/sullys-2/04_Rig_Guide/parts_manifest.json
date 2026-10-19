@@ -1,0 +1,511 @@
+{
+  "version": 2,
+  "artboard": {
+    "width": 599,
+    "height": 801
+  },
+  "units": "pixels; origin top-left; x right, y down",
+  "reference": "05_References/SampleScaleBoxerPose.png",
+  "status": "manually aligned to image landmarks, not read from or tested with existing Rive skeleton",
+  "sides": "Anatomical L = viewer right/front; R = viewer left/back",
+  "joint_positions": {
+    "root": [
+      291,
+      382
+    ],
+    "chest": [
+      291,
+      247
+    ],
+    "neck": [
+      274,
+      164
+    ],
+    "head": [
+      274,
+      164
+    ],
+    "upperarm_R": [
+      196,
+      181
+    ],
+    "upperarm_L": [
+      375,
+      183
+    ],
+    "forearm_R": [
+      175,
+      287
+    ],
+    "forearm_L": [
+      414,
+      287
+    ],
+    "glove_R": [
+      202,
+      230
+    ],
+    "glove_L": [
+      364,
+      241
+    ],
+    "thigh_R": [
+      251,
+      395
+    ],
+    "thigh_L": [
+      334,
+      398
+    ],
+    "shin_R": [
+      210,
+      548
+    ],
+    "shin_L": [
+      367,
+      573
+    ],
+    "shoe_R": [
+      240,
+      668
+    ],
+    "shoe_L": [
+      395,
+      737
+    ]
+  },
+  "parts": [
+    {
+      "name": "head",
+      "file": "02_Parts_PNG/head.png",
+      "aligned_file": "03_Aligned_599x801/head.png",
+      "parent": "neck",
+      "draw_order": 15,
+      "pixel_size": [
+        239,
+        269
+      ],
+      "matrix": [
+        0.35121951219512193,
+        0,
+        0,
+        0.392,
+        230.0829268292683,
+        77.68799999999999
+      ],
+      "pivot_artboard": [
+        274,
+        164
+      ],
+      "pivot_local": [
+        125.04166666666663,
+        220.18367346938774
+      ]
+    },
+    {
+      "name": "neck",
+      "file": "02_Parts_PNG/neck.png",
+      "aligned_file": "03_Aligned_599x801/neck.png",
+      "parent": "chest",
+      "draw_order": 7,
+      "pixel_size": [
+        242,
+        119
+      ],
+      "matrix": [
+        0.38636363636363635,
+        0,
+        0,
+        0.43434343434343436,
+        239.59090909090907,
+        143.7878787878788
+      ],
+      "pivot_artboard": [
+        274,
+        164
+      ],
+      "pivot_local": [
+        89.05882352941184,
+        46.53488372093018
+      ]
+    },
+    {
+      "name": "torso",
+      "file": "02_Parts_PNG/torso.png",
+      "aligned_file": "03_Aligned_599x801/torso.png",
+      "parent": "chest",
+      "draw_order": 8,
+      "pixel_size": [
+        351,
+        301
+      ],
+      "matrix": [
+        0.6102719033232629,
+        0,
+        0,
+        0.7872340425531915,
+        192.28700906344415,
+        114.5531914893617
+      ],
+      "pivot_artboard": [
+        291,
+        247
+      ],
+      "pivot_local": [
+        161.7524752475247,
+        168.24324324324323
+      ]
+    },
+    {
+      "name": "pelvis",
+      "file": "02_Parts_PNG/pelvis.png",
+      "aligned_file": "03_Aligned_599x801/pelvis.png",
+      "parent": "root",
+      "draw_order": 2.5,
+      "pixel_size": [
+        276,
+        186
+      ],
+      "matrix": [
+        0.576,
+        0,
+        0,
+        0.65,
+        215.664,
+        316.55
+      ],
+      "pivot_artboard": [
+        291,
+        382
+      ],
+      "pivot_local": [
+        130.79166666666669,
+        100.69230769230766
+      ]
+    },
+    {
+      "name": "upperarm_R",
+      "file": "02_Parts_PNG/upperarm_R.png",
+      "aligned_file": "03_Aligned_599x801/upperarm_R.png",
+      "parent": "chest",
+      "draw_order": 6,
+      "pixel_size": [
+        236,
+        278
+      ],
+      "matrix": [
+        0.5282905427364317,
+        -0.1727981800454989,
+        0.2418914527136822,
+        0.45963600909977265,
+        94.00701982450437,
+        189.57803054923625
+      ],
+      "pivot_artboard": [
+        196,
+        181
+      ],
+      "pivot_local": [
+        171.99999999999997,
+        46.00000000000004
+      ]
+    },
+    {
+      "name": "upperarm_L",
+      "file": "02_Parts_PNG/upperarm_L.png",
+      "aligned_file": "03_Aligned_599x801/upperarm_L.png",
+      "parent": "chest",
+      "draw_order": 9,
+      "pixel_size": [
+        230,
+        277
+      ],
+      "matrix": [
+        0.49814723109236514,
+        0.1291986134116562,
+        -0.2092484759481566,
+        0.45321630436638716,
+        367.47917556052664,
+        158.2125134475163
+      ],
+      "pivot_artboard": [
+        375,
+        183
+      ],
+      "pivot_local": [
+        33.99999999999996,
+        44.999999999999936
+      ]
+    },
+    {
+      "name": "forearm_R",
+      "file": "02_Parts_PNG/forearm_R.png",
+      "aligned_file": "03_Aligned_599x801/forearm_R.png",
+      "parent": "upperarm_R",
+      "draw_order": 11,
+      "pixel_size": [
+        234,
+        241
+      ],
+      "matrix": [
+        0.34200185547881656,
+        -0.04950417482733737,
+        0.14191629728893929,
+        0.3031883310998866,
+        133.2786681785383,
+        228.29299659828885
+      ],
+      "pivot_artboard": [
+        175,
+        287
+      ],
+      "pivot_local": [
+        38.99999999999997,
+        199.99999999999997
+      ]
+    },
+    {
+      "name": "forearm_L",
+      "file": "02_Parts_PNG/forearm_L.png",
+      "aligned_file": "03_Aligned_599x801/forearm_L.png",
+      "parent": "upperarm_L",
+      "draw_order": 12,
+      "pixel_size": [
+        226,
+        241
+      ],
+      "matrix": [
+        0.35803881924787706,
+        -0.08890012131014963,
+        -0.018010513546300046,
+        0.35636878285483214,
+        349.59273756570957,
+        232.2608976951072
+      ],
+      "pivot_artboard": [
+        414,
+        287
+      ],
+      "pivot_local": [
+        190.0000000000003,
+        201.00000000000003
+      ]
+    },
+    {
+      "name": "glove_R",
+      "file": "02_Parts_PNG/glove_R.png",
+      "aligned_file": "03_Aligned_599x801/glove_R.png",
+      "parent": "forearm_R",
+      "draw_order": 16,
+      "pixel_size": [
+        253,
+        234
+      ],
+      "matrix": [
+        0.40444444444444444,
+        0,
+        0,
+        0.6225490196078431,
+        162.14666666666668,
+        127.54901960784315
+      ],
+      "pivot_artboard": [
+        202,
+        230
+      ],
+      "pivot_local": [
+        98.53846153846152,
+        164.56692913385825
+      ]
+    },
+    {
+      "name": "glove_L",
+      "file": "02_Parts_PNG/glove_L.png",
+      "aligned_file": "03_Aligned_599x801/glove_L.png",
+      "parent": "forearm_L",
+      "draw_order": 17,
+      "pixel_size": [
+        242,
+        231
+      ],
+      "matrix": [
+        0.4861111111111111,
+        0,
+        0,
+        0.6138613861386139,
+        302.68055555555554,
+        143.33663366336629
+      ],
+      "pivot_artboard": [
+        364,
+        241
+      ],
+      "pivot_local": [
+        126.14285714285717,
+        159.09677419354844
+      ]
+    },
+    {
+      "name": "thigh_R",
+      "file": "02_Parts_PNG/thigh_R.png",
+      "aligned_file": "03_Aligned_599x801/thigh_R.png",
+      "parent": "root",
+      "draw_order": 3,
+      "pixel_size": [
+        248,
+        298
+      ],
+      "matrix": [
+        0.6354256076477168,
+        -0.13825078816231057,
+        0.0327255161191905,
+        0.7759208786738533,
+        136.19251500050854,
+        379.2607546018509
+      ],
+      "pivot_artboard": [
+        251,
+        395
+      ],
+      "pivot_local": [
+        177.99999999999994,
+        51.99999999999998
+      ]
+    },
+    {
+      "name": "thigh_L",
+      "file": "02_Parts_PNG/thigh_L.png",
+      "aligned_file": "03_Aligned_599x801/thigh_L.png",
+      "parent": "root",
+      "draw_order": 4,
+      "pixel_size": [
+        230,
+        298
+      ],
+      "matrix": [
+        0.7175744410299885,
+        0.19114443149305926,
+        -0.08678605489032533,
+        0.890121860760835,
+        287.82544770583866,
+        335.47204302214686
+      ],
+      "pivot_artboard": [
+        334,
+        398
+      ],
+      "pivot_local": [
+        71.00000000000007,
+        54.999999999999986
+      ]
+    },
+    {
+      "name": "shin_R",
+      "file": "02_Parts_PNG/shin_R.png",
+      "aligned_file": "03_Aligned_599x801/shin_R.png",
+      "parent": "thigh_R",
+      "draw_order": 1,
+      "pixel_size": [
+        180,
+        283
+      ],
+      "matrix": [
+        0.43165077772202715,
+        -0.22946312092323132,
+        0.23674862017059708,
+        0.5677571500250878,
+        149.62277972905167,
+        546.1092323130958
+      ],
+      "pivot_artboard": [
+        210,
+        548
+      ],
+      "pivot_local": [
+        113.00000000000003,
+        49.0
+      ]
+    },
+    {
+      "name": "shin_L",
+      "file": "02_Parts_PNG/shin_L.png",
+      "aligned_file": "03_Aligned_599x801/shin_L.png",
+      "parent": "thigh_L",
+      "draw_order": 2,
+      "pixel_size": [
+        194,
+        288
+      ],
+      "matrix": [
+        0.6146489120427548,
+        0.171730626726248,
+        -0.08519884130869246,
+        0.7649680012574946,
+        331.22256394134695,
+        524.3540772011767
+      ],
+      "pivot_artboard": [
+        367,
+        573
+      ],
+      "pivot_local": [
+        64.99999999999987,
+        49.0
+      ]
+    },
+    {
+      "name": "shoe_R",
+      "file": "02_Parts_PNG/shoe_R.png",
+      "aligned_file": "03_Aligned_599x801/shoe_R.png",
+      "parent": "shin_R",
+      "draw_order": 0,
+      "pixel_size": [
+        287,
+        192
+      ],
+      "matrix": [
+        0.4153846153846154,
+        0,
+        0,
+        0.3584905660377358,
+        157.18461538461543,
+        642.6226415094338
+      ],
+      "pivot_artboard": [
+        240,
+        668
+      ],
+      "pivot_local": [
+        199.37037037037027,
+        70.78947368421089
+      ]
+    },
+    {
+      "name": "shoe_L",
+      "file": "02_Parts_PNG/shoe_L.png",
+      "aligned_file": "03_Aligned_599x801/shoe_L.png",
+      "parent": "shin_L",
+      "draw_order": 5,
+      "pixel_size": [
+        190,
+        274
+      ],
+      "matrix": [
+        0.4294478527607362,
+        0,
+        0,
+        0.2886178861788618,
+        352.4171779141104,
+        694.0934959349594
+      ],
+      "pivot_artboard": [
+        395,
+        737
+      ],
+      "pivot_local": [
+        99.15714285714287,
+        148.66197183098583
+      ]
+    }
+  ]
+}

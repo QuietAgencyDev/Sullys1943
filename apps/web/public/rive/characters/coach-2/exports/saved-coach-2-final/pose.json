@@ -1,0 +1,228 @@
+{
+  "name": "Sullys Coach 2",
+  "saved": "2026-10-17",
+  "canvas": {
+    "w": 599,
+    "h": 801
+  },
+  "drawOrderBackToFront": [
+    "shoe_R",
+    "shoe_L",
+    "shin_R",
+    "thigh_R",
+    "shin_L",
+    "pelvis",
+    "thigh_L",
+    "neck",
+    "torso",
+    "upperarm_R",
+    "upperarm_L",
+    "forearm_R",
+    "forearm_L",
+    "head",
+    "glove_R",
+    "glove_L"
+  ],
+  "layers": {
+    "shoe_R": {
+      "left": 0,
+      "top": -1.5,
+      "scale": 1,
+      "origin": [
+        0.5,
+        0.24
+      ],
+      "tx": 0,
+      "z": 1
+    },
+    "shoe_L": {
+      "left": 0.33,
+      "top": -3.1,
+      "scale": 1,
+      "origin": [
+        0.5,
+        0.24
+      ],
+      "tx": 0,
+      "z": 1
+    },
+    "shin_R": {
+      "left": 0,
+      "top": -0.37,
+      "scale": 1,
+      "origin": [
+        0.5,
+        0.24
+      ],
+      "tx": 0,
+      "z": 2
+    },
+    "thigh_R": {
+      "left": 0,
+      "top": 0,
+      "scale": 1,
+      "origin": [
+        0.5,
+        0.24
+      ],
+      "tx": 0,
+      "z": 3
+    },
+    "shin_L": {
+      "left": 0,
+      "top": -0.37,
+      "scale": 1,
+      "origin": [
+        0.5,
+        0.24
+      ],
+      "tx": 0,
+      "z": 4
+    },
+    "pelvis": {
+      "left": 0,
+      "top": 0,
+      "scale": 1,
+      "origin": [
+        0.5,
+        0.24
+      ],
+      "tx": 0,
+      "z": 5
+    },
+    "thigh_L": {
+      "left": 0,
+      "top": 0,
+      "scale": 1,
+      "origin": [
+        0.5,
+        0.24
+      ],
+      "tx": 0,
+      "z": 6
+    },
+    "neck": {
+      "left": -0.45,
+      "top": 0.5,
+      "scale": 0.968,
+      "origin": [
+        0.5,
+        0.24
+      ],
+      "tx": 0,
+      "z": 7
+    },
+    "torso": {
+      "left": -0.45,
+      "top": 0.5,
+      "scale": 0.968,
+      "origin": [
+        0.5,
+        0.24
+      ],
+      "tx": 0,
+      "z": 8
+    },
+    "upperarm_R": {
+      "left": 13.4,
+      "top": -4.55,
+      "scale": 1,
+      "origin": [
+        0.5,
+        0.24
+      ],
+      "tx": 0,
+      "z": 9
+    },
+    "upperarm_L": {
+      "left": -9.4,
+      "top": -5.85,
+      "scale": 1,
+      "origin": [
+        0.5,
+        0.24
+      ],
+      "tx": 0,
+      "z": 10
+    },
+    "forearm_R": {
+      "left": 13.4,
+      "top": -4.55,
+      "scale": 1,
+      "origin": [
+        0.5,
+        0.24
+      ],
+      "tx": 0,
+      "z": 11
+    },
+    "forearm_L": {
+      "left": -9.4,
+      "top": -5.85,
+      "scale": 1,
+      "origin": [
+        0.5,
+        0.24
+      ],
+      "tx": 0,
+      "z": 12
+    },
+    "head": {
+      "left": 0,
+      "top": 0,
+      "scale": 1.15,
+      "origin": [
+        0.5,
+        0.24
+      ],
+      "tx": 2.2,
+      "z": 13
+    },
+    "glove_R": {
+      "left": 12.17,
+      "top": -0.35,
+      "scale": 1,
+      "origin": [
+        0.3372,
+        0.2871
+      ],
+      "tx": 0,
+      "z": 14
+    },
+    "glove_L": {
+      "left": -7.17,
+      "top": -0.7,
+      "scale": 1,
+      "origin": [
+        0.6077,
+        0.3009
+      ],
+      "tx": 0,
+      "z": 15
+    }
+  },
+  "rive": {
+    "file": "Boxer",
+    "fileId": 2661306,
+    "artboard": "Sullys Coach 2",
+    "artboardId": "2-440",
+    "ids": {
+      "glove_L": "2-456",
+      "glove_R": "2-457",
+      "head": "2-458",
+      "forearm_L": "2-459",
+      "forearm_R": "2-460",
+      "upperarm_L": "2-461",
+      "torso": "2-462",
+      "neck": "2-463",
+      "upperarm_R": "2-464",
+      "shoe_L": "2-465",
+      "thigh_L": "2-466",
+      "pelvis": "2-467",
+      "shin_L": "2-468",
+      "thigh_R": "2-469",
+      "shin_R": "2-470",
+      "shoe_R": "2-493"
+    }
+  }
+}

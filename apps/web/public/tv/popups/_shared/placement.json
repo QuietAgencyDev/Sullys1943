@@ -1,0 +1,28 @@
+{
+  "canvas": [
+    1600,
+    900
+  ],
+  "origin": "top-left",
+  "safe_text": {
+    "x": 110,
+    "y": 220,
+    "w": 740,
+    "h": 520
+  },
+  "logo_slot": {
+    "x": 110,
+    "y": 90,
+    "w": 100,
+    "h": 100
+  },
+  "cast": [
+    "Coach 1"
+  ],
+  "pose": "guard",
+  "hero_motion": "enter from right 36px, 300ms, hold",
+  "accent_motion": "scale 0.88\u21921.0, 240ms",
+  "panel_motion": "fade + 36px, 220ms",
+  "status": "Shared sprite review only; not a completed full-popup folder",
+  "live_text": "Cursor draws all text and logo. Only shirt print appears on the character."
+}

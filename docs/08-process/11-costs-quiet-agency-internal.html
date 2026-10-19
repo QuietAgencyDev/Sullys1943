@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Quiet Agency — Internal Cost Sheet (Sully’s Platform)</title>
+  <style>
+    @page { size: Letter; margin: 0.55in 0.6in 0.65in; }
+    :root {
+      --brand-cream: #f3e6c8; --brand-red: #c82026; --brand-brown: #3a2418;
+      --ink: #1a120e; --muted: #5c4638; --line: rgba(58, 36, 24, 0.18);
+      --paper: #f7f1e6; --card: #fffaf2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink); background: var(--paper); font-size: 10pt; line-height: 1.42;
+    }
+    .page-bg {
+      min-height: 100%;
+      background:
+        radial-gradient(ellipse at 0% 0%, rgba(200, 32, 38, 0.10), transparent 42%),
+        linear-gradient(180deg, #fbf6ec 0%, var(--paper) 45%, #f3ebe0 100%);
+    }
+    .wrap { max-width: 8.2in; margin: 0 auto; padding: 0.1in 0.05in 0.2in; }
+    header.hero {
+      display: grid; grid-template-columns: 84px 1fr; gap: 0.75rem; align-items: center;
+      padding: 0.75rem 0.9rem; margin-bottom: 0.85rem;
+      border: 1px solid rgba(196, 160, 106, 0.45);
+      background: linear-gradient(135deg, rgba(58, 36, 24, 0.96), rgba(20, 15, 12, 0.94));
+      color: var(--brand-cream);
+    }
+    header.hero img { width: 76px; height: auto; display: block; }
+    .eyebrow {
+      margin: 0 0 0.15rem; color: var(--brand-red); font-size: 0.68rem;
+      font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase;
+    }
+    h1 { margin: 0; font-size: 1.4rem; line-height: 1.1; font-weight: 800; color: var(--brand-cream); }
+    .subtitle { margin: 0.35rem 0 0; color: rgba(243, 230, 200, 0.78); font-size: 0.86rem; }
+    .meta-bar {
+      display: flex; flex-wrap: wrap; gap: 0.45rem 0.9rem; margin: 0.55rem 0 0.9rem;
+      padding: 0.5rem 0.7rem; border-left: 4px solid var(--brand-red);
+      background: rgba(196, 160, 106, 0.12); color: var(--muted); font-size: 0.84rem;
+    }
+    h2 {
+      margin: 1.1rem 0 0.4rem; padding-bottom: 0.2rem; border-bottom: 2px solid var(--brand-red);
+      color: var(--brand-brown); font-size: 1.05rem;
+    }
+    h3 { margin: 0.75rem 0 0.3rem; color: var(--brand-red); font-size: 0.92rem; }
+    p { margin: 0.3rem 0 0.45rem; }
+    table {
+      width: 100%; border-collapse: collapse; margin: 0.35rem 0 0.7rem;
+      background: var(--card); font-size: 8.9pt; page-break-inside: avoid;
+    }
+    th, td { border: 1px solid var(--line); padding: 0.32rem 0.4rem; text-align: left; vertical-align: top; }
+    th { background: var(--brand-brown); color: var(--brand-cream); }
+    tr:nth-child(even) td { background: rgba(196, 160, 106, 0.08); }
+    .callout {
+      margin: 0.55rem 0 0.8rem; padding: 0.6rem 0.75rem;
+      border: 1px solid rgba(200, 32, 38, 0.35); background: rgba(200, 32, 38, 0.07);
+    }
+    .callout strong { color: var(--brand-red); }
+    .gold {
+      margin: 0.55rem 0 0.8rem; padding: 0.6rem 0.75rem;
+      border: 1px solid rgba(196, 160, 106, 0.55); background: rgba(255, 250, 242, 0.95);
+    }
+    footer {
+      margin-top: 1rem; padding-top: 0.5rem; border-top: 1px solid var(--line);
+      color: var(--muted); font-size: 0.78rem;
+    }
+    .conf { color: var(--brand-red); font-weight: 800; letter-spacing: 0.06em; }
+  </style>
+</head>
+<body>
+  <div class="page-bg"><div class="wrap">
+    <header class="hero">
+      <img src="../06-design/assets/sullys-logo-primary.png" alt="Sully's" />
+      <div>
+        <p class="eyebrow">Quiet Agency · Internal only</p>
+        <h1>Full Cost Sheet — Sully’s Platform</h1>
+        <p class="subtitle">True economics · donated build · Sully’s as flagship test gym</p>
+      </div>
+    </header>
+
+    <div class="meta-bar">
+      <span><strong>Audience:</strong> Quiet Agency internal</span>
+      <span><strong>Client:</strong> Sully’s Boxing Gym (non-profit)</span>
+      <span><strong>Currency:</strong> CAD (approx.)</span>
+      <span><strong>Date:</strong> August 2026</span>
+      <span class="conf">CONFIDENTIAL</span>
+    </div>
+
+    <div class="callout">
+      <strong>Policy:</strong> Quiet Agency is <em>donating</em> platform build + ongoing product/engineering
+      maintenance. Sully’s pays <strong>hosting/infra only</strong> (target under CAD $100/mo).
+      Helcim + QuickBooks are third-party vendor bills (client pays). Use Sully’s as the live test bed
+      for the new Boxing Digital Performance Platform.
+    </div>
+
+    <h2>1. What Quiet Agency absorbs (donated)</h2>
+    <table>
+      <thead>
+        <tr><th>Item</th><th>Market value (ref.)</th><th>QA treatment</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Platform build to soft-launch (web, staff, API, TV, owner desk, desk CASH/CARD, docs)</td>
+          <td>CAD $40k–$80k+ project value</td>
+          <td><strong>Donated / waived</strong></td>
+        </tr>
+        <tr>
+          <td>Ongoing Care retain (bugs, deploys, small tweaks, training)</td>
+          <td>CAD $750–$1,500 / mo</td>
+          <td><strong>Waived</strong></td>
+        </tr>
+        <tr>
+          <td>Helcim payment adapter engineering (when scheduled)</td>
+          <td>CAD $4k–$8k one-time</td>
+          <td>Donated build labor (client pays Helcim txn fees)</td>
+        </tr>
+        <tr>
+          <td>QuickBooks sync engineering (when scheduled)</td>
+          <td>CAD $2.5k–$5k one-time</td>
+          <td>Donated build labor (client pays QBO subscription)</td>
+        </tr>
+        <tr>
+          <td>Product R&amp;D / platform testing at Sully’s</td>
+          <td>Internal R&amp;D</td>
+          <td>QA investment — Sully’s = flagship test gym</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>2. Infra Quiet Agency operates (bill Sully’s at cost, &lt; $100)</h2>
+    <table>
+      <thead>
+        <tr><th>Service</th><th>Typical CAD / mo</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Domain (sullys1943.com)</td><td>$1–2</td><td>Annual / 12</td></tr>
+        <tr><td>Cloudflare DNS / SSL / CDN</td><td>$0</td><td></td></tr>
+        <tr><td>Vercel (www + staff)</td><td>$0–27</td><td>Hobby demo → Pro if commercial policy requires</td></tr>
+        <tr><td>Railway (Nest API)</td><td>$10–40</td><td>Always-on API</td></tr>
+        <tr><td>Neon Postgres</td><td>$0–26</td><td>Free until growth</td></tr>
+        <tr><td>Email / monitoring (if added)</td><td>$0–15</td><td>Optional</td></tr>
+        <tr><td><strong>Target bill to Sully’s</strong></td><td><strong>$15–80</strong></td><td><strong>Cap under CAD $100 / mo</strong></td></tr>
+      </tbody>
+    </table>
+
+    <h2>3. Third-party (client pays — not QA fee)</h2>
+    <table>
+      <thead>
+        <tr><th>Vendor</th><th>Who pays</th><th>How billed</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Helcim</td>
+          <td>Sully’s</td>
+          <td>Mostly per-transaction (% + ¢); little/no platform fee</td>
+        </tr>
+        <tr>
+          <td>QuickBooks Online</td>
+          <td>Sully’s</td>
+          <td>Monthly Intuit subscription (separate)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>4. Internal P&amp;L view (monthly, soft-launch)</h2>
+    <table>
+      <thead>
+        <tr><th>Line</th><th>CAD</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Infra cost (QA pays vendors)</td><td>~$15–80</td><td>Passed through / reimbursed by Sully’s</td></tr>
+        <tr><td>Sully’s reimbursement</td><td>+$15–80</td><td>Hosting only</td></tr>
+        <tr><td>QA Care retain (waived)</td><td>$0 billed / ~$1,000 opportunity</td><td>Donated</td></tr>
+        <tr><td>QA engineering time (platform R&amp;D)</td><td>Variable</td><td>Book as R&amp;D / portfolio</td></tr>
+        <tr><td><strong>Net cash from Sully’s</strong></td><td><strong>≈ $0 profit on retain</strong></td><td>Hosting wash + donated service</td></tr>
+      </tbody>
+    </table>
+
+    <h2>5. Why we’re doing this (internal)</h2>
+    <ul>
+      <li>Sully’s = non-profit / community gym — align with Quiet Agency values</li>
+      <li>Live flagship for Boxing Digital Performance Platform (beyond Glofox-class SaaS)</li>
+      <li>Real desk, TV, owner analytics, youth/adult mix → product proof</li>
+      <li>Reference case for future paying gyms / franchise rollup</li>
+    </ul>
+
+    <div class="gold">
+      <strong>Do not share this sheet with the client.</strong>
+      Client pack = “Sully’s Cost Summary” (hosting under $100 + Helcim/QBO separate + QA donated).
+    </div>
+
+    <footer>
+      Quiet Agency · Internal cost sheet · Sully’s Platform · August 2026 · Not for client distribution
+    </footer>
+  </div></div>
+</body>
+</html>

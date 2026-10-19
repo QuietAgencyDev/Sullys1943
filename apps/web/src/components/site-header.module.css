@@ -1,6 +1,8 @@
 .header {
   position: absolute;
-  inset: 0 0 auto;
+  top: var(--sullys-frame-width, 0px);
+  right: var(--sullys-frame-width, 0px);
+  left: var(--sullys-frame-width, 0px);
   z-index: 20;
   display: flex;
   align-items: center;

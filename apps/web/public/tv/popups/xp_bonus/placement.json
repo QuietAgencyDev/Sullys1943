@@ -1,0 +1,59 @@
+{
+  "name": "floor-xp-bonus",
+  "canvas": [
+    1600,
+    900
+  ],
+  "layer_order": [
+    "01_panel",
+    "02_effects",
+    "03_hero",
+    "04_accent",
+    "05_logo"
+  ],
+  "layer_position": [
+    0,
+    0
+  ],
+  "text_fields": [
+    {
+      "id": "headline_1",
+      "text": "+50 XP",
+      "x": 107,
+      "baseline_y": 424,
+      "font_size": 180,
+      "fill": "#F7C963"
+    },
+    {
+      "id": "member_name",
+      "text": "JORDAN M.",
+      "x": 118,
+      "baseline_y": 524,
+      "font_size": 51,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "message",
+      "text": "KEEP SWINGING.",
+      "x": 118,
+      "baseline_y": 582,
+      "font_size": 32,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "streak",
+      "text": "STREAK \u00d72",
+      "x": 118,
+      "baseline_y": 680,
+      "font_size": 55,
+      "fill": "#F7C963"
+    }
+  ],
+  "static_text": {
+    "brand": "SULLY\u2019S BOXING GYM",
+    "event_kind": "XP BONUS",
+    "footer": "EVERY ROUND COUNTS."
+  },
+  "live_text_max_width": 810,
+  "text_note": "Coordinates are left x and baseline y; recreate as native text for live values."
+}

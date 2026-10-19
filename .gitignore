@@ -38,3 +38,6 @@ tools/realesrgan/
 apps/web/public/store/_raw/
 apps/web/src/lib/store-products.generated.json
 cmd.exe
+
+# Local Rive art workspace (junctions into public character folders)
+/art/

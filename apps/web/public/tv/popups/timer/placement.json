@@ -1,0 +1,59 @@
+{
+  "name": "floor-timer",
+  "canvas": [
+    1600,
+    900
+  ],
+  "layer_order": [
+    "01_panel",
+    "02_effects",
+    "03_hero",
+    "04_accent",
+    "05_logo"
+  ],
+  "layer_position": [
+    0,
+    0
+  ],
+  "text_fields": [
+    {
+      "id": "headline_1",
+      "text": "TAKE A",
+      "x": 110,
+      "baseline_y": 350,
+      "font_size": 108,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "headline_2",
+      "text": "BREATHER.",
+      "x": 110,
+      "baseline_y": 462,
+      "font_size": 108,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "timer",
+      "text": "00:50",
+      "x": 112,
+      "baseline_y": 640,
+      "font_size": 176,
+      "fill": "#F7C963"
+    },
+    {
+      "id": "round_label",
+      "text": "REST  \u2022  ROUND 12 / 12",
+      "x": 118,
+      "baseline_y": 698,
+      "font_size": 30,
+      "fill": "#FFF1D6"
+    }
+  ],
+  "static_text": {
+    "brand": "SULLY\u2019S BOXING GYM",
+    "event_kind": "ROUND TIMER",
+    "footer": "BREATHE. RESET. COME BACK STRONG."
+  },
+  "live_text_max_width": 810,
+  "text_note": "Coordinates are left x and baseline y; recreate as native text for live values."
+}

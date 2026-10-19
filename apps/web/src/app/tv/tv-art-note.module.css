@@ -1,0 +1,138 @@
+.note {
+  position: absolute;
+  left: 3%;
+  bottom: 4%;
+  z-index: 6;
+  width: min(58%, 34rem);
+  pointer-events: none;
+  animation: noteIn 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.wide {
+  width: min(72%, 46rem);
+}
+
+.chip {
+  left: auto;
+  right: 4%;
+  width: min(42%, 18rem);
+  bottom: 8%;
+}
+
+.plate {
+  position: relative;
+  margin: 0;
+  padding: 0.7rem 1rem 0.85rem;
+  border: 1px solid rgba(247, 201, 99, 0.45);
+  background: linear-gradient(135deg, rgba(17, 19, 24, 0.94), rgba(20, 15, 12, 0.92));
+  color: #fff1d6;
+  overflow: hidden;
+}
+
+.plate::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(247, 201, 99, 0.14) 48%,
+    transparent 62%
+  );
+  transform: translateX(-120%);
+  animation: noteSheen 820ms ease 180ms both;
+}
+
+.kicker {
+  margin: 0 0 0.2rem;
+  font-size: clamp(0.62rem, 1.1vw, 0.78rem);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #f7c963;
+  animation: noteLine 420ms cubic-bezier(0.16, 1, 0.3, 1) 80ms both;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display-loaded), var(--font-display), Impact, sans-serif;
+  font-size: clamp(1.35rem, 3.4vw, 2.4rem);
+  line-height: 0.92;
+  letter-spacing: 0.03em;
+  animation: noteTitle 520ms cubic-bezier(0.16, 1, 0.3, 1) 140ms both;
+}
+
+.meta {
+  margin: 0.28rem 0 0;
+  color: #fff1d6;
+  font-size: clamp(0.78rem, 1.4vw, 1rem);
+  letter-spacing: 0.04em;
+  animation: noteLine 420ms cubic-bezier(0.16, 1, 0.3, 1) 220ms both;
+}
+
+.hold,
+.hold .plate::after,
+.hold .kicker,
+.hold .title,
+.hold .meta {
+  animation: none;
+}
+
+@keyframes noteIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes noteSheen {
+  from {
+    transform: translateX(-120%);
+    opacity: 0.4;
+  }
+  to {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
+
+@keyframes noteLine {
+  from {
+    opacity: 0;
+    transform: translateY(0.4em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes noteTitle {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em) scale(0.96);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-0.02em) scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .note,
+  .plate::after,
+  .kicker,
+  .title,
+  .meta {
+    animation: none !important;
+  }
+}

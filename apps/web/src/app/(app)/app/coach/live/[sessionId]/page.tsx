@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, get, post } from "@/lib/api";
+import { getBrand } from "@/lib/brand";
 import {
   playRoundBell,
   playTenSecondWarning,
@@ -70,6 +71,7 @@ function formatCountdown(totalSeconds: number) {
 }
 
 export default function AppCoachLivePage() {
+  const brand = getBrand();
   const params = useParams<{ sessionId: string }>();
   const sessionId = params.sessionId;
   const [data, setData] = useState<Payload | null>(null);
@@ -327,7 +329,8 @@ export default function AppCoachLivePage() {
             <>
               <p className={styles.meta}>
                 Timer controls need a coach login. Sign in as{" "}
-                <code>coach@sullys.local</code> / <code>password123</code>
+                <code>{brand.copy.demoCoachEmail}</code> /{" "}
+                <code>password123</code>
               </p>
               <p>
                 <Link

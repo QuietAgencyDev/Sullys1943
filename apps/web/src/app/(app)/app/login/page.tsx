@@ -6,6 +6,7 @@ import { FormEvent, Suspense, useState } from "react";
 import { Button } from "@sullys/ui";
 import { ApiError } from "@/lib/api";
 import { login } from "@/lib/auth-client";
+import { getBrand } from "@/lib/brand";
 import styles from "../ui.module.css";
 
 function safeAppNext(raw: string | null): string {
@@ -16,6 +17,7 @@ function safeAppNext(raw: string | null): string {
 }
 
 function LoginForm() {
+  const brand = getBrand();
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = safeAppNext(searchParams.get("next"));
@@ -45,11 +47,11 @@ function LoginForm() {
   return (
     <div className={styles.page}>
       <div className={styles.headerBlock}>
-        <p className={styles.eyebrow}>Member access</p>
+        <p className={styles.eyebrow}>{brand.copy.appName}</p>
         <h1 className={styles.title}>Sign in</h1>
         <p className={styles.lead}>
-          Enter your Sully&apos;s account to open member home, book classes, and
-          show your digital card.
+          Enter your {brand.copy.appName} account to open member home, book
+          classes, and show your digital card.
         </p>
       </div>
 
@@ -109,7 +111,7 @@ function LoginForm() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                setEmail("member@sullys.local");
+                setEmail(brand.copy.demoMemberEmail);
                 setPassword("password123");
               }}
             >
@@ -127,7 +129,7 @@ function LoginForm() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                setEmail("coach@sullys.local");
+                setEmail(brand.copy.demoCoachEmail);
                 setPassword("password123");
               }}
             >
@@ -135,7 +137,14 @@ function LoginForm() {
             </button>
           </p>
           <p className={styles.muted}>
-            Coach: <code>coach@sullys.local</code> / <code>password123</code>
+            Coach: <code>{brand.copy.demoCoachEmail}</code> /{" "}
+            <code>password123</code>
+            {brand.id === "red-owl" ? (
+              <>
+                {" "}
+                (seed with <code>npm run db:seed:red-owl</code>)
+              </>
+            ) : null}
           </p>
         </div>
       </form>

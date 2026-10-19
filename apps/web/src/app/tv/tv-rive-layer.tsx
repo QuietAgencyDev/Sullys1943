@@ -9,6 +9,7 @@ import {
   Alignment,
 } from "@rive-app/react-canvas";
 import styles from "./tv-rive.module.css";
+import { TvArtPopup, hasArtPopup } from "./tv-art-popup";
 
 export type TvRivePhase = "work" | "rest";
 
@@ -24,6 +25,14 @@ export type TvRiveProps = {
   bonusLabel?: string | null;
   /** Athlete / winner callout */
   highlightName?: string | null;
+  /** Use the anime art card (hides Coach 2). Timer uses art only when true. */
+  artCover?: boolean;
+  roundClock?: string | null;
+  roundLabel?: string | null;
+  rankLabel?: string | null;
+  scoreLabel?: string | null;
+  teamA?: { name: string; points: number } | null;
+  teamB?: { name: string; points: number } | null;
 };
 
 const SM = "TV";
@@ -99,17 +108,17 @@ function badgeForMode(tvMode: string) {
   }
 }
 
-/** Public SVG pack — see apps/web/public/tv/icons/ */
+/** Public icon pack — illustrated PNGs in apps/web/public/tv/icons/ */
 const TV_ICONS = {
-  glove: "/tv/icons/glove-1.svg",
-  gloveAlt: "/tv/icons/glove.svg",
-  surprise: "/tv/icons/glove-surprise.svg",
-  boxing: "/tv/icons/boxing.svg",
-  boxer: "/tv/icons/boxer.svg",
-  ring: "/tv/icons/ring.svg",
-  shorts: "/tv/icons/shorts.svg",
-  gear: "/tv/icons/kickboxing-equipment.svg",
-  belt: "/tv/icons/champion-belt.svg",
+  glove: "/tv/icons/glove-1.png",
+  gloveAlt: "/tv/icons/glove.png",
+  surprise: "/tv/icons/glove-surprise.png",
+  boxing: "/tv/icons/boxing.png",
+  boxer: "/tv/icons/boxer.png",
+  ring: "/tv/icons/ring.png",
+  shorts: "/tv/icons/shorts.png",
+  gear: "/tv/icons/kickboxing-equipment.png",
+  belt: "/tv/icons/champion-belt.png",
 } as const;
 
 function iconsForMode(tvMode: string): {
@@ -121,15 +130,23 @@ function iconsForMode(tvMode: string): {
 } {
   switch (tvMode) {
     case "teams":
-      return { left: TV_ICONS.glove, right: TV_ICONS.glove, dock: TV_ICONS.ring };
+      return {
+        left: "/tv/icons/glove-2.png",
+        right: "/tv/icons/glove-3.png",
+        dock: TV_ICONS.ring,
+      };
     case "challenge":
       return {
         left: TV_ICONS.glove,
         right: TV_ICONS.glove,
         dock: TV_ICONS.boxing,
-        tint: true,
       };
     case "class_complete":
+      return {
+        left: TV_ICONS.glove,
+        right: TV_ICONS.glove,
+        dock: TV_ICONS.boxer,
+      };
     case "leaderboard":
       return {
         left: TV_ICONS.glove,
@@ -147,7 +164,6 @@ function iconsForMode(tvMode: string): {
         left: TV_ICONS.glove,
         right: TV_ICONS.glove,
         dock: TV_ICONS.surprise,
-        tint: true,
       };
     default:
       return { left: TV_ICONS.glove, right: TV_ICONS.glove };
@@ -172,6 +188,7 @@ function CssFallback({
   xpBonus,
   bonusLabel,
   highlightName,
+  hold = false,
 }: {
   tvMode: string;
   phase: TvRivePhase;
@@ -179,6 +196,7 @@ function CssFallback({
   xpBonus?: number | null;
   bonusLabel?: string | null;
   highlightName?: string | null;
+  hold?: boolean;
 }) {
   const celebrate = celebrationModes(tvMode);
   const modeClass = celebrate
@@ -209,7 +227,7 @@ function CssFallback({
       key={pulseKey}
       className={`${styles.cssFallback} ${modeClass} ${
         phase === "work" ? styles.cssWork : styles.cssRest
-      }`}
+      } ${hold ? styles.cssHold : ""}`}
       aria-hidden
     >
       <div className={styles.vignette} />
@@ -399,11 +417,20 @@ export function TvRiveLayer({
   xpBonus,
   bonusLabel,
   highlightName,
+  artCover,
+  roundClock,
+  roundLabel,
+  rankLabel,
+  scoreLabel,
+  teamA,
+  teamB,
 }: TvRiveProps) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
   const src = useMemo(() => srcForMode(tvMode), [tvMode]);
   const pulseKey = `${tvMode}-${phase}-${message ?? ""}-${xpBonus ?? 0}-${bonusLabel ?? ""}`;
+  const useArt =
+    artCover ?? (hasArtPopup(tvMode) && tvMode !== "timer");
 
   useEffect(() => {
     setFailedSrc(null);
@@ -418,6 +445,25 @@ export function TvRiveLayer({
   }, []);
 
   if (!active) return null;
+
+  if (useArt && hasArtPopup(tvMode)) {
+    return (
+      <TvArtPopup
+        key={tvMode}
+        tvMode={tvMode}
+        highlightName={highlightName}
+        xpBonus={xpBonus}
+        bonusLabel={bonusLabel}
+        message={message}
+        roundClock={roundClock}
+        roundLabel={roundLabel}
+        rankLabel={rankLabel}
+        scoreLabel={scoreLabel}
+        teamA={teamA}
+        teamB={teamB}
+      />
+    );
+  }
 
   const badge = badgeForMode(tvMode);
 
@@ -447,6 +493,49 @@ export function TvRiveLayer({
   );
 }
 
+export function TvCssPopup(props: {
+  tvMode: string;
+  phase?: TvRivePhase;
+  xpBonus?: number | null;
+  bonusLabel?: string | null;
+  highlightName?: string | null;
+  roundClock?: string | null;
+  roundLabel?: string | null;
+  rankLabel?: string | null;
+  scoreLabel?: string | null;
+  teamA?: { name: string; points: number } | null;
+  teamB?: { name: string; points: number } | null;
+}) {
+  if (hasArtPopup(props.tvMode)) {
+    return (
+      <TvArtPopup
+        tvMode={props.tvMode}
+        highlightName={props.highlightName}
+        xpBonus={props.xpBonus}
+        bonusLabel={props.bonusLabel}
+        roundClock={props.roundClock}
+        roundLabel={props.roundLabel}
+        rankLabel={props.rankLabel}
+        scoreLabel={props.scoreLabel}
+        teamA={props.teamA}
+        teamB={props.teamB}
+        hold
+      />
+    );
+  }
+  return (
+    <CssFallback
+      tvMode={props.tvMode}
+      phase={props.phase ?? "rest"}
+      pulseKey={props.tvMode}
+      xpBonus={props.xpBonus}
+      bonusLabel={props.bonusLabel}
+      highlightName={props.highlightName}
+      hold
+    />
+  );
+}
+
 /** Resolve kill-switch from URL + localStorage (client only). */
 export function readRiveEnabled(): boolean {
   if (typeof window === "undefined") return true;
@@ -465,3 +554,66 @@ export function readDemoCelebrate(): boolean {
   const q = new URLSearchParams(window.location.search);
   return q.get("demo") === "celebrate";
 }
+
+export const FLOOR_POPUP_MODES = [
+  "achievement",
+  "xp_bonus",
+  "teams",
+  "challenge",
+  "leaderboard",
+  "class_complete",
+  "timer",
+  "check_in",
+  "first_visit",
+  "level_up",
+  "streak",
+  "welcome_back",
+  "class_starting",
+  "last_spots",
+  "challenge_winner",
+  "session_mvp",
+  "kids",
+  "kids_complete",
+  "heritage",
+  "announcement",
+  "birthday",
+  "pads",
+  "sparring",
+  "combo",
+] as const;
+
+export type FloorPopupMode = (typeof FLOOR_POPUP_MODES)[number];
+
+/** Freeze one popup on Floor TV: /tv/floor?popup=achievement */
+export function readPopupFreeze(): FloorPopupMode | null {
+  if (typeof window === "undefined") return null;
+  const q = new URLSearchParams(window.location.search);
+  const p = q.get("popup");
+  if (p && (FLOOR_POPUP_MODES as readonly string[]).includes(p)) {
+    return p as FloorPopupMode;
+  }
+  return null;
+}
+
+export const TV_ICON_FILES = [
+  { file: "glove-1.png", use: "Primary gloves" },
+  { file: "glove.png", use: "Alternate glove" },
+  { file: "glove-2.png", use: "Teams left glove" },
+  { file: "glove-3.png", use: "Teams right glove" },
+  { file: "glove-surprise.png", use: "XP bonus" },
+  { file: "boxing.png", use: "Challenge" },
+  { file: "boxer.png", use: "Class complete" },
+  { file: "ring.png", use: "Teams / ring" },
+  { file: "ring-alt.png", use: "Spare ring" },
+  { file: "shorts.png", use: "Apparel" },
+  { file: "kickboxing-equipment.png", use: "Gear" },
+  { file: "champion-belt.png", use: "Achievement / leaderboard" },
+] as const;
+
+export { hasArtPopup };
+export {
+  FLOOR_NOTE_MODES,
+  TvArtNote,
+  hasArtNote,
+  readNoteFreeze,
+} from "./tv-art-note";

@@ -1,0 +1,26 @@
+# Generation prompts
+
+## Atlas
+
+Use case: identity-preserve / precise-object-edit. Create the FEMALE COACH skin for this existing Sully's Rive cutout rig. Input1 is an EXACT 1254x1254 layout template with 16 body parts. Input2 is authoritative female coach identity/costume reference. Output must retain EXACT same square canvas, 4x4 row-major cells, part locations, part angles, pivot and joint endpoints as input1. DO NOT reorder, rotate or translate parts. This is a swappable character skin. Use female adult athletic anatomy while preserving skeleton lengths and joint endpoints; slim silhouettes may fit INSIDE the same existing part boxes. DO NOT use input2's standing pose.
+Character is the adult female boxing coach from input2, light warm skin, DARK BROWN HAIR IN COMPACT BUN, matching face with brown eyes, friendly focused expression, mature young adult anime coach not a child. HEAD is FRONT FACING with chin tucked as template, compact bun fitted within first cell, chin/neck endpoint exactly at template location.
+Costume: BLACK athletic TANK TOP with original WHITE Sully's script hanging gloves BOXING GYM logo, RED BOXING SHORTS with WHITE side panels and Sully's waist patch, red gloves with white cuffs, BLACK high-top boxing shoes with WHITE laces and side accents. Bare arms and lower legs. Match reference2 costume and female identity, but template1 joint positions and angular crisp 90s boxing-anime shading. Modest athletic sportswear, no exaggeration.
+Exact sixteen parts:
+ROW1: head with hair/bun (no torso); neck and shallow trapezius base; sleeveless black tank TORSO with white Sully's logo no arms or neck, female athletic torso and rounded shoulder overlaps; red shorts PELVIS connector with red elastic waist and small Sully's patch, no full legs.
+ROW2: anatomical RIGHT upper arm viewer-left, bare light-skinned shoulder-to-elbow replacing the sleeved template arm with same endpoints; anatomical LEFT upper arm viewer-right same; RIGHT forearm light skin same guard orientation as template; LEFT forearm same. No gloves attached.
+ROW3: RIGHT glove and cuff exact template red/white; LEFT glove and cuff exact template; RIGHT thigh back leg viewer-left with red/white shorts upper half and bare light-skinned lower thigh/knee ending in rounded knee overlap at exact template endpoint; LEFT thigh front leg viewer-right same anatomy/costume. Not full-length trousers.
+ROW4: RIGHT shin/calf bare light skin, exact template knee-to-ankle length and direction but slimmer athletic leg, rounded knee overlap and narrow ankle end no foot; LEFT shin/calf same; RIGHT black/white high-top boxing shoe sideward orientation exactly like template back foot; LEFT black/white high-top boxing shoe front orientation exactly like template front foot. No calf attached.
+All hidden joint caps smoothly rounded and opaque, no hollow cuts, no skeletal diagrams. Absolutely no labels or grid lines. Every part fully separated by transparent gutter. Keep same Sully's crisp dark outlines and angular hard cel shadows, no gradients, no realistic rendering. True transparent background, no colour fringe or speckles. No additional parts. Max native quality.
+
+## Correction
+
+Repair this female coach animation-parts atlas. Preserve exact canvas 1254 square, exact 16 cell order, exact position/angle/joint endpoints of each part. Edit only these issues:
+1. Top row column3 torso: BLACK TANK CLOTHING ONLY, absolutely NO flesh-coloured skin built into this torso part. Remove the skin-filled neck opening and shoulder caps to TRANSPARENCY. Keep black tank straps and Sully's logo, complete cloth down to waist. The standalone neck and arms will supply all skin underneath. This is essential to prevent duplicate necks.
+2. Top row col1 female head: bun should be more compact, close to scalp rather than tall. Face should occupy more of the same part height, mature young adult female coach, not tiny childlike face. Keep dark brown hair, brown eyes, matching original identity, same chin base endpoint. Front-facing.
+3. Row2 cols1/2 upper arms: slender toned adult female bare arms, reduce width about 20 percent around the same bone axes without changing shoulder or elbow endpoints. NO hollow oval cross sections or straight cut ends. Rounded opaque elbow caps.
+4. Row3 cols3/4 thigh parts: keep red shorts and white side panels but remove any SECOND waistband at their top. Their top edge is plain red fabric hidden under pelvis. Extend shorts appropriately and make a rounded natural kneecap below. No big brown oval cut-face at knee; use natural cel-shaded skin to the very end, round overlap cap with no internal cross-section ellipse.
+5. Row4 cols1/2 shins: same fixed endpoints and angle, natural slender calves, remove ALL oval end-cap outlines, end in softly rounded skin knee overlaps and ankle ends.
+Everything else unchanged. Clean sharp flat anime shading and dark contours with NO red speckle or alpha debris. All 16 pieces separated with transparent gutters. True transparent background.
+
+Built-in image generation created the art. Parts were extracted, alpha-cleaned and rendered to the existing coordinate template. Torso top-right overhang was clipped during extraction to fit beneath the guard glove.
+

@@ -1,4 +1,12 @@
 /** Store catalog — legacy Woo checkout URLs until native payments. */
+import { getBrandId } from "./brand";
+import {
+  RED_OWL_SHOP_BASE,
+  RED_OWL_STORE_PRODUCTS,
+  redOwlProductUrl,
+  type RedOwlStoreProduct,
+} from "./store-products-red-owl";
+
 export type StoreProduct = {
   id: string;
   name: string;
@@ -9,9 +17,9 @@ export type StoreProduct = {
   image: string;
 };
 
-const SHOP_BASE = "https://www.sullysboxinggym.com/shop";
+const SHOP_BASE_SULLYS = "https://www.sullysboxinggym.com/shop";
 
-export const STORE_PRODUCTS: StoreProduct[] = [
+export const SULLYS_STORE_PRODUCTS: StoreProduct[] = [
   {
     id: "adult-hand-wraps",
     name: "Adult Hand Wraps",
@@ -95,16 +103,40 @@ export const STORE_PRODUCTS: StoreProduct[] = [
   },
 ];
 
-export function formatPrice(cents: number) {
-  return new Intl.NumberFormat("en-CA", {
-    style: "currency",
-    currency: "CAD",
-    minimumFractionDigits: 0,
-  }).format(cents / 100);
+export type CatalogProduct = StoreProduct | RedOwlStoreProduct;
+
+export function getStoreProducts(): CatalogProduct[] {
+  return getBrandId() === "red-owl"
+    ? RED_OWL_STORE_PRODUCTS
+    : SULLYS_STORE_PRODUCTS;
 }
 
-export function productShopUrl(product: StoreProduct) {
-  return `${SHOP_BASE}/${product.legacySlug}/`;
+/** @deprecated Prefer getStoreProducts() — kept for Sully cart defaults */
+export const STORE_PRODUCTS = SULLYS_STORE_PRODUCTS;
+
+export function getShopBase() {
+  return getBrandId() === "red-owl" ? RED_OWL_SHOP_BASE : SHOP_BASE_SULLYS;
 }
 
-export { SHOP_BASE };
+export function formatPrice(cents: number, currency: "CAD" | "USD" = "CAD") {
+  const brandCurrency = getBrandId() === "red-owl" ? "USD" : currency;
+  return new Intl.NumberFormat(
+    brandCurrency === "USD" ? "en-US" : "en-CA",
+    {
+      style: "currency",
+      currency: brandCurrency,
+      minimumFractionDigits: brandCurrency === "USD" ? 2 : 0,
+    },
+  ).format(cents / 100);
+}
+
+export function productShopUrl(product: CatalogProduct) {
+  if (getBrandId() === "red-owl" && "handle" in product) {
+    return redOwlProductUrl(product);
+  }
+  return `${SHOP_BASE_SULLYS}/${product.legacySlug}/`;
+}
+
+export const SHOP_BASE = getShopBase();
+
+export { RED_OWL_SHOP_BASE, RED_OWL_STORE_PRODUCTS };

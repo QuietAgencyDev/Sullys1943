@@ -100,6 +100,9 @@ This folder is the **single source of truth** for architecture, product scope, a
 6. [Client Demo Test Guide](./08-process/06-client-demo-test-guide.md) — full Member / Coach / Staff / TV walkthrough ([PDF](./08-process/Sullys-Client-Demo-Test-Guide.pdf))
 7. [Banking & Payment Setup](./08-process/07-banking-payment-setup.md) — Helcim / bank / env cutover ([PDF](./08-process/Sullys-Banking-Payment-Setup.pdf))
 8. [QuickBooks Integration](./08-process/08-quickbooks-integration.md) — QBO mapping, OAuth, sync phases ([PDF](./08-process/Sullys-QuickBooks-Integration.pdf))
+9. [Next Steps To-Do](./08-process/09-next-steps-todo.md) — post-demo roadmap checklist ([PDF](./08-process/Sullys-Next-Steps-Todo.pdf))
+10. [Owner Manual & Deal Brief](./08-process/10-owner-manual-deal-brief.md) — logins, features, vs Glofox close pack ([PDF](./08-process/Sullys-Owner-Manual-Deal-Brief.pdf))
+11. [Cost sheets](./08-process/11-12-costs-overview.md) — QA internal + Sully’s client hosting summary ([client PDF](./08-process/Sullys-Platform-Cost-Summary.pdf) · [internal PDF](./08-process/Sullys-Costs-Quiet-Agency-Internal.pdf))
 
 ### Diagrams
 - [Architecture Diagrams (Mermaid)](./diagrams/architecture.md)

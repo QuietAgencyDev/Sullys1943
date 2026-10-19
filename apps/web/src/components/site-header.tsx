@@ -1,25 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
+import { getBrand } from "@/lib/brand";
 import styles from "./site-header.module.css";
 
-const NAV = [
-  { href: "/legacy", label: "Legacy" },
-  { href: "/coaches", label: "Coaches" },
-  { href: "/classes", label: "Classes" },
-  { href: "/programs", label: "Programs" },
-  { href: "/donate", label: "Donate" },
-  { href: "/store", label: "Store" },
-  { href: "/contact", label: "Visit" },
-  { href: "/join", label: "Join" },
-] as const;
-
 export function SiteHeader() {
+  const brand = getBrand();
+
   return (
     <header className={styles.header}>
       <Link href="/" className={styles.brand}>
         <Image
-          src="/brand/sullys-logo-primary.png"
-          alt="Sully's Boxing Gym"
+          src={brand.assets.logoPrimary}
+          alt={brand.assets.logoAlt}
           width={56}
           height={72}
           priority
@@ -27,12 +19,12 @@ export function SiteHeader() {
           className={styles.logo}
         />
         <span className={styles.brandText}>
-          <span className={styles.brandName}>Sully&apos;s</span>
-          <span className={styles.brandSub}>Boxing Gym · EST 1943</span>
+          <span className={styles.brandName}>{brand.copy.brandName}</span>
+          <span className={styles.brandSub}>{brand.copy.brandSub}</span>
         </span>
       </Link>
       <nav className={styles.nav} aria-label="Primary">
-        {NAV.map((item) => (
+        {brand.nav.map((item) => (
           <Link key={item.href} href={item.href}>
             {item.label}
           </Link>

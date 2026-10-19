@@ -1,13 +1,10 @@
-export type ProgramSlug =
-  | "boxing-fundamentals"
-  | "academic-support"
-  | "mentorship-leadership"
-  | "lifeskills"
-  | "wellness-mind-body"
-  | "business-of-boxing";
+import { getBrandId } from "./brand";
+import { RED_OWL_PROGRAMS } from "./programs-red-owl";
+
+export type ProgramSlug = string;
 
 export type Program = {
-  slug: ProgramSlug;
+  slug: string;
   name: string;
   short: string;
   lead: string;
@@ -15,7 +12,7 @@ export type Program = {
   outcomes: string[];
 };
 
-export const PROGRAMS: Program[] = [
+export const SULLYS_PROGRAMS: Program[] = [
   {
     slug: "boxing-fundamentals",
     name: "Boxing Fundamentals & Athletic Training",
@@ -110,8 +107,7 @@ export const PROGRAMS: Program[] = [
     name: "Business of Boxing",
     short:
       "Coaching, promotions, branding, social, athlete management, and merchandise.",
-    lead:
-      "Boxing opens doors into an industry — not only into a ring.",
+    lead: "Boxing opens doors into an industry — not only into a ring.",
     body: [
       "Anchored by a live conversation/workshop series with industry professionals — young people explore roles across coaching, promotions, branding, social media, athlete management, and merchandise.",
       "The gym becomes a living classroom for creative and operational entry points into sport.",
@@ -125,6 +121,21 @@ export const PROGRAMS: Program[] = [
   },
 ];
 
+/** @deprecated Prefer getPrograms() */
+export const PROGRAMS = SULLYS_PROGRAMS;
+
+export function getPrograms(): Program[] {
+  return getBrandId() === "red-owl" ? RED_OWL_PROGRAMS : SULLYS_PROGRAMS;
+}
+
 export function getProgram(slug: string): Program | undefined {
-  return PROGRAMS.find((p) => p.slug === slug);
+  return getPrograms().find((p) => p.slug === slug);
+}
+
+/** All slugs for static generation (both brands). */
+export function getAllProgramSlugs(): string[] {
+  const slugs = new Set<string>();
+  for (const p of SULLYS_PROGRAMS) slugs.add(p.slug);
+  for (const p of RED_OWL_PROGRAMS) slugs.add(p.slug);
+  return [...slugs];
 }

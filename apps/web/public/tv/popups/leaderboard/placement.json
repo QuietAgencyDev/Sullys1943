@@ -1,0 +1,67 @@
+{
+  "name": "floor-leaderboard",
+  "canvas": [
+    1600,
+    900
+  ],
+  "layer_order": [
+    "01_panel",
+    "02_effects",
+    "03_hero",
+    "04_accent",
+    "05_logo"
+  ],
+  "layer_position": [
+    0,
+    0
+  ],
+  "text_fields": [
+    {
+      "id": "headline_1",
+      "text": "CLAIM THE",
+      "x": 110,
+      "baseline_y": 350,
+      "font_size": 108,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "headline_2",
+      "text": "BOARD.",
+      "x": 110,
+      "baseline_y": 462,
+      "font_size": 108,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "rank",
+      "text": "01",
+      "x": 118,
+      "baseline_y": 610,
+      "font_size": 100,
+      "fill": "#F7C963"
+    },
+    {
+      "id": "member_name",
+      "text": "JORDAN M.",
+      "x": 300,
+      "baseline_y": 567,
+      "font_size": 43,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "score",
+      "text": "70 XP  \u2022  LEVEL 1",
+      "x": 300,
+      "baseline_y": 623,
+      "font_size": 29,
+      "fill": "#FFF1D6"
+    }
+  ],
+  "static_text": {
+    "brand": "SULLY\u2019S BOXING GYM",
+    "event_kind": "FLOOR LEADERBOARD",
+    "footer": "SHOW UP. PUT IN WORK. MOVE UP."
+  },
+  "live_text_max_width": 810,
+  "text_note": "Coordinates are left x and baseline y; recreate as native text for live values."
+}

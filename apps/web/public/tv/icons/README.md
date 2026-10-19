@@ -1,20 +1,25 @@
 # Floor TV / second-screen icons
 
-SVG pack from SVG Repo (boxing theme). Used by the floor TV celebration layer and available for coach/gamification UI.
+Illustrated PNG pack (1024 square, transparent). Used by Floor TV popups and the review board.
 
 | File | Use |
 |------|-----|
-| `glove-1.svg` | **Primary animated gloves** (color — red/gold) |
-| `glove.svg` | Alternate glove (monochrome) |
-| `glove-2.svg` / `glove-3.svg` | Extra glove styles |
-| `glove-surprise.svg` | Achievement / surprise moments |
-| `boxing.svg` | Challenge / general boxing mark |
-| `boxer.svg` | Class complete / athlete moments |
-| `ring.svg` / `ring-alt.svg` | Teams / ring battle |
-| `shorts.svg` | Apparel / kids moments |
-| `kickboxing-equipment.svg` | Gear / equipment callouts |
-| `champion-belt.svg` | Leaderboard / achievement / class complete dock |
+| `glove-1.png` | Primary gloves |
+| `glove.png` | Alternate glove |
+| `glove-2.png` / `glove-3.png` | Team gloves |
+| `glove-surprise.png` | XP / surprise |
+| `boxing.png` | Challenge |
+| `boxer.png` | Class complete |
+| `ring.png` / `ring-alt.png` | Teams / ring |
+| `shorts.png` | Apparel |
+| `kickboxing-equipment.png` | Gear |
+| `champion-belt.png` | Achievement / leaderboard |
 
-Public URLs: `/tv/icons/<file>`
+Original SVGs remain in this folder as backups. Live board uses the PNGs.
 
-Layout: gloves in bottom corners; belt + XP chips in a bottom dock so they never cover hero titles.
+Popup art (layered 1600×900): `/tv/popups/<mode>/`
+
+Review board: `/tv/popups`  
+Freeze on Floor TV: `/tv/floor?popup=achievement` (also `xp_bonus`, `teams`, `challenge`, `leaderboard`, `class_complete`, `timer`).
+
+Default Floor TV keeps Coach 2 on the round clock. Art cards cover the hero panel only while a popup is active.

@@ -1,0 +1,280 @@
+.stage {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: min(58%, 720px);
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.glow {
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 6%;
+  height: 42%;
+  background: radial-gradient(
+    ellipse at 50% 80%,
+    rgba(252, 25, 36, 0.22),
+    rgba(196, 160, 106, 0.08) 42%,
+    transparent 72%
+  );
+  filter: blur(18px);
+}
+
+.ground {
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 4%;
+  height: 7%;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(0, 0, 0, 0.72),
+    transparent 70%
+  );
+  filter: blur(8px);
+}
+
+.figureWrap {
+  position: absolute;
+  inset: 0% 2% 5%;
+  display: grid;
+  place-items: end center;
+}
+
+.figure {
+  position: relative;
+  height: 100%;
+  width: auto;
+  max-width: none;
+  aspect-ratio: 599 / 801;
+  transform-origin: 50% 94%;
+  filter: drop-shadow(0 28px 40px rgba(0, 0, 0, 0.55))
+    drop-shadow(0 0 18px rgba(252, 25, 36, 0.18));
+}
+
+.part {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  user-select: none;
+  pointer-events: none;
+}
+
+.torso {
+  left: -0.45%;
+  top: 0.5%;
+  transform: scale(0.968);
+  transform-origin: 50% 24%;
+  z-index: 8;
+}
+
+.neck {
+  left: -0.45%;
+  top: 0.5%;
+  transform: scale(0.968);
+  transform-origin: 50% 24%;
+  z-index: 7;
+}
+
+.upperarmR {
+  left: 1.6%;
+  top: -2.4%;
+  z-index: 9;
+}
+
+.upperarmL {
+  left: -1.8%;
+  top: -1.2%;
+  z-index: 10;
+}
+
+.forearmR {
+  left: 1.6%;
+  top: -2.4%;
+  z-index: 11;
+}
+
+.forearmL {
+  left: -1.8%;
+  top: -1.2%;
+  z-index: 12;
+}
+
+.shoeR {
+  top: 1.7%;
+  z-index: 1;
+}
+
+.shoeL {
+  left: 0.4%;
+  top: 0.15%;
+  z-index: 1;
+}
+
+.shinR {
+  top: -0.37%;
+  z-index: 2;
+}
+
+.thighR {
+  z-index: 3;
+}
+
+.shinL {
+  top: -0.37%;
+  z-index: 4;
+}
+
+.pelvis {
+  z-index: 5;
+}
+
+.thighL {
+  z-index: 6;
+}
+
+.head {
+  transform-origin: 50% 24%;
+  z-index: 13;
+}
+
+.gloveR {
+  left: 1.6%;
+  top: -2.4%;
+  transform: scale(1.14);
+  transform-origin: 33.72% 28.71%;
+  z-index: 14;
+}
+
+.gloveL {
+  left: -1.8%;
+  top: -1.2%;
+  transform: scale(1.14);
+  transform-origin: 60.77% 30.09%;
+  z-index: 15;
+}
+
+.rim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(243, 230, 200, 0.08),
+    transparent 28%,
+    transparent 72%,
+    rgba(0, 0, 0, 0.18)
+  );
+  mix-blend-mode: soft-light;
+}
+
+.idle .figure,
+.rest .figure {
+  animation: coachBounce 3s ease-in-out infinite;
+}
+
+.work .figure {
+  animation: coachBounce 3s ease-in-out infinite;
+}
+
+.idle .head,
+.rest .head,
+.work .head {
+  animation: coachNod 3s ease-in-out infinite;
+}
+
+.work .gloveR {
+  animation: punchR 3s ease-in-out infinite;
+}
+
+.work .gloveL {
+  animation: punchL 3s ease-in-out infinite;
+}
+
+@keyframes coachBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  16.6%,
+  50%,
+  83.3% {
+    transform: translateY(10px);
+  }
+  33.3%,
+  66.6% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes coachNod {
+  0%,
+  33%,
+  68%,
+  100% {
+    transform: translateX(2.2%) scale(1.22) rotate(0deg);
+  }
+  44% {
+    transform: translateX(2.2%) scale(1.22) rotate(5deg);
+  }
+  55% {
+    transform: translateX(2.2%) scale(1.22) rotate(-5deg);
+  }
+}
+
+@keyframes punchR {
+  0%,
+  67%,
+  100% {
+    transform: scale(1.14) rotate(0deg);
+  }
+  71.6% {
+    transform: scale(1.2) rotate(15deg);
+  }
+  76% {
+    transform: scale(1.16) rotate(-10deg);
+  }
+  81% {
+    transform: scale(1.2) rotate(6deg);
+  }
+  87% {
+    transform: scale(1.16) rotate(-10deg);
+  }
+  92% {
+    transform: scale(1.2) rotate(6deg);
+  }
+  98% {
+    transform: scale(1.18) rotate(8deg);
+  }
+}
+
+@keyframes punchL {
+  0%,
+  67%,
+  100% {
+    transform: scale(1.14) rotate(0deg);
+  }
+  71.6% {
+    transform: scale(1.2) rotate(-8deg);
+  }
+  76% {
+    transform: scale(1.16) rotate(5deg);
+  }
+  81% {
+    transform: scale(1.2) rotate(-8deg);
+  }
+  87% {
+    transform: scale(1.16) rotate(5deg);
+  }
+  92% {
+    transform: scale(1.2) rotate(-8deg);
+  }
+  98% {
+    transform: scale(1.18) rotate(-4deg);
+  }
+}

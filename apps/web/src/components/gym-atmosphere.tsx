@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { GYM } from "@/lib/gym-info";
-import { HOME_CAROUSEL_SHOTS } from "@/lib/home-carousel";
+import { getHomeCarouselShots } from "@/lib/home-carousel";
 import styles from "./gym-atmosphere.module.css";
 
 const AUTO_MS = 4200;
@@ -13,7 +13,7 @@ export function GymAtmosphere() {
   const railRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const shots = HOME_CAROUSEL_SHOTS;
+  const shots = getHomeCarouselShots();
   // Duplicate for seamless loop feel on scroll
   const loop = [...shots, ...shots];
 

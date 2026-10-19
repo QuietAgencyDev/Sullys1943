@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { getBrand } from "@/lib/brand";
 import { QUIET_AGENCY } from "@/lib/partners";
 import styles from "../contact/contact.module.css";
 
@@ -10,6 +12,11 @@ export const metadata = {
 };
 
 export default function ManualsPage() {
+  // Sully-branded PDFs — hide entirely on Red Owl.
+  if (getBrand().id === "red-owl") {
+    notFound();
+  }
+
   return (
     <>
       <SiteHeader />

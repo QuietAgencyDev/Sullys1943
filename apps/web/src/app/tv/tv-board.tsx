@@ -9,12 +9,19 @@ import {
   playTenSecondWarning,
   testBoxingTimerSound,
 } from "../../lib/boxing-timer-sounds";
+import { getBrand } from "@/lib/brand";
 import styles from "./tv.module.css";
 import {
   TvRiveLayer,
+  TvArtNote,
+  hasArtPopup,
   readDemoCelebrate,
+  readNoteFreeze,
+  readPopupFreeze,
   readRiveEnabled,
+  type FloorPopupMode,
 } from "./tv-rive-layer";
+import { TvBoxerRig } from "./tv-boxer-rig";
 
 const DEMO_MODES = [
   "achievement",
@@ -27,6 +34,10 @@ const DEMO_MODES = [
 ] as const;
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+
+function floorLabel(brandName: string) {
+  return `${brandName} floor`;
+}
 
 type SessionCard = {
   id: string;
@@ -96,6 +107,206 @@ type Board = {
   refreshSeconds: number;
   coachTimer?: CoachTimer | null;
 };
+
+type FeedKind = "quote" | "trivia" | "system" | "checkin";
+type FeedLine = { kind: FeedKind; text: string };
+
+const FLOOR_QUOTES: FeedLine[] = [
+  { kind: "quote", text: "Protect yourself at all times." },
+  { kind: "quote", text: "Everyone has a plan until they get hit." },
+  { kind: "quote", text: "Chin down. Hands up. Eyes open." },
+  { kind: "quote", text: "The jab is the steering wheel." },
+  { kind: "quote", text: "Don't count the rounds. Make the rounds count." },
+  { kind: "quote", text: "Float like a butterfly. Sting like a bee." },
+  { kind: "quote", text: "Champions are built on the quiet days." },
+  { kind: "quote", text: "Slip the punch. Take the round." },
+  { kind: "quote", text: "The bell doesn't lie." },
+  { kind: "quote", text: "Work the body. The head will follow." },
+];
+
+const FLOOR_TRIVIA: FeedLine[] = [
+  { kind: "trivia", text: "Trivia · Pro round: 3 minutes. Rest: 1." },
+  { kind: "trivia", text: "Trivia · Orthodox left. Southpaw right." },
+  { kind: "trivia", text: "Trivia · The jab is boxing's most thrown punch." },
+  { kind: "trivia", text: "Trivia · Championship distance was 12 rounds." },
+  { kind: "trivia", text: "Trivia · Sweet science — coined in 1813." },
+  { kind: "trivia", text: "Trivia · A 10-count is mercy. Beat it." },
+  { kind: "trivia", text: "Trivia · Ring is 16–20 ft. Nowhere to hide." },
+  { kind: "trivia", text: "Trivia · Double-end = timing. Heavy bag = power." },
+  { kind: "trivia", text: "Trivia · Weight classes. Heart decides." },
+  { kind: "trivia", text: "Trivia · Knockdown: mandatory 8-count. Get up smart." },
+  { kind: "trivia", text: "Trivia · Neutral corner after a knockdown." },
+  { kind: "trivia", text: "Trivia · Liver shot ends fights upstairs can't." },
+];
+
+const FLOOR_SULLYS: FeedLine[] = [
+  { kind: "trivia", text: "Sully's · Canada's oldest boxing club · EST 1943." },
+  { kind: "trivia", text: "Earl “Sully” Sullivan · born Mimico, 1914." },
+  { kind: "trivia", text: "Sully bought the Athletic Club in 1964 · Ossington." },
+  { kind: "trivia", text: "Sully's rule: no drugs, no swearing — show respect." },
+  { kind: "trivia", text: "March 1966 · Ali trained at Sully's for Chuvalo." },
+  { kind: "trivia", text: "Ali's Ossington speed-bag frame is still in this gym." },
+  { kind: "trivia", text: "Sully trained youth free — character before the bell." },
+  { kind: "trivia", text: "109 Ossington · Ali camp · Heritage Toronto plaque." },
+  { kind: "trivia", text: "Joe Manteiga kept Sully's doors open after Sully." },
+  { kind: "trivia", text: "Sully's · 1554 Dundas St W · same mission, new chapter." },
+];
+
+const FLOOR_CHUVALO: FeedLine[] = [
+  { kind: "trivia", text: "Chuvalo · never knocked down in 93 pro fights." },
+  { kind: "trivia", text: "March 29, 1966 · Chuvalo goes 15 with Ali at the Gardens." },
+  { kind: "trivia", text: "Chuvalo · Toronto's chin that would not go down." },
+  { kind: "trivia", text: "Chuvalo fought Ali, Frazier, and Foreman — still standing." },
+  { kind: "trivia", text: "Chuvalo · Canadian heavyweight champion · Toronto legend." },
+  { kind: "trivia", text: "Ali prepared for Chuvalo on Ossington. The city still talks." },
+];
+
+const FLOOR_CANADA: FeedLine[] = [
+  { kind: "trivia", text: "Canada · George Dixon, 1890 — first Canadian-born world champ." },
+  { kind: "trivia", text: "Canada · Tommy Burns, 1906 — first Canadian heavyweight world champ." },
+  { kind: "trivia", text: "Canada · Bert Schneider — Olympic gold, Antwerp 1920." },
+  { kind: "trivia", text: "Canada · Jimmy McLarnin — two-time welterweight world champ." },
+  { kind: "trivia", text: "Lennox Lewis · Seoul gold 1988 · undisputed heavyweight champ." },
+  { kind: "trivia", text: "Lewis · Canadian Olympic gold, then the world heavyweight crown." },
+  { kind: "trivia", text: "Razor Ruddock · Toronto heavyweight fire · two wars with Tyson." },
+  { kind: "trivia", text: "Clyde Gray · Canadian welterweight great · names on these walls." },
+  { kind: "trivia", text: "Arturo Gatti · Canadian warrior · Fight of the Year lore." },
+  { kind: "trivia", text: "Canada · Jean Pascal and Adonis Stevenson — world champs." },
+  { kind: "trivia", text: "Trevor Berbick · WBC heavyweight · last man to fight Ali." },
+];
+
+const FLOOR_WOMEN: FeedLine[] = [
+  { kind: "trivia", text: "Jelena Mrdjenovich · Edmonton · long-time world featherweight champ." },
+  { kind: "trivia", text: "Mrdjenovich · Canada's queen of the featherweights — belt after belt." },
+  { kind: "trivia", text: "Kim Clavel · La Petite Furie · Montreal super-flyweight world champ." },
+  { kind: "trivia", text: "Marie-Eve Dicaire · IBF super welter champ · Montreal technician." },
+  { kind: "trivia", text: "Mary Spencer · three-time amateur world champ · Windsor to the Olympics." },
+  { kind: "trivia", text: "Mandy Bujold · flyweight · Commonwealth gold and Olympic ring." },
+  { kind: "trivia", text: "Tammara Thibeault · amateur world middleweight champ · Team Canada." },
+  { kind: "trivia", text: "Caroline Veyre · Canadian amateur standout · Olympic boxing." },
+  { kind: "trivia", text: "Women's boxing is championship boxing. Canada keeps proving it." },
+];
+
+const FLOOR_CURRENT: FeedLine[] = [
+  { kind: "trivia", text: "Artur Beterbiev · fights out of Montreal · undisputed light heavyweight." },
+  { kind: "trivia", text: "Christian Mbilli · Montreal super middleweight · ranked and coming." },
+  { kind: "trivia", text: "Erik Bazinyan · Montreal · undefeated super middleweight hunter." },
+  { kind: "trivia", text: "Custio Clayton · Dartmouth · Olympic welter, title-fight nights." },
+  { kind: "trivia", text: "Wyatt Sanford · Nova Scotia · Olympic and Commonwealth boxing." },
+  { kind: "trivia", text: "Steve Claggett · Calgary · super lightweight who keeps crashing the party." },
+  { kind: "trivia", text: "Arslanbek Makhmudov · Montreal heavyweight · the Lion out of Quebec." },
+  { kind: "trivia", text: "Lucian Bute · former super middleweight world champ · Quebec ring lore." },
+  { kind: "trivia", text: "Eleider Alvarez · Montreal · the night he dropped Kovalev." },
+];
+
+const FLOOR_SYSTEM: FeedLine[] = [
+  { kind: "system", text: "XP for showing up. Levels for staying." },
+  { kind: "system", text: "Passport stamps every class you finish." },
+  { kind: "system", text: "Streaks pay bonus XP. Miss a day, start over." },
+  { kind: "system", text: "Book your spot. Last spots go fast." },
+  { kind: "system", text: "Check in. Train. Earn. Repeat." },
+  { kind: "system", text: "Floor leaderboard — claim it today." },
+  { kind: "system", text: "10-second clap — finish the round." },
+  { kind: "system", text: "Character before the bell." },
+  { kind: "system", text: "We don't lower standards. We raise people." },
+  { kind: "system", text: "Family on the floor. Kids in the craft." },
+];
+
+const CHECKIN_TEMPLATES = [
+  (name: string) => `${name} · on the floor`,
+  (name: string) => `Laced up · ${name}`,
+  (name: string) => `${name} checked in`,
+  (name: string) => `${name} · ready for the bell`,
+  (name: string) => `In the house · ${name}`,
+] as const;
+
+function shuffleFeed<T>(items: T[], seed: number): T[] {
+  const next = items.slice();
+  let state = seed || 1;
+  for (let i = next.length - 1; i > 0; i -= 1) {
+    state = (state * 16807) % 2147483647;
+    const j = state % (i + 1);
+    const swap = next[i];
+    next[i] = next[j];
+    next[j] = swap;
+  }
+  return next;
+}
+
+function weaveFloorFeed(input: {
+  checkIns: { name: string }[];
+  liveTitle: string | null;
+  roundLabel: string | null;
+  leaderName: string | null;
+  leaderXp: number | null;
+  checkInsToday: number | null;
+  spotsOpen: number | null;
+  minute: number;
+}): FeedLine[] {
+  const knowledge = shuffleFeed(
+    [
+      ...FLOOR_QUOTES,
+      ...FLOOR_SULLYS,
+      ...FLOOR_CHUVALO,
+      ...FLOOR_CANADA,
+      ...FLOOR_WOMEN,
+      ...FLOOR_CURRENT,
+      ...FLOOR_TRIVIA,
+      ...FLOOR_SYSTEM,
+    ].filter(
+      (line, index, all) =>
+        all.findIndex((other) => other.text === line.text) === index,
+    ),
+    input.minute,
+  );
+
+  const extras: FeedLine[] = [];
+  if (input.roundLabel) {
+    extras.push({ kind: "system", text: input.roundLabel });
+  }
+  if (input.liveTitle) {
+    extras.push({ kind: "system", text: `Live now · ${input.liveTitle}` });
+  }
+  if (input.leaderName) {
+    extras.push({
+      kind: "system",
+      text: `${input.leaderName} leads the floor${input.leaderXp != null ? ` · ${input.leaderXp} XP` : ""}`,
+    });
+  }
+  if (input.checkInsToday != null && input.checkInsToday > 0) {
+    extras.push({
+      kind: "system",
+      text: `${input.checkInsToday} check-ins on the board today`,
+    });
+  }
+  if (input.spotsOpen != null && input.spotsOpen > 0) {
+    extras.push({ kind: "system", text: `${input.spotsOpen} spots still open` });
+  }
+  input.checkIns.forEach((person, i) => {
+    extras.push({
+      kind: "checkin",
+      text: CHECKIN_TEMPLATES[i % CHECKIN_TEMPLATES.length](person.name),
+    });
+  });
+
+  const out: FeedLine[] = [];
+  const insertEvery = extras.length
+    ? Math.max(2, Math.floor(knowledge.length / extras.length))
+    : Number.POSITIVE_INFINITY;
+  let extraIndex = 0;
+  knowledge.forEach((line, i) => {
+    out.push(line);
+    if (extraIndex < extras.length && (i + 1) % insertEvery === 0) {
+      out.push(extras[extraIndex]);
+      extraIndex += 1;
+    }
+  });
+  while (extraIndex < extras.length) {
+    out.push(extras[extraIndex]);
+    extraIndex += 1;
+  }
+  return out;
+}
 
 type RoundPhase = "work" | "rest";
 
@@ -218,12 +429,15 @@ function writeCachedBoard(profile: string, data: Board) {
 }
 
 export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
+  const brand = getBrand();
+  const floor = floorLabel(brand.copy.appName);
   const [board, setBoard] = useState<Board | null>(null);
   const [now, setNow] = useState(() => new Date());
-  const [manifestoIndex, setManifestoIndex] = useState(0);
   const [offline, setOffline] = useState(false);
   const [riveEnabled, setRiveEnabled] = useState(true);
   const [demoCelebrate, setDemoCelebrate] = useState(false);
+  const [popupFreeze, setPopupFreeze] = useState<FloorPopupMode | null>(null);
+  const [noteFreeze, setNoteFreeze] = useState<string | null>(null);
   const [demoModeIndex, setDemoModeIndex] = useState(0);
   const [timerCfg, setTimerCfg] = useState({
     workSec: 180,
@@ -241,18 +455,20 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     setTimerCfg(readTimerConfig());
     setRiveEnabled(readRiveEnabled());
     setDemoCelebrate(readDemoCelebrate());
+    setPopupFreeze(readPopupFreeze());
+    setNoteFreeze(readNoteFreeze());
     setSoundReady(isBoxingTimerSoundUnlocked());
     const cached = readCachedBoard(profile);
     if (cached) setBoard(cached);
   }, [profile]);
 
   useEffect(() => {
-    if (!demoCelebrate || profile !== "floor") return;
+    if (!demoCelebrate || popupFreeze || profile !== "floor") return;
     const cycle = setInterval(() => {
       setDemoModeIndex((i) => (i + 1) % DEMO_MODES.length);
     }, 4000);
     return () => clearInterval(cycle);
-  }, [demoCelebrate, profile]);
+  }, [demoCelebrate, popupFreeze, profile]);
 
   const coachLive = Boolean(board?.coachTimer);
 
@@ -298,14 +514,6 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     const tick = setInterval(() => setNow(new Date()), 250);
     return () => clearInterval(tick);
   }, []);
-
-  useEffect(() => {
-    if (!board?.manifesto?.length) return;
-    const swap = setInterval(() => {
-      setManifestoIndex((i) => (i + 1) % board.manifesto.length);
-    }, 5000);
-    return () => clearInterval(swap);
-  }, [board?.manifesto]);
 
   const latestArrivalName = board?.ticker?.[0]?.name ?? null;
   const latestArrivalAt = board?.ticker?.[0]?.at ?? null;
@@ -437,19 +645,42 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     board?.coachTimer,
   ]);
 
-  const tickerItems = board?.ticker?.length
-    ? [...board.ticker, ...board.ticker]
-    : [];
+  const floorFeed = useMemo(() => {
+    const checkIns = board?.ticker?.length ? board.ticker : [];
+    const liveTitle = board?.live?.title ?? board?.coachTimer?.title ?? null;
+    const leader = board?.leaderboard?.[0] ?? null;
+    return weaveFloorFeed({
+      checkIns,
+      liveTitle,
+      roundLabel: `${round.phase === "work" ? "Work" : "Rest"} · round ${round.round}${round.totalRounds ? ` of ${round.totalRounds}` : ""}`,
+      leaderName: leader?.displayName ?? null,
+      leaderXp: leader?.xp ?? null,
+      checkInsToday: board?.kpis.checkInsToday ?? null,
+      spotsOpen: board?.kpis.spotsOpen ?? null,
+      minute: Math.floor(now.getTime() / (10 * 60 * 1000)),
+    });
+  }, [
+    board,
+    round.phase,
+    round.round,
+    round.totalRounds,
+    Math.floor(now.getTime() / (10 * 60 * 1000)),
+  ]);
 
   const demoMode = DEMO_MODES[demoModeIndex] ?? "achievement";
   const tvMode =
-    demoCelebrate && profile === "floor"
-      ? demoMode
-      : (board?.coachTimer?.tvMode ?? "timer");
+    popupFreeze && profile === "floor"
+      ? popupFreeze
+      : demoCelebrate && profile === "floor"
+        ? demoMode
+        : (board?.coachTimer?.tvMode ?? "timer");
   const modeActive =
-    profile === "floor" && (Boolean(board?.coachTimer) || demoCelebrate);
+    profile === "floor" &&
+    (Boolean(board?.coachTimer) || demoCelebrate || Boolean(popupFreeze));
   const showAnnouncement =
-    modeActive && tvMode === "announcement" && (board?.coachTimer || demoCelebrate);
+    modeActive &&
+    tvMode === "announcement" &&
+    (board?.coachTimer || demoCelebrate || Boolean(popupFreeze));
   const showLeaderboardHero =
     modeActive && tvMode === "leaderboard";
   const showTeamsHero = modeActive && tvMode === "teams";
@@ -466,7 +697,12 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     !showXpBonusHero &&
     (profile === "floor" || board?.live?.phase === "live");
   const riveActive =
-    profile === "floor" && (Boolean(board?.coachTimer) || demoCelebrate);
+    profile === "floor" &&
+    (Boolean(board?.coachTimer) || demoCelebrate || Boolean(popupFreeze));
+  const showArtPopup =
+    riveActive &&
+    hasArtPopup(tvMode) &&
+    (tvMode !== "timer" || Boolean(popupFreeze) || demoCelebrate);
   const sceneKey = `${tvMode}:${round.phase}:${round.round}:${
     board?.coachTimer?.currentExercise?.title ?? ""
   }:${board?.coachTimer?.tvMessage ?? ""}`;
@@ -510,7 +746,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     <div
       className={`${styles.shell} ${
         round.phase === "work" ? styles.phaseWork : styles.phaseRest
-      }`}
+      } ${showArtPopup ? styles.shellArt : ""}`}
       data-profile={profile}
       onClick={() => {
         if (profile === "floor" && !soundReady) void enableSound();
@@ -542,23 +778,24 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       ) : null}
       {offline ? (
         <div className={styles.offlineBanner} role="status">
-          Offline — showing last good board. Round timer keeps running.
+          Offline · last good board · timer running
         </div>
       ) : null}
       <header className={styles.top}>
         <div className={styles.brand}>
           <Image
-            src="/brand/sullys-logo-primary.png"
-            alt="Sully's"
-            width={84}
-            height={108}
+            src={brand.assets.logoPrimary}
+            alt={brand.assets.logoAlt}
+            width={132}
+            height={170}
             className={styles.logo}
             priority
           />
           <div className={styles.brandText}>
-            <p className={styles.brandName}>SULLY&apos;S</p>
+            <p className={styles.brandName}>{brand.copy.appName}</p>
             <p className={styles.brandSub}>
-              Boxing Gym · EST {board?.gym.established ?? 1943}
+              {brand.copy.brandSub} · EST{" "}
+              {board?.gym.established ?? brand.copy.established}
             </p>
             <p className={styles.profile}>
               {profile === "floor" ? "Training floor" : "Reception"}
@@ -587,8 +824,11 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
         </div>
       </header>
 
-      <div className={styles.main}>
-        <section className={styles.hero} aria-live="polite">
+      <div className={`${styles.main} ${showArtPopup ? styles.mainArt : ""}`}>
+        <section
+          className={`${styles.hero} ${showArtPopup ? styles.heroArt : ""}`}
+          aria-live="polite"
+        >
           <TvRiveLayer
             active={riveActive}
             enabled={riveEnabled}
@@ -597,20 +837,63 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             message={board?.coachTimer?.tvMessage}
             xpBonus={riveXp}
             bonusLabel={riveBonusLabel}
+            artCover={showArtPopup}
+            roundClock={formatCountdown(round.secondsLeft)}
+            roundLabel={`${round.phase === "rest" ? "REST" : "WORK"}  •  ROUND ${round.round}${round.totalRounds ? ` / ${round.totalRounds}` : ""}`}
+            rankLabel={board?.leaderboard?.[0] ? String(board.leaderboard[0].rank).padStart(2, "0") : null}
+            scoreLabel={
+              board?.leaderboard?.[0]
+                ? `${board.leaderboard[0].xp} XP  •  LEVEL ${board.leaderboard[0].level}`
+                : null
+            }
+            teamA={
+              board?.coachTimer?.teams?.[0]
+                ? {
+                    name: board.coachTimer.teams[0].name,
+                    points: board.coachTimer.teams[0].points,
+                  }
+                : demoCelebrate
+                  ? { name: "Red Corner", points: 120 }
+                  : null
+            }
+            teamB={
+              board?.coachTimer?.teams?.[1]
+                ? {
+                    name: board.coachTimer.teams[1].name,
+                    points: board.coachTimer.teams[1].points,
+                  }
+                : demoCelebrate
+                  ? { name: "Blue Corner", points: 110 }
+                  : null
+            }
             highlightName={
               tvMode === "leaderboard" || tvMode === "xp_bonus"
                 ? topName ?? (demoCelebrate ? "Gavin S" : null)
                 : tvMode === "achievement"
                   ? (demoCelebrate ? "Gavin S" : topName)
-                  : null
+                  : topName
             }
           />
-          {showRoundHero ? (
+          {profile === "floor" && riveEnabled && !showArtPopup ? (
+            <TvBoxerRig motion={round.phase === "rest" ? "rest" : "work"} />
+          ) : null}
+          {profile === "floor" && noteFreeze && !showArtPopup ? (
+            <TvArtNote
+              mode={noteFreeze}
+              title={
+                noteFreeze === "nameplate" || noteFreeze === "birthday"
+                  ? topName
+                  : null
+              }
+            />
+          ) : null}
+          {showRoundHero && !showArtPopup ? (
             <div className={styles.phaseCurtain} key={`curtain-${sceneKey}`}>
               <span>{round.phase === "work" ? "WORK" : "REST"}</span>
               <strong>ROUND {String(round.round).padStart(2, "0")}</strong>
             </div>
           ) : null}
+          {showArtPopup ? null : (
           <div
             key={sceneKey}
             className={`${styles.heroContent} ${
@@ -724,7 +1007,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
               <p className={styles.meta}>
                 {board?.coachTimer?.coach
                   ? `Coach ${board.coachTimer.coach}`
-                  : "Sully's floor"}
+                  : floor}
                 {" · coach controlled"}
               </p>
               <ul className={styles.boardList} style={{ marginTop: "1.25rem" }}>
@@ -767,7 +1050,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                   ? `Coach ${board.coachTimer.coach}`
                   : focus?.coach
                     ? `Coach ${focus.coach}`
-                    : "Sully's floor"}
+                    : floor}
                 {board?.coachTimer?.nextExercise
                   ? ` · Next: ${board.coachTimer.nextExercise.title}`
                   : ""}
@@ -902,6 +1185,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             )
           ) : null}
           </div>
+          )}
         </section>
 
         <aside className={styles.side}>
@@ -942,7 +1226,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
           </div>
 
           {profile === "floor" ? (
-            <div className={styles.panel}>
+            <div className={`${styles.panel} ${styles.sideFill}`}>
               <p className={styles.panelTitle}>Floor leaderboard</p>
               <ul className={styles.boardList}>
                 {(board?.leaderboard ?? []).slice(0, 5).map((row) => (
@@ -968,7 +1252,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
               </ul>
             </div>
           ) : (
-            <div className={styles.panel}>
+            <div className={`${styles.panel} ${styles.sideFill}`}>
               <p className={styles.panelTitle}>Today&apos;s schedule</p>
               <ul className={styles.boardList}>
                 {(board?.schedule ?? []).slice(0, 6).map((s) => (
@@ -989,38 +1273,45 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             </div>
           )}
 
-          <div className={styles.panel}>
-            <p className={styles.panelTitle}>Just checked in</p>
-            <div className={styles.ticker}>
-              <div className={styles.tickerTrack}>
-                {tickerItems.length
-                  ? tickerItems.map((t, i) => (
-                      <span key={`${t.name}-${i}`}>
-                        WELCOME {t.name.toUpperCase()}
-                      </span>
-                    ))
-                  : [
-                      <span key="empty">
-                        LACE UP · SHOW RESPECT · BUILD CHARACTER
-                      </span>,
-                    ]}
-              </div>
-            </div>
-          </div>
         </aside>
       </div>
 
       <footer className={styles.bottom}>
-        <p className={styles.manifesto} key={manifestoIndex}>
-          {board?.manifesto?.[manifestoIndex] ??
-            "Boxing is the engine. People are the purpose. Character is the legacy."}
-        </p>
+        <div className={styles.ticker} aria-label="Floor feed">
+          <div className={styles.tickerTrack}>
+            {[0, 1].map((copy) => (
+              <div
+                className={styles.tickerCopy}
+                key={copy}
+                aria-hidden={copy === 1}
+              >
+                {floorFeed.map((line, i) => (
+                  <span
+                    key={`${copy}-${line.kind}-${i}`}
+                    className={
+                      line.kind === "quote"
+                        ? styles.tickerQuote
+                        : line.kind === "trivia"
+                          ? styles.tickerTrivia
+                          : line.kind === "checkin"
+                            ? styles.tickerCheckin
+                            : styles.tickerSystem
+                    }
+                    data-kind={line.kind}
+                  >
+                    {line.text}
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
         <p className={styles.hint}>
           Press F for fullscreen
           {profile === "floor"
             ? soundReady
-              ? " · Sound on · 10s wooden clap warning"
-              : " · Tap screen for timer sound"
+              ? " · Sound on"
+              : ""
             : " · Auto-refreshes"}
         </p>
       </footer>
