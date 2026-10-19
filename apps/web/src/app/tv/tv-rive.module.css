@@ -142,7 +142,7 @@
 
 .glove {
   position: absolute;
-  width: clamp(96px, 15vw, 150px);
+  width: clamp(72px, 11vw, 118px);
   height: auto;
   object-fit: contain;
   filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.55));
@@ -184,14 +184,14 @@
 }
 
 .gloveLeft {
-  left: 6%;
-  bottom: clamp(1.5rem, 14%, 3.75rem);
+  left: 2.5%;
+  bottom: clamp(1.25rem, 10%, 3rem);
   transform-origin: 70% 60%;
 }
 
 .gloveRight {
-  right: 6%;
-  bottom: clamp(1.75rem, 15%, 4rem);
+  right: 2.5%;
+  bottom: clamp(1.35rem, 11%, 3.15rem);
   transform-origin: 30% 60%;
   transform: scaleX(-1);
 }
@@ -562,6 +562,41 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.cssHold .flash,
+.cssHold .ring,
+.cssHold .ringDelay,
+.cssHold .burst,
+.cssHold .confetti,
+.cssHold .spark,
+.cssHold .impact::before,
+.cssHold .impact::after {
+  animation: none;
+}
+
+.cssHold .gloveLeft {
+  animation: none;
+  opacity: 0.95;
+  transform: translate(12px, -8px);
+}
+
+.cssHold .gloveRight {
+  animation: none;
+  opacity: 0.95;
+  transform: scaleX(-1) translate(12px, -8px);
+}
+
+.cssHold .dockIcon {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+.cssHold .xpPop,
+.cssHold .xpName,
+.cssHold .badge {
+  animation: none;
 }
 
 @keyframes dockPop {

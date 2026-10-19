@@ -16,6 +16,24 @@ QuickBooks integration (after banking):
 - **PDF:** [docs/08-process/Sullys-QuickBooks-Integration.pdf](./docs/08-process/Sullys-QuickBooks-Integration.pdf)
 - **Markdown:** [docs/08-process/08-quickbooks-integration.md](./docs/08-process/08-quickbooks-integration.md)
 
+Next steps to-do (post-demo roadmap):
+
+- **PDF:** [docs/08-process/Sullys-Next-Steps-Todo.pdf](./docs/08-process/Sullys-Next-Steps-Todo.pdf)
+- **Markdown:** [docs/08-process/09-next-steps-todo.md](./docs/08-process/09-next-steps-todo.md)
+
+Owner manual + deal brief (Quiet Agency client pack):
+
+- **PDF:** [docs/08-process/Sullys-Owner-Manual-Deal-Brief.pdf](./docs/08-process/Sullys-Owner-Manual-Deal-Brief.pdf)
+- **Markdown:** [docs/08-process/10-owner-manual-deal-brief.md](./docs/08-process/10-owner-manual-deal-brief.md)
+
+Cost summary (client — hosting under $100; QA donated):
+
+- **PDF:** [docs/08-process/Sullys-Platform-Cost-Summary.pdf](./docs/08-process/Sullys-Platform-Cost-Summary.pdf)
+
+Internal Quiet Agency full cost sheet (do not share):
+
+- **PDF:** [docs/08-process/Sullys-Costs-Quiet-Agency-Internal.pdf](./docs/08-process/Sullys-Costs-Quiet-Agency-Internal.pdf)
+
 ### Fast logins (`password123`)
 
 | Role | Email |

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sully’s — Platform Cost Summary (Client)</title>
+  <style>
+    @page { size: Letter; margin: 0.55in 0.6in 0.65in; }
+    :root {
+      --brand-cream: #f3e6c8; --brand-red: #c82026; --brand-brown: #3a2418;
+      --ink: #1a120e; --muted: #5c4638; --line: rgba(58, 36, 24, 0.18);
+      --paper: #f7f1e6; --card: #fffaf2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink); background: var(--paper); font-size: 10.2pt; line-height: 1.45;
+    }
+    .page-bg {
+      min-height: 100%;
+      background:
+        radial-gradient(ellipse at 0% 0%, rgba(200, 32, 38, 0.10), transparent 42%),
+        linear-gradient(180deg, #fbf6ec 0%, var(--paper) 45%, #f3ebe0 100%);
+    }
+    .wrap { max-width: 8.2in; margin: 0 auto; padding: 0.1in 0.05in 0.2in; }
+    header.hero {
+      display: grid; grid-template-columns: 84px 1fr; gap: 0.75rem; align-items: center;
+      padding: 0.75rem 0.9rem; margin-bottom: 0.85rem;
+      border: 1px solid rgba(196, 160, 106, 0.45);
+      background: linear-gradient(135deg, rgba(58, 36, 24, 0.96), rgba(20, 15, 12, 0.94));
+      color: var(--brand-cream);
+    }
+    header.hero img { width: 76px; height: auto; display: block; }
+    .eyebrow {
+      margin: 0 0 0.15rem; color: var(--brand-red); font-size: 0.68rem;
+      font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase;
+    }
+    h1 { margin: 0; font-size: 1.4rem; line-height: 1.1; font-weight: 800; color: var(--brand-cream); }
+    .subtitle { margin: 0.35rem 0 0; color: rgba(243, 230, 200, 0.78); font-size: 0.86rem; }
+    .meta-bar {
+      display: flex; flex-wrap: wrap; gap: 0.45rem 0.9rem; margin: 0.55rem 0 0.9rem;
+      padding: 0.5rem 0.7rem; border-left: 4px solid var(--brand-red);
+      background: rgba(196, 160, 106, 0.12); color: var(--muted); font-size: 0.84rem;
+    }
+    h2 {
+      margin: 1.15rem 0 0.4rem; padding-bottom: 0.2rem; border-bottom: 2px solid var(--brand-red);
+      color: var(--brand-brown); font-size: 1.08rem;
+    }
+    p { margin: 0.3rem 0 0.5rem; }
+    ul { margin: 0.25rem 0 0.7rem; padding-left: 1.15rem; }
+    li { margin: 0.2rem 0; }
+    table {
+      width: 100%; border-collapse: collapse; margin: 0.35rem 0 0.75rem;
+      background: var(--card); font-size: 9.2pt; page-break-inside: avoid;
+    }
+    th, td { border: 1px solid var(--line); padding: 0.38rem 0.45rem; text-align: left; vertical-align: top; }
+    th { background: var(--brand-brown); color: var(--brand-cream); }
+    tr:nth-child(even) td { background: rgba(196, 160, 106, 0.08); }
+    .callout {
+      margin: 0.55rem 0 0.85rem; padding: 0.65rem 0.8rem;
+      border: 1px solid rgba(200, 32, 38, 0.35); background: rgba(200, 32, 38, 0.07);
+    }
+    .callout strong { color: var(--brand-red); }
+    .gold {
+      margin: 0.55rem 0 0.85rem; padding: 0.65rem 0.8rem;
+      border: 1px solid rgba(196, 160, 106, 0.55); background: rgba(255, 250, 242, 0.95);
+    }
+    .big {
+      font-size: 1.35rem; font-weight: 800; color: var(--brand-brown); margin: 0.2rem 0;
+    }
+    footer {
+      margin-top: 1.1rem; padding-top: 0.5rem; border-top: 1px solid var(--line);
+      color: var(--muted); font-size: 0.78rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-bg"><div class="wrap">
+    <header class="hero">
+      <img src="../06-design/assets/sullys-logo-primary.png" alt="Sully's Boxing Gym" />
+      <div>
+        <p class="eyebrow">For Sully’s ownership</p>
+        <h1>Platform Cost Summary</h1>
+        <p class="subtitle">What Sully’s pays · what Quiet Agency donates · Helcim &amp; QuickBooks separate</p>
+      </div>
+    </header>
+
+    <div class="meta-bar">
+      <span><strong>Prepared by:</strong> Quiet Agency</span>
+      <span><strong>For:</strong> Sully’s Boxing Gym (non-profit)</span>
+      <span><strong>Date:</strong> August 2026</span>
+      <span><strong>Currency:</strong> Canadian dollars (approx.)</span>
+    </div>
+
+    <div class="gold">
+      <strong>Partnership:</strong> Quiet Agency is <em>donating</em> the design, build, and ongoing
+      product/engineering maintenance of this platform. Sully’s is a non-profit community gym and the
+      <strong>flagship test site</strong> for Quiet Agency’s Boxing Digital Performance Platform.
+      You are <strong>not</strong> charged a Quiet Agency maintenance or software license fee.
+    </div>
+
+    <h2>1. What Sully’s pays each month</h2>
+    <p class="big">Hosting only — under CAD $100 / month</p>
+    <p>
+      This covers the live website, member app, staff tools, API, and database
+      (Cloudflare, Vercel, Railway, Neon, domain). Quiet Agency operates the stack;
+      Sully’s reimburses <strong>actual hosting at cost</strong>, capped under <strong>$100 CAD / mo</strong>.
+    </p>
+    <table>
+      <thead>
+        <tr><th>What</th><th>Typical range</th><th>You pay?</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Website + member app + staff + Floor TV (Vercel)</td>
+          <td>Included in hosting</td>
+          <td>Yes (at cost)</td>
+        </tr>
+        <tr>
+          <td>API / backend (Railway)</td>
+          <td>Included in hosting</td>
+          <td>Yes (at cost)</td>
+        </tr>
+        <tr>
+          <td>Database (Neon)</td>
+          <td>Included in hosting</td>
+          <td>Yes (at cost)</td>
+        </tr>
+        <tr>
+          <td>Domain + DNS (Cloudflare)</td>
+          <td>Included in hosting</td>
+          <td>Yes (at cost)</td>
+        </tr>
+        <tr>
+          <td><strong>Total hosting target</strong></td>
+          <td><strong>~$15–80 CAD / mo</strong></td>
+          <td><strong>Yes — under $100</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>2. What Quiet Agency donates (no fee to Sully’s)</h2>
+    <ul>
+      <li>Custom platform build (website, member portal, desk, coach timer / TV, owner desk, waivers, family, kitchen path, docs)</li>
+      <li><strong>Maintenance / Care retain — waived</strong> (bugs, deploys, small improvements, guidance)</li>
+      <li>Engineering for Helcim + QuickBooks connections when you are ready (you still pay those vendors)</li>
+      <li>Ongoing platform R&amp;D using Sully’s as the live proving ground</li>
+    </ul>
+
+    <h2>3. Separate vendor bills (not Quiet Agency)</h2>
+    <table>
+      <thead>
+        <tr><th>Vendor</th><th>Who you pay</th><th>What it is</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Helcim</strong> (card payments)</td>
+          <td>Helcim</td>
+          <td>Usually little/no monthly fee — you pay <strong>per card transaction</strong> (% + ¢). Cash desk sales have no Helcim fee.</td>
+        </tr>
+        <tr>
+          <td><strong>QuickBooks Online</strong></td>
+          <td>Intuit</td>
+          <td>Your bookkeeping subscription — <strong>monthly, separate</strong>. Quiet Agency does not bill for QBO.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>Simple picture:</strong>
+      Sully’s ≈ <em>hosting under $100/mo</em> + <em>Helcim when cards are used</em> + <em>QuickBooks if you use it</em>.
+      Quiet Agency software + maintenance = <strong>$0</strong> under this partnership.
+    </div>
+
+    <h2>4. Why this structure</h2>
+    <ul>
+      <li>Sully’s is a non-profit — Quiet Agency is contributing the platform as a donation of services</li>
+      <li>Your gym becomes the first live home for a boxing-first system (beyond generic gym SaaS)</li>
+      <li>You keep ownership of members, brand, and day-to-day ops; processors stay services</li>
+    </ul>
+
+    <h2>5. Links</h2>
+    <table>
+      <thead><tr><th>Item</th><th>URL</th></tr></thead>
+      <tbody>
+        <tr><td>Public site</td><td>https://www.sullys1943.com</td></tr>
+        <tr><td>Staff / Owner</td><td>https://sullys1943-staff.vercel.app</td></tr>
+        <tr><td>Quiet Agency</td><td>https://quietagency.co</td></tr>
+      </tbody>
+    </table>
+
+    <footer>
+      Prepared by Quiet Agency for Sully’s Boxing Gym · Client cost summary · August 2026
+    </footer>
+  </div></div>
+</body>
+</html>

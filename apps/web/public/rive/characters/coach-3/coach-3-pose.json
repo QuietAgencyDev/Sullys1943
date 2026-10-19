@@ -1,0 +1,24 @@
+{
+  "name": "Sullys Coach 3",
+  "saved": "2026-10-18",
+  "pack": "Sullys_Female_Coach_Proportioned_Boots_Attached.zip",
+  "note": "Matched assembled still: tank seated on waistband, boots on shins, rest guard. inset:0 was blocking offsets.",
+  "canvas": { "w": 599, "h": 801 },
+  "boots_merged": true,
+  "layers": {
+    "shin_R": { "top": 0, "z": 1 },
+    "thigh_R": { "top": 0, "z": 2 },
+    "shin_L": { "top": 0, "z": 3 },
+    "thigh_L": { "top": 0, "z": 4 },
+    "pelvis": { "top": 0, "z": 5 },
+    "neck": { "top": 2.9, "z": 6 },
+    "torso": { "top": 2.9, "z": 7 },
+    "upperarm_R": { "top": 2.4, "z": 8 },
+    "upperarm_L": { "top": 2.4, "z": 9 },
+    "forearm_R": { "top": 2.4, "z": 10 },
+    "forearm_L": { "top": 2.4, "z": 11 },
+    "head": { "top": 2.5, "z": 12 },
+    "glove_R": { "top": 2.4, "z": 13 },
+    "glove_L": { "top": 2.4, "z": 14 }
+  }
+}

@@ -18,6 +18,10 @@ See [`manifest.json`](./manifest.json) for modes, triggers, and notes.
 | `photo.riv` | photo plate moments | placeholder |
 | `confetti.riv` | overlay celebrate | placeholder |
 | `bell.riv` | round bell | placeholder |
+| `boxer.riv` | motion reference only | original community Boxer (CC BY), not Sully's art |
+| `characters/coach-2/` | floor fighter | Coach (live Floor TV CSS stack) |
+| `characters/coach-1/` | parked | Coach 1 stills — add back later |
+| `characters/coach-3/` | parked | Coach 3 aligned Rive pack — separate from live Coach |
 
 Each filename also has a `.placeholder` marker in this folder until the real `.riv` is dropped in (delete the marker when you add the file).
 

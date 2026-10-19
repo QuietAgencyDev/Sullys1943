@@ -1,0 +1,123 @@
+.page {
+  min-height: 100svh;
+  padding: 1.25rem 1.5rem 3rem;
+  background: #120e0b;
+  color: #f3e6c8;
+  font-family: var(--font-body), "Segoe UI", sans-serif;
+}
+
+.top h1 {
+  margin: 0.2rem 0 0.5rem;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+}
+
+.kicker {
+  margin: 0;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #c4a06a;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.lead {
+  max-width: 46rem;
+  color: #e4d4b4;
+  line-height: 1.45;
+}
+
+.lead code {
+  color: #c4a06a;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.1rem;
+}
+
+.links a {
+  color: #f3e6c8;
+  font-weight: 700;
+}
+
+.page h2 {
+  margin: 1.75rem 0 0.75rem;
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c4a06a;
+}
+
+.iconGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.75rem;
+}
+
+.iconCard {
+  margin: 0;
+  padding: 0.7rem;
+  background: #1c1612;
+  border: 1px solid rgba(243, 230, 200, 0.16);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.iconCard img {
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.45));
+}
+
+.iconCard figcaption {
+  display: grid;
+  gap: 0.2rem;
+  margin-top: 0.45rem;
+}
+
+.iconCard code {
+  font-size: 0.72rem;
+  color: #c4a06a;
+}
+
+.iconCard span {
+  font-size: 0.75rem;
+  color: #d8c7a8;
+}
+
+.modeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 1rem;
+}
+
+.modeCard {
+  background: #1c1612;
+  border: 1px solid rgba(243, 230, 200, 0.16);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.stage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #050505;
+  overflow: hidden;
+}
+
+.modeMeta {
+  padding: 0.7rem 0.85rem 0.9rem;
+}
+
+.modeMeta h3 {
+  margin: 0 0 0.25rem;
+  font-size: 0.95rem;
+}
+
+.modeMeta a {
+  color: #c4a06a;
+  font-size: 0.8rem;
+  font-weight: 700;
+}

@@ -12,9 +12,15 @@ import { getBrand } from "@/lib/brand";
 import styles from "./tv.module.css";
 import {
   TvRiveLayer,
+  TvArtNote,
+  hasArtPopup,
   readDemoCelebrate,
+  readNoteFreeze,
+  readPopupFreeze,
   readRiveEnabled,
+  type FloorPopupMode,
 } from "./tv-rive-layer";
+import { TvBoxerRig } from "./tv-boxer-rig";
 
 const DEMO_MODES = [
   "achievement",
@@ -230,6 +236,8 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   const [offline, setOffline] = useState(false);
   const [riveEnabled, setRiveEnabled] = useState(true);
   const [demoCelebrate, setDemoCelebrate] = useState(false);
+  const [popupFreeze, setPopupFreeze] = useState<FloorPopupMode | null>(null);
+  const [noteFreeze, setNoteFreeze] = useState<string | null>(null);
   const [demoModeIndex, setDemoModeIndex] = useState(0);
   const [timerCfg, setTimerCfg] = useState({
     workSec: 180,
@@ -245,18 +253,20 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     setTimerCfg(readTimerConfig());
     setRiveEnabled(readRiveEnabled());
     setDemoCelebrate(readDemoCelebrate());
+    setPopupFreeze(readPopupFreeze());
+    setNoteFreeze(readNoteFreeze());
     setSoundReady(isBoxingTimerSoundUnlocked());
     const cached = readCachedBoard(profile);
     if (cached) setBoard(cached);
   }, [profile]);
 
   useEffect(() => {
-    if (!demoCelebrate || profile !== "floor") return;
+    if (!demoCelebrate || popupFreeze || profile !== "floor") return;
     const cycle = setInterval(() => {
       setDemoModeIndex((i) => (i + 1) % DEMO_MODES.length);
     }, 4000);
     return () => clearInterval(cycle);
-  }, [demoCelebrate, profile]);
+  }, [demoCelebrate, popupFreeze, profile]);
 
   const coachLive = Boolean(board?.coachTimer);
 
@@ -430,13 +440,18 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
 
   const demoMode = DEMO_MODES[demoModeIndex] ?? "achievement";
   const tvMode =
-    demoCelebrate && profile === "floor"
-      ? demoMode
-      : (board?.coachTimer?.tvMode ?? "timer");
+    popupFreeze && profile === "floor"
+      ? popupFreeze
+      : demoCelebrate && profile === "floor"
+        ? demoMode
+        : (board?.coachTimer?.tvMode ?? "timer");
   const modeActive =
-    profile === "floor" && (Boolean(board?.coachTimer) || demoCelebrate);
+    profile === "floor" &&
+    (Boolean(board?.coachTimer) || demoCelebrate || Boolean(popupFreeze));
   const showAnnouncement =
-    modeActive && tvMode === "announcement" && (board?.coachTimer || demoCelebrate);
+    modeActive &&
+    tvMode === "announcement" &&
+    (board?.coachTimer || demoCelebrate || Boolean(popupFreeze));
   const showLeaderboardHero =
     modeActive && tvMode === "leaderboard";
   const showTeamsHero = modeActive && tvMode === "teams";
@@ -453,7 +468,12 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     !showXpBonusHero &&
     (profile === "floor" || board?.live?.phase === "live");
   const riveActive =
-    profile === "floor" && (Boolean(board?.coachTimer) || demoCelebrate);
+    profile === "floor" &&
+    (Boolean(board?.coachTimer) || demoCelebrate || Boolean(popupFreeze));
+  const showArtPopup =
+    riveActive &&
+    hasArtPopup(tvMode) &&
+    (tvMode !== "timer" || Boolean(popupFreeze) || demoCelebrate);
   const topName = board?.leaderboard?.[0]?.displayName ?? null;
   const riveXp =
     tvMode === "class_complete"
@@ -478,7 +498,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     <div
       className={`${styles.shell} ${
         round.phase === "work" ? styles.phaseWork : styles.phaseRest
-      }`}
+      } ${showArtPopup ? styles.shellArt : ""}`}
       data-profile={profile}
       onClick={() => {
         if (profile === "floor" && !soundReady) void enableSound();
@@ -534,8 +554,11 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
         </div>
       </header>
 
-      <div className={styles.main}>
-        <section className={styles.hero} aria-live="polite">
+      <div className={`${styles.main} ${showArtPopup ? styles.mainArt : ""}`}>
+        <section
+          className={`${styles.hero} ${showArtPopup ? styles.heroArt : ""}`}
+          aria-live="polite"
+        >
           <TvRiveLayer
             active={riveActive}
             enabled={riveEnabled}
@@ -544,14 +567,57 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             message={board?.coachTimer?.tvMessage}
             xpBonus={riveXp}
             bonusLabel={riveBonusLabel}
+            artCover={showArtPopup}
+            roundClock={formatCountdown(round.secondsLeft)}
+            roundLabel={`${round.phase === "rest" ? "REST" : "WORK"}  •  ROUND ${round.round}${round.totalRounds ? ` / ${round.totalRounds}` : ""}`}
+            rankLabel={board?.leaderboard?.[0] ? String(board.leaderboard[0].rank).padStart(2, "0") : null}
+            scoreLabel={
+              board?.leaderboard?.[0]
+                ? `${board.leaderboard[0].xp} XP  •  LEVEL ${board.leaderboard[0].level}`
+                : null
+            }
+            teamA={
+              board?.coachTimer?.teams?.[0]
+                ? {
+                    name: board.coachTimer.teams[0].name,
+                    points: board.coachTimer.teams[0].points,
+                  }
+                : demoCelebrate
+                  ? { name: "Red Corner", points: 120 }
+                  : null
+            }
+            teamB={
+              board?.coachTimer?.teams?.[1]
+                ? {
+                    name: board.coachTimer.teams[1].name,
+                    points: board.coachTimer.teams[1].points,
+                  }
+                : demoCelebrate
+                  ? { name: "Blue Corner", points: 110 }
+                  : null
+            }
             highlightName={
               tvMode === "leaderboard" || tvMode === "xp_bonus"
                 ? topName ?? (demoCelebrate ? "Gavin S" : null)
                 : tvMode === "achievement"
                   ? (demoCelebrate ? "Gavin S" : topName)
-                  : null
+                  : topName
             }
           />
+          {profile === "floor" && riveEnabled && !showArtPopup ? (
+            <TvBoxerRig motion={round.phase === "rest" ? "rest" : "work"} />
+          ) : null}
+          {profile === "floor" && noteFreeze && !showArtPopup ? (
+            <TvArtNote
+              mode={noteFreeze}
+              title={
+                noteFreeze === "nameplate" || noteFreeze === "birthday"
+                  ? topName
+                  : null
+              }
+            />
+          ) : null}
+          {showArtPopup ? null : (
           <div className={styles.heroContent}>
           {showXpBonusHero ? (
             <>
@@ -783,6 +849,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             </>
           )}
           </div>
+          )}
         </section>
 
         <aside className={styles.side}>

@@ -1,0 +1,75 @@
+{
+  "name": "floor-teams",
+  "canvas": [
+    1600,
+    900
+  ],
+  "layer_order": [
+    "01_panel",
+    "02_effects",
+    "03_hero",
+    "04_accent",
+    "05_logo"
+  ],
+  "layer_position": [
+    0,
+    0
+  ],
+  "text_fields": [
+    {
+      "id": "headline_1",
+      "text": "YOUR CORNER.",
+      "x": 110,
+      "baseline_y": 350,
+      "font_size": 94,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "headline_2",
+      "text": "YOUR CREW.",
+      "x": 110,
+      "baseline_y": 462,
+      "font_size": 94,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "team_a",
+      "text": "RED CORNER",
+      "x": 118,
+      "baseline_y": 541,
+      "font_size": 33,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "team_b",
+      "text": "BLUE CORNER",
+      "x": 510,
+      "baseline_y": 541,
+      "font_size": 33,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "score_a",
+      "text": "120",
+      "x": 118,
+      "baseline_y": 652,
+      "font_size": 100,
+      "fill": "#F52238"
+    },
+    {
+      "id": "score_b",
+      "text": "110",
+      "x": 510,
+      "baseline_y": 652,
+      "font_size": 100,
+      "fill": "#65A9FF"
+    }
+  ],
+  "static_text": {
+    "brand": "SULLY\u2019S BOXING GYM",
+    "event_kind": "TEAM BATTLE",
+    "footer": "TRAIN TOGETHER. GROW TOGETHER."
+  },
+  "live_text_max_width": 810,
+  "text_note": "Coordinates are left x and baseline y; recreate as native text for live values."
+}

@@ -1,8 +1,26 @@
 @import "@sullys/tokens/css";
 
+:root {
+  --sullys-frame-width: clamp(16px, 2.1vw, 40px);
+}
+
 body {
   margin: 0;
+  min-height: 100svh;
+  padding: var(--sullys-frame-width);
+  box-sizing: border-box;
   font-family: var(--font-body);
   background: var(--bg-canvas);
   color: var(--text-primary);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  z-index: 80;
+  inset: 0;
+  box-sizing: border-box;
+  border: var(--sullys-frame-width) solid transparent;
+  border-image: url("/tv/wood-frame.jpg") 44 52 44 52 stretch;
+  pointer-events: none;
 }

@@ -6,7 +6,10 @@ import { AppShell } from "./app-shell";
 const brand = getBrand();
 
 export const metadata: Metadata = {
-  title: `${brand.copy.appName} · ${brand.copy.appSubtitle}`,
+  title:
+    brand.id === "red-owl"
+      ? "REDOWL2021"
+      : `${brand.copy.appName} · ${brand.copy.appSubtitle}`,
   description:
     brand.id === "red-owl"
       ? "RED OWL 2021 member app — book classes, digital card, passport. Platform by Quiet Agency."

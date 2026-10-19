@@ -44,6 +44,21 @@ export default function TvDemoKitPage() {
             </p>
             <span className={styles.cta}>Open fullscreen →</span>
           </Link>
+          <Link href="/tv/popups" className={styles.card} target="_blank">
+            <Image
+              src={brand.assets.logoPrimary}
+              alt=""
+              width={64}
+              height={80}
+              className={styles.cardLogo}
+            />
+            <h2>Popup &amp; icon board</h2>
+            <p>
+              Every Floor TV icon and celebration popup in one place — swap
+              files in /tv/icons then refresh.
+            </p>
+            <span className={styles.cta}>Review all popups →</span>
+          </Link>
           <Link
             href="/tv/floor?demo=celebrate"
             className={styles.card}
@@ -109,7 +124,13 @@ export default function TvDemoKitPage() {
               <code>/tv/reception</code>
             </li>
             <li>
+              <code>/tv/popups</code>
+            </li>
+            <li>
               <code>/tv/floor?demo=celebrate</code>
+            </li>
+            <li>
+              <code>/tv/floor?popup=achievement</code>
             </li>
           </ul>
         </section>

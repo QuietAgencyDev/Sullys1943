@@ -84,7 +84,7 @@ export const redOwlMeta = {
   title: "RED OWL 2021 | Train like a fighter",
   description:
     "RED OWL 2021 — Red Owl Boxing Scarborough & Smartbox. Member app, classes, digital card. Platform by Quiet Agency.",
-  applicationName: "RED OWL 2021",
+  applicationName: "REDOWL2021",
   themeColor: "#E10600",
 } as const;
 

@@ -1,0 +1,67 @@
+{
+  "name": "floor-challenge",
+  "canvas": [
+    1600,
+    900
+  ],
+  "layer_order": [
+    "01_panel",
+    "02_effects",
+    "03_hero",
+    "04_accent",
+    "05_logo"
+  ],
+  "layer_position": [
+    0,
+    0
+  ],
+  "text_fields": [
+    {
+      "id": "headline_1",
+      "text": "EYES ON",
+      "x": 110,
+      "baseline_y": 350,
+      "font_size": 108,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "headline_2",
+      "text": "THE PRIZE.",
+      "x": 110,
+      "baseline_y": 462,
+      "font_size": 108,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "challenge_name",
+      "text": "TODAY\u2019S CHALLENGE",
+      "x": 118,
+      "baseline_y": 533,
+      "font_size": 28,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "challenge_detail",
+      "text": "KEEP YOUR GUARD UP",
+      "x": 118,
+      "baseline_y": 595,
+      "font_size": 42,
+      "fill": "#FFF1D6"
+    },
+    {
+      "id": "progress",
+      "text": "3 / 5 ROUNDS",
+      "x": 118,
+      "baseline_y": 679,
+      "font_size": 45,
+      "fill": "#FFF1D6"
+    }
+  ],
+  "static_text": {
+    "brand": "SULLY\u2019S BOXING GYM",
+    "event_kind": "CHALLENGE",
+    "footer": "FOCUS. FOOTWORK. FOLLOW THROUGH."
+  },
+  "live_text_max_width": 810,
+  "text_note": "Coordinates are left x and baseline y; recreate as native text for live values."
+}

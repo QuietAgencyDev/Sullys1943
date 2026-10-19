@@ -1,0 +1,30 @@
+{
+  "status": "passed",
+  "parts": 16,
+  "rgba_images": 32,
+  "canvas": [
+    599,
+    801
+  ],
+  "matching_manifest_fields": [
+    "name",
+    "file",
+    "aligned_file",
+    "parent",
+    "draw_order",
+    "pixel_size",
+    "matrix",
+    "pivot_artboard",
+    "pivot_local"
+  ],
+  "matches": [
+    "Tony v2",
+    "White Male Coach Swap v1"
+  ],
+  "joint_coordinates_identical": true,
+  "unchanged_assets": [
+    "glove_R",
+    "glove_L"
+  ],
+  "rive_import_or_motion_tested": false
+}

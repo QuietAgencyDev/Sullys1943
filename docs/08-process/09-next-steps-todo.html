@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sully’s — Next Steps Roadmap</title>
+  <style>
+    @page {
+      size: Letter;
+      margin: 0.55in 0.6in 0.65in;
+    }
+
+    :root {
+      --brand-cream: #f3e6c8;
+      --brand-red: #c82026;
+      --brand-brown: #3a2418;
+      --brand-glove: #c4a06a;
+      --ink: #1a120e;
+      --muted: #5c4638;
+      --line: rgba(58, 36, 24, 0.18);
+      --paper: #f7f1e6;
+      --card: #fffaf2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      font-size: 10.5pt;
+      line-height: 1.45;
+    }
+
+    .page-bg {
+      min-height: 100%;
+      background:
+        radial-gradient(ellipse at 0% 0%, rgba(200, 32, 38, 0.10), transparent 42%),
+        radial-gradient(ellipse at 100% 0%, rgba(196, 160, 106, 0.14), transparent 38%),
+        linear-gradient(180deg, #fbf6ec 0%, var(--paper) 40%, #f3ebe0 100%);
+    }
+
+    .wrap {
+      max-width: 8.2in;
+      margin: 0 auto;
+      padding: 0.15in 0.1in 0.25in;
+    }
+
+    header.hero {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 0.85rem;
+      align-items: center;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(196, 160, 106, 0.45);
+      background:
+        linear-gradient(135deg, rgba(58, 36, 24, 0.96), rgba(20, 15, 12, 0.94));
+      color: var(--brand-cream);
+      box-shadow: 0 10px 28px rgba(20, 15, 12, 0.18);
+    }
+
+    header.hero img {
+      width: 84px;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
+    }
+
+    .eyebrow {
+      margin: 0 0 0.2rem;
+      color: var(--brand-red);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.55rem;
+      line-height: 1.05;
+      letter-spacing: 0.02em;
+      color: var(--brand-cream);
+      font-weight: 800;
+    }
+
+    .subtitle {
+      margin: 0.4rem 0 0;
+      color: rgba(243, 230, 200, 0.78);
+      font-size: 0.92rem;
+    }
+
+    .meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem 1rem;
+      margin: 0.75rem 0 1.1rem;
+      padding: 0.55rem 0.75rem;
+      border-left: 4px solid var(--brand-red);
+      background: rgba(196, 160, 106, 0.12);
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    h2 {
+      margin: 1.35rem 0 0.55rem;
+      padding-bottom: 0.28rem;
+      border-bottom: 2px solid var(--brand-red);
+      color: var(--brand-brown);
+      font-size: 1.12rem;
+      letter-spacing: 0.03em;
+      page-break-after: avoid;
+    }
+
+    h3 {
+      margin: 0.95rem 0 0.4rem;
+      color: var(--brand-red);
+      font-size: 0.98rem;
+      page-break-after: avoid;
+    }
+
+    p { margin: 0.35rem 0 0.55rem; }
+
+    a {
+      color: #8f1a1f;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    ul, ol {
+      margin: 0.25rem 0 0.7rem;
+      padding-left: 1.2rem;
+    }
+
+    li { margin: 0.22rem 0; }
+
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.88em;
+      background: rgba(58, 36, 24, 0.08);
+      border: 1px solid var(--line);
+      padding: 0.05rem 0.28rem;
+      color: var(--brand-brown);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.4rem 0 0.9rem;
+      background: var(--card);
+      page-break-inside: avoid;
+      font-size: 9.4pt;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 0.38rem 0.45rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--brand-brown);
+      color: var(--brand-cream);
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(196, 160, 106, 0.08);
+    }
+
+    .callout {
+      margin: 0.7rem 0 1rem;
+      padding: 0.7rem 0.85rem;
+      border: 1px solid rgba(200, 32, 38, 0.35);
+      background: rgba(200, 32, 38, 0.07);
+      page-break-inside: avoid;
+    }
+
+    .callout strong { color: var(--brand-red); }
+
+    .check {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .check li {
+      margin: 0.35rem 0;
+      padding: 0.35rem 0.5rem 0.35rem 0;
+      border-bottom: 1px solid var(--line);
+      page-break-inside: avoid;
+    }
+
+    .check li::before {
+      content: "☐ ";
+      color: var(--brand-red);
+      font-weight: 700;
+    }
+
+    .phase {
+      margin: 0.55rem 0 0.9rem;
+      padding: 0.7rem 0.85rem 0.45rem;
+      border: 1px solid rgba(196, 160, 106, 0.4);
+      background: rgba(255, 250, 242, 0.85);
+      page-break-inside: avoid;
+    }
+
+    .who {
+      display: inline-block;
+      margin-left: 0.35rem;
+      padding: 0.05rem 0.4rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--brand-cream);
+      background: var(--brand-brown);
+    }
+
+    footer {
+      margin-top: 1.4rem;
+      padding-top: 0.6rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-bg">
+    <div class="wrap">
+      <header class="hero">
+        <img src="../06-design/assets/sullys-logo-primary.png" alt="Sully's Boxing Gym" />
+        <div>
+          <p class="eyebrow">Product · Ops roadmap</p>
+          <h1>Next Steps To-Do List</h1>
+          <p class="subtitle">Post-demo priorities — Helcim first, then soft launch, then QuickBooks</p>
+        </div>
+      </header>
+
+      <div class="meta-bar">
+        <span><strong>Gym:</strong> Sully’s Boxing Gym (1943)</span>
+        <span><strong>As of:</strong> August 2026</span>
+        <span><strong>Status:</strong> Demo / core ops shipped</span>
+        <span><strong>Owner:</strong> Quiet Agency + Sully’s</span>
+      </div>
+
+      <div class="callout">
+        <strong>Bottom line:</strong> The next real milestone is
+        <em>Helcim live</em> — not more UI. Owner analytics, desk CASH/CARD,
+        and the Banking / QuickBooks PDFs are the bridge until real payments ship.
+      </div>
+
+      <h2>Already done (context)</h2>
+      <ul>
+        <li>Member / coach / desk / owner / TV demo flows</li>
+        <li>Desk <strong>CASH</strong> / <strong>CARD</strong> tender on drop-ins</li>
+        <li>Owner desk: memberships, revenue, waivers, walk-ins, demographics, group messages</li>
+        <li>Ops PDFs: Banking (Helcim), QuickBooks Integration, Client Demo Guide</li>
+      </ul>
+
+      <h2>1. Owner / business — this week</h2>
+      <div class="phase">
+        <ul class="check">
+          <li>Open Helcim Canadian sandbox + request TEC quote (memberships / drop-in / kitchen mix) <span class="who">Owner</span></li>
+          <li>Complete KYC path notes (legal name, GST/HST, bank for deposits) <span class="who">Owner</span></li>
+          <li>Confirm kids/youth vs adult product names and prices in Sully’s <span class="who">Owner</span></li>
+          <li>Pick target soft-launch date and desk lead (cash drawer owner) <span class="who">Owner</span></li>
+          <li>Follow Banking PDF checklist before sending API secrets to Quiet Agency <span class="who">Owner</span></li>
+        </ul>
+      </div>
+
+      <h2>2. Real payments — highest engineering priority</h2>
+      <div class="phase">
+        <ul class="check">
+          <li>Implement <code>PaymentProvider</code> abstraction (mock + Helcim; wrap legacy Stripe) <span class="who">Eng</span></li>
+          <li>Helcim adapter: customer, pay, subscribe, refund, webhooks, idempotent <code>PaymentEvent</code> <span class="who">Eng</span></li>
+          <li>Feature flag <code>PAYMENT_PROVIDER=helcim</code> on Railway; secrets never in git <span class="who">Eng</span></li>
+          <li>Online join / membership checkout on Helcim (sandbox acceptance matrix) <span class="who">Eng</span></li>
+          <li>Wire desk <strong>CARD</strong> to Helcim terminal; keep <strong>CASH</strong> on Sully ledger only <span class="who">Eng</span></li>
+          <li>Owner desk still shows cash vs card correctly after live charges <span class="who">QA</span></li>
+        </ul>
+      </div>
+
+      <h2>3. Soft launch hardening</h2>
+      <div class="phase">
+        <ul class="check">
+          <li>Replace demo-only shortcuts where they confuse real staff <span class="who">Eng</span></li>
+          <li>Real member invites (not only <code>@sullys.local</code> demo accounts) <span class="who">Owner + Eng</span></li>
+          <li>Coach headshots + any remaining TV / carousel polish <span class="who">Design</span></li>
+          <li>Full dry-run: join → waiver → book → check-in → drop-in CASH/CARD → owner totals match drawer <span class="who">All</span></li>
+          <li>Confirm staff CORS / logins on production staff URL <span class="who">QA</span></li>
+        </ul>
+      </div>
+
+      <h2>4. Accounting — after Helcim is trusted</h2>
+      <div class="phase">
+        <ul class="check">
+          <li>Phase A: CSV export from Owner desk for bookkeeper (date, tender, amount, product, externalId) <span class="who">Eng</span></li>
+          <li>Map income accounts with accountant (adult / youth / drop-in / fees) <span class="who">Owner</span></li>
+          <li>Phase B: QuickBooks Online OAuth + nightly idempotent sync <span class="who">Eng</span></li>
+          <li>Avoid double-post if Helcim’s own QBO sync is also on <span class="who">Owner + Eng</span></li>
+          <li>Follow QuickBooks Integration PDF acceptance checklist <span class="who">QA</span></li>
+        </ul>
+      </div>
+
+      <h2>5. Product depth — after live billing</h2>
+      <div class="phase">
+        <ul class="check">
+          <li>Kitchen / merch paid checkout on same payment abstraction <span class="who">Eng</span></li>
+          <li>Push / SMS for group messages (today = in-app threads only) <span class="who">Eng</span></li>
+          <li>WebSocket (or better realtime) for TV timer sync — polling works today <span class="who">Eng</span></li>
+          <li>Kids program depth, progression / passport, Command Center (long roadmap) <span class="who">Product</span></li>
+        </ul>
+      </div>
+
+      <h2>Suggested order (do not reshuffle lightly)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Milestone</th>
+            <th>Exit when…</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Owner Helcim + pricing decisions</td>
+            <td>Sandbox open; quote in hand; products confirmed</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Helcim membership + desk CARD</td>
+            <td>Sandbox matrix green; flag ready for production</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Soft launch dry-run</td>
+            <td>One full day ops with matching cash + owner totals</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>QuickBooks Phase A → B</td>
+            <td>Bookkeeper imports clean; no duplicate sales</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>Depth features</td>
+            <td>Billing stable for 2+ weeks</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Companion docs</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Doc</th>
+            <th>File</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Banking &amp; Helcim setup</td>
+            <td><code>Sullys-Banking-Payment-Setup.pdf</code></td>
+          </tr>
+          <tr>
+            <td>QuickBooks integration</td>
+            <td><code>Sullys-QuickBooks-Integration.pdf</code></td>
+          </tr>
+          <tr>
+            <td>Client demo test guide</td>
+            <td><code>Sullys-Client-Demo-Test-Guide.pdf</code></td>
+          </tr>
+          <tr>
+            <td>Payment architecture</td>
+            <td><code>docs/03-architecture/08-proprietary-payment-platform.md</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <strong>Immediate ask for Quiet Agency:</strong> Start Helcim
+        <code>PaymentProvider</code> scaffold when owner confirms sandbox credentials are ready.
+      </div>
+
+      <footer>
+        Sully’s Boxing Gym · Next Steps To-Do List · Quiet Agency · August 2026
+      </footer>
+    </div>
+  </div>
+</body>
+</html>

@@ -165,6 +165,26 @@ export default function MemberHomePage() {
         </div>
       </section>
 
+      {brand.id === "red-owl" ? (
+        <section className={styles.card}>
+          <p className={styles.eyebrow}>Visit</p>
+          <h2 className={styles.sectionTitle}>Red Owl Scarborough</h2>
+          <p className={styles.muted}>
+            {brand.gym.addressLine1}
+            <br />
+            {brand.gym.addressLine2}
+          </p>
+          <p className={styles.muted}>{brand.gym.addressHint}</p>
+          <div className={styles.actionsRow}>
+            <a href={brand.gym.mapUrl} target="_blank" rel="noreferrer">
+              <Button type="button" variant="secondary">
+                Open in Google Maps
+              </Button>
+            </a>
+          </div>
+        </section>
+      ) : null}
+
       <section className={styles.card}>
         <p className={styles.eyebrow}>Status</p>
         <ul className={styles.list}>
