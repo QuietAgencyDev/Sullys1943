@@ -1,9 +1,9 @@
 .stage {
   position: absolute;
-  right: 1%;
+  right: 0;
   bottom: 0;
-  width: min(42%, 480px);
-  height: 94%;
+  width: min(58%, 720px);
+  height: 100%;
   pointer-events: none;
   z-index: 2;
 }
@@ -39,7 +39,7 @@
 
 .figureWrap {
   position: absolute;
-  inset: 1% 4% 3%;
+  inset: 0% 2% 5%;
   display: grid;
   place-items: end center;
 }
@@ -47,6 +47,8 @@
 .figure {
   position: relative;
   height: 100%;
+  width: auto;
+  max-width: none;
   aspect-ratio: 599 / 801;
   transform-origin: 50% 94%;
   filter: drop-shadow(0 28px 40px rgba(0, 0, 0, 0.55))

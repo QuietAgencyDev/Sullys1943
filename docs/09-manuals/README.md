@@ -1,6 +1,9 @@
 # Instruction manuals (PDF)
 
-**Version 1.1 (AAA pack)** — member home, waitlist, password reset, coaches, TV offline.
+**Version 2.0 (September 2026 production)** — print-first layout with larger,
+bold, high-contrast text. Covers member reminders, calendar export, family
+progress, Gym News, staff messaging, owner analytics, and daily screen/desk
+opening and closing checklists.
 
 | Audience | File |
 |----------|------|

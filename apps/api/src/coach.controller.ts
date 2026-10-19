@@ -1523,6 +1523,7 @@ export class CoachController {
         recommendedDrill: a.recommendedDrill,
         notes: a.notes,
         at: a.createdAt.toISOString(),
+        nextAt: a.nextAt?.toISOString() ?? null,
       })),
       achievements: badges.map((b) => ({
         code: b.badge.code,

@@ -426,6 +426,7 @@ export function TvRiveLayer({
   teamB,
 }: TvRiveProps) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const src = useMemo(() => srcForMode(tvMode), [tvMode]);
   const pulseKey = `${tvMode}-${phase}-${message ?? ""}-${xpBonus ?? 0}-${bonusLabel ?? ""}`;
   const useArt =
@@ -435,7 +436,15 @@ export function TvRiveLayer({
     setFailedSrc(null);
   }, [src]);
 
-  if (!active || !enabled) return null;
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  if (!active) return null;
 
   if (useArt && hasArtPopup(tvMode)) {
     return (
@@ -468,7 +477,7 @@ export function TvRiveLayer({
         bonusLabel={bonusLabel}
         highlightName={highlightName}
       />
-      {failedSrc !== src ? (
+      {enabled && !reducedMotion && failedSrc !== src ? (
         <div className={styles.riveHost}>
           <RiveCanvas
             key={src}

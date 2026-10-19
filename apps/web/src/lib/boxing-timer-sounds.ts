@@ -6,6 +6,8 @@
 let unlocked = false;
 let warnAudio: HTMLAudioElement | null = null;
 let bellAudio: HTMLAudioElement | null = null;
+let impactAudio: HTMLAudioElement | null = null;
+let victoryAudio: HTMLAudioElement | null = null;
 
 function writeString(view: DataView, offset: number, str: string) {
   for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
@@ -102,6 +104,43 @@ function bellWav(): string {
   return encodeWav(out, sr);
 }
 
+function impactWav(): string {
+  const sr = 44100;
+  const n = Math.floor(sr * 0.42);
+  const out = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const t = i / sr;
+    const punch = Math.sin(2 * Math.PI * (92 - t * 45) * t) * Math.exp(-t * 15);
+    const body = Math.sin(2 * Math.PI * 54 * t) * Math.exp(-t * 9);
+    const snap = (Math.random() * 2 - 1) * Math.exp(-t * 48);
+    out[i] = punch * 0.58 + body * 0.34 + snap * 0.12;
+  }
+  return encodeWav(out, sr);
+}
+
+function victoryWav(): string {
+  const sr = 44100;
+  const n = Math.floor(sr * 1.05);
+  const out = new Float32Array(n);
+  const notes = [523.25, 659.25, 783.99];
+  for (let i = 0; i < n; i++) {
+    const t = i / sr;
+    let sample = 0;
+    notes.forEach((frequency, index) => {
+      const start = index * 0.1;
+      const local = t - start;
+      if (local < 0) return;
+      const env = Math.exp(-local * 3.8) * Math.min(1, local * 55);
+      sample +=
+        (Math.sin(2 * Math.PI * frequency * local) * 0.22 +
+          Math.sin(2 * Math.PI * frequency * 2 * local) * 0.07) *
+        env;
+    });
+    out[i] = sample;
+  }
+  return encodeWav(out, sr);
+}
+
 function ensurePlayers() {
   if (typeof window === "undefined") return;
   if (!warnAudio) {
@@ -113,6 +152,16 @@ function ensurePlayers() {
     bellAudio = new Audio(bellWav());
     bellAudio.preload = "auto";
     bellAudio.volume = 0.9;
+  }
+  if (!impactAudio) {
+    impactAudio = new Audio(impactWav());
+    impactAudio.preload = "auto";
+    impactAudio.volume = 0.72;
+  }
+  if (!victoryAudio) {
+    victoryAudio = new Audio(victoryWav());
+    victoryAudio.preload = "auto";
+    victoryAudio.volume = 0.62;
   }
 }
 
@@ -160,6 +209,19 @@ export function playRoundBell() {
   if (!unlocked) return;
   ensurePlayers();
   void playEl(bellAudio);
+}
+
+/** Restrained coach-triggered stings for TV moments. */
+export function playCelebrationCue(
+  kind: "achievement" | "class_complete" | "xp_bonus" | "challenge",
+) {
+  if (!unlocked) return;
+  ensurePlayers();
+  if (kind === "class_complete" || kind === "achievement") {
+    void playEl(victoryAudio);
+    return;
+  }
+  void playEl(impactAudio);
 }
 
 /** Explicit test from UI (also unlocks) */

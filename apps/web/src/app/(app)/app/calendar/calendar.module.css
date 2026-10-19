@@ -1,0 +1,232 @@
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.dateBlock {
+  display: grid;
+  min-width: 76px;
+  padding: var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(145deg, rgba(200, 32, 38, 0.16), transparent),
+    var(--bg-surface);
+  text-align: center;
+  box-shadow: var(--shadow-sm), var(--shadow-inset);
+}
+
+.dateBlock strong {
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 2.3rem;
+  font-weight: 400;
+  line-height: 0.9;
+}
+
+.dateBlock span {
+  margin-top: var(--space-1);
+  color: var(--text-muted);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.loading {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 150px;
+  gap: var(--space-3);
+}
+
+.nextCard {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(200, 32, 38, 0.22), transparent 48%),
+    linear-gradient(145deg, rgba(196, 160, 106, 0.08), transparent 55%),
+    var(--bg-elevated);
+}
+
+.nextCard h2 {
+  max-width: 18ch;
+  margin: 0;
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(2rem, 7vw, 3.1rem);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: 0.025em;
+}
+
+.nextCard p:not(:first-child) {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.nextCard a {
+  width: fit-content;
+  text-decoration: none;
+}
+
+.stats {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.stats > div {
+  display: grid;
+  place-content: center;
+  min-height: 104px;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  text-align: center;
+  box-shadow: var(--shadow-sm), var(--shadow-inset);
+}
+
+.stats strong {
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 2.3rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.stats span {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.timeline {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.sectionHeading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.sectionHeading > div {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.sectionHeading > a,
+.itemHeading a {
+  color: var(--brand-cream);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-underline-offset: 4px;
+}
+
+.timeline ol {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline li {
+  display: grid;
+  grid-template-columns: 66px 12px minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-3);
+}
+
+.timeline time {
+  padding-top: var(--space-4);
+  color: var(--brand-glove);
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 1.1rem;
+  line-height: 1;
+  text-align: right;
+}
+
+.timelineMarker {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  margin-top: 19px;
+  border: 2px solid var(--brand-red);
+  border-radius: 50%;
+  background: var(--bg-canvas);
+  box-shadow: 0 0 0 4px rgba(200, 32, 38, 0.12);
+}
+
+.timelineMarker::after {
+  position: absolute;
+  top: 12px;
+  left: 2px;
+  width: 2px;
+  height: calc(100% + 88px);
+  content: "";
+  background: linear-gradient(var(--border-strong), transparent);
+}
+
+.timeline li:last-child .timelineMarker::after {
+  display: none;
+}
+
+.timelineCard {
+  min-width: 0;
+}
+
+.itemHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.itemHeading > div {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.itemHeading h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+.details {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 560px) {
+  .summaryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stats > div {
+    min-height: 88px;
+  }
+
+  .timeline li {
+    grid-template-columns: 48px 10px minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+
+  .timeline time {
+    font-size: 0.92rem;
+  }
+}

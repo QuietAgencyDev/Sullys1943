@@ -1,0 +1,477 @@
+.builderShell {
+  max-width: 1360px;
+}
+
+.builderHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.builderHeader h1 {
+  max-width: 12ch;
+}
+
+.builderHeader p {
+  margin-bottom: 0;
+}
+
+.builderSummary {
+  display: grid;
+  min-width: 180px;
+  justify-items: end;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(196, 160, 106, 0.4);
+  background: rgba(196, 160, 106, 0.06);
+}
+
+.builderSummary > span,
+.builderSummary > small {
+  color: var(--text-muted);
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.builderSummary strong {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.saveMessage {
+  margin: 0.8rem 0 0;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid rgba(98, 201, 151, 0.38);
+  color: var(--success);
+  background: var(--success-surface);
+}
+
+.builderLayout {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.templateLibrary,
+.programEditor {
+  min-width: 0;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-sm), var(--shadow-inset);
+}
+
+.templateLibrary {
+  align-self: start;
+  padding: 1rem;
+}
+
+.libraryHeading,
+.flowHeading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.libraryHeading h2,
+.flowHeading h2 {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 400;
+}
+
+.libraryHeading > span {
+  display: grid;
+  width: 34px;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--brand-glove);
+  font-family: var(--font-display);
+}
+
+.newTemplate {
+  display: flex;
+  width: 100%;
+  min-height: 58px;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 0.75rem;
+  padding: 0.7rem;
+  border: 1px solid var(--brand-red);
+  background: rgba(200, 32, 38, 0.15);
+  color: var(--brand-cream);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.newTemplate span {
+  color: var(--brand-red-bright);
+  font-size: 1.4rem;
+}
+
+.templateLibrary ul {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.templateLibrary li button {
+  display: grid;
+  width: 100%;
+  gap: 0.2rem;
+  padding: 0.85rem;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.16);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.templateLibrary li button:hover,
+.templateLibrary li .templateActive {
+  border-color: var(--brand-red);
+  background:
+    linear-gradient(100deg, rgba(200, 32, 38, 0.14), transparent),
+    rgba(0, 0, 0, 0.16);
+}
+
+.templateLibrary li button > span,
+.templateLibrary li button > small {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
+.libraryEmpty {
+  padding: 1rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.programMeta {
+  display: grid;
+  gap: 0.7rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  background:
+    radial-gradient(circle at 0 0, rgba(200, 32, 38, 0.15), transparent 34%),
+    rgba(0, 0, 0, 0.18);
+}
+
+.programMeta label,
+.blockFields label {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.programMeta label > span,
+.blockFields label > span {
+  color: var(--text-muted);
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.programMeta input,
+.blockFields input,
+.blockFields select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 0.7rem;
+  border: 1px solid var(--border);
+  background: var(--bg-sunken);
+  color: var(--text-primary);
+  font: inherit;
+}
+
+.kidsToggle {
+  display: flex !important;
+  align-items: center;
+  gap: 0.65rem !important;
+  padding: 0.7rem;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.kidsToggle input {
+  width: 20px;
+  min-height: 20px;
+}
+
+.kidsToggle > span {
+  display: grid;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.kidsToggle strong {
+  color: var(--brand-cream);
+}
+
+.flowHeading {
+  margin: 0 clamp(1rem, 3vw, 1.5rem);
+  padding-top: 1rem;
+}
+
+.flowHeading > span {
+  color: var(--text-subtle);
+  font-size: 0.65rem;
+}
+
+.blockList {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1rem clamp(1rem, 3vw, 1.5rem);
+}
+
+.programBlock {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.programBlock[data-phase="warmup"],
+.programBlock[data-phase="cooldown"] {
+  border-left: 3px solid var(--brand-glove);
+}
+
+.programBlock[data-phase="round"],
+.programBlock[data-phase="work"] {
+  border-left: 3px solid var(--brand-red);
+}
+
+.programBlock[data-phase="rest"] {
+  border-left: 3px solid var(--success);
+}
+
+.blockNumber {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.blockNumber > span {
+  color: var(--brand-glove);
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+}
+
+.blockNumber > div {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.blockNumber button,
+.blockActions button,
+.addBlockRail button {
+  min-height: 36px;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--brand-cream);
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.blockNumber button:disabled {
+  opacity: 0.3;
+}
+
+.blockFields {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.8rem;
+}
+
+.notesField {
+  grid-column: 1 / -1;
+}
+
+.blockActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  padding: 0 0.8rem 0.8rem;
+}
+
+.blockActions button:last-child {
+  color: var(--text-subtle);
+}
+
+.addBlockRail {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.45rem;
+  padding: 0 clamp(1rem, 3vw, 1.5rem) 1rem;
+}
+
+.addBlockRail button {
+  min-height: 46px;
+  border-style: dashed;
+  color: var(--brand-glove);
+  text-transform: capitalize;
+}
+
+.floorPreview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 clamp(1rem, 3vw, 1.5rem) 1rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  border: 1px solid rgba(196, 160, 106, 0.45);
+  background:
+    linear-gradient(120deg, rgba(200, 32, 38, 0.23), transparent 60%),
+    #0a0807;
+}
+
+.floorPreview h3 {
+  margin: 0.2rem 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 400;
+}
+
+.floorPreview span {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.floorPreview > strong {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 6vw, 4rem);
+  font-weight: 400;
+}
+
+.saveRail {
+  position: sticky;
+  z-index: 5;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem clamp(1rem, 3vw, 1.5rem);
+  border-top: 1px solid var(--border);
+  background: rgba(12, 9, 8, 0.96);
+  backdrop-filter: blur(12px);
+}
+
+.saveRail > div {
+  display: grid;
+}
+
+.saveRail span {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
+.saveRail button {
+  min-height: 50px;
+  padding: 0.7rem 1.2rem;
+  border: 1px solid var(--brand-red);
+  background: var(--brand-red);
+  color: #fff;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.saveRail button:disabled {
+  opacity: 0.45;
+}
+
+@media (min-width: 900px) {
+  .builderLayout {
+    grid-template-columns: minmax(240px, 0.32fr) minmax(0, 1fr);
+  }
+
+  .templateLibrary {
+    position: sticky;
+    top: 1rem;
+  }
+
+  .programMeta {
+    grid-template-columns: 1fr 1.35fr;
+  }
+
+  .kidsToggle {
+    grid-column: 1 / -1;
+  }
+
+  .programBlock {
+    grid-template-columns: 78px minmax(0, 1fr) auto;
+  }
+
+  .blockNumber {
+    align-items: flex-start;
+    flex-direction: column;
+    border-right: 1px solid var(--border);
+    border-bottom: 0;
+  }
+
+  .blockFields {
+    grid-template-columns: 110px minmax(180px, 1fr) 100px;
+  }
+
+  .blockActions {
+    align-content: center;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0.8rem;
+    border-left: 1px solid var(--border);
+  }
+
+  .addBlockRail {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 680px) {
+  .builderHeader,
+  .saveRail {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .builderSummary {
+    justify-items: start;
+  }
+
+  .flowHeading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .saveRail button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .templateLibrary,
+  .saveRail {
+    scroll-behavior: auto;
+  }
+}

@@ -1,12 +1,31 @@
+.calendarButton {
+  min-height: 38px;
+  margin-top: 0.65rem;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid rgba(98, 201, 151, 0.5);
+  border-radius: var(--radius-md);
+  color: var(--brand-cream);
+  background: rgba(98, 201, 151, 0.12);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
 .weekStrip {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 6px;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding: 2px 2px var(--space-2);
+  scrollbar-width: thin;
 }
 
 .dayChip {
   display: grid;
   gap: 2px;
+  min-width: 58px;
+  min-height: 76px;
   padding: 10px 4px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
@@ -15,15 +34,29 @@
   cursor: pointer;
   font: inherit;
   text-align: center;
+  transition:
+    transform var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard),
+    background var(--motion-fast) var(--ease-standard);
 }
 
 .dayChip:hover {
   border-color: rgba(200, 32, 38, 0.45);
+  transform: translateY(-1px);
+}
+
+.dayChip:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  box-shadow: var(--focus-ring);
 }
 
 .dayChipActive {
   border-color: var(--brand-red);
-  background: rgba(200, 32, 38, 0.16);
+  background:
+    linear-gradient(180deg, rgba(200, 32, 38, 0.22), transparent),
+    var(--bg-surface);
+  box-shadow: inset 0 -3px 0 var(--brand-red);
 }
 
 .dayName {
@@ -44,15 +77,172 @@
   color: var(--text-muted);
 }
 
-.chips {
+.loadingList,
+.sessionList {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sessionItem {
+  min-width: 0;
+}
+
+.sessionCard {
+  gap: var(--space-4);
+}
+
+.sessionCardMine {
+  border-color: rgba(98, 201, 151, 0.34);
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(47, 158, 107, 0.13),
+      transparent 44%
+    ),
+    var(--bg-elevated);
+}
+
+.sessionTop {
+  display: grid;
+  grid-template-columns: 98px minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.timeBlock {
+  display: grid;
+  align-content: start;
+  gap: var(--space-1);
+  padding-right: var(--space-4);
+  border-right: 1px solid var(--border);
+}
+
+.timeBlock > span {
+  color: var(--brand-cream);
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 1.75rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.timeBlock > small {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+}
+
+.sessionCopy {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.titleRow {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 8px;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.titleRow h2 {
+  margin: 0;
+  font-size: clamp(1.1rem, 4vw, 1.4rem);
+  line-height: 1.15;
+}
+
+.sessionBottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+
+.capacity {
+  display: grid;
+  flex: 1;
+  gap: var(--space-2);
+  min-width: 100px;
+}
+
+.capacity small {
+  color: var(--text-muted);
+  font-size: 0.76rem;
+}
+
+.capacityBar {
+  display: block;
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background: rgba(243, 230, 200, 0.08);
+}
+
+.capacityBar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--brand-glove), var(--brand-red));
 }
 
 .actionsCol {
   display: grid;
   gap: 8px;
   align-content: start;
+}
+
+.confirmCancel {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.confirmCancel p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  text-align: right;
+}
+
+@media (max-width: 560px) {
+  .weekStrip {
+    grid-template-columns: repeat(7, 58px);
+  }
+
+  .sessionTop {
+    grid-template-columns: 1fr;
+  }
+
+  .timeBlock {
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    padding: 0 0 var(--space-3);
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sessionBottom {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .actionsCol > button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dayChip {
+    transition: none;
+  }
+
+  .dayChip:hover {
+    transform: none;
+  }
 }

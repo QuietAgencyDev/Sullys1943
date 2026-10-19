@@ -1,16 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@sullys/ui";
 import { ApiError, get, post } from "@/lib/api";
 import styles from "../../staff.module.css";
+import messageStyles from "./messages.module.css";
 
 type Thread = {
   id: string;
   subject: string;
   kind: string;
   sessionId?: string | null;
+  createdAt?: string;
+  participants?: { id: string; name: string }[];
   messages?: { body?: string; createdAt?: string; sender?: string }[];
 };
 
@@ -22,6 +25,8 @@ export default function CoachMessagesPage() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [detail, setDetail] = useState<{
     subject: string;
+    kind?: string;
+    sessionId?: string | null;
     messages: {
       id: string;
       body: string;
@@ -36,6 +41,10 @@ export default function CoachMessagesPage() {
   const [roster, setRoster] = useState<RosterRow[]>([]);
   const [athleteId, setAthleteId] = useState("");
   const [composeBody, setComposeBody] = useState("");
+  const [composeMode, setComposeMode] = useState<"direct" | "broadcast">(
+    "direct",
+  );
+  const [search, setSearch] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -55,6 +64,10 @@ export default function CoachMessagesPage() {
         if (res.today[0]) setSessionId(res.today[0].id);
       })
       .catch(() => undefined);
+    const refresh = window.setInterval(() => {
+      loadThreads().catch(() => undefined);
+    }, 15_000);
+    return () => window.clearInterval(refresh);
   }, [loadThreads]);
 
   useEffect(() => {
@@ -156,133 +169,293 @@ export default function CoachMessagesPage() {
     }
   }
 
+  const filteredThreads = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    if (!term) return threads;
+    return threads.filter((thread) =>
+      [
+        thread.subject,
+        thread.kind,
+        thread.messages?.[0]?.body,
+        ...(thread.participants?.map((participant) => participant.name) ?? []),
+      ]
+        .filter(Boolean)
+        .some((value) => value!.toLowerCase().includes(term)),
+    );
+  }, [search, threads]);
+
   return (
-    <main className={styles.main}>
-      <p className={styles.eyebrow}>COACH</p>
-      <h1 className={styles.title}>Messages</h1>
-      <p className={styles.copy}>
-        Direct athlete threads and class broadcasts from the floor.
-      </p>
-      <p>
-        <Link href="/coach">← Coach home</Link>
-        {" · "}
-        <Link href="/coach/roster">Roster</Link>
-      </p>
+    <main className={`${styles.main} ${messageStyles.messagesMain}`}>
+      <header className={messageStyles.messagesHeader}>
+        <div>
+          <p className={styles.eyebrow}>COACH COMMUNICATIONS</p>
+          <h1 className={styles.title}>Keep the corner connected</h1>
+          <p className={styles.copy}>
+            One place for athlete conversations and clear class-wide updates.
+          </p>
+        </div>
+        <nav aria-label="Coach navigation">
+          <Link href="/coach">Coach home</Link>
+          <Link href="/coach/roster">Roster</Link>
+        </nav>
+      </header>
 
-      {error ? <p className={styles.error}>{error}</p> : null}
-      {message ? <p className={styles.copy}>{message}</p> : null}
-
-      <section className={styles.panel}>
-        <p className={styles.eyebrow}>COMPOSE</p>
-        <label className={styles.field}>
-          <span>Class</span>
-          <select
-            className={styles.input}
-            value={sessionId}
-            onChange={(e) => setSessionId(e.target.value)}
-          >
-            {sessions.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.title}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className={styles.field}>
-          <span>Athlete (direct)</span>
-          <select
-            className={styles.input}
-            value={athleteId}
-            onChange={(e) => setAthleteId(e.target.value)}
-          >
-            {roster.map((r) => (
-              <option key={r.userId} value={r.userId}>
-                {r.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className={styles.field}>
-          <span>Message</span>
-          <textarea
-            className={styles.input}
-            rows={3}
-            value={composeBody}
-            onChange={(e) => setComposeBody(e.target.value)}
-          />
-        </label>
-        <div className={styles.row}>
-          <Button type="button" disabled={busy} onClick={() => void composeDirect()}>
-            Send direct
-          </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            disabled={busy}
-            onClick={() => void broadcast()}
-          >
-            Broadcast class
-          </Button>
+      <section className={messageStyles.messagePulse} aria-label="Message summary">
+        <div>
+          <strong>{threads.length}</strong>
+          <span>Conversations</span>
+        </div>
+        <div>
+          <strong>
+            {threads.filter((thread) => thread.kind === "direct").length}
+          </strong>
+          <span>Athlete threads</span>
+        </div>
+        <div>
+          <strong>
+            {threads.filter((thread) => thread.kind === "class_broadcast").length}
+          </strong>
+          <span>Class broadcasts</span>
+        </div>
+        <div>
+          <strong>{roster.length}</strong>
+          <span>Current class reach</span>
         </div>
       </section>
 
-      <ul className={styles.list}>
-        {threads.map((t) => (
-          <li key={t.id}>
-            <button
-              type="button"
-              className={styles.item}
-              style={{ width: "100%", textAlign: "left", cursor: "pointer" }}
-              onClick={() => void openThread(t.id)}
-            >
-              <strong>
-                {t.subject}{" "}
-                <span className={styles.meta}>
-                  · {t.kind === "class_broadcast" ? "broadcast" : "direct"}
-                </span>
-              </strong>
-              <div className={styles.meta}>
-                {t.messages?.[0]?.body ?? "Open thread"}
-              </div>
-            </button>
-          </li>
-        ))}
-        {threads.length === 0 ? (
-          <li className={styles.item}>
-            <span className={styles.meta}>No threads yet.</span>
-          </li>
-        ) : null}
-      </ul>
+      <div aria-live="polite">
+        {error ? <p className={styles.error}>{error}</p> : null}
+        {message ? <p className={messageStyles.messageSuccess}>{message}</p> : null}
+      </div>
 
-      {detail && activeId ? (
-        <section className={styles.panel} style={{ marginTop: "1rem" }}>
-          <h2>{detail.subject}</h2>
-          <ul className={styles.list}>
-            {detail.messages.map((m) => (
-              <li key={m.id} className={styles.item}>
-                <div className={styles.meta}>
-                  {m.mine ? "You" : m.sender} ·{" "}
-                  {new Date(m.createdAt).toLocaleString()}
-                </div>
-                <strong>{m.body}</strong>
+      <div className={messageStyles.communicationGrid}>
+        <aside className={messageStyles.inbox}>
+          <div className={messageStyles.inboxHeading}>
+            <div>
+              <p className={styles.eyebrow}>INBOX</p>
+              <h2>Conversations</h2>
+            </div>
+            <span>Live · 15s</span>
+          </div>
+          <label className={messageStyles.threadSearch}>
+            <span>Search messages</span>
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Athlete, class or message…"
+            />
+          </label>
+          <ul className={messageStyles.threadList}>
+            {filteredThreads.map((thread) => {
+              const latest = thread.messages?.[0];
+              const broadcast = thread.kind === "class_broadcast";
+              return (
+                <li key={thread.id}>
+                  <button
+                    type="button"
+                    className={activeId === thread.id ? messageStyles.threadActive : ""}
+                    onClick={() => void openThread(thread.id)}
+                  >
+                    <span
+                      className={`${messageStyles.threadIcon} ${
+                        broadcast ? messageStyles.broadcastIcon : ""
+                      }`}
+                      aria-hidden
+                    >
+                      {broadcast ? "B" : thread.subject.slice(0, 1)}
+                    </span>
+                    <span className={messageStyles.threadCopy}>
+                      <strong>{thread.subject}</strong>
+                      <span>{latest?.body ?? "Open conversation"}</span>
+                      <small>
+                        {broadcast ? "Class broadcast" : "Direct"}
+                        {latest?.createdAt
+                          ? ` · ${new Date(latest.createdAt).toLocaleTimeString([], {
+                              hour: "numeric",
+                              minute: "2-digit",
+                            })}`
+                          : ""}
+                      </small>
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+            {filteredThreads.length === 0 ? (
+              <li className={messageStyles.inboxEmpty}>
+                {threads.length === 0
+                  ? "No conversations yet."
+                  : "No messages match that search."}
               </li>
-            ))}
+            ) : null}
           </ul>
-          <form onSubmit={sendReply}>
-            <label className={styles.field}>
-              <span>Reply</span>
-              <input
-                className={styles.input}
-                value={reply}
-                onChange={(e) => setReply(e.target.value)}
-              />
-            </label>
-            <Button type="submit" disabled={busy}>
-              Send reply
-            </Button>
-          </form>
-        </section>
-      ) : null}
+        </aside>
+
+        <div className={messageStyles.conversationStack}>
+          {detail && activeId ? (
+            <section className={messageStyles.conversation}>
+              <header>
+                <div>
+                  <p className={styles.eyebrow}>
+                    {detail.kind === "class_broadcast"
+                      ? "CLASS BROADCAST"
+                      : "DIRECT THREAD"}
+                  </p>
+                  <h2>{detail.subject}</h2>
+                </div>
+                <span>{detail.messages.length} messages</span>
+              </header>
+              <ul className={messageStyles.messageList}>
+                {detail.messages.map((entry) => (
+                  <li
+                    key={entry.id}
+                    className={entry.mine ? messageStyles.messageMine : ""}
+                  >
+                    <div>
+                      <span>{entry.mine ? "You" : entry.sender}</span>
+                      <small>
+                        {new Date(entry.createdAt).toLocaleString([], {
+                          month: "short",
+                          day: "numeric",
+                          hour: "numeric",
+                          minute: "2-digit",
+                        })}
+                      </small>
+                    </div>
+                    <p>{entry.body}</p>
+                  </li>
+                ))}
+              </ul>
+              <form className={messageStyles.replyBar} onSubmit={sendReply}>
+                <label>
+                  <span>Reply to this conversation</span>
+                  <textarea
+                    value={reply}
+                    onChange={(event) => setReply(event.target.value)}
+                    rows={2}
+                    placeholder="Write a clear, useful reply…"
+                  />
+                </label>
+                <Button type="submit" disabled={busy || !reply.trim()}>
+                  {busy ? "Sending…" : "Send reply"}
+                </Button>
+              </form>
+            </section>
+          ) : (
+            <section className={messageStyles.conversationEmpty}>
+              <span aria-hidden>S</span>
+              <p className={styles.eyebrow}>SULLY&apos;S CORNER</p>
+              <h2>Select a conversation</h2>
+              <p>Open an athlete thread or compose a new message below.</p>
+            </section>
+          )}
+
+          <section className={messageStyles.composer}>
+            <div className={messageStyles.composerHeading}>
+              <div>
+                <p className={styles.eyebrow}>NEW MESSAGE</p>
+                <h2>Reach the right people</h2>
+              </div>
+              <div className={messageStyles.composeTabs}>
+                <button
+                  type="button"
+                  className={composeMode === "direct" ? messageStyles.tabActive : ""}
+                  onClick={() => setComposeMode("direct")}
+                >
+                  Athlete
+                </button>
+                <button
+                  type="button"
+                  className={
+                    composeMode === "broadcast" ? messageStyles.tabActive : ""
+                  }
+                  onClick={() => setComposeMode("broadcast")}
+                >
+                  Class
+                </button>
+              </div>
+            </div>
+
+            <div className={messageStyles.composeFields}>
+              <label className={styles.field}>
+                <span>Class context</span>
+                <select
+                  className={styles.input}
+                  value={sessionId}
+                  onChange={(event) => setSessionId(event.target.value)}
+                >
+                  {sessions.map((session) => (
+                    <option key={session.id} value={session.id}>
+                      {session.title}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {composeMode === "direct" ? (
+                <label className={styles.field}>
+                  <span>Athlete</span>
+                  <select
+                    className={styles.input}
+                    value={athleteId}
+                    onChange={(event) => setAthleteId(event.target.value)}
+                  >
+                    {roster.map((athlete) => (
+                      <option key={athlete.userId} value={athlete.userId}>
+                        {athlete.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : (
+                <div className={messageStyles.broadcastReach}>
+                  <strong>{roster.length}</strong>
+                  <span>booked athletes will receive this update</span>
+                </div>
+              )}
+              <label className={`${styles.field} ${messageStyles.composeMessage}`}>
+                <span>Message</span>
+                <textarea
+                  className={styles.input}
+                  rows={4}
+                  value={composeBody}
+                  onChange={(event) => setComposeBody(event.target.value)}
+                  placeholder={
+                    composeMode === "broadcast"
+                      ? "Example: Bring wraps tonight. We start on the bags."
+                      : "Write a focused athlete message…"
+                  }
+                />
+              </label>
+            </div>
+
+            <div className={messageStyles.composeAction}>
+              <p>
+                {composeMode === "broadcast"
+                  ? "Class broadcasts go to every active booking."
+                  : "Direct messages stay in the athlete conversation."}
+              </p>
+              <Button
+                type="button"
+                disabled={
+                  busy ||
+                  !composeBody.trim() ||
+                  !sessionId ||
+                  (composeMode === "direct" && !athleteId)
+                }
+                onClick={() =>
+                  void (composeMode === "direct" ? composeDirect() : broadcast())
+                }
+              >
+                {busy
+                  ? "Sending…"
+                  : composeMode === "direct"
+                    ? "Send to athlete"
+                    : `Broadcast to ${roster.length}`}
+              </Button>
+            </div>
+          </section>
+        </div>
+      </div>
     </main>
   );
 }

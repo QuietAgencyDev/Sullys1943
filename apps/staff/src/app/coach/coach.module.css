@@ -547,3 +547,418 @@
   color: var(--text-muted);
   font-size: 0.9rem;
 }
+
+.liveHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.liveHeader .meta {
+  margin-bottom: 0;
+}
+
+.syncPill {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 190px;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.32);
+}
+
+.syncPill > span {
+  width: 0.65rem;
+  height: 0.65rem;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  box-shadow: 0 0 12px currentColor;
+}
+
+.syncPill div {
+  display: grid;
+  line-height: 1.15;
+}
+
+.syncPill strong {
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.syncPill small {
+  margin-top: 0.2rem;
+  color: var(--text-muted);
+}
+
+.syncHealthy {
+  color: #6fd889;
+}
+
+.syncStale {
+  color: #f2b45d;
+}
+
+.liveCard {
+  padding: clamp(0.75rem, 2vw, 1.25rem);
+  border-color: rgba(196, 160, 106, 0.55);
+  background:
+    linear-gradient(145deg, rgba(32, 14, 9, 0.66), rgba(5, 5, 5, 0.9)),
+    rgba(0, 0, 0, 0.42);
+  box-shadow:
+    inset 0 0 0 3px rgba(196, 160, 106, 0.05),
+    0 24px 60px rgba(0, 0, 0, 0.2);
+}
+
+.liveStage {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid rgba(196, 160, 106, 0.4);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.clockPanel {
+  position: relative;
+  display: grid;
+  align-content: center;
+  min-height: 310px;
+  padding: clamp(1.25rem, 4vw, 2.25rem);
+  overflow: hidden;
+}
+
+.clockPanel::after {
+  content: "";
+  position: absolute;
+  inset: auto -10% -55% 10%;
+  height: 80%;
+  border-radius: 50%;
+  filter: blur(35px);
+  pointer-events: none;
+}
+
+.clockWork::after {
+  background: rgba(200, 32, 38, 0.25);
+}
+
+.clockRest::after {
+  background: rgba(196, 160, 106, 0.22);
+}
+
+.clockPanel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.clockPanel .timerHuge {
+  font-size: clamp(5.5rem, 18vw, 9.5rem);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 32px rgba(200, 32, 38, 0.2);
+}
+
+.phaseProgress {
+  height: 7px;
+  margin: 0.8rem 0 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(243, 230, 200, 0.2);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.phaseProgress span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #8e1419, var(--brand-red), #e76055);
+  transition: width 0.3s linear;
+}
+
+.roundMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  letter-spacing: 0.04em;
+}
+
+.roundMeta strong {
+  color: var(--brand-cream);
+  text-transform: uppercase;
+}
+
+.drillPanel {
+  display: grid;
+  align-content: center;
+  min-height: 260px;
+  padding: clamp(1.25rem, 4vw, 2.25rem);
+  border-top: 1px solid rgba(196, 160, 106, 0.3);
+  background:
+    linear-gradient(150deg, rgba(196, 160, 106, 0.09), transparent 55%),
+    rgba(14, 10, 8, 0.68);
+}
+
+.drillLabel {
+  margin: 0 0 0.45rem;
+  color: #c4a06a;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.drillPanel h2 {
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  line-height: 0.95;
+}
+
+.drillNotes {
+  min-height: 2.6em;
+  margin: 0.75rem 0 1.25rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.nextDrill {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.8rem 0;
+  border-top: 1px solid rgba(243, 230, 200, 0.12);
+  border-bottom: 1px solid rgba(243, 230, 200, 0.12);
+}
+
+.nextDrill span,
+.classPulse span {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.classPulse {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 1rem;
+}
+
+.classPulse > div {
+  display: grid;
+  gap: 0.15rem;
+  padding-right: 0.75rem;
+}
+
+.classPulse strong {
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.commandDeck {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+}
+
+.timerPrimary {
+  grid-template-columns: 1fr;
+  margin-top: 0;
+}
+
+.timerPrimary .heroControl {
+  display: grid;
+  min-height: 104px;
+  align-content: center;
+  grid-column: auto;
+  border-color: rgba(243, 230, 200, 0.42) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent),
+    var(--brand-red) !important;
+  box-shadow: 0 10px 28px rgba(138, 13, 19, 0.3);
+}
+
+.heroControl span {
+  font-size: clamp(1.5rem, 4vw, 2.1rem);
+}
+
+.heroControl small {
+  margin-top: 0.2rem;
+  color: rgba(255, 255, 255, 0.72);
+  font-family: inherit;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.controlsLg {
+  margin-top: 0;
+}
+
+.controlsLg button {
+  display: flex;
+  min-height: 78px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background: rgba(243, 230, 200, 0.06);
+}
+
+.controlsLg button span {
+  color: #c4a06a;
+  font-size: 1.45rem;
+}
+
+.controlsLg .nextControl {
+  border-color: rgba(200, 32, 38, 0.75);
+  background: rgba(200, 32, 38, 0.28);
+}
+
+.sessionActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(243, 230, 200, 0.12);
+}
+
+.sessionActions > button,
+.finishConfirm button {
+  min-height: 46px;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--brand-cream);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sessionActions .finishButton {
+  margin-left: auto;
+  border-color: rgba(200, 32, 38, 0.55);
+}
+
+.finishConfirm {
+  display: flex;
+  flex: 1 1 100%;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.55rem;
+  padding: 0.6rem;
+  border: 1px solid rgba(200, 32, 38, 0.45);
+  background: rgba(200, 32, 38, 0.1);
+}
+
+.finishConfirm span {
+  margin-right: auto;
+  font-weight: 800;
+}
+
+.heroControl:focus-visible,
+.controlsLg button:focus-visible,
+.sessionActions button:focus-visible {
+  outline: 3px solid #f3e6c8;
+  outline-offset: 3px;
+}
+
+.rosterCard {
+  margin-top: 1rem;
+}
+
+.rosterHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.45rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(243, 230, 200, 0.12);
+}
+
+.rosterHeader > p {
+  display: grid;
+  margin: 0;
+  text-align: right;
+}
+
+.rosterHeader > p strong {
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  line-height: 1;
+}
+
+.rosterHeader > p span {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 780px) {
+  .liveStage {
+    grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+  }
+
+  .drillPanel {
+    border-top: 0;
+    border-left: 1px solid rgba(196, 160, 106, 0.3);
+  }
+
+  .commandDeck {
+    grid-template-columns: minmax(220px, 0.72fr) minmax(0, 1.28fr);
+  }
+
+  .controlsLg {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 620px) {
+  .liveHeader {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .syncPill {
+    min-width: 0;
+  }
+
+  .clockPanel {
+    min-height: 270px;
+  }
+
+  .roundMeta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .finishConfirm {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .sessionActions .finishButton {
+    margin-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timerPulse,
+  .roundFlash,
+  .toast,
+  .celebrate,
+  .pulseIn,
+  .teamBump {
+    animation: none;
+  }
+
+  .phaseProgress span {
+    transition: none;
+  }
+}

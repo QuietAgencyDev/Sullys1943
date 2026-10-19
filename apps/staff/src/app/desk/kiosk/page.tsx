@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import {
   useCallback,
@@ -30,6 +31,7 @@ type ScanResult = {
 export default function DeskKioskPage() {
   const [token, setToken] = useState("");
   const [busy, setBusy] = useState(false);
+  const [online, setOnline] = useState(true);
   const [flash, setFlash] = useState<Flash>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const clearTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -39,14 +41,20 @@ export default function DeskKioskPage() {
   }, []);
 
   useEffect(() => {
+    const updateOnline = () => setOnline(navigator.onLine);
+    updateOnline();
     focusScan();
     const onVisibility = () => {
       if (document.visibilityState === "visible") focusScan();
     };
     document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("online", updateOnline);
+    window.addEventListener("offline", updateOnline);
     const id = setInterval(focusScan, 1500);
     return () => {
       document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("online", updateOnline);
+      window.removeEventListener("offline", updateOnline);
       clearInterval(id);
       if (clearTimer.current) clearTimeout(clearTimer.current);
     };
@@ -112,11 +120,37 @@ export default function DeskKioskPage() {
 
   return (
     <main className={styles.kiosk}>
-      <p className={styles.eyebrow}>DOOR KIOSK</p>
-      <h1 className={styles.title}>Scan member card</h1>
-      <p className={styles.hint}>
-        Hold phone QR to the scanner. No taps needed.
-      </p>
+      <header className={styles.header}>
+        <div className={styles.brand}>
+          <Image
+            src="/brand/sullys-logo-primary.png"
+            alt=""
+            width={84}
+            height={84}
+            className={styles.logo}
+            priority
+          />
+          <div>
+            <p className={styles.eyebrow}>SULLY&apos;S BOXING GYM</p>
+            <p className={styles.brandSub}>Front door · EST 1943</p>
+          </div>
+        </div>
+        <span
+          className={`${styles.connection} ${
+            online ? styles.connectionOnline : styles.connectionOffline
+          }`}
+        >
+          {online ? "System online" : "Connection lost"}
+        </span>
+      </header>
+
+      <section className={styles.welcome}>
+        <p className={styles.eyebrow}>MEMBER CHECK-IN</p>
+        <h1 className={styles.title}>Step Into Your Corner</h1>
+        <p className={styles.hint}>
+          Open your Corner Card and hold the QR under the scanner.
+        </p>
+      </section>
 
       <form className={styles.form} onSubmit={onSubmit} autoComplete="off">
         <label className={styles.srOnly} htmlFor="kiosk-scan">
@@ -153,6 +187,9 @@ export default function DeskKioskPage() {
           role="status"
           aria-live="assertive"
         >
+          <span className={styles.flashIcon} aria-hidden>
+            {flash.kind === "ok" ? "✓" : flash.kind === "dup" ? "↺" : "!"}
+          </span>
           <p className={styles.flashTitle}>{flash.title}</p>
           {flash.detail ? (
             <p className={styles.flashDetail}>{flash.detail}</p>
@@ -160,11 +197,18 @@ export default function DeskKioskPage() {
         </div>
       ) : (
         <div className={styles.idle}>
-          <p>Ready</p>
+          <span className={styles.scanGlyph} aria-hidden />
+          <p>Scanner ready</p>
+          <small>No taps needed · next scan appears here</small>
         </div>
       )}
 
-      <Link className={styles.exit} href="/desk" tabIndex={-1}>
+      <footer className={styles.footer}>
+        <span>Card → scanner → confirmation</span>
+        <span>See the front desk if your card says action needed.</span>
+      </footer>
+
+      <Link className={styles.exit} href="/desk">
         Exit kiosk
       </Link>
     </main>

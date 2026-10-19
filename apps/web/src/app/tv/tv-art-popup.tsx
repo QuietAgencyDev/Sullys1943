@@ -417,10 +417,14 @@ export function TvArtPopup(live: TvArtPopupLive) {
       aria-hidden
     >
       <div className={styles.stage}>
-        {layersFor(spec.folder).map((layer) => (
+        {layersFor(spec.folder, live.tvMode).map((layer) => (
           <ArtLayer
             key={layer.file}
-            src={`${base}/${layer.file}`}
+            src={
+              layer.file === "03_hero.png" && CAST_HERO[live.tvMode]
+                ? CAST_HERO[live.tvMode]
+                : `${base}/${layer.file}`
+            }
             className={`${styles.layer} ${layerClass(layer.className)}`}
           />
         ))}
@@ -507,14 +511,39 @@ const CORE_FOLDERS = new Set([
 
 const PANEL_ONLY = new Set(["kids", "kids_complete", "heritage", "birthday"]);
 
-function layersFor(folder: string) {
-  if (CORE_FOLDERS.has(folder)) return LAYERS;
-  if (PANEL_ONLY.has(folder)) {
-    return LAYERS.filter((layer) => layer.file === "01_panel.png");
+const CAST_HERO: Record<string, string> = {
+  combo: "/tv/cast/coach-1-jab-stage.png",
+  sparring: "/tv/cast/coach-1-jab-stage.png",
+  challenge: "/tv/cast/coach-1-jab-stage.png",
+  pads: "/tv/cast/coach-1-guard-stage.png",
+  check_in: "/tv/cast/coach-1-guard-stage.png",
+  first_visit: "/tv/cast/coach-1-guard-stage.png",
+  welcome_back: "/tv/cast/coach-1-guard-stage.png",
+  announcement: "/tv/cast/coach-1-guard-stage.png",
+  last_spots: "/tv/cast/coach-1-guard-stage.png",
+  class_starting: "/tv/cast/coach-1-guard-stage.png",
+  streak: "/tv/cast/coach-1-guard-stage.png",
+  achievement: "/tv/cast/coach-1-victory-stage.png",
+  challenge_winner: "/tv/cast/coach-1-victory-stage.png",
+  session_mvp: "/tv/cast/coach-1-victory-stage.png",
+  class_complete: "/tv/cast/coach-1-victory-stage.png",
+  level_up: "/tv/cast/coach-1-victory-stage.png",
+};
+
+function layersFor(folder: string, tvMode: string) {
+  let layers: readonly (typeof LAYERS)[number][];
+  if (CORE_FOLDERS.has(folder)) layers = LAYERS;
+  else if (PANEL_ONLY.has(folder)) {
+    layers = LAYERS.filter((layer) => layer.file === "01_panel.png");
+  } else {
+    layers = LAYERS.filter(
+      (layer) => layer.file === "01_panel.png" || layer.file === "03_hero.png",
+    );
   }
-  return LAYERS.filter(
-    (layer) => layer.file === "01_panel.png" || layer.file === "03_hero.png",
-  );
+  if (CAST_HERO[tvMode]) {
+    layers = layers.filter((layer) => layer.file !== "04_accent.png");
+  }
+  return layers;
 }
 
 function layerClass(name: (typeof LAYERS)[number]["className"]) {

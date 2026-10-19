@@ -1,0 +1,495 @@
+.messagesMain {
+  max-width: 1360px;
+}
+
+.messagesHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.messagesHeader h1 {
+  max-width: 13ch;
+}
+
+.messagesHeader p {
+  margin-bottom: 0;
+}
+
+.messagesHeader nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.messagesHeader nav a {
+  min-height: 42px;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.messagePulse {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 1rem;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-elevated);
+}
+
+.messagePulse > div {
+  display: grid;
+  min-height: 92px;
+  align-content: center;
+  padding: 0.9rem 1rem;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.messagePulse strong {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4vw, 2.7rem);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.messagePulse span {
+  margin-top: 0.25rem;
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.messageSuccess {
+  margin: 0.8rem 0 0;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid rgba(98, 201, 151, 0.38);
+  color: var(--success);
+  background: var(--success-surface);
+}
+
+.communicationGrid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.inbox,
+.conversation,
+.conversationEmpty,
+.composer {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-sm), var(--shadow-inset);
+}
+
+.inbox {
+  align-self: start;
+  padding: 0.9rem;
+}
+
+.inboxHeading,
+.composerHeading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.inboxHeading h2,
+.composerHeading h2,
+.conversation header h2,
+.conversationEmpty h2 {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 400;
+}
+
+.inboxHeading > span {
+  color: var(--success);
+  font-size: 0.63rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.threadSearch {
+  display: grid;
+  gap: 0.3rem;
+  margin-top: 0.7rem;
+}
+
+.threadSearch span {
+  color: var(--text-muted);
+  font-size: 0.63rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.threadSearch input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 0.75rem;
+  border: 1px solid var(--border);
+  background: var(--bg-sunken);
+  color: var(--text-primary);
+  font: inherit;
+}
+
+.threadList {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.threadList li > button {
+  display: grid;
+  width: 100%;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.65rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.16);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.threadList li > button:hover,
+.threadList li > .threadActive {
+  border-color: var(--brand-red);
+  background:
+    linear-gradient(100deg, rgba(200, 32, 38, 0.14), transparent),
+    rgba(0, 0, 0, 0.16);
+}
+
+.threadIcon {
+  display: grid;
+  width: 38px;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid rgba(196, 160, 106, 0.5);
+  border-radius: 50%;
+  color: var(--brand-glove);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+}
+
+.broadcastIcon {
+  border-radius: var(--radius-sm);
+  border-color: rgba(200, 32, 38, 0.55);
+  color: var(--brand-red-bright);
+}
+
+.threadCopy {
+  display: grid;
+  min-width: 0;
+  gap: 0.15rem;
+}
+
+.threadCopy > strong,
+.threadCopy > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.threadCopy > span,
+.threadCopy > small {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
+.inboxEmpty {
+  padding: 1.5rem 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.conversationStack {
+  display: grid;
+  min-width: 0;
+  gap: 1rem;
+}
+
+.conversation {
+  overflow: hidden;
+}
+
+.conversation > header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid var(--border);
+  background:
+    linear-gradient(110deg, rgba(200, 32, 38, 0.13), transparent),
+    rgba(0, 0, 0, 0.12);
+}
+
+.conversation > header > span {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.messageList {
+  display: grid;
+  gap: 0.75rem;
+  max-height: 460px;
+  margin: 0;
+  padding: 1rem;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.messageList li {
+  display: grid;
+  width: min(82%, 620px);
+  gap: 0.25rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 4px 14px 14px 14px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.messageList .messageMine {
+  justify-self: end;
+  border-color: rgba(200, 32, 38, 0.44);
+  border-radius: 14px 4px 14px 14px;
+  background: rgba(200, 32, 38, 0.16);
+}
+
+.messageList li > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.messageList li span {
+  color: var(--brand-glove);
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
+.messageList li small {
+  color: var(--text-subtle);
+  font-size: 0.62rem;
+}
+
+.messageList li p {
+  margin: 0;
+  line-height: 1.45;
+}
+
+.replyBar {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0.9rem 1rem;
+  border-top: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.replyBar label {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.replyBar label > span {
+  color: var(--text-muted);
+  font-size: 0.63rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.replyBar textarea,
+.composer textarea {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid var(--border);
+  background: var(--bg-sunken);
+  color: var(--text-primary);
+  font: inherit;
+  resize: vertical;
+}
+
+.replyBar button {
+  justify-self: end;
+}
+
+.conversationEmpty {
+  display: grid;
+  min-height: 280px;
+  place-content: center;
+  justify-items: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.conversationEmpty > span {
+  display: grid;
+  width: 62px;
+  aspect-ratio: 1;
+  margin-bottom: 0.8rem;
+  place-items: center;
+  border: 1px solid rgba(196, 160, 106, 0.5);
+  border-radius: 50%;
+  color: var(--brand-glove);
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+}
+
+.conversationEmpty > p:last-child {
+  color: var(--text-muted);
+}
+
+.composer {
+  padding: 1rem;
+}
+
+.composeTabs {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.composeTabs button {
+  min-height: 38px;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.composeTabs .tabActive {
+  border-color: var(--brand-red);
+  color: var(--brand-cream);
+  background: rgba(200, 32, 38, 0.18);
+}
+
+.composeFields {
+  display: grid;
+  gap: 0.75rem;
+  padding-top: 0.9rem;
+}
+
+.composeMessage {
+  grid-column: 1 / -1;
+}
+
+.composeMessage textarea {
+  min-height: 108px;
+}
+
+.broadcastReach {
+  display: grid;
+  align-content: center;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid rgba(200, 32, 38, 0.38);
+  background: rgba(200, 32, 38, 0.1);
+}
+
+.broadcastReach strong {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.broadcastReach span {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+}
+
+.composeAction {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--border);
+}
+
+.composeAction p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
+@media (min-width: 760px) {
+  .messagePulse {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .replyBar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+  }
+
+  .composeFields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 980px) {
+  .communicationGrid {
+    grid-template-columns: minmax(280px, 0.36fr) minmax(0, 1fr);
+  }
+
+  .inbox {
+    position: sticky;
+    top: 1rem;
+  }
+}
+
+@media (max-width: 680px) {
+  .messagesHeader,
+  .composerHeading,
+  .composeAction {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .messagesHeader nav {
+    justify-content: flex-start;
+  }
+
+  .composeTabs button {
+    flex: 1;
+  }
+
+  .messageList li {
+    width: 92%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .messageList {
+    scroll-behavior: auto;
+  }
+}

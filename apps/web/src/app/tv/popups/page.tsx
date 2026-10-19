@@ -113,6 +113,14 @@ export default function TvPopupsReviewPage() {
               <span>Jab · shorts fixed</span>
             </figcaption>
           </figure>
+          <figure className={styles.iconCard}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/tv/cast/coach-1-victory.png" alt="Coach 1 victory" />
+            <figcaption>
+              <code>Coach 1</code>
+              <span>Victory</span>
+            </figcaption>
+          </figure>
         </div>
       </section>
 

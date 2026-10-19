@@ -6,6 +6,6 @@ builder = "NIXPACKS"
 buildCommand = "npm install && npx prisma generate --schema=apps/api/prisma/schema.prisma && npm run build -w @sullys/api"
 
 [deploy]
-startCommand = "node apps/api/dist/main.js"
+startCommand = "npx prisma migrate deploy --schema=apps/api/prisma/schema.prisma && node apps/api/dist/main.js"
 healthcheckPath = "/api/v1/health"
 restartPolicyType = "ON_FAILURE"
