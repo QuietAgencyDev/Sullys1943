@@ -778,7 +778,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       ) : null}
       {offline ? (
         <div className={styles.offlineBanner} role="status">
-          Offline — showing last good board. Round timer keeps running.
+          Offline · last good board · timer running
         </div>
       ) : null}
       <header className={styles.top}>

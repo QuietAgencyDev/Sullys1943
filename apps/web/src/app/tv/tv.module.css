@@ -19,26 +19,29 @@
   font-family: var(--font-body);
 }
 
-.shell:has(.offlineBanner) {
-  padding-top: calc(var(--tv-frame-width) + 1.2rem);
-}
-
 .offlineBanner {
   position: absolute;
-  z-index: 6;
-  top: var(--tv-frame-width);
-  left: var(--tv-frame-width);
-  right: var(--tv-frame-width);
+  z-index: 55;
+  top: calc(var(--tv-frame-width) * 0.3);
+  left: 50%;
+  right: auto;
+  width: max-content;
+  max-width: min(36rem, 48%);
   margin: 0;
-  padding: 0.32rem 0.85rem;
+  padding: 0.14rem 0.85rem;
+  transform: translateX(-50%);
   text-align: center;
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
   text-transform: uppercase;
   color: #140f0c;
   background: linear-gradient(90deg, #c4a06a, #f3e6c8);
-  border: 1px solid rgba(243, 230, 200, 0.35);
+  border: 1px solid rgba(243, 230, 200, 0.45);
+  border-radius: 999px;
+  pointer-events: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
 }
 
 .soundUnlock {
