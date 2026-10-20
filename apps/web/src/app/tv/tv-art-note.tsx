@@ -33,7 +33,7 @@ const NOTES: Record<FloorNoteMode, NoteSpec> = {
   round_flash: { kicker: "Work", title: "ROUND 4", wide: true },
   rest_flash: { kicker: "Rest", title: "BREATHE", wide: true },
   ten: { kicker: "Warning", title: "10", wide: true },
-  birthday: { kicker: "Happy birthday", title: "KID 1" },
+  birthday: { kicker: "Happy birthday", title: "HAPPY BIRTHDAY" },
   xp_chip: { kicker: "XP", title: "+10 XP", chip: true },
   streak_chip: { kicker: "Streak", title: "×3", chip: true },
   rank_bump: { kicker: "Board", title: "2ND → 1ST", chip: true },

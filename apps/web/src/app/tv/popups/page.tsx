@@ -53,7 +53,7 @@ const MODE_COPY: Record<
   kids_complete: { title: "Kids complete", xp: 15 },
   heritage: { title: "Heritage" },
   announcement: { title: "Announcement" },
-  birthday: { title: "Birthday", name: "Kid 1" },
+  birthday: { title: "Birthday" },
   pads: { title: "Pads" },
   sparring: { title: "Sparring" },
   combo: { title: "Combo of the round" },

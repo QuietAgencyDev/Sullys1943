@@ -291,7 +291,7 @@ const SPECS: Record<string, ArtSpec> = {
     nameField(),
   ]),
   kids: card("kids", "KIDS BOXING", "KIDS", "BOXING.", "GO. HAVE FUN. LISTEN UP.", [
-    { id: "message", text: "KID 1  •  KID 2", x: 118, y: 543, size: 36, fill: CREAM, live: true },
+    { id: "message", text: "AFTER SCHOOL · ASK THE DESK", x: 118, y: 543, size: 36, fill: CREAM, live: true },
   ]),
   kids_complete: card("kids_complete", "KIDS SESSION DONE", "SESSION", "DONE!", "SEE YOU NEXT BELL.", [
     xpField("+15 XP"),
@@ -301,14 +301,14 @@ const SPECS: Record<string, ArtSpec> = {
     { id: "message", text: "LISTEN IN", x: 118, y: 543, size: 42, fill: CREAM, live: true },
   ]),
   birthday: card("birthday", "HAPPY BIRTHDAY", "HAPPY", "BIRTHDAY.", "MAKE IT A ROUND TO REMEMBER.", [
-    nameField("KID 1"),
+    nameField(""),
   ]),
   pads: card("pads", "PADS", "PADS.", "NOW.", "STATION 2. HANDS UP.", [
-    { id: "message", text: "COACH 1", x: 118, y: 543, size: 42, fill: CREAM },
+    { id: "message", text: "OPEN GYM · STATION 2 · HANDS UP", x: 118, y: 543, size: 36, fill: CREAM, live: true },
   ]),
   sparring: card("sparring", "SPARRING", "SPAR", "ON.", "HEADGEAR. CONTROL. RESPECT.", []),
-  combo: card("combo", "COMBO OF THE ROUND", "1–2", "HOOK.", "SLIP. KEEP THE HANDS HOME.", [
-    { id: "message", text: "KID 4", x: 118, y: 543, size: 42, fill: CREAM },
+  combo: card("combo", "COMBO OF THE ROUND", "1–2", "NOW.", "SLIP. KEEP THE HANDS HOME.", [
+    { id: "message", text: "AFTER SCHOOL · ASK THE DESK", x: 118, y: 543, size: 36, fill: CREAM, live: true },
   ]),
   youth: card("kids", "YOUTH BOXING", "SIGN", "UP.", "KIDS 6–14. AFTER SCHOOL. ASK THE DESK.", [
     { id: "message", text: "CHARACTER FIRST.", x: 118, y: 543, size: 36, fill: CREAM, live: true },
@@ -451,14 +451,16 @@ export function TvArtPopup(live: TvArtPopupLive) {
           const wide =
             layer.file === "03_hero.png" &&
             (WIDE_HERO.has(live.tvMode) || (hero ?? "").includes("sparring"));
+          const belt =
+            layer.file === "03_hero.png" && (hero ?? "").includes("champion-belt");
           const cast =
-            layer.file === "03_hero.png" && Boolean(hero);
+            layer.file === "03_hero.png" && Boolean(hero) && !belt;
           return (
             <ArtLayer
               key={layer.file}
               src={src}
               className={`${styles.layer} ${layerClass(layer.className)} ${
-                cast ? styles.castHero : ""
+                belt ? styles.beltHero : cast ? styles.castHero : ""
               } ${wide ? styles.wideHero : ""}`.trim()}
             />
           );
@@ -495,7 +497,8 @@ export function TvArtPopup(live: TvArtPopupLive) {
           <span className={styles.line}>{spec.kind}</span>
         </p>
         {spec.fields.map((field, i) => {
-          const text = (field.live ? liveText(field.id, spec, live) : null) ?? field.text;
+          const text = ((field.live ? liveText(field.id, spec, live) : null) ?? field.text).trim();
+          if (!text) return null;
           const tone = HEADLINE_IDS.has(field.id)
             ? styles.headline
             : STAT_IDS.has(field.id)
@@ -546,6 +549,8 @@ const CORE_FOLDERS = new Set([
 
 const PANEL_ONLY = new Set(["heritage"]);
 
+const SULLYS_BELT = "/tv/icons/champion-belt.png";
+
 const CAST_HERO: Record<string, string> = {
   challenge: "/tv/cast/coach-7-jab.png?v=hd3",
   pads: "/tv/cast/coach-1-pads-stage.png",
@@ -565,9 +570,9 @@ const CAST_HERO: Record<string, string> = {
   kids_complete: "/tv/cast/kid-3-celebrate-stage.png",
   legend: "/tv/cast/george-chuvalo-guard.png?v=hd5",
   sully_xp: "/tv/cast/sully-xp-stage.png",
-  achievement: "/tv/cast/coach-1-victory-stage.png",
-  challenge_winner: "/tv/cast/coach-1-victory-stage.png",
-  session_mvp: "/tv/cast/coach-1-victory-stage.png",
+  achievement: SULLYS_BELT,
+  challenge_winner: SULLYS_BELT,
+  session_mvp: SULLYS_BELT,
   class_complete: "/tv/cast/coach-1-victory-stage.png",
   level_up: "/tv/cast/coach-1-victory-stage.png",
 };
@@ -622,28 +627,28 @@ export const FLOOR_ADS = [
     hero: "/tv/cast/kid-4-uppercut.png?v=hd3",
     h1: "KIDS",
     h2: "BOXING.",
-    msg: "AFTER SCHOOL · KID BOXERS · ASK THE DESK",
+    msg: "AFTER SCHOOL · ASK THE DESK",
   },
   {
     mode: "kids",
     hero: "/tv/cast/kid-7-jab.png?v=hd3",
     h1: "KIDS",
-    h2: "JAB.",
-    msg: "ORTHODOX JAB · AFTER SCHOOL · ASK THE DESK",
+    h2: "BOXING.",
+    msg: "AFTER SCHOOL · ASK THE DESK",
   },
   {
     mode: "combo",
     hero: "/tv/cast/kid-8-jab.png?v=hd3",
     h1: "KIDS",
-    h2: "COMBO.",
-    msg: "1–2  ·  AFTER SCHOOL  ·  ASK THE DESK",
+    h2: "BOXING.",
+    msg: "AFTER SCHOOL · ASK THE DESK",
   },
   {
     mode: "youth",
     hero: "/tv/cast/kid-2-hook.png?v=hd3",
     h1: "YOUTH",
     h2: "BOXING.",
-    msg: "LEFT HOOK · AFTER SCHOOL · ASK THE DESK",
+    msg: "KIDS 6–14 · AFTER SCHOOL · ASK THE DESK",
   },
   {
     mode: "legend",
@@ -654,7 +659,7 @@ export const FLOOR_ADS = [
   },
   {
     mode: "legend",
-    hero: "/tv/cast/coach-tony-uppercut.png?v=hd3",
+    hero: SULLYS_BELT,
     h1: "KID",
     h2: "MORRISON.",
     msg: "TONY MORRISON · CANADIAN HEAVYWEIGHT CHAMP · THIS FLOOR",
@@ -663,7 +668,7 @@ export const FLOOR_ADS = [
     mode: "class_starting",
     hero: "/tv/cast/coach-8-hook-2.png?v=hd3",
     h1: "WOMEN'S",
-    h2: "HOOK.",
+    h2: "BOXING.",
     msg: "JACKLYNE IRVINE · 7 PM · ALL LEVELS",
   },
   {
@@ -682,14 +687,14 @@ export const FLOOR_ADS = [
   },
   {
     mode: "legend",
-    hero: "/tv/cast/coach-7-guard.png?v=hd2",
+    hero: SULLYS_BELT,
     h1: "VARGAS",
     h2: "147.",
     msg: "SAM VARGAS · BRAMPTON · NABA WELTER CHAMP",
   },
   {
     mode: "legend",
-    hero: "/tv/cast/coach-5-jab.png?v=hd2",
+    hero: SULLYS_BELT,
     h1: "MOLITOR",
     h2: "IBF.",
     msg: "STEVE MOLITOR · SARNIA · TWO-TIME WORLD CHAMP",

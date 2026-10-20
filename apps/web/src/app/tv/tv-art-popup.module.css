@@ -78,6 +78,16 @@
   animation-name: wideHeroIn;
 }
 
+.beltHero {
+  object-fit: contain !important;
+  object-position: 72% 48%;
+  transform: none;
+  padding: 10% 3% 8% 36%;
+  background: none;
+  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.4));
+  animation-name: castHeroIn;
+}
+
 .accentLayer {
   transform-origin: 82% 82%;
   transform: scale(1.12);
