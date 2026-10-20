@@ -388,23 +388,69 @@ const FLOOR_DEMO_CLASSES = [
   { title: "Youth Boxing", coach: "Winslow" },
 ] as const;
 
-const FLOOR_CLASS_PHOTOS: { match: RegExp; src: string }[] = [
-  { match: /tony|morrison|beginner/i, src: "/tv/cast/coach-tony-uppercut.png?v=hd3" },
-  { match: /open gym/i, src: "/tv/cast/coach-5-jab.png?v=hd2" },
-  { match: /jacklyne|irvine|women/i, src: "/tv/cast/coach-8-hook.png?v=hd3" },
-  { match: /rico|competitive/i, src: "/tv/cast/coach-7-jab.png?v=hd3" },
-  { match: /pads/i, src: "/tv/cast/coach-1-pads.png" },
-  { match: /youth|teen/i, src: "/tv/cast/kid-2-hook.png?v=hd3" },
-  { match: /kids|kid/i, src: "/tv/cast/kid-4-uppercut.png?v=hd3" },
+const FLOOR_CLASS_PHOTO_POOLS: { match: RegExp; srcs: string[] }[] = [
+  {
+    match: /tony|morrison|beginner/i,
+    srcs: [
+      "/tv/cast/coach-tony-uppercut.png?v=hd3",
+      "/tv/cast/coach-tony-morrison.png?v=hd2",
+    ],
+  },
+  {
+    match: /open gym/i,
+    srcs: [
+      "/tv/cast/coach-5-jab.png?v=hd2",
+      "/tv/cast/coach-6-celebrate.png?v=hd2",
+      "/tv/cast/coach-tony-morrison.png?v=hd2",
+    ],
+  },
+  {
+    match: /jacklyne|irvine|women/i,
+    srcs: [
+      "/tv/cast/coach-8-hook.png?v=hd3",
+      "/tv/cast/coach-8-hook-2.png?v=hd3",
+      "/tv/cast/coach-8-guard.png?v=hd2",
+    ],
+  },
+  {
+    match: /rico|competitive/i,
+    srcs: [
+      "/tv/cast/coach-7-jab.png?v=hd3",
+      "/tv/cast/coach-7-guard.png?v=hd2",
+    ],
+  },
+  { match: /pads/i, srcs: ["/tv/cast/coach-1-pads.png"] },
+  {
+    match: /youth|teen/i,
+    srcs: ["/tv/cast/kid-2-hook.png?v=hd3", "/tv/cast/teen-2-guard.png"],
+  },
+  {
+    match: /kids|kid/i,
+    srcs: [
+      "/tv/cast/kid-4-uppercut.png?v=hd3",
+      "/tv/cast/kid-7-jab.png?v=hd3",
+      "/tv/cast/kid-8-jab.png?v=hd3",
+    ],
+  },
 ];
 
 function isKidsBoxingTitle(title?: string | null) {
   return Boolean(title && /kids boxing/i.test(title));
 }
 
-function floorClassPhoto(title?: string | null, coach?: string | null) {
+function floorClassPhoto(
+  title?: string | null,
+  coach?: string | null,
+  seed = 0,
+) {
   const haystack = `${title ?? ""} ${coach ?? ""}`;
-  return FLOOR_CLASS_PHOTOS.find((row) => row.match.test(haystack))?.src ?? null;
+  const pool = FLOOR_CLASS_PHOTO_POOLS.find((row) => row.match.test(haystack));
+  if (!pool?.srcs.length) return null;
+  return pool.srcs[Math.abs(seed) % pool.srcs.length];
+}
+
+function jitter(min: number, max: number) {
+  return min + Math.floor(Math.random() * (max - min + 1));
 }
 
 const CHECKIN_TEMPLATES = [
@@ -654,8 +700,13 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   const [tickerHold, setTickerHold] = useState(false);
   const [infoIndex, setInfoIndex] = useState(0);
   const [demoClassIndex, setDemoClassIndex] = useState(0);
+  const [poseTick, setPoseTick] = useState(0);
+  const [demoOrder, setDemoOrder] = useState<number[]>(() =>
+    FLOOR_DEMO_CLASSES.map((_, i) => i),
+  );
   const [arrivalName, setArrivalName] = useState<string | null>(null);
   const lastArrivalRef = useRef<string | null>(null);
+  const adDeckRef = useRef<number[]>([]);
 
   useEffect(() => {
     setTimerCfg(readTimerConfig());
@@ -665,6 +716,13 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     setNoteFreeze(readNoteFreeze());
     const cached = readCachedBoard(profile);
     if (cached) setBoard(cached);
+    setDemoOrder(
+      shuffleFeed(
+        FLOOR_DEMO_CLASSES.map((_, i) => i),
+        Date.now() % 2147483646 || 1,
+      ),
+    );
+    setPoseTick(Math.floor(Math.random() * 12));
   }, [profile]);
 
   useEffect(() => {
@@ -682,18 +740,28 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     }
     let timer: ReturnType<typeof setTimeout>;
     let cancelled = false;
+    const drawAd = () => {
+      if (!adDeckRef.current.length) {
+        adDeckRef.current = shuffleFeed(
+          FLOOR_ADS.map((_, i) => i),
+          Date.now() % 2147483646 || 1,
+        );
+      }
+      const next = adDeckRef.current.pop();
+      if (next != null) setAdIndex(next);
+    };
     const show = () => {
       if (cancelled) return;
+      drawAd();
       setAdOn(true);
-      timer = setTimeout(hide, 12000);
+      timer = setTimeout(hide, jitter(10000, 14000));
     };
     const hide = () => {
       if (cancelled) return;
       setAdOn(false);
-      setAdIndex((i) => (i + 1) % FLOOR_ADS.length);
-      timer = setTimeout(show, 16000);
+      timer = setTimeout(show, jitter(12000, 18000));
     };
-    timer = setTimeout(show, 6000);
+    timer = setTimeout(show, jitter(5000, 8000));
     return () => {
       cancelled = true;
       clearTimeout(timer);
@@ -717,7 +785,8 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     if (profile !== "floor") return;
     const cycle = window.setInterval(() => {
       setDemoClassIndex((i) => (i + 1) % FLOOR_DEMO_CLASSES.length);
-    }, 40000);
+      setPoseTick((n) => n + 1);
+    }, jitter(32000, 44000));
     return () => window.clearInterval(cycle);
   }, [profile]);
 
@@ -796,7 +865,9 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   }, []);
 
   const focus = board?.live ?? board?.next ?? null;
-  const demoClass = FLOOR_DEMO_CLASSES[demoClassIndex] ?? FLOOR_DEMO_CLASSES[0];
+  const demoClass =
+    FLOOR_DEMO_CLASSES[demoOrder[demoClassIndex % demoOrder.length] ?? 0] ??
+    FLOOR_DEMO_CLASSES[0];
   const scheduledTitle = focus?.title ?? null;
   const timerTitle = board?.coachTimer?.title ?? null;
   const floorClassTitle =
@@ -811,7 +882,11 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       : floorClassTitle === timerTitle && board?.coachTimer?.coach
         ? board.coachTimer.coach
         : demoClass.coach;
-  const classPhoto = floorClassPhoto(floorClassTitle, floorClassCoach);
+  const classPhoto = floorClassPhoto(
+    floorClassTitle,
+    floorClassCoach,
+    poseTick + demoClassIndex,
+  );
 
   const classCountdown = useMemo(() => {
     if (!focus) return null;
@@ -1099,7 +1174,12 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
           {profile === "floor" && classPhoto && !showArtPopup ? (
             <div className={styles.classFigure} aria-hidden>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={classPhoto} alt="" draggable={false} />
+              <img
+                key={classPhoto}
+                src={classPhoto}
+                alt=""
+                draggable={false}
+              />
             </div>
           ) : null}
           {profile === "floor" && noteFreeze && !showArtPopup ? (
