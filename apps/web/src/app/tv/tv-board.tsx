@@ -2,13 +2,6 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  isBoxingTimerSoundUnlocked,
-  playCelebrationCue,
-  playRoundBell,
-  playTenSecondWarning,
-  testBoxingTimerSound,
-} from "../../lib/boxing-timer-sounds";
 import { getBrand } from "@/lib/brand";
 import styles from "./tv.module.css";
 import {
@@ -143,14 +136,24 @@ const FLOOR_TRIVIA: FeedLine[] = [
 const FLOOR_SULLYS: FeedLine[] = [
   { kind: "trivia", text: "Sully's · Canada's oldest boxing club · EST 1943." },
   { kind: "trivia", text: "Earl “Sully” Sullivan · born Mimico, 1914." },
+  { kind: "trivia", text: "Sully opened on Queen St before the Ossington chapter." },
+  { kind: "trivia", text: "Deacon Allen's Athletic Club — the room Sully bought in 1964." },
   { kind: "trivia", text: "Sully bought the Athletic Club in 1964 · Ossington." },
+  { kind: "trivia", text: "109 Ossington · Ali camp · Heritage Toronto plaque." },
   { kind: "trivia", text: "Sully's rule: no drugs, no swearing — show respect." },
+  { kind: "trivia", text: "Sully trained youth free — character before the bell." },
   { kind: "trivia", text: "March 1966 · Ali trained at Sully's for Chuvalo." },
   { kind: "trivia", text: "Ali's Ossington speed-bag frame is still in this gym." },
-  { kind: "trivia", text: "Sully trained youth free — character before the bell." },
-  { kind: "trivia", text: "109 Ossington · Ali camp · Heritage Toronto plaque." },
+  { kind: "trivia", text: "Chuvalo, Clyde Gray, and Lewis walked this Toronto floor." },
+  { kind: "trivia", text: "Joe Azores · Sully's amateur · Canadian Golden Gloves, 1973." },
+  { kind: "trivia", text: "Earl Sullivan passed in 1999. The gym kept the name and the rules." },
   { kind: "trivia", text: "Joe Manteiga kept Sully's doors open after Sully." },
+  { kind: "trivia", text: "Danielle Manteiga · next generation · same gym, same mission." },
+  { kind: "trivia", text: "Coaches Dupont and Wade held the floor through the Ossington years." },
+  { kind: "trivia", text: "2019 · Sully's moved to 1554 Dundas St W · west-end chapter." },
+  { kind: "trivia", text: "Sully's · about 2,000 square feet · bags, ring, and a packed floor." },
   { kind: "trivia", text: "Sully's · 1554 Dundas St W · same mission, new chapter." },
+  { kind: "trivia", text: "Heritage Toronto marked 109 Ossington. The work moved west." },
 ];
 
 const FLOOR_CHUVALO: FeedLine[] = [
@@ -164,6 +167,8 @@ const FLOOR_CHUVALO: FeedLine[] = [
   { kind: "trivia", text: "Chuvalo · Canadian heavyweight champion · Toronto legend." },
   { kind: "trivia", text: "Ali prepared for Chuvalo on Ossington. The city still talks." },
   { kind: "trivia", text: "Toronto remembers Chuvalo. Show up. Put in work. Stay standing." },
+  { kind: "trivia", text: "George Chuvalo · wrap the hands. Protect the chin. Go the distance." },
+  { kind: "trivia", text: "Chuvalo · Toronto born. Canadian heavyweight. Never hit the canvas." },
 ];
 
 const FLOOR_CANADA: FeedLine[] = [
@@ -292,6 +297,45 @@ const FLOOR_HISTORY: FeedLine[] = [
   { kind: "trivia", text: "The Canadian title is still a real belt. Earn it in a provincial ring." },
 ];
 
+const FLOOR_OLYMPIANS: FeedLine[] = [
+  { kind: "trivia", text: "Canadian boxing Olympians · 18 Olympic medals. Three of them gold." },
+  { kind: "trivia", text: "Cliff Graham · Olympic bantamweight silver, Antwerp 1920." },
+  { kind: "trivia", text: "Art Prud'homme · Olympic middleweight silver, Antwerp 1920." },
+  { kind: "trivia", text: "Clarence Newton · Olympic lightweight bronze, Antwerp 1920." },
+  { kind: "trivia", text: "Moe Herscovitch · Olympic middleweight bronze, Antwerp 1920." },
+  { kind: "trivia", text: "Douglas Lewis · Olympic welterweight bronze, Paris 1924." },
+  { kind: "trivia", text: "Raymond Smillie · Olympic welterweight bronze, Amsterdam 1928." },
+  { kind: "trivia", text: "Jackie Callura · Hamilton · boxed at L.A. 1932, then won a world title." },
+  { kind: "trivia", text: "Los Angeles 1984 · de Wit silver, O'Sullivan silver, Walters bronze." },
+  { kind: "trivia", text: "Lennox Lewis boxed at L.A. 1984, then took gold in Seoul." },
+  { kind: "trivia", text: "Scotty Olson · Edmonton · Olympic light-flyweight, Seoul 1988." },
+  { kind: "trivia", text: "Howard Grant · Montreal · Olympic light-welterweight, Seoul 1988." },
+  { kind: "trivia", text: "Barcelona 1992 · Leduc silver, Chris Johnson bronze. Two more on the podium." },
+  { kind: "trivia", text: "Kirk Johnson · North Preston · Olympic heavyweight, Barcelona 1992." },
+  { kind: "trivia", text: "Mike Strange · three-time Canadian boxing Olympian · 1992, 1996, 2000." },
+  { kind: "trivia", text: "Domenic Figliomeni · Thunder Bay · Olympic flyweight, 1992 and 1996." },
+  { kind: "trivia", text: "Billy Irwin · Sault Ste. Marie · Olympic lightweight, Barcelona 1992." },
+  { kind: "trivia", text: "Andrew Kooner · Windsor · Olympic boxing, Sydney 2000 and Athens 2004." },
+  { kind: "trivia", text: "Jean Pascal boxed for Canada at Athens 2004. Then the world titles." },
+  { kind: "trivia", text: "Adam Trupish · Olympic welterweight · Athens 2004 and Beijing 2008." },
+  { kind: "trivia", text: "Simon Kean · Olympic super heavyweight, London 2012." },
+  { kind: "trivia", text: "Custio Clayton · Dartmouth · Olympic welterweight, London 2012." },
+  { kind: "trivia", text: "Mary Spencer · Windsor · first Canadian woman in Olympic boxing, 2012." },
+  { kind: "trivia", text: "Spencer reached the Olympic quarter-finals in London. Canada's first women's draw." },
+  { kind: "trivia", text: "Arthur Biyarslanov · Toronto · boxed at Rio 2016 after Pan Am gold at home." },
+  { kind: "trivia", text: "Ariane Fortin · Quebec · Olympic middleweight, Rio 2016." },
+  { kind: "trivia", text: "Mandy Bujold · Kitchener · two-time Olympian · Rio 2016 and Tokyo 2020." },
+  { kind: "trivia", text: "Bujold reached the Olympic flyweight quarter-finals in Rio." },
+  { kind: "trivia", text: "Caroline Veyre · Olympic featherweight quarter-finals, Tokyo 2020." },
+  { kind: "trivia", text: "Myriam Da Silva · Olympic welterweight, Tokyo 2020." },
+  { kind: "trivia", text: "Tammara Thibeault · two-time Olympian · Tokyo quarter-finals, then Paris." },
+  { kind: "trivia", text: "Wyatt Sanford · Kennetcook Kid · two-time Olympian · Paris 2024 bronze." },
+  { kind: "trivia", text: "Sanford · Kennetcook, N.S. · Pan Am gold 2023, then the Olympic podium." },
+  { kind: "trivia", text: "28 years between Defiagbon's Atlanta silver and Sanford's Paris bronze." },
+  { kind: "trivia", text: "Canada won boxing medals at four Games in bunches: 1920, 1984, 1988, 1992." },
+  { kind: "trivia", text: "Team Canada boxing · amateurs to Olympians. The same work you do here." },
+];
+
 const FLOOR_WOMEN: FeedLine[] = [
   { kind: "trivia", text: "Jelena Mrdjenovich · Edmonton · long-time world featherweight champ." },
   { kind: "trivia", text: "Mrdjenovich · Canada's queen of the featherweights — belt after belt." },
@@ -340,11 +384,27 @@ const FLOOR_DEMO_CLASSES = [
   { title: "Women's Boxing", coach: "Jacklyne Irvine" },
   { title: "Competitive Team", coach: "Rico Mancini" },
   { title: "Pads", coach: "Winslow" },
+  { title: "Kids Boxing", coach: "Winslow" },
   { title: "Youth Boxing", coach: "Winslow" },
 ] as const;
 
+const FLOOR_CLASS_PHOTOS: { match: RegExp; src: string }[] = [
+  { match: /tony|morrison|beginner/i, src: "/tv/cast/coach-tony-uppercut.png?v=hd3" },
+  { match: /open gym/i, src: "/tv/cast/coach-5-jab.png?v=hd2" },
+  { match: /jacklyne|irvine|women/i, src: "/tv/cast/coach-8-hook.png?v=hd3" },
+  { match: /rico|competitive/i, src: "/tv/cast/coach-7-jab.png?v=hd3" },
+  { match: /pads/i, src: "/tv/cast/coach-1-pads.png" },
+  { match: /youth|teen/i, src: "/tv/cast/kid-2-hook.png?v=hd3" },
+  { match: /kids|kid/i, src: "/tv/cast/kid-4-uppercut.png?v=hd3" },
+];
+
 function isKidsBoxingTitle(title?: string | null) {
   return Boolean(title && /kids boxing/i.test(title));
+}
+
+function floorClassPhoto(title?: string | null, coach?: string | null) {
+  const haystack = `${title ?? ""} ${coach ?? ""}`;
+  return FLOOR_CLASS_PHOTOS.find((row) => row.match.test(haystack))?.src ?? null;
 }
 
 const CHECKIN_TEMPLATES = [
@@ -389,6 +449,7 @@ function weaveFloorFeed(input: {
       ...FLOOR_MORRISON,
       ...FLOOR_EAST,
       ...FLOOR_HISTORY,
+      ...FLOOR_OLYMPIANS,
       ...FLOOR_WOMEN,
       ...FLOOR_CURRENT,
       ...FLOOR_TRIVIA,
@@ -429,6 +490,7 @@ function weaveFloorFeed(input: {
     });
   });
 
+  const chuvaloPulse = shuffleFeed(FLOOR_CHUVALO, input.minute + 11);
   const out: FeedLine[] = [];
   const insertEvery = extras.length
     ? Math.max(2, Math.floor(knowledge.length / extras.length))
@@ -436,6 +498,9 @@ function weaveFloorFeed(input: {
   let extraIndex = 0;
   knowledge.forEach((line, i) => {
     out.push(line);
+    if ((i + 1) % 4 === 0 && chuvaloPulse.length) {
+      out.push(chuvaloPulse[Math.floor(i / 4) % chuvaloPulse.length]);
+    }
     if (extraIndex < extras.length && (i + 1) % insertEvery === 0) {
       out.push(extras[extraIndex]);
       extraIndex += 1;
@@ -584,16 +649,12 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     restSec: 60,
     rounds: 12,
   });
-  const [soundReady, setSoundReady] = useState(false);
   const [adIndex, setAdIndex] = useState(0);
   const [adOn, setAdOn] = useState(false);
   const [tickerHold, setTickerHold] = useState(false);
   const [infoIndex, setInfoIndex] = useState(0);
   const [demoClassIndex, setDemoClassIndex] = useState(0);
   const [arrivalName, setArrivalName] = useState<string | null>(null);
-  const warnedPhaseRef = useRef<string | null>(null);
-  const startBellRef = useRef<string | null>(null);
-  const previousTvModeRef = useRef<string | null>(null);
   const lastArrivalRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -602,7 +663,6 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     setDemoCelebrate(readDemoCelebrate());
     setPopupFreeze(readPopupFreeze());
     setNoteFreeze(readNoteFreeze());
-    setSoundReady(isBoxingTimerSoundUnlocked());
     const cached = readCachedBoard(profile);
     if (cached) setBoard(cached);
   }, [profile]);
@@ -624,13 +684,13 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     let cancelled = false;
     const show = () => {
       if (cancelled) return;
-      setAdIndex((i) => (i + 1) % FLOOR_ADS.length);
       setAdOn(true);
       timer = setTimeout(hide, 12000);
     };
     const hide = () => {
       if (cancelled) return;
       setAdOn(false);
+      setAdIndex((i) => (i + 1) % FLOOR_ADS.length);
       timer = setTimeout(show, 16000);
     };
     timer = setTimeout(show, 6000);
@@ -735,12 +795,6 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  async function enableSound() {
-    // Plays an audible double-clap immediately so speakers are confirmed
-    const ok = await testBoxingTimerSound();
-    setSoundReady(ok);
-  }
-
   const focus = board?.live ?? board?.next ?? null;
   const demoClass = FLOOR_DEMO_CLASSES[demoClassIndex] ?? FLOOR_DEMO_CLASSES[0];
   const scheduledTitle = focus?.title ?? null;
@@ -757,6 +811,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       : floorClassTitle === timerTitle && board?.coachTimer?.coach
         ? board.coachTimer.coach
         : demoClass.coach;
+  const classPhoto = floorClassPhoto(floorClassTitle, floorClassCoach);
 
   const classCountdown = useMemo(() => {
     if (!focus) return null;
@@ -810,46 +865,6 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       paused: false,
     };
   }, [now, board?.live, board?.coachTimer, timerCfg]);
-
-  // Boxing timer SFX — one bell per phase and a 10s wooden double-clap.
-  useEffect(() => {
-    if (profile !== "floor" || !soundReady) return;
-    if (round.paused) return;
-
-    const ct = board?.coachTimer;
-    const running = ct ? ct.status === "running" : true;
-    if (!running) return;
-
-    const phaseKey = ct
-      ? `${ct.sessionId}:${ct.phase}:${ct.round}:${ct.phaseEndsAt ?? ""}`
-      : `auto:${round.phase}:${round.round}:${round.secondsInPhase}`;
-    const left = round.secondsLeft;
-
-    // Bell once when a new running phase begins (near full duration)
-    if (
-      left >= round.secondsInPhase - 1 &&
-      left > 10 &&
-      startBellRef.current !== phaseKey
-    ) {
-      startBellRef.current = phaseKey;
-      playRoundBell();
-    }
-
-    // Fire once when we first enter the final 10s
-    if (left <= 10 && left > 0 && warnedPhaseRef.current !== phaseKey) {
-      warnedPhaseRef.current = phaseKey;
-      playTenSecondWarning();
-    }
-  }, [
-    profile,
-    soundReady,
-    round.paused,
-    round.secondsLeft,
-    round.secondsInPhase,
-    round.phase,
-    round.round,
-    board?.coachTimer,
-  ]);
 
   const floorFeed = useMemo(() => {
     const checkIns = board?.ticker?.length ? board.ticker : [];
@@ -935,21 +950,6 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     board?.coachTimer?.currentExercise?.title ?? ""
   }:${board?.coachTimer?.tvMessage ?? ""}`;
 
-  useEffect(() => {
-    if (profile !== "floor" || !soundReady) return;
-    const previous = previousTvModeRef.current;
-    previousTvModeRef.current = tvMode;
-    if (!previous || previous === tvMode) return;
-    if (
-      tvMode === "achievement" ||
-      tvMode === "class_complete" ||
-      tvMode === "xp_bonus" ||
-      tvMode === "challenge"
-    ) {
-      playCelebrationCue(tvMode);
-    }
-  }, [profile, soundReady, tvMode]);
-
   const topName = board?.leaderboard?.[0]?.displayName ?? null;
   const riveXp =
     tvMode === "class_complete"
@@ -976,22 +976,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
         round.phase === "work" ? styles.phaseWork : styles.phaseRest
       } ${showArtPopup ? styles.shellArt : ""}`}
       data-profile={profile}
-      onClick={() => {
-        if (profile === "floor" && !soundReady) void enableSound();
-      }}
     >
-      {profile === "floor" ? (
-        <button
-          type="button"
-          className={styles.soundUnlock}
-          onClick={(e) => {
-            e.stopPropagation();
-            void enableSound();
-          }}
-        >
-          {soundReady ? "🔊 Test sound (double clap)" : "Tap for sound — hear clap now"}
-        </button>
-      ) : null}
       {profile === "reception" && arrivalName ? (
         <div className={styles.arrivalMoment} role="status" aria-live="polite">
           <div className={styles.arrivalMark} aria-hidden>
@@ -1022,8 +1007,11 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
           <div className={styles.brandText}>
             <p className={styles.brandName}>{brand.copy.appName}</p>
             <p className={styles.brandSub}>
-              {brand.copy.brandSub} · EST{" "}
-              {board?.gym.established ?? brand.copy.established}
+              {/\bEST\b/i.test(brand.copy.brandSub)
+                ? brand.copy.brandSub
+                : `${brand.copy.brandSub} · EST ${
+                    board?.gym.established ?? brand.copy.established
+                  }`}
             </p>
             <p className={styles.profile}>
               {profile === "floor" ? "Training floor" : "Reception"}
@@ -1105,8 +1093,14 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             headline2={floorAd?.h2 ?? null}
             message={floorAd?.msg ?? board?.coachTimer?.tvMessage}
           />
-          {profile === "floor" && riveEnabled && !showArtPopup ? (
+          {profile === "floor" && riveEnabled && !showArtPopup && !classPhoto ? (
             <TvBoxerRig motion={round.phase === "rest" ? "rest" : "work"} />
+          ) : null}
+          {profile === "floor" && classPhoto && !showArtPopup ? (
+            <div className={styles.classFigure} aria-hidden>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={classPhoto} alt="" draggable={false} />
+            </div>
           ) : null}
           {profile === "floor" && noteFreeze && !showArtPopup ? (
             <TvArtNote
@@ -1556,11 +1550,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
         </div>
         <p className={styles.hint}>
           Press F for fullscreen
-          {profile === "floor"
-            ? soundReady
-              ? " · Sound on"
-              : ""
-            : " · Auto-refreshes"}
+          {profile === "floor" ? "" : " · Auto-refreshes"}
         </p>
       </footer>
     </div>

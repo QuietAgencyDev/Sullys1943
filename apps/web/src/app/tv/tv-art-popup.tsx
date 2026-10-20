@@ -291,7 +291,7 @@ const SPECS: Record<string, ArtSpec> = {
     nameField(),
   ]),
   kids: card("kids", "KIDS BOXING", "KIDS", "BOXING.", "GO. HAVE FUN. LISTEN UP.", [
-    { id: "message", text: "KID 1  •  KID 2", x: 118, y: 543, size: 36, fill: CREAM },
+    { id: "message", text: "KID 1  •  KID 2", x: 118, y: 543, size: 36, fill: CREAM, live: true },
   ]),
   kids_complete: card("kids_complete", "KIDS SESSION DONE", "SESSION", "DONE!", "SEE YOU NEXT BELL.", [
     xpField("+15 XP"),
@@ -344,8 +344,8 @@ function card(
     kindFill,
     footer,
     fields: [
-      { id: "headline_1", text: h1, x: 110, y: 350, size: 96, fill: CREAM },
-      { id: "headline_2", text: h2, x: 110, y: 462, size: 96, fill: CREAM },
+      { id: "headline_1", text: h1, x: 110, y: 350, size: 96, fill: CREAM, live: true },
+      { id: "headline_2", text: h2, x: 110, y: 462, size: 96, fill: CREAM, live: true },
       ...extra,
     ],
   };
@@ -451,13 +451,15 @@ export function TvArtPopup(live: TvArtPopupLive) {
           const wide =
             layer.file === "03_hero.png" &&
             (WIDE_HERO.has(live.tvMode) || (hero ?? "").includes("sparring"));
+          const cast =
+            layer.file === "03_hero.png" && Boolean(hero);
           return (
             <ArtLayer
               key={layer.file}
               src={src}
               className={`${styles.layer} ${layerClass(layer.className)} ${
-                wide ? styles.wideHero : ""
-              }`.trim()}
+                cast ? styles.castHero : ""
+              } ${wide ? styles.wideHero : ""}`.trim()}
             />
           );
         })}
@@ -545,7 +547,7 @@ const CORE_FOLDERS = new Set([
 const PANEL_ONLY = new Set(["heritage"]);
 
 const CAST_HERO: Record<string, string> = {
-  challenge: "/tv/cast/coach-1-jab-stage.png",
+  challenge: "/tv/cast/coach-7-jab.png?v=hd3",
   pads: "/tv/cast/coach-1-pads-stage.png",
   check_in: "/tv/cast/coach-1-guard-stage.png",
   first_visit: "/tv/cast/coach-4-guard-stage.png",
@@ -553,15 +555,15 @@ const CAST_HERO: Record<string, string> = {
   class_starting: "/tv/cast/coach-2-welcome-stage.png",
   streak: "/tv/cast/teen-1-guard-stage.png",
   welcome_back: "/tv/cast/coach-2-guard-stage.png",
-  announcement: "/tv/cast/coach-3-guard-stage.png",
+  announcement: "/tv/cast/coach-8-hook.png?v=hd3",
   timer: "/tv/cast/coach-1-rest-stage.png",
   sparring: "/tv/cast/kids-sparring-4-stage.png",
-  combo: "/tv/cast/kid-4-jab-stage.png",
-  kids: "/tv/cast/kid-1-guard-stage.png",
-  youth: "/tv/cast/kid-2-celebrate-stage.png",
+  combo: "/tv/cast/kid-7-jab.png?v=hd3",
+  kids: "/tv/cast/kid-4-uppercut.png?v=hd3",
+  youth: "/tv/cast/kid-2-hook.png?v=hd3",
   birthday: "/tv/cast/kid-2-celebrate-stage.png",
   kids_complete: "/tv/cast/kid-3-celebrate-stage.png",
-  legend: "/tv/cast/teen-2-guard-stage.png",
+  legend: "/tv/cast/george-chuvalo-guard.png?v=hd5",
   sully_xp: "/tv/cast/sully-xp-stage.png",
   achievement: "/tv/cast/coach-1-victory-stage.png",
   challenge_winner: "/tv/cast/coach-1-victory-stage.png",
@@ -575,70 +577,147 @@ const WIDE_HERO = new Set(["sparring", "youth"]);
 export const FLOOR_ADS = [
   {
     mode: "class_starting",
-    hero: "/tv/cast/coach-2-welcome-stage.png",
+    hero: "/tv/cast/coach-tony-uppercut.png?v=hd3",
     h1: "BEGINNER",
     h2: "BOXING.",
     msg: "NOON CLASS · TONY MORRISON · LACE UP",
   },
   {
+    mode: "legend",
+    hero: "/tv/cast/george-chuvalo-wrap.png?v=hd4",
+    h1: "CHUVALO",
+    h2: "THE CHIN.",
+    msg: "GEORGE CHUVALO · 93 FIGHTS · NEVER KNOCKED DOWN",
+  },
+  {
     mode: "class_starting",
-    hero: "/tv/cast/teen-1-guard-stage.png",
+    hero: "/tv/cast/coach-8-hook.png?v=hd3",
     h1: "WOMEN'S",
     h2: "BOXING.",
     msg: "JACKLYNE IRVINE · 7 PM · ALL LEVELS",
   },
   {
     mode: "class_starting",
-    hero: "/tv/cast/coach-4-guard-stage.png",
+    hero: "/tv/cast/coach-7-jab.png?v=hd3",
     h1: "COMPETITIVE",
     h2: "TEAM.",
     msg: "RICO MANCINI · 6 PM · BRING THE WORK",
   },
   {
+    mode: "class_starting",
+    hero: "/tv/cast/coach-5-jab.png?v=hd2",
+    h1: "OPEN",
+    h2: "GYM.",
+    msg: "VETERANS ON THE FLOOR · ALL LEVELS",
+  },
+  {
     mode: "pads",
-    hero: "/tv/cast/coach-1-pads-stage.png",
+    hero: "/tv/cast/coach-1-pads.png",
     h1: "PADS",
     h2: "NOW.",
     msg: "OPEN GYM · STATION 2 · HANDS UP",
   },
   {
+    mode: "kids",
+    hero: "/tv/cast/kid-4-uppercut.png?v=hd3",
+    h1: "KIDS",
+    h2: "BOXING.",
+    msg: "AFTER SCHOOL · KID BOXERS · ASK THE DESK",
+  },
+  {
+    mode: "kids",
+    hero: "/tv/cast/kid-7-jab.png?v=hd3",
+    h1: "KIDS",
+    h2: "JAB.",
+    msg: "ORTHODOX JAB · AFTER SCHOOL · ASK THE DESK",
+  },
+  {
+    mode: "combo",
+    hero: "/tv/cast/kid-8-jab.png?v=hd3",
+    h1: "KIDS",
+    h2: "COMBO.",
+    msg: "1–2  ·  AFTER SCHOOL  ·  ASK THE DESK",
+  },
+  {
     mode: "youth",
-    hero: "/tv/cast/kid-2-celebrate-stage.png",
+    hero: "/tv/cast/kid-2-hook.png?v=hd3",
     h1: "YOUTH",
     h2: "BOXING.",
-    msg: "KIDS 6–14 · AFTER SCHOOL · ASK THE DESK",
+    msg: "LEFT HOOK · AFTER SCHOOL · ASK THE DESK",
   },
   {
     mode: "legend",
-    hero: "/tv/cast/teen-2-guard-stage.png",
+    hero: "/tv/cast/george-chuvalo-guard.png?v=hd5",
+    h1: "CHUVALO",
+    h2: "15 ROUNDS.",
+    msg: "MARCH 29, 1966 · ALI AT THE GARDENS · STILL STANDING",
+  },
+  {
+    mode: "legend",
+    hero: "/tv/cast/coach-tony-uppercut.png?v=hd3",
+    h1: "KID",
+    h2: "MORRISON.",
+    msg: "TONY MORRISON · CANADIAN HEAVYWEIGHT CHAMP · THIS FLOOR",
+  },
+  {
+    mode: "class_starting",
+    hero: "/tv/cast/coach-8-hook-2.png?v=hd3",
+    h1: "WOMEN'S",
+    h2: "HOOK.",
+    msg: "JACKLYNE IRVINE · 7 PM · ALL LEVELS",
+  },
+  {
+    mode: "legend",
+    hero: "/tv/cast/coach-5-jab.png?v=hd2",
+    h1: "OLD",
+    h2: "SCHOOL.",
+    msg: "THE VETERANS STILL PUT IN WORK · THIS FLOOR",
+  },
+  {
+    mode: "legend",
+    hero: "/tv/cast/coach-6-celebrate.png?v=hd2",
+    h1: "STILL",
+    h2: "SWINGING.",
+    msg: "OLD SCHOOL BOXERS · RESPECT THE WORK",
+  },
+  {
+    mode: "legend",
+    hero: "/tv/cast/coach-7-guard.png?v=hd2",
     h1: "VARGAS",
     h2: "147.",
     msg: "SAM VARGAS · BRAMPTON · NABA WELTER CHAMP",
   },
   {
     mode: "legend",
-    hero: "/tv/cast/coach-4-guard-stage.png",
+    hero: "/tv/cast/coach-5-jab.png?v=hd2",
     h1: "MOLITOR",
     h2: "IBF.",
     msg: "STEVE MOLITOR · SARNIA · TWO-TIME WORLD CHAMP",
   },
   {
     mode: "legend",
-    hero: "/tv/cast/teen-1-guard-stage.png",
+    hero: "/tv/cast/coach-7-guard.png?v=hd2",
     h1: "HERON",
     h2: "UNBEATEN.",
     msg: "KANE HERON · ETOBICOKE · 17-0-1 WELTER",
   },
   {
     mode: "legend",
-    hero: "/tv/cast/coach-1-victory-stage.png",
+    hero: "/tv/cast/george-chuvalo-wrap.png?v=hd4",
     h1: "CHUVALO",
     h2: "1937–2026.",
     msg: "NEVER KNOCKED DOWN. TORONTO REMEMBERS.",
   },
   {
     mode: "legend",
-    hero: "/tv/cast/coach-3-guard-stage.png",
+    hero: "/tv/cast/george-chuvalo-guard.png?v=hd5",
+    h1: "GEORGE",
+    h2: "CHUVALO.",
+    msg: "TORONTO HEAVYWEIGHT · THE CHIN THAT WOULD NOT GO DOWN",
+  },
+  {
+    mode: "legend",
+    hero: "/tv/cast/coach-7-guard.png?v=hd2",
     h1: "LEWIS",
     h2: "UNDISPUTED.",
     msg: "LENNOX LEWIS · KITCHENER · HEAVYWEIGHT CROWN",

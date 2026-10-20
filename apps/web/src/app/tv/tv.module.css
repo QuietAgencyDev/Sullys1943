@@ -322,12 +322,12 @@
     rgba(0, 0, 0, 0.35)
   );
   animation: rise 700ms ease both;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .hero.heroArt {
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
   z-index: 5;
 }
 
@@ -511,6 +511,34 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   font-size: clamp(0.8rem, 1.5vw, 1rem);
+}
+
+.classFigure {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: min(50%, 640px);
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  display: grid;
+  place-items: end right;
+  padding: 2.4% 0.6% 0.6% 0;
+  overflow: visible;
+  background: none;
+  box-shadow: none;
+}
+
+.classFigure img {
+  height: 88%;
+  width: auto;
+  max-width: 100%;
+  max-height: 88%;
+  object-fit: contain;
+  object-position: right center;
+  background: none;
+  box-shadow: none;
+  filter: none;
 }
 
 .classTitle {
@@ -822,7 +850,7 @@
   display: inline-flex;
   width: max-content;
   align-items: center;
-  animation: marquee 720s linear infinite;
+  animation: marquee 1100s linear infinite;
   color: #f3e6c8;
   font-size: clamp(1.05rem, 1.85vw, 1.42rem);
   font-weight: 700;
