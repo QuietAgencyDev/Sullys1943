@@ -701,10 +701,31 @@ export const FLOOR_ADS = [
   },
   {
     mode: "legend",
-    hero: "/tv/cast/coach-7-guard.png?v=hd2",
+    hero: SULLYS_BELT,
     h1: "HERON",
     h2: "UNBEATEN.",
     msg: "KANE HERON · ETOBICOKE · 17-0-1 WELTER",
+  },
+  {
+    mode: "legend",
+    hero: SULLYS_BELT,
+    h1: "JELENA",
+    h2: "THE BELT.",
+    msg: "JELENA MRDJENOVICH · EDMONTON · WORLD FEATHERWEIGHT CHAMP",
+  },
+  {
+    mode: "legend",
+    hero: SULLYS_BELT,
+    h1: "CLAVEL",
+    h2: "CHAMP.",
+    msg: "KIM CLAVEL · MONTREAL · SUPER-FLYWEIGHT WORLD CHAMP",
+  },
+  {
+    mode: "legend",
+    hero: SULLYS_BELT,
+    h1: "DICAIRE",
+    h2: "IBF.",
+    msg: "MARIE-EVE DICAIRE · MONTREAL · SUPER WELTER WORLD CHAMP",
   },
   {
     mode: "legend",
@@ -722,7 +743,7 @@ export const FLOOR_ADS = [
   },
   {
     mode: "legend",
-    hero: "/tv/cast/coach-7-guard.png?v=hd2",
+    hero: SULLYS_BELT,
     h1: "LEWIS",
     h2: "UNDISPUTED.",
     msg: "LENNOX LEWIS · KITCHENER · HEAVYWEIGHT CROWN",
