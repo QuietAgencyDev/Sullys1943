@@ -38,7 +38,7 @@ const NOTES: Record<FloorNoteMode, NoteSpec> = {
   streak_chip: { kicker: "Streak", title: "×3", chip: true },
   rank_bump: { kicker: "Board", title: "2ND → 1ST", chip: true },
   wraps: { kicker: "Floor", title: "WRAPS ON", meta: "Water up", chip: true },
-  next_up: { kicker: "Up next", title: "KIDS BOXING", meta: "4:00", wide: true },
+  next_up: { kicker: "Up next", title: "BEGINNER BOXING", meta: "12:00", wide: true },
   values: {
     kicker: "Sully’s",
     title: "LACE UP",

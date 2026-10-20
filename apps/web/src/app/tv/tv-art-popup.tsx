@@ -277,7 +277,7 @@ const SPECS: Record<string, ArtSpec> = {
     nameField(),
   ]),
   class_starting: card("class_starting", "UP NEXT", "CLASS", "STARTING.", "GET WRAPPED. GET ON THE FLOOR.", [
-    { id: "message", text: "KIDS BOXING", x: 118, y: 543, size: 42, fill: CREAM, live: true },
+    { id: "message", text: "BEGINNER BOXING", x: 118, y: 543, size: 42, fill: CREAM, live: true },
     { id: "timer", text: "00:02:00", x: 118, y: 665, size: 72, fill: GOLD, live: true },
   ]),
   last_spots: card("last_spots", "FILL THE RING", "2 SPOTS", "LEFT.", "CLAIM THEM BEFORE THE BELL.", [
@@ -550,7 +550,7 @@ const CAST_HERO: Record<string, string> = {
   check_in: "/tv/cast/coach-1-guard-stage.png",
   first_visit: "/tv/cast/coach-4-guard-stage.png",
   last_spots: "/tv/cast/teen-2-guard-stage.png",
-  class_starting: "/tv/cast/kid-1-guard-stage.png",
+  class_starting: "/tv/cast/coach-2-welcome-stage.png",
   streak: "/tv/cast/teen-1-guard-stage.png",
   welcome_back: "/tv/cast/coach-2-guard-stage.png",
   announcement: "/tv/cast/coach-3-guard-stage.png",
@@ -574,32 +574,39 @@ const WIDE_HERO = new Set(["sparring", "youth"]);
 
 export const FLOOR_ADS = [
   {
+    mode: "class_starting",
+    hero: "/tv/cast/coach-2-welcome-stage.png",
+    h1: "BEGINNER",
+    h2: "BOXING.",
+    msg: "NOON CLASS · TONY MORRISON · LACE UP",
+  },
+  {
+    mode: "class_starting",
+    hero: "/tv/cast/teen-1-guard-stage.png",
+    h1: "WOMEN'S",
+    h2: "BOXING.",
+    msg: "JACKLYNE IRVINE · 7 PM · ALL LEVELS",
+  },
+  {
+    mode: "class_starting",
+    hero: "/tv/cast/coach-4-guard-stage.png",
+    h1: "COMPETITIVE",
+    h2: "TEAM.",
+    msg: "RICO MANCINI · 6 PM · BRING THE WORK",
+  },
+  {
+    mode: "pads",
+    hero: "/tv/cast/coach-1-pads-stage.png",
+    h1: "PADS",
+    h2: "NOW.",
+    msg: "OPEN GYM · STATION 2 · HANDS UP",
+  },
+  {
     mode: "youth",
     hero: "/tv/cast/kid-2-celebrate-stage.png",
-    h1: "SIGN",
-    h2: "UP.",
-    msg: "YOUTH BOXING · KIDS 6–14 · ASK THE DESK",
-  },
-  {
-    mode: "youth",
-    hero: "/tv/cast/kid-6-guard-stage.png",
-    h1: "KIDS",
-    h2: "BOXING.",
-    msg: "AFTER SCHOOL. CHARACTER FIRST.",
-  },
-  {
-    mode: "youth",
-    hero: "/tv/cast/kids-sparring-4-stage.png",
     h1: "YOUTH",
-    h2: "RING.",
-    msg: "GET THEM ON THE FLOOR. SULLY’S EST 1943.",
-  },
-  {
-    mode: "youth",
-    hero: "/tv/cast/kid-3-celebrate-stage.png",
-    h1: "BRING",
-    h2: "THEM.",
-    msg: "YOUTH BOXING · LACE UP · HAVE FUN",
+    h2: "BOXING.",
+    msg: "KIDS 6–14 · AFTER SCHOOL · ASK THE DESK",
   },
   {
     mode: "legend",

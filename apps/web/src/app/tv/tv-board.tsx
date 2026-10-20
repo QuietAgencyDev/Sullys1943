@@ -205,6 +205,93 @@ const FLOOR_HERON: FeedLine[] = [
   { kind: "trivia", text: "Kane Heron · amateur national champ, then the pro unbeaten run." },
 ];
 
+const FLOOR_MORRISON: FeedLine[] = [
+  { kind: "trivia", text: "Tony “Kid” Morrison · Toronto · Canadian heavyweight champ." },
+  { kind: "trivia", text: "Morrison · Jamaica to Lawrence Heights · Sully's trainer." },
+  { kind: "trivia", text: "Kid Morrison stopped Leon Spinks in 33 seconds, 1988." },
+  { kind: "trivia", text: "Morrison took the Canadian heavyweight belt in Mississauga, 1989." },
+  { kind: "trivia", text: "Tony Morrison · Canadian light-heavy champ · 17-12-1, 11 KOs." },
+  { kind: "trivia", text: "Morrison trained with Shawn O'Sullivan at Cabbagetown." },
+  { kind: "trivia", text: "Kid Morrison still teaches on this floor. Ask him about the work." },
+];
+
+const FLOOR_EAST: FeedLine[] = [
+  { kind: "trivia", text: "Shawn O'Sullivan · Cabbagetown Kid · Olympic silver, L.A. 1984." },
+  { kind: "trivia", text: "O'Sullivan · amateur world champ 1981 · Toronto's 94-6 amateur run." },
+  { kind: "trivia", text: "Egerton Marcus · Toronto · Olympic silver, Seoul 1988." },
+  { kind: "trivia", text: "Marcus beat Sven Ottke on the way to that Olympic final." },
+  { kind: "trivia", text: "Mark Leduc · Toronto · Olympic silver, Barcelona 1992." },
+  { kind: "trivia", text: "Chris Johnson · Toronto · Olympic bronze, Barcelona 1992." },
+  { kind: "trivia", text: "Frenchy Belanger · Cabbagetown · world flyweight champ, 1927." },
+  { kind: "trivia", text: "Larry Gains · Toronto Terror · beat Schmeling and Carnera." },
+  { kind: "trivia", text: "Gains · Cabbagetown · Canadian and British Empire heavyweight champ." },
+  { kind: "trivia", text: "Otis “Magic” Grant · Montreal · WBO middleweight world champ." },
+  { kind: "trivia", text: "Grant · first Black Quebecer to win a world title · 1997." },
+  { kind: "trivia", text: "Otis Grant went 10 with Roy Jones Jr. after the middleweight crown." },
+  { kind: "trivia", text: "Eric Lucas · Montreal · WBC super middleweight world champ." },
+  { kind: "trivia", text: "David Lemieux · Montreal · IBF middleweight world champ." },
+  { kind: "trivia", text: "Joachim Alcine · Montreal · WBA light-middleweight world champ." },
+  { kind: "trivia", text: "Troy Amos-Ross · Brampton · two-time Olympic light heavyweight." },
+];
+
+const FLOOR_HISTORY: FeedLine[] = [
+  { kind: "trivia", text: "George Dixon · Africville, Halifax · Little Chocolate · first Black world champ." },
+  { kind: "trivia", text: "Dixon won bantamweight in 1890, then featherweight. Two-division pioneer." },
+  { kind: "trivia", text: "George Dixon helped invent modern training — shadowboxing and the bag." },
+  { kind: "trivia", text: "Sam Langford · Weymouth Falls, N.S. · one of the greatest never given a U.S. title shot." },
+  { kind: "trivia", text: "Langford beat Joe Gans as a lightweight, then went 15 with Jack Johnson." },
+  { kind: "trivia", text: "Langford held titles in Canada, England, Australia, and Mexico." },
+  { kind: "trivia", text: "Tommy Burns · born Noah Brusso · Hanover, Ontario." },
+  { kind: "trivia", text: "Burns · 5-foot-7 world heavyweight champ. Ten defences in 33 months." },
+  { kind: "trivia", text: "Burns KO'd Ireland's Jem Roche in 88 seconds. Shortest title defence ever." },
+  { kind: "trivia", text: "Christmas 1908 · Sydney · Burns vs Jack Johnson. The heavyweight world watched." },
+  { kind: "trivia", text: "Jimmy McLarnin · Vancouver's Baby Face · beat Barney Ross for the welter crown." },
+  { kind: "trivia", text: "Lou Brouillard · Quebec · world welterweight and middleweight champ in the '30s." },
+  { kind: "trivia", text: "Jackie Callura · Hamilton · world featherweight champ, 1943." },
+  { kind: "trivia", text: "Johnny Greco · Montreal welterweight · packed the Forum night after night." },
+  { kind: "trivia", text: "Sammy Luftspring · Toronto · Canadian welter champ · Star of David on the trunks." },
+  { kind: "trivia", text: "Luftspring boycotted Berlin 1936. Then won the Canadian welterweight belt." },
+  { kind: "trivia", text: "Luftspring KO'd Frankie Genovese in 13 at Mutual Street Arena, 1938." },
+  { kind: "trivia", text: "Lefty Gwynne · Toronto · Olympic bantamweight gold, Los Angeles 1932." },
+  { kind: "trivia", text: "Bert Schneider · Montreal · Canada's first Olympic boxing gold, Antwerp 1920." },
+  { kind: "trivia", text: "Antwerp 1920 · Canada's best Olympic boxing night. Five medals." },
+  { kind: "trivia", text: "Horace “Lefty” Gwynne · the second Canadian Olympic boxing gold." },
+  { kind: "trivia", text: "Canada has three Olympic boxing golds: Schneider, Gwynne, Lennox Lewis." },
+  { kind: "trivia", text: "Yvon Durelle vs Archie Moore · Montreal Forum, 1958. Four knockdowns. Lore." },
+  { kind: "trivia", text: "Durelle · Baie-Sainte-Anne's Fighting Fisherman · one night from the crown." },
+  { kind: "trivia", text: "Maple Leaf Gardens · Ali vs Chuvalo · 15 rounds · March 29, 1966." },
+  { kind: "trivia", text: "Championships used to go 15. Chuvalo went every round with Ali." },
+  { kind: "trivia", text: "Clyde Gray · Toronto · two-time world-title challenger at welterweight." },
+  { kind: "trivia", text: "Ruddock vs Tyson I and II · 1991. The Smash from Toronto." },
+  { kind: "trivia", text: "Willie de Wit · Grande Prairie · Olympic heavyweight silver, L.A. 1984." },
+  { kind: "trivia", text: "Dale Walters · Olympic bantamweight bronze, Los Angeles 1984." },
+  { kind: "trivia", text: "Ray Downey · Halifax · Olympic bronze, Seoul 1988." },
+  { kind: "trivia", text: "Seoul 1988 · Lewis gold, Marcus silver, Downey bronze. Canada's night." },
+  { kind: "trivia", text: "Lewis stopped Riddick Bowe for Olympic gold in Seoul." },
+  { kind: "trivia", text: "David Defiagbon · Olympic heavyweight silver, Atlanta 1996." },
+  { kind: "trivia", text: "Wyatt Sanford · Paris 2024 bronze · first Canadian Olympic boxing medal in 28 years." },
+  { kind: "trivia", text: "Mary Spencer · first Canadian woman in Olympic boxing, London 2012." },
+  { kind: "trivia", text: "Women's Olympic boxing began in 2012. Canada was in that first draw." },
+  { kind: "trivia", text: "Donny Lalonde · Winnipeg's Golden Boy · WBC light-heavy champ, 1987." },
+  { kind: "trivia", text: "Lalonde fought Sugar Ray Leonard with two belts on the line." },
+  { kind: "trivia", text: "Matthew Hilton · first Canadian world champ since Callura — 44 years later." },
+  { kind: "trivia", text: "Arturo Gatti · born Montreal · three Fights of the Year with Micky Ward." },
+  { kind: "trivia", text: "Gatti vs Ward I · Fight of the Year. A Canadian in a war." },
+  { kind: "trivia", text: "Jean Pascal · Haitian-Canadian · light-heavy world champ out of Laval." },
+  { kind: "trivia", text: "Pascal vs Hopkins · Bell Centre nights. Montreal on the world stage." },
+  { kind: "trivia", text: "Adonis “Superman” Stevenson · KO'd Chad Dawson in 76 seconds for the WBC belt." },
+  { kind: "trivia", text: "Stevenson · Haitian-Canadian southpaw · Knockout of the Year, 2013." },
+  { kind: "trivia", text: "Scotty Olson · Edmonton's Bulldog · IBO flyweight world champ." },
+  { kind: "trivia", text: "Leonard Dorin · Edmonton · IBF lightweight world champ." },
+  { kind: "trivia", text: "Kirk Johnson · North Preston, N.S. · fought for the WBA heavyweight title." },
+  { kind: "trivia", text: "Michael Olajide Jr. · Vancouver · a round from the WBA middleweight crown." },
+  { kind: "trivia", text: "Arthur Biyarslanov · Toronto · Pan Am gold on home soil, 2015." },
+  { kind: "trivia", text: "Ariane Fortin · Quebec · amateur world champion middleweight." },
+  { kind: "trivia", text: "Tammara Thibeault · 2022 amateur world champ · Commonwealth gold too." },
+  { kind: "trivia", text: "Amateur boxing in Canada runs through Boxing Canada. Nationals make teams." },
+  { kind: "trivia", text: "The Canadian title is still a real belt. Earn it in a provincial ring." },
+];
+
 const FLOOR_WOMEN: FeedLine[] = [
   { kind: "trivia", text: "Jelena Mrdjenovich · Edmonton · long-time world featherweight champ." },
   { kind: "trivia", text: "Mrdjenovich · Canada's queen of the featherweights — belt after belt." },
@@ -242,6 +329,23 @@ const FLOOR_SYSTEM: FeedLine[] = [
   { kind: "system", text: "Family on the floor. Kids in the craft." },
   { kind: "system", text: "Youth boxing · kids 6–14 · ask the desk." },
 ];
+
+const TICKER_FIRST_MS = 10000;
+const TICKER_SCROLL_MS = 18000;
+const TICKER_HOLD_MS = 7000;
+
+const FLOOR_DEMO_CLASSES = [
+  { title: "Beginner Boxing", coach: "Tony Morrison" },
+  { title: "Open Gym", coach: "Tony Morrison" },
+  { title: "Women's Boxing", coach: "Jacklyne Irvine" },
+  { title: "Competitive Team", coach: "Rico Mancini" },
+  { title: "Pads", coach: "Winslow" },
+  { title: "Youth Boxing", coach: "Winslow" },
+] as const;
+
+function isKidsBoxingTitle(title?: string | null) {
+  return Boolean(title && /kids boxing/i.test(title));
+}
 
 const CHECKIN_TEMPLATES = [
   (name: string) => `${name} · on the floor`,
@@ -282,6 +386,9 @@ function weaveFloorFeed(input: {
       ...FLOOR_CANADA,
       ...FLOOR_VARGAS,
       ...FLOOR_HERON,
+      ...FLOOR_MORRISON,
+      ...FLOOR_EAST,
+      ...FLOOR_HISTORY,
       ...FLOOR_WOMEN,
       ...FLOOR_CURRENT,
       ...FLOOR_TRIVIA,
@@ -480,6 +587,9 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   const [soundReady, setSoundReady] = useState(false);
   const [adIndex, setAdIndex] = useState(0);
   const [adOn, setAdOn] = useState(false);
+  const [tickerHold, setTickerHold] = useState(false);
+  const [infoIndex, setInfoIndex] = useState(0);
+  const [demoClassIndex, setDemoClassIndex] = useState(0);
   const [arrivalName, setArrivalName] = useState<string | null>(null);
   const warnedPhaseRef = useRef<string | null>(null);
   const startBellRef = useRef<string | null>(null);
@@ -529,6 +639,27 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       clearTimeout(timer);
     };
   }, [demoCelebrate, popupFreeze, profile]);
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    let holding = false;
+    const tick = () => {
+      holding = !holding;
+      setTickerHold(holding);
+      if (holding) setInfoIndex((i) => i + 1);
+      timer = setTimeout(tick, holding ? TICKER_HOLD_MS : TICKER_SCROLL_MS);
+    };
+    timer = setTimeout(tick, TICKER_FIRST_MS);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (profile !== "floor") return;
+    const cycle = window.setInterval(() => {
+      setDemoClassIndex((i) => (i + 1) % FLOOR_DEMO_CLASSES.length);
+    }, 40000);
+    return () => window.clearInterval(cycle);
+  }, [profile]);
 
   const coachLive = Boolean(board?.coachTimer);
 
@@ -611,6 +742,21 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   }
 
   const focus = board?.live ?? board?.next ?? null;
+  const demoClass = FLOOR_DEMO_CLASSES[demoClassIndex] ?? FLOOR_DEMO_CLASSES[0];
+  const scheduledTitle = focus?.title ?? null;
+  const timerTitle = board?.coachTimer?.title ?? null;
+  const floorClassTitle =
+    scheduledTitle && !isKidsBoxingTitle(scheduledTitle)
+      ? scheduledTitle
+      : timerTitle && !isKidsBoxingTitle(timerTitle)
+        ? timerTitle
+        : demoClass.title;
+  const floorClassCoach =
+    floorClassTitle === scheduledTitle && focus?.coach
+      ? focus.coach
+      : floorClassTitle === timerTitle && board?.coachTimer?.coach
+        ? board.coachTimer.coach
+        : demoClass.coach;
 
   const classCountdown = useMemo(() => {
     if (!focus) return null;
@@ -731,6 +877,14 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   const coachMode = board?.coachTimer?.tvMode ?? "timer";
   const liveEvent =
     coachMode !== "timer" && hasArtPopup(coachMode) && !popupFreeze && !demoCelebrate;
+  const infoFacts = useMemo(
+    () => floorFeed.filter((line) => line.kind === "trivia"),
+    [floorFeed],
+  );
+  const infoLine = infoFacts.length
+    ? infoFacts[infoIndex % infoFacts.length]
+    : null;
+  const infoText = (infoLine?.text ?? "").replace(/^Trivia · /, "");
   const floorAd = adOn && profile === "floor" ? FLOOR_ADS[adIndex] : null;
   const tvMode =
     popupFreeze && profile === "floor"
@@ -1117,17 +1271,12 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                   : ""}
               </p>
               <h1 className={styles.classTitle}>
-                {board?.coachTimer?.currentExercise?.title ??
-                  board?.coachTimer?.title ??
-                  focus?.title ??
-                  "Open gym rounds"}
+                {floorClassTitle}
               </h1>
               <p className={styles.meta}>
-                {board?.coachTimer?.coach
-                  ? `Coach ${board.coachTimer.coach}`
-                  : focus?.coach
-                    ? `Coach ${focus.coach}`
-                    : floor}
+                {floorClassCoach
+                  ? `Coach ${floorClassCoach}`
+                  : floor}
                 {board?.coachTimer?.nextExercise
                   ? ` · Next: ${board.coachTimer.nextExercise.title}`
                   : ""}
@@ -1354,8 +1503,29 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       </div>
 
       <footer className={styles.bottom}>
-        <div className={styles.ticker} aria-label="Floor feed">
-          <div className={styles.tickerTrack}>
+        <div
+          className={`${styles.ticker} ${tickerHold && infoText ? styles.isHold : ""}`}
+          aria-label="Canadian boxing news"
+        >
+          <span className={styles.tickerFlag} aria-hidden="true">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/tv/icons/canada-flag.png" alt="" draggable={false} />
+          </span>
+          {tickerHold && infoText ? (
+            <div className={styles.tickerInfo} aria-live="polite">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/tv/icons/info.png"
+                alt=""
+                className={styles.tickerInfoIcon}
+                draggable={false}
+              />
+              <span className={styles.tickerInfoMark}>INFO</span>
+              <p className={styles.tickerInfoCopy}>{infoText}</p>
+            </div>
+          ) : null}
+          <div className={styles.tickerCrawl} hidden={tickerHold && Boolean(infoText)}>
+            <div className={styles.tickerTrack}>
             {[0, 1].map((copy) => (
               <div
                 className={styles.tickerCopy}
@@ -1381,6 +1551,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                 ))}
               </div>
             ))}
+            </div>
           </div>
         </div>
         <p className={styles.hint}>
