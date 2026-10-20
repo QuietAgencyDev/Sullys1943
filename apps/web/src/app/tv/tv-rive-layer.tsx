@@ -33,6 +33,9 @@ export type TvRiveProps = {
   scoreLabel?: string | null;
   teamA?: { name: string; points: number } | null;
   teamB?: { name: string; points: number } | null;
+  heroSrc?: string | null;
+  headline1?: string | null;
+  headline2?: string | null;
 };
 
 const SM = "TV";
@@ -424,6 +427,9 @@ export function TvRiveLayer({
   scoreLabel,
   teamA,
   teamB,
+  heroSrc,
+  headline1,
+  headline2,
 }: TvRiveProps) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -449,7 +455,7 @@ export function TvRiveLayer({
   if (useArt && hasArtPopup(tvMode)) {
     return (
       <TvArtPopup
-        key={tvMode}
+        key={`${tvMode}:${heroSrc ?? ""}:${headline1 ?? ""}`}
         tvMode={tvMode}
         highlightName={highlightName}
         xpBonus={xpBonus}
@@ -461,6 +467,9 @@ export function TvRiveLayer({
         scoreLabel={scoreLabel}
         teamA={teamA}
         teamB={teamB}
+        heroSrc={heroSrc}
+        headline1={headline1}
+        headline2={headline2}
       />
     );
   }
@@ -580,6 +589,9 @@ export const FLOOR_POPUP_MODES = [
   "pads",
   "sparring",
   "combo",
+  "youth",
+  "legend",
+  "sully_xp",
 ] as const;
 
 export type FloorPopupMode = (typeof FLOOR_POPUP_MODES)[number];
@@ -608,6 +620,14 @@ export const TV_ICON_FILES = [
   { file: "shorts.png", use: "Apparel" },
   { file: "kickboxing-equipment.png", use: "Gear" },
   { file: "champion-belt.png", use: "Achievement / leaderboard" },
+  { file: "kids.png", use: "Kids boxing" },
+  { file: "pads.png", use: "Pads" },
+  { file: "streak.png", use: "Streak" },
+  { file: "level-up.png", use: "Level up" },
+  { file: "check-in.png", use: "Check-in" },
+  { file: "announcement.png", use: "Announcement" },
+  { file: "heritage-mark.png", use: "Heritage" },
+  { file: "sully-xp.png", use: "Sully XP" },
 ] as const;
 
 export { hasArtPopup };

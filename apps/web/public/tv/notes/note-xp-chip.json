@@ -1,0 +1,17 @@
+{
+  "canvas": [
+    800,
+    240
+  ],
+  "origin": "top-left",
+  "safe_text": {
+    "x": 118,
+    "y": 57,
+    "w": 510,
+    "h": 126
+  },
+  "motion": "fade + 24px from left, 220ms, hold",
+  "contains_live_typography": false,
+  "characters": false,
+  "trim_layers": false
+}

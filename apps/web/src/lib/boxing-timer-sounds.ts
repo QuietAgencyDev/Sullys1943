@@ -72,7 +72,7 @@ function woodenHitSamples(sampleRate: number, gain = 0.95): Float32Array {
 
 function doubleClapWav(): string {
   const sr = 44100;
-  const hit = woodenHitSamples(sr, 1);
+  const hit = woodenHitSamples(sr, 0.62);
   const gap = Math.floor(sr * 0.16);
   const out = new Float32Array(hit.length * 2 + gap);
   out.set(hit, 0);
@@ -146,12 +146,12 @@ function ensurePlayers() {
   if (!warnAudio) {
     warnAudio = new Audio(doubleClapWav());
     warnAudio.preload = "auto";
-    warnAudio.volume = 1;
+    warnAudio.volume = 0.38;
   }
   if (!bellAudio) {
     bellAudio = new Audio(bellWav());
     bellAudio.preload = "auto";
-    bellAudio.volume = 0.9;
+    bellAudio.volume = 0.48;
   }
   if (!impactAudio) {
     impactAudio = new Audio(impactWav());

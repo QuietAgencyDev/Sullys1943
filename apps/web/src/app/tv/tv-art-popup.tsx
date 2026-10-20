@@ -201,7 +201,7 @@ const SPECS: Record<string, ArtSpec> = {
   xp_bonus: {
     folder: "xp_bonus",
     brand: "SULLY’S BOXING GYM",
-    kind: "XP BONUS",
+    kind: "SULLY XP",
     kindFill: GOLD,
     footer: "EVERY ROUND COUNTS.",
     fields: [
@@ -307,8 +307,24 @@ const SPECS: Record<string, ArtSpec> = {
     { id: "message", text: "COACH 1", x: 118, y: 543, size: 42, fill: CREAM },
   ]),
   sparring: card("sparring", "SPARRING", "SPAR", "ON.", "HEADGEAR. CONTROL. RESPECT.", []),
-  combo: card("combo", "COMBO OF THE ROUND", "1–2", "SLIP.", "HOOK. KEEP THE HANDS HOME.", [
-    { id: "message", text: "COACH 1", x: 118, y: 543, size: 42, fill: CREAM },
+  combo: card("combo", "COMBO OF THE ROUND", "1–2", "HOOK.", "SLIP. KEEP THE HANDS HOME.", [
+    { id: "message", text: "KID 4", x: 118, y: 543, size: 42, fill: CREAM },
+  ]),
+  youth: card("kids", "YOUTH BOXING", "SIGN", "UP.", "KIDS 6–14. AFTER SCHOOL. ASK THE DESK.", [
+    { id: "message", text: "CHARACTER FIRST.", x: 118, y: 543, size: 36, fill: CREAM, live: true },
+  ]),
+  legend: card(
+    "announcement",
+    "CANADIAN BOXING",
+    "CANADA",
+    "BOXES.",
+    "SHOW UP. PUT IN WORK. STAY STANDING.",
+    [
+      { id: "message", text: "CANADIAN RING LORE", x: 118, y: 543, size: 32, fill: CREAM, live: true },
+    ],
+  ),
+  sully_xp: card("xp_bonus", "SULLY XP", "EARN", "IT.", "SHOW UP. TRAIN. MOVE UP THE BOARD.", [
+    { id: "message", text: "SULLY XP FOR EVERY ROUND.", x: 118, y: 543, size: 32, fill: GOLD, live: true },
   ]),
 };
 
@@ -355,6 +371,9 @@ export type TvArtPopupLive = {
   xpBonus?: number | null;
   bonusLabel?: string | null;
   message?: string | null;
+  headline1?: string | null;
+  headline2?: string | null;
+  heroSrc?: string | null;
   roundClock?: string | null;
   roundLabel?: string | null;
   rankLabel?: string | null;
@@ -376,9 +395,12 @@ function liveText(id: string, spec: ArtSpec, live: TvArtPopupLive): string | nul
     case "streak":
       return live.bonusLabel ? live.bonusLabel.toUpperCase() : null;
     case "headline_1":
+      if (live.headline1) return live.headline1.toUpperCase();
       return spec.folder === "xp_bonus" && live.xpBonus != null
         ? `+${live.xpBonus} XP`
         : null;
+    case "headline_2":
+      return live.headline2 ? live.headline2.toUpperCase() : null;
     case "timer":
       return live.roundClock ?? null;
     case "round_label":
@@ -417,17 +439,28 @@ export function TvArtPopup(live: TvArtPopupLive) {
       aria-hidden
     >
       <div className={styles.stage}>
-        {layersFor(spec.folder, live.tvMode).map((layer) => (
-          <ArtLayer
-            key={layer.file}
-            src={
-              layer.file === "03_hero.png" && CAST_HERO[live.tvMode]
-                ? CAST_HERO[live.tvMode]
-                : `${base}/${layer.file}`
-            }
-            className={`${styles.layer} ${layerClass(layer.className)}`}
-          />
-        ))}
+        {layersFor(spec.folder, live.tvMode).map((layer) => {
+          const hero =
+            live.heroSrc || CAST_HERO[live.tvMode] || null;
+          const src =
+            layer.file === "01_panel.png"
+              ? "/tv/popups/_shared/01_panel.png"
+              : layer.file === "03_hero.png" && hero
+                ? hero
+                : `${base}/${layer.file}`;
+          const wide =
+            layer.file === "03_hero.png" &&
+            (WIDE_HERO.has(live.tvMode) || (hero ?? "").includes("sparring"));
+          return (
+            <ArtLayer
+              key={layer.file}
+              src={src}
+              className={`${styles.layer} ${layerClass(layer.className)} ${
+                wide ? styles.wideHero : ""
+              }`.trim()}
+            />
+          );
+        })}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={SHIELD}
@@ -509,20 +542,27 @@ const CORE_FOLDERS = new Set([
   "timer",
 ]);
 
-const PANEL_ONLY = new Set(["kids", "kids_complete", "heritage", "birthday"]);
+const PANEL_ONLY = new Set(["heritage"]);
 
 const CAST_HERO: Record<string, string> = {
-  combo: "/tv/cast/coach-1-jab-stage.png",
-  sparring: "/tv/cast/coach-1-jab-stage.png",
   challenge: "/tv/cast/coach-1-jab-stage.png",
-  pads: "/tv/cast/coach-1-guard-stage.png",
+  pads: "/tv/cast/coach-1-pads-stage.png",
   check_in: "/tv/cast/coach-1-guard-stage.png",
-  first_visit: "/tv/cast/coach-1-guard-stage.png",
-  welcome_back: "/tv/cast/coach-1-guard-stage.png",
-  announcement: "/tv/cast/coach-1-guard-stage.png",
-  last_spots: "/tv/cast/coach-1-guard-stage.png",
-  class_starting: "/tv/cast/coach-1-guard-stage.png",
-  streak: "/tv/cast/coach-1-guard-stage.png",
+  first_visit: "/tv/cast/coach-4-guard-stage.png",
+  last_spots: "/tv/cast/teen-2-guard-stage.png",
+  class_starting: "/tv/cast/kid-1-guard-stage.png",
+  streak: "/tv/cast/teen-1-guard-stage.png",
+  welcome_back: "/tv/cast/coach-2-guard-stage.png",
+  announcement: "/tv/cast/coach-3-guard-stage.png",
+  timer: "/tv/cast/coach-1-rest-stage.png",
+  sparring: "/tv/cast/kids-sparring-4-stage.png",
+  combo: "/tv/cast/kid-4-jab-stage.png",
+  kids: "/tv/cast/kid-1-guard-stage.png",
+  youth: "/tv/cast/kid-2-celebrate-stage.png",
+  birthday: "/tv/cast/kid-2-celebrate-stage.png",
+  kids_complete: "/tv/cast/kid-3-celebrate-stage.png",
+  legend: "/tv/cast/teen-2-guard-stage.png",
+  sully_xp: "/tv/cast/sully-xp-stage.png",
   achievement: "/tv/cast/coach-1-victory-stage.png",
   challenge_winner: "/tv/cast/coach-1-victory-stage.png",
   session_mvp: "/tv/cast/coach-1-victory-stage.png",
@@ -530,17 +570,99 @@ const CAST_HERO: Record<string, string> = {
   level_up: "/tv/cast/coach-1-victory-stage.png",
 };
 
+const WIDE_HERO = new Set(["sparring", "youth"]);
+
+export const FLOOR_ADS = [
+  {
+    mode: "youth",
+    hero: "/tv/cast/kid-2-celebrate-stage.png",
+    h1: "SIGN",
+    h2: "UP.",
+    msg: "YOUTH BOXING · KIDS 6–14 · ASK THE DESK",
+  },
+  {
+    mode: "youth",
+    hero: "/tv/cast/kid-6-guard-stage.png",
+    h1: "KIDS",
+    h2: "BOXING.",
+    msg: "AFTER SCHOOL. CHARACTER FIRST.",
+  },
+  {
+    mode: "youth",
+    hero: "/tv/cast/kids-sparring-4-stage.png",
+    h1: "YOUTH",
+    h2: "RING.",
+    msg: "GET THEM ON THE FLOOR. SULLY’S EST 1943.",
+  },
+  {
+    mode: "youth",
+    hero: "/tv/cast/kid-3-celebrate-stage.png",
+    h1: "BRING",
+    h2: "THEM.",
+    msg: "YOUTH BOXING · LACE UP · HAVE FUN",
+  },
+  {
+    mode: "legend",
+    hero: "/tv/cast/teen-2-guard-stage.png",
+    h1: "VARGAS",
+    h2: "147.",
+    msg: "SAM VARGAS · BRAMPTON · NABA WELTER CHAMP",
+  },
+  {
+    mode: "legend",
+    hero: "/tv/cast/coach-4-guard-stage.png",
+    h1: "MOLITOR",
+    h2: "IBF.",
+    msg: "STEVE MOLITOR · SARNIA · TWO-TIME WORLD CHAMP",
+  },
+  {
+    mode: "legend",
+    hero: "/tv/cast/teen-1-guard-stage.png",
+    h1: "HERON",
+    h2: "UNBEATEN.",
+    msg: "KANE HERON · ETOBICOKE · 17-0-1 WELTER",
+  },
+  {
+    mode: "legend",
+    hero: "/tv/cast/coach-1-victory-stage.png",
+    h1: "CHUVALO",
+    h2: "1937–2026.",
+    msg: "NEVER KNOCKED DOWN. TORONTO REMEMBERS.",
+  },
+  {
+    mode: "legend",
+    hero: "/tv/cast/coach-3-guard-stage.png",
+    h1: "LEWIS",
+    h2: "UNDISPUTED.",
+    msg: "LENNOX LEWIS · KITCHENER · HEAVYWEIGHT CROWN",
+  },
+  {
+    mode: "sully_xp",
+    hero: "/tv/cast/sully-xp-stage.png",
+    h1: "SULLY",
+    h2: "XP.",
+    msg: "SHOW UP. EARN IT. MOVE UP THE BOARD.",
+  },
+  {
+    mode: "sully_xp",
+    hero: "/tv/cast/kid-4-celebrate-stage.png",
+    h1: "EARN",
+    h2: "IT.",
+    msg: "SULLY XP FOR EVERY CLASS YOU FINISH.",
+  },
+] as const;
+
 function layersFor(folder: string, tvMode: string) {
   let layers: readonly (typeof LAYERS)[number][];
   if (CORE_FOLDERS.has(folder)) layers = LAYERS;
   else if (PANEL_ONLY.has(folder)) {
-    layers = LAYERS.filter((layer) => layer.file === "01_panel.png");
-  } else {
     layers = LAYERS.filter(
-      (layer) => layer.file === "01_panel.png" || layer.file === "03_hero.png",
+      (layer) => layer.file === "01_panel.png" || layer.file === "02_effects.png",
     );
+  } else {
+    layers = LAYERS.filter((layer) => layer.file !== "04_accent.png");
   }
-  if (CAST_HERO[tvMode]) {
+  if (CAST_HERO[tvMode] || tvMode === "youth" || tvMode === "legend" || tvMode === "sully_xp") {
     layers = layers.filter((layer) => layer.file !== "04_accent.png");
   }
   return layers;

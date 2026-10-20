@@ -1,0 +1,34 @@
+Sully's — run this copy on the MicroPC
+======================================
+
+This stick has the app source (no node_modules). On the MicroPC:
+
+1. Install Node.js 20 LTS from https://nodejs.org
+2. Open a terminal in this folder (E:\SULLYS or wherever you copied it)
+3. npm install
+4. npm run db:sqlite
+5. In three terminals (or one after another in background):
+     npm run dev:api
+     npm run dev:web
+     npm run dev:staff
+
+Then open:
+  Floor TV (Coach):  http://localhost:3000/tv/floor
+  Public site:       http://localhost:3000/
+  Staff:             http://localhost:3001/
+
+.env files were not copied. Use .env.example if you need local secrets.
+
+Floor TV tonight
+----------------
+- Default clock keeps Coach 2 on the floor.
+- Tap "Tap for sound" once, then F for fullscreen.
+- Bottom ticker crawls quotes, Sully XP, Chuvalo, Vargas, Heron, Molitor, Lewis, and Canadian champs.
+- Floor ads rotate on the gold-slash card: youth signup, Canadian fighter facts, Sully XP.
+- Offline shows a small gold pill on the wood frame — the shield stays clear.
+- Freeze a card with ?popup=youth / legend / sully_xp / kids / pads.
+
+Demo password: password123
+  coach@sullys.local   Floor TV + Live Mode
+  desk@sullys.local    Front desk
+  member@sullys.local  Member app

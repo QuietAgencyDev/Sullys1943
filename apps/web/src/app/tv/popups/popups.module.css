@@ -55,6 +55,46 @@
   gap: 0.75rem;
 }
 
+.castGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.castCard {
+  margin: 0;
+  padding: 0.7rem;
+  background: #1c1612;
+  border: 1px solid rgba(243, 230, 200, 0.16);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.castCard img {
+  width: 100%;
+  height: 220px;
+  object-fit: contain;
+  background: #050505;
+  border-radius: 8px;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.45));
+}
+
+.castCard figcaption {
+  display: grid;
+  gap: 0.2rem;
+  margin-top: 0.45rem;
+}
+
+.castCard code {
+  font-size: 0.72rem;
+  color: #c4a06a;
+}
+
+.castCard span {
+  font-size: 0.75rem;
+  color: #d8c7a8;
+}
+
 .iconCard {
   margin: 0;
   padding: 0.7rem;

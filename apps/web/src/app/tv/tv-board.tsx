@@ -21,6 +21,7 @@ import {
   readRiveEnabled,
   type FloorPopupMode,
 } from "./tv-rive-layer";
+import { FLOOR_ADS } from "./tv-art-popup";
 import { TvBoxerRig } from "./tv-boxer-rig";
 
 const DEMO_MODES = [
@@ -153,12 +154,16 @@ const FLOOR_SULLYS: FeedLine[] = [
 ];
 
 const FLOOR_CHUVALO: FeedLine[] = [
+  { kind: "trivia", text: "George Chuvalo · 1937–2026 · Toronto's heavyweight rests." },
+  { kind: "trivia", text: "Chuvalo passed Feb 12, 2026. The chin that never went down." },
+  { kind: "trivia", text: "Rest in peace, George Chuvalo · 93 fights · never knocked down." },
   { kind: "trivia", text: "Chuvalo · never knocked down in 93 pro fights." },
   { kind: "trivia", text: "March 29, 1966 · Chuvalo goes 15 with Ali at the Gardens." },
   { kind: "trivia", text: "Chuvalo · Toronto's chin that would not go down." },
   { kind: "trivia", text: "Chuvalo fought Ali, Frazier, and Foreman — still standing." },
   { kind: "trivia", text: "Chuvalo · Canadian heavyweight champion · Toronto legend." },
   { kind: "trivia", text: "Ali prepared for Chuvalo on Ossington. The city still talks." },
+  { kind: "trivia", text: "Toronto remembers Chuvalo. Show up. Put in work. Stay standing." },
 ];
 
 const FLOOR_CANADA: FeedLine[] = [
@@ -168,11 +173,36 @@ const FLOOR_CANADA: FeedLine[] = [
   { kind: "trivia", text: "Canada · Jimmy McLarnin — two-time welterweight world champ." },
   { kind: "trivia", text: "Lennox Lewis · Seoul gold 1988 · undisputed heavyweight champ." },
   { kind: "trivia", text: "Lewis · Canadian Olympic gold, then the world heavyweight crown." },
+  { kind: "trivia", text: "Lennox Lewis · born London, raised in Kitchener · Canada's champ." },
+  { kind: "trivia", text: "Lewis · the jab, the reach, the IQ — last undisputed of his era." },
+  { kind: "trivia", text: "Lewis stopped Tyson in 2002. Eight rounds. The argument ended." },
+  { kind: "trivia", text: "Lewis vs Holyfield, 1999 · two giants, one heavyweight crown." },
+  { kind: "trivia", text: "Lennox Lewis · WBC, IBF, WBA · walked away a champion in 2003." },
+  { kind: "trivia", text: "Lewis · Kitchener amateur halls to the top of the heavyweight world." },
   { kind: "trivia", text: "Razor Ruddock · Toronto heavyweight fire · two wars with Tyson." },
   { kind: "trivia", text: "Clyde Gray · Canadian welterweight great · names on these walls." },
   { kind: "trivia", text: "Arturo Gatti · Canadian warrior · Fight of the Year lore." },
   { kind: "trivia", text: "Canada · Jean Pascal and Adonis Stevenson — world champs." },
   { kind: "trivia", text: "Trevor Berbick · WBC heavyweight · last man to fight Ali." },
+  { kind: "trivia", text: "Steve Molitor · Sarnia · two-time IBF super bantamweight champ." },
+  { kind: "trivia", text: "Molitor · The Canadian Kid · Casino Rama title nights." },
+  { kind: "trivia", text: "Molitor KO'd Michael Hunter for the IBF belt, 2006." },
+  { kind: "trivia", text: "Donny Lalonde · The Golden Boy · light heavyweight world champ." },
+  { kind: "trivia", text: "Yvon Durelle · The Fighting Fisherman · one round from the crown." },
+  { kind: "trivia", text: "Matthew Hilton · Montreal · IBF light middleweight world champ." },
+];
+
+const FLOOR_VARGAS: FeedLine[] = [
+  { kind: "trivia", text: "Sam Vargas · Brampton / Mississauga · Canadian welterweight champ." },
+  { kind: "trivia", text: "Vargas · WBA-NABA welter champ · packed the Powerade Centre." },
+  { kind: "trivia", text: "Vargas went 12 with Amir Khan. Stood up to Spence and Danny Garcia." },
+  { kind: "trivia", text: "Sam Vargas · Colombian-born Canadian · GTA welterweight warrior." },
+];
+
+const FLOOR_HERON: FeedLine[] = [
+  { kind: "trivia", text: "Kane Heron · Etobicoke · undefeated welterweight · 17-0-1." },
+  { kind: "trivia", text: "Heron · NABA-WBA welter champ · Toronto's unbeaten 147." },
+  { kind: "trivia", text: "Kane Heron · amateur national champ, then the pro unbeaten run." },
 ];
 
 const FLOOR_WOMEN: FeedLine[] = [
@@ -200,16 +230,17 @@ const FLOOR_CURRENT: FeedLine[] = [
 ];
 
 const FLOOR_SYSTEM: FeedLine[] = [
-  { kind: "system", text: "XP for showing up. Levels for staying." },
+  { kind: "system", text: "Sully XP for showing up. Levels for staying." },
   { kind: "system", text: "Passport stamps every class you finish." },
-  { kind: "system", text: "Streaks pay bonus XP. Miss a day, start over." },
+  { kind: "system", text: "Streaks pay bonus Sully XP. Miss a day, start over." },
   { kind: "system", text: "Book your spot. Last spots go fast." },
-  { kind: "system", text: "Check in. Train. Earn. Repeat." },
-  { kind: "system", text: "Floor leaderboard — claim it today." },
+  { kind: "system", text: "Check in. Train. Earn Sully XP. Repeat." },
+  { kind: "system", text: "Floor leaderboard is Sully XP — claim it today." },
   { kind: "system", text: "10-second clap — finish the round." },
   { kind: "system", text: "Character before the bell." },
   { kind: "system", text: "We don't lower standards. We raise people." },
   { kind: "system", text: "Family on the floor. Kids in the craft." },
+  { kind: "system", text: "Youth boxing · kids 6–14 · ask the desk." },
 ];
 
 const CHECKIN_TEMPLATES = [
@@ -249,6 +280,8 @@ function weaveFloorFeed(input: {
       ...FLOOR_SULLYS,
       ...FLOOR_CHUVALO,
       ...FLOOR_CANADA,
+      ...FLOOR_VARGAS,
+      ...FLOOR_HERON,
       ...FLOOR_WOMEN,
       ...FLOOR_CURRENT,
       ...FLOOR_TRIVIA,
@@ -445,6 +478,8 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     rounds: 12,
   });
   const [soundReady, setSoundReady] = useState(false);
+  const [adIndex, setAdIndex] = useState(0);
+  const [adOn, setAdOn] = useState(false);
   const [arrivalName, setArrivalName] = useState<string | null>(null);
   const warnedPhaseRef = useRef<string | null>(null);
   const startBellRef = useRef<string | null>(null);
@@ -468,6 +503,31 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       setDemoModeIndex((i) => (i + 1) % DEMO_MODES.length);
     }, 4000);
     return () => clearInterval(cycle);
+  }, [demoCelebrate, popupFreeze, profile]);
+
+  useEffect(() => {
+    if (profile !== "floor" || popupFreeze || demoCelebrate) {
+      setAdOn(false);
+      return;
+    }
+    let timer: ReturnType<typeof setTimeout>;
+    let cancelled = false;
+    const show = () => {
+      if (cancelled) return;
+      setAdIndex((i) => (i + 1) % FLOOR_ADS.length);
+      setAdOn(true);
+      timer = setTimeout(hide, 12000);
+    };
+    const hide = () => {
+      if (cancelled) return;
+      setAdOn(false);
+      timer = setTimeout(show, 16000);
+    };
+    timer = setTimeout(show, 6000);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
   }, [demoCelebrate, popupFreeze, profile]);
 
   const coachLive = Boolean(board?.coachTimer);
@@ -668,15 +728,26 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   ]);
 
   const demoMode = DEMO_MODES[demoModeIndex] ?? "achievement";
+  const coachMode = board?.coachTimer?.tvMode ?? "timer";
+  const liveEvent =
+    coachMode !== "timer" && hasArtPopup(coachMode) && !popupFreeze && !demoCelebrate;
+  const floorAd = adOn && profile === "floor" ? FLOOR_ADS[adIndex] : null;
   const tvMode =
     popupFreeze && profile === "floor"
       ? popupFreeze
       : demoCelebrate && profile === "floor"
         ? demoMode
-        : (board?.coachTimer?.tvMode ?? "timer");
+        : liveEvent
+          ? coachMode
+          : floorAd
+            ? floorAd.mode
+            : coachMode;
   const modeActive =
     profile === "floor" &&
-    (Boolean(board?.coachTimer) || demoCelebrate || Boolean(popupFreeze));
+    (Boolean(board?.coachTimer) ||
+      demoCelebrate ||
+      Boolean(popupFreeze) ||
+      Boolean(floorAd));
   const showAnnouncement =
     modeActive &&
     tvMode === "announcement" &&
@@ -698,11 +769,14 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     (profile === "floor" || board?.live?.phase === "live");
   const riveActive =
     profile === "floor" &&
-    (Boolean(board?.coachTimer) || demoCelebrate || Boolean(popupFreeze));
+    (Boolean(board?.coachTimer) ||
+      demoCelebrate ||
+      Boolean(popupFreeze) ||
+      Boolean(floorAd));
   const showArtPopup =
     riveActive &&
     hasArtPopup(tvMode) &&
-    (tvMode !== "timer" || Boolean(popupFreeze) || demoCelebrate);
+    (tvMode !== "timer" || Boolean(popupFreeze) || demoCelebrate || Boolean(floorAd));
   const sceneKey = `${tvMode}:${round.phase}:${round.round}:${
     board?.coachTimer?.currentExercise?.title ?? ""
   }:${board?.coachTimer?.tvMessage ?? ""}`;
@@ -834,7 +908,6 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             enabled={riveEnabled}
             tvMode={tvMode}
             phase={round.phase === "rest" ? "rest" : "work"}
-            message={board?.coachTimer?.tvMessage}
             xpBonus={riveXp}
             bonusLabel={riveBonusLabel}
             artCover={showArtPopup}
@@ -873,6 +946,10 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                   ? (demoCelebrate ? "Gavin S" : topName)
                   : topName
             }
+            heroSrc={floorAd?.hero ?? null}
+            headline1={floorAd?.h1 ?? null}
+            headline2={floorAd?.h2 ?? null}
+            message={floorAd?.msg ?? board?.coachTimer?.tvMessage}
           />
           {profile === "floor" && riveEnabled && !showArtPopup ? (
             <TvBoxerRig motion={round.phase === "rest" ? "rest" : "work"} />

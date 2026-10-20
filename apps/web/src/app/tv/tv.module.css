@@ -739,7 +739,7 @@
   display: inline-flex;
   width: max-content;
   align-items: center;
-  animation: marquee 240s linear infinite;
+  animation: marquee 360s linear infinite;
   color: #f3e6c8;
   font-size: clamp(1.05rem, 1.85vw, 1.42rem);
   font-weight: 700;

@@ -57,6 +57,9 @@ const MODE_COPY: Record<
   pads: { title: "Pads" },
   sparring: { title: "Sparring" },
   combo: { title: "Combo of the round" },
+  youth: { title: "Youth boxing signup" },
+  legend: { title: "Canadian boxing" },
+  sully_xp: { title: "Sully XP" },
 };
 
 const CORE = [
@@ -67,6 +70,36 @@ const CORE = [
   "leaderboard",
   "class_complete",
   "timer",
+] as const;
+
+const CAST_STILLS = [
+  { file: "coach-1-guard.png", who: "Coach 1", pose: "Guard" },
+  { file: "coach-1-jab.png", who: "Coach 1", pose: "Jab" },
+  { file: "coach-1-victory.png", who: "Coach 1", pose: "Victory" },
+  { file: "coach-1-pads.png", who: "Coach 1", pose: "Pads" },
+  { file: "coach-1-rest.png", who: "Coach 1", pose: "Rest" },
+  { file: "coach-2-guard.png", who: "Coach 2", pose: "Guard · popup still" },
+  { file: "coach-2-jab.png", who: "Coach 2", pose: "Jab" },
+  { file: "coach-2-celebrate.png", who: "Coach 2", pose: "Celebrate" },
+  { file: "coach-3-guard.png", who: "Coach 3", pose: "Guard" },
+  { file: "coach-3-jab.png", who: "Coach 3", pose: "Jab" },
+  { file: "coach-3-pads.png", who: "Coach 3", pose: "Pads" },
+  { file: "coach-4-guard.png", who: "Coach 4", pose: "Guard" },
+  { file: "teen-1-guard.png", who: "Teen 1", pose: "Guard" },
+  { file: "teen-2-guard.png", who: "Teen 2", pose: "Guard" },
+  { file: "kid-6-guard.png", who: "Kid 6", pose: "Guard" },
+  { file: "sully-xp.png", who: "Sully XP", pose: "Badge" },
+  { file: "kid-1-jab.png", who: "Kid 1", pose: "Uppercut" },
+  { file: "kid-1-guard.png", who: "Kid 1", pose: "Guard · slip" },
+  { file: "kid-2-guard.png", who: "Kid 2", pose: "Guard" },
+  { file: "kid-2-celebrate.png", who: "Kid 2", pose: "Salute" },
+  { file: "kid-3-celebrate.png", who: "Kid 3", pose: "Medal" },
+  { file: "kid-4-celebrate.png", who: "Kid 4", pose: "Victory" },
+  { file: "kid-4-jab.png", who: "Kid 4", pose: "Hook" },
+  { file: "kid-5-jab.png", who: "Kid 5", pose: "Body hook" },
+  { file: "kids-sparring-1.png", who: "Kids", pose: "Sparring" },
+  { file: "kids-sparring-3.png", who: "Kids", pose: "Sparring · heritage" },
+  { file: "kids-sparring-4.png", who: "Kids", pose: "Sparring · drill" },
 ] as const;
 
 export default function TvPopupsReviewPage() {
@@ -80,11 +113,10 @@ export default function TvPopupsReviewPage() {
         <p className={styles.kicker}>Floor TV · image swap board</p>
         <h1>Popups &amp; icons</h1>
         <p className={styles.lead}>
-          v2 first drop is in: Coach 1 guard, heritage shield, every new mode
-          wired for live text. Kid 1–5 sprites are not in this zip yet — those
-          cards use the empty well until the next download. Coach 2 stays on the
-          default round clock. Lower-thirds use{" "}
-          <code>?note=nameplate</code> and do not hide Coach 2.
+          v2 cast is in: Coach 1–3, Kid 1–5, pads, rest, and kids sparring.
+          Live text and the heritage shield stay on Cursor. Coach 2 still owns
+          the default round clock — popup stills never replace that rig.
+          Lower-thirds use <code>?note=nameplate</code> and do not hide Coach 2.
         </p>
         <p className={styles.links}>
           <Link href="/tv/floor">Floor TV (Coach 2)</Link>
@@ -95,32 +127,18 @@ export default function TvPopupsReviewPage() {
       </header>
 
       <section>
-        <h2>Cast — Coach 1</h2>
-        <div className={styles.iconGrid}>
-          <figure className={styles.iconCard}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/tv/cast/coach-1-guard.png" alt="Coach 1 guard" />
-            <figcaption>
-              <code>Coach 1</code>
-              <span>Guard</span>
-            </figcaption>
-          </figure>
-          <figure className={styles.iconCard}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/tv/cast/coach-1-jab.png" alt="Coach 1 jab" />
-            <figcaption>
-              <code>Coach 1</code>
-              <span>Jab · shorts fixed</span>
-            </figcaption>
-          </figure>
-          <figure className={styles.iconCard}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/tv/cast/coach-1-victory.png" alt="Coach 1 victory" />
-            <figcaption>
-              <code>Coach 1</code>
-              <span>Victory</span>
-            </figcaption>
-          </figure>
+        <h2>Cast</h2>
+        <div className={styles.castGrid}>
+          {CAST_STILLS.map((still) => (
+            <figure key={still.file} className={styles.castCard}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={`/tv/cast/${still.file}`} alt="" />
+              <figcaption>
+                <code>{still.who}</code>
+                <span>{still.pose}</span>
+              </figcaption>
+            </figure>
+          ))}
         </div>
       </section>
 

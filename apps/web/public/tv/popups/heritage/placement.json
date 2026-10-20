@@ -1,0 +1,56 @@
+{
+  "canvas": [
+    1600,
+    900
+  ],
+  "origin": "top-left",
+  "safe_text": {
+    "x": 110,
+    "y": 220,
+    "w": 740,
+    "h": 520
+  },
+  "logo_slot": {
+    "x": 110,
+    "y": 90,
+    "w": 100,
+    "h": 100
+  },
+  "cast": [],
+  "hero_motion": "enter from right 36px, 300ms, hold",
+  "accent_motion": "scale 0.88\u21921.0, 240ms",
+  "panel_motion": "fade + 36px, 220ms",
+  "mode": "heritage",
+  "kind": "EST 1943",
+  "kind_rendering": "Live app text only",
+  "kind_color": "#EAC66E",
+  "target": "apps/web/public/tv/popups/heritage/",
+  "members": [],
+  "hero_bounds": null,
+  "accent_bounds": null,
+  "render_order": [
+    "01_panel.png",
+    "02_effects.png",
+    "03_hero.png",
+    "04_accent.png",
+    "app heritage shield",
+    "app live text"
+  ],
+  "logo_source": "/brand/sullys-heritage-shield.png",
+  "effects_motion": "opacity 0\u21921, 240ms, hold",
+  "footer_slot": {
+    "x": 110,
+    "y": 772,
+    "w": 710,
+    "h": 36
+  },
+  "stage": {
+    "x": 860,
+    "y": 0,
+    "w": 740,
+    "h": 900
+  },
+  "reduced_motion": "fade only, no translation or scale",
+  "trim_layers": false,
+  "contains_live_typography": false
+}
