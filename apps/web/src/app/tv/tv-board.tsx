@@ -445,8 +445,10 @@ function floorClassPhoto(
 ) {
   const haystack = `${title ?? ""} ${coach ?? ""}`;
   const pool = FLOOR_CLASS_PHOTO_POOLS.find((row) => row.match.test(haystack));
-  if (!pool?.srcs.length) return null;
-  return pool.srcs[Math.abs(seed) % pool.srcs.length];
+  const stills = pool?.srcs ?? [];
+  // null slot = live Coach 2 rig, so the animated clock stays in the mix
+  const slots: Array<string | null> = [...stills, null];
+  return slots[Math.abs(seed) % slots.length] ?? null;
 }
 
 function jitter(min: number, max: number) {
