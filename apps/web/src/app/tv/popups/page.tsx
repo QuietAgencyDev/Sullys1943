@@ -60,6 +60,8 @@ const MODE_COPY: Record<
   youth: { title: "Youth boxing signup" },
   legend: { title: "Canadian boxing" },
   sully_xp: { title: "Sully XP" },
+  tony_corner: { title: "Coach Tony recovery" },
+  earls_shop: { title: "Earl's Fight Shop" },
 };
 
 const CORE = [

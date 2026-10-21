@@ -14,7 +14,7 @@ import {
   readRiveEnabled,
   type FloorPopupMode,
 } from "./tv-rive-layer";
-import { FLOOR_ADS } from "./tv-art-popup";
+import { dealFloorAdOrder, FLOOR_ADS } from "./tv-art-popup";
 import { TvBoxerRig } from "./tv-boxer-rig";
 
 const DEMO_MODES = [
@@ -372,6 +372,9 @@ const FLOOR_SYSTEM: FeedLine[] = [
   { kind: "system", text: "We don't lower standards. We raise people." },
   { kind: "system", text: "Family on the floor. Kids in the craft." },
   { kind: "system", text: "Youth boxing · kids 6–14 · ask the desk." },
+  { kind: "system", text: "Coach Tony is off the floor, recovering. Scan In His Corner." },
+  { kind: "system", text: "Shout out Viktoria Penney · she organised Coach Tony's fundraiser." },
+  { kind: "system", text: "Earl's Fight Shop · 1385 Dundas St. W · (416) 531-1331 · Mon & Tue 12–3 · Wed–Sun 12–7." },
 ];
 
 const TICKER_FIRST_MS = 10000;
@@ -379,8 +382,8 @@ const TICKER_SCROLL_MS = 18000;
 const TICKER_HOLD_MS = 7000;
 
 const FLOOR_DEMO_CLASSES = [
-  { title: "Beginner Boxing", coach: "Tony Morrison" },
-  { title: "Open Gym", coach: "Tony Morrison" },
+  { title: "Beginner Boxing", coach: "Ask the desk" },
+  { title: "Open Gym", coach: "Ask the desk" },
   { title: "Women's Boxing", coach: "Jacklyne Irvine" },
   { title: "Competitive Team", coach: "Rico Mancini" },
   { title: "Pads", coach: "Winslow" },
@@ -744,10 +747,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     let cancelled = false;
     const drawAd = () => {
       if (!adDeckRef.current.length) {
-        adDeckRef.current = shuffleFeed(
-          FLOOR_ADS.map((_, i) => i),
-          Date.now() % 2147483646 || 1,
-        );
+        adDeckRef.current = dealFloorAdOrder(Date.now() % 2147483646 || 1);
       }
       const next = adDeckRef.current.pop();
       if (next != null) setAdIndex(next);
@@ -1589,6 +1589,8 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
           </span>
           {tickerHold && infoText ? (
             <div className={styles.tickerInfo} aria-live="polite">
+              <span className={styles.tickerInfoMark}>INFO</span>
+              <p className={styles.tickerInfoCopy}>{infoText}</p>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/tv/icons/info.png"
@@ -1596,8 +1598,6 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                 className={styles.tickerInfoIcon}
                 draggable={false}
               />
-              <span className={styles.tickerInfoMark}>INFO</span>
-              <p className={styles.tickerInfoCopy}>{infoText}</p>
             </div>
           ) : null}
           <div className={styles.tickerCrawl} hidden={tickerHold && Boolean(infoText)}>

@@ -1,34 +1,24 @@
-Sully's — run this copy on the MicroPC
+Sully's on the MicroPC — no internet
 ======================================
 
-This stick has the app source (no node_modules). On the MicroPC:
+Double-click this file on the USB:
 
-1. Install Node.js 20 LTS from https://nodejs.org
-2. Open a terminal in this folder (E:\SULLYS or wherever you copied it)
-3. npm install
-4. npm run db:sqlite
-5. In three terminals (or one after another in background):
-     npm run dev:api
-     npm run dev:web
-     npm run dev:staff
+    Start Sullys.bat
 
-Then open:
-  Floor TV (Coach):  http://localhost:3000/tv/floor
-  Public site:       http://localhost:3000/
-  Staff:             http://localhost:3001/
+That is the whole install. Node.js 24 LTS is already on the stick.
+The local database is already built. The first double-click opens:
 
-.env files were not copied. Use .env.example if you need local secrets.
+    Floor TV     http://localhost:3000/tv/floor
+    Public site  http://localhost:3000/
+    Staff        http://localhost:3001/
 
-Floor TV tonight
-----------------
-- Default clock keeps Coach 2 on the floor.
-- Tap "Tap for sound" once, then F for fullscreen.
-- Bottom ticker crawls quotes, Sully XP, Chuvalo, Vargas, Heron, Molitor, Lewis, and Canadian champs.
-- Floor ads rotate on the gold-slash card: youth signup, Canadian fighter facts, Sully XP.
-- Offline shows a small gold pill on the wood frame — the shield stays clear.
-- Freeze a card with ?popup=youth / legend / sully_xp / kids / pads.
+Leave the three black windows open while you use the app.
+If Windows asks, allow Node on private networks.
+If a window says SmartScreen, choose More info, then Run anyway.
 
 Demo password: password123
   coach@sullys.local   Floor TV + Live Mode
   desk@sullys.local    Front desk
   member@sullys.local  Member app
+
+Do not run npm install. The libraries are already in node_modules.

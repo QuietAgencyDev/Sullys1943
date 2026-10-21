@@ -814,6 +814,7 @@
   height: clamp(2.15rem, 3.7vw, 2.9rem);
   width: auto;
   flex: 0 0 auto;
+  margin-left: auto;
   object-fit: contain;
 }
 

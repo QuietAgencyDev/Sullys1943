@@ -592,6 +592,8 @@ export const FLOOR_POPUP_MODES = [
   "youth",
   "legend",
   "sully_xp",
+  "tony_corner",
+  "earls_shop",
 ] as const;
 
 export type FloorPopupMode = (typeof FLOOR_POPUP_MODES)[number];

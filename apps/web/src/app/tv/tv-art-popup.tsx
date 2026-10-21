@@ -300,6 +300,32 @@ const SPECS: Record<string, ArtSpec> = {
   announcement: card("announcement", "FROM THE DESK", "HANDS", "WRAPPED.", "PHONES DOWN. EYES UP.", [
     { id: "message", text: "LISTEN IN", x: 118, y: 543, size: 42, fill: CREAM, live: true },
   ]),
+  tony_corner: card(
+    "announcement",
+    "COACH TONY",
+    "IN HIS",
+    "CORNER.",
+    "SCAN THE CODE. STAND WITH HIM.",
+    [
+      {
+        id: "message",
+        text: "OFF THE FLOOR · MINOR SURGERY",
+        x: 118,
+        y: 548,
+        size: 30,
+        fill: CREAM,
+        live: true,
+      },
+    ],
+  ),
+  earls_shop: card(
+    "announcement",
+    "NEXT DOOR",
+    "EARL'S",
+    "FIGHT SHOP.",
+    "1385 DUNDAS ST. W  ·  TORONTO",
+    [],
+  ),
   birthday: card("birthday", "HAPPY BIRTHDAY", "HAPPY", "BIRTHDAY.", "MAKE IT A ROUND TO REMEMBER.", [
     nameField(""),
   ]),
@@ -440,6 +466,7 @@ export function TvArtPopup(live: TvArtPopupLive) {
     >
       <div className={styles.stage}>
         {layersFor(spec.folder, live.tvMode).map((layer) => {
+          if (live.tvMode === "earls_shop" && layer.file === "03_hero.png") return null;
           const hero =
             live.heroSrc || CAST_HERO[live.tvMode] || null;
           const src =
@@ -455,13 +482,14 @@ export function TvArtPopup(live: TvArtPopupLive) {
             layer.file === "03_hero.png" && (hero ?? "").includes("champion-belt");
           const cast =
             layer.file === "03_hero.png" && Boolean(hero) && !belt;
+          const tony = cast && live.tvMode === "tony_corner";
           return (
             <ArtLayer
               key={layer.file}
               src={src}
               className={`${styles.layer} ${layerClass(layer.className)} ${
                 belt ? styles.beltHero : cast ? styles.castHero : ""
-              } ${wide ? styles.wideHero : ""}`.trim()}
+              } ${tony ? styles.tonyHero : ""} ${wide ? styles.wideHero : ""}`.trim()}
             />
           );
         })}
@@ -520,6 +548,47 @@ export function TvArtPopup(live: TvArtPopupLive) {
             </p>
           );
         })}
+        {live.tvMode === "tony_corner" ? (
+          <>
+            <p className={styles.shoutOut}>
+              <span className={styles.shoutName}>SHOUT OUT · VIKTORIA PENNEY</span>
+              <span className={styles.shoutWhy}>FOR ORGANISING THE FUNDRAISER</span>
+            </p>
+            <p className={styles.goalReached}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/tv/icons/glove-1.png" alt="" draggable={false} />
+              <span>GOAL REACHED !!</span>
+            </p>
+            <aside className={styles.scanPlate}>
+              <div className={styles.qrCard}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/tv/tony-recovery-qr.png" alt="" draggable={false} />
+              </div>
+            </aside>
+          </>
+        ) : null}
+        {live.tvMode === "earls_shop" ? (
+          <>
+            <figure className={styles.shopFrame}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className={styles.shopWall} src="/tv/earls/wall.jpg" alt="" draggable={false} />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className={styles.shopLogo} src="/tv/earls/logo.png" alt="" draggable={false} />
+            </figure>
+            <div className={styles.shopHours}>
+              <p className={styles.shopKicker}>HOURS</p>
+              <p>
+                <span>MON &amp; TUE</span>
+                <strong>12–3</strong>
+              </p>
+              <p>
+                <span>WED – SUN</span>
+                <strong>12–7</strong>
+              </p>
+              <p className={styles.shopCall}>(416) 531-1331</p>
+            </div>
+          </>
+        ) : null}
         <p
           className={`${styles.text} ${styles.footer}`}
           style={{
@@ -561,6 +630,7 @@ const CAST_HERO: Record<string, string> = {
   streak: "/tv/cast/teen-1-guard-stage.png",
   welcome_back: "/tv/cast/coach-2-guard-stage.png",
   announcement: "/tv/cast/coach-8-hook.png?v=hd3",
+  tony_corner: "/tv/cast/coach-tony-morrison.png?v=hd2",
   timer: "/tv/cast/coach-1-rest-stage.png",
   sparring: "/tv/cast/kids-sparring-4-stage.png",
   combo: "/tv/cast/kid-7-jab.png?v=hd3",
@@ -579,21 +649,24 @@ const CAST_HERO: Record<string, string> = {
 
 const WIDE_HERO = new Set(["sparring", "youth"]);
 
-export const FLOOR_ADS = [
+const CORNER_ADS = [
   {
-    mode: "class_starting",
-    hero: "/tv/cast/coach-tony-uppercut.png?v=hd3",
-    h1: "BEGINNER",
-    h2: "BOXING.",
-    msg: "NOON CLASS · TONY MORRISON · LACE UP",
+    mode: "tony_corner",
+    hero: "/tv/cast/coach-tony-morrison.png?v=hd2",
+    h1: "IN HIS",
+    h2: "CORNER.",
+    msg: "OFF THE FLOOR · MINOR SURGERY",
   },
   {
-    mode: "legend",
-    hero: "/tv/cast/george-chuvalo-wrap.png?v=hd4",
-    h1: "CHUVALO",
-    h2: "THE CHIN.",
-    msg: "GEORGE CHUVALO · 93 FIGHTS · NEVER KNOCKED DOWN",
+    mode: "tony_corner",
+    hero: "/tv/cast/coach-tony-morrison.png?v=hd2",
+    h1: "IN HIS",
+    h2: "CORNER.",
+    msg: "OFF THE FLOOR · MINOR SURGERY",
   },
+] as const;
+
+const NEWS_ADS = [
   {
     mode: "class_starting",
     hero: "/tv/cast/coach-8-hook.png?v=hd3",
@@ -616,11 +689,63 @@ export const FLOOR_ADS = [
     msg: "VETERANS ON THE FLOOR · ALL LEVELS",
   },
   {
+    mode: "announcement",
+    hero: "/tv/cast/coach-2-welcome.png",
+    h1: "COME",
+    h2: "TRAIN.",
+    msg: "NEW ON THE FLOOR · ASK THE DESK",
+  },
+  {
+    mode: "announcement",
+    hero: "/tv/cast/coach-4-guard.png",
+    h1: "HANDS",
+    h2: "WRAPPED.",
+    msg: "PHONES DOWN. EYES UP.",
+  },
+  {
+    mode: "last_spots",
+    hero: "/tv/cast/teen-2-guard.png",
+    h1: "2 SPOTS",
+    h2: "LEFT.",
+    msg: "ADULTS BOXING · CLAIM THEM",
+  },
+] as const;
+
+const FLOOR_FACE_ADS = [
+  {
     mode: "pads",
     hero: "/tv/cast/coach-1-pads.png",
     h1: "PADS",
     h2: "NOW.",
     msg: "OPEN GYM · STATION 2 · HANDS UP",
+  },
+  {
+    mode: "pads",
+    hero: "/tv/cast/coach-3-pads.png",
+    h1: "MITTS",
+    h2: "UP.",
+    msg: "OPEN GYM · STATION 2 · HANDS UP",
+  },
+  {
+    mode: "sparring",
+    hero: "/tv/cast/kids-sparring-4.png",
+    h1: "SPAR",
+    h2: "ON.",
+    msg: "HEADGEAR. CONTROL. RESPECT.",
+  },
+  {
+    mode: "combo",
+    hero: "/tv/cast/kid-7-jab.png?v=hd3",
+    h1: "1–2",
+    h2: "NOW.",
+    msg: "SLIP. KEEP THE HANDS HOME.",
+  },
+  {
+    mode: "combo",
+    hero: "/tv/cast/kid-8-jab.png?v=hd3",
+    h1: "SLIP",
+    h2: "NOW.",
+    msg: "RETURN THE HANDS. STAY TALL.",
   },
   {
     mode: "kids",
@@ -631,24 +756,55 @@ export const FLOOR_ADS = [
   },
   {
     mode: "kids",
-    hero: "/tv/cast/kid-7-jab.png?v=hd3",
-    h1: "KIDS",
-    h2: "BOXING.",
-    msg: "AFTER SCHOOL · ASK THE DESK",
-  },
-  {
-    mode: "combo",
-    hero: "/tv/cast/kid-8-jab.png?v=hd3",
-    h1: "KIDS",
-    h2: "BOXING.",
-    msg: "AFTER SCHOOL · ASK THE DESK",
+    hero: "/tv/cast/kid-1-guard.png",
+    h1: "GO.",
+    h2: "HAVE FUN.",
+    msg: "LISTEN UP. ASK THE DESK.",
   },
   {
     mode: "youth",
     hero: "/tv/cast/kid-2-hook.png?v=hd3",
+    h1: "SIGN",
+    h2: "UP.",
+    msg: "KIDS 6–14 · AFTER SCHOOL · ASK THE DESK",
+  },
+  {
+    mode: "youth",
+    hero: "/tv/cast/teen-1-guard.png",
     h1: "YOUTH",
     h2: "BOXING.",
-    msg: "KIDS 6–14 · AFTER SCHOOL · ASK THE DESK",
+    msg: "CHARACTER FIRST. ASK THE DESK.",
+  },
+  {
+    mode: "sully_xp",
+    hero: "/tv/cast/sully-xp.png",
+    h1: "SULLY",
+    h2: "XP.",
+    msg: "SHOW UP. EARN IT. MOVE UP THE BOARD.",
+  },
+  {
+    mode: "sully_xp",
+    hero: "/tv/cast/kid-3-celebrate.png",
+    h1: "EARN",
+    h2: "IT.",
+    msg: "SULLY XP FOR EVERY CLASS YOU FINISH.",
+  },
+  {
+    mode: "announcement",
+    hero: "/tv/cast/coach-2-jab.png",
+    h1: "HANDS",
+    h2: "HOME.",
+    msg: "CHIN DOWN. HANDS BACK.",
+  },
+] as const;
+
+const HISTORY_ADS = [
+  {
+    mode: "legend",
+    hero: "/tv/cast/george-chuvalo-wrap.png?v=hd4",
+    h1: "CHUVALO",
+    h2: "THE CHIN.",
+    msg: "GEORGE CHUVALO · 93 FIGHTS · NEVER KNOCKED DOWN",
   },
   {
     mode: "legend",
@@ -659,24 +815,17 @@ export const FLOOR_ADS = [
   },
   {
     mode: "legend",
+    hero: "/tv/cast/george-chuvalo-wrap.png?v=hd4",
+    h1: "CHUVALO",
+    h2: "1937–2026.",
+    msg: "NEVER KNOCKED DOWN. TORONTO REMEMBERS.",
+  },
+  {
+    mode: "legend",
     hero: SULLYS_BELT,
     h1: "KID",
     h2: "MORRISON.",
     msg: "TONY MORRISON · CANADIAN HEAVYWEIGHT CHAMP · THIS FLOOR",
-  },
-  {
-    mode: "class_starting",
-    hero: "/tv/cast/coach-8-hook-2.png?v=hd3",
-    h1: "WOMEN'S",
-    h2: "BOXING.",
-    msg: "JACKLYNE IRVINE · 7 PM · ALL LEVELS",
-  },
-  {
-    mode: "legend",
-    hero: "/tv/cast/coach-5-jab.png?v=hd2",
-    h1: "OLD",
-    h2: "SCHOOL.",
-    msg: "THE VETERANS STILL PUT IN WORK · THIS FLOOR",
   },
   {
     mode: "legend",
@@ -687,24 +836,10 @@ export const FLOOR_ADS = [
   },
   {
     mode: "legend",
-    hero: SULLYS_BELT,
-    h1: "VARGAS",
-    h2: "147.",
-    msg: "SAM VARGAS · BRAMPTON · NABA WELTER CHAMP",
-  },
-  {
-    mode: "legend",
-    hero: SULLYS_BELT,
-    h1: "MOLITOR",
-    h2: "IBF.",
-    msg: "STEVE MOLITOR · SARNIA · TWO-TIME WORLD CHAMP",
-  },
-  {
-    mode: "legend",
-    hero: SULLYS_BELT,
-    h1: "HERON",
-    h2: "UNBEATEN.",
-    msg: "KANE HERON · ETOBICOKE · 17-0-1 WELTER",
+    hero: "/tv/cast/coach-1-guard.png",
+    h1: "EST",
+    h2: "1943.",
+    msg: "CANADA'S OLDEST BOXING CLUB",
   },
   {
     mode: "legend",
@@ -716,53 +851,80 @@ export const FLOOR_ADS = [
   {
     mode: "legend",
     hero: SULLYS_BELT,
-    h1: "CLAVEL",
-    h2: "CHAMP.",
-    msg: "KIM CLAVEL · MONTREAL · SUPER-FLYWEIGHT WORLD CHAMP",
-  },
-  {
-    mode: "legend",
-    hero: SULLYS_BELT,
-    h1: "DICAIRE",
-    h2: "IBF.",
-    msg: "MARIE-EVE DICAIRE · MONTREAL · SUPER WELTER WORLD CHAMP",
-  },
-  {
-    mode: "legend",
-    hero: "/tv/cast/george-chuvalo-wrap.png?v=hd4",
-    h1: "CHUVALO",
-    h2: "1937–2026.",
-    msg: "NEVER KNOCKED DOWN. TORONTO REMEMBERS.",
-  },
-  {
-    mode: "legend",
-    hero: "/tv/cast/george-chuvalo-guard.png?v=hd5",
-    h1: "GEORGE",
-    h2: "CHUVALO.",
-    msg: "TORONTO HEAVYWEIGHT · THE CHIN THAT WOULD NOT GO DOWN",
-  },
-  {
-    mode: "legend",
-    hero: SULLYS_BELT,
     h1: "LEWIS",
     h2: "UNDISPUTED.",
     msg: "LENNOX LEWIS · KITCHENER · HEAVYWEIGHT CROWN",
   },
+] as const;
+
+const EARLS_ADS = [
   {
-    mode: "sully_xp",
-    hero: "/tv/cast/sully-xp-stage.png",
-    h1: "SULLY",
-    h2: "XP.",
-    msg: "SHOW UP. EARN IT. MOVE UP THE BOARD.",
-  },
-  {
-    mode: "sully_xp",
-    hero: "/tv/cast/kid-4-celebrate-stage.png",
-    h1: "EARN",
-    h2: "IT.",
-    msg: "SULLY XP FOR EVERY CLASS YOU FINISH.",
+    mode: "earls_shop",
+    hero: "/tv/earls/wall.jpg",
+    h1: "EARL'S",
+    h2: "FIGHT SHOP.",
+    msg: "MON & TUE 12–3 · WED–SUN 12–7",
   },
 ] as const;
+
+export const FLOOR_ADS = [
+  ...CORNER_ADS,
+  ...NEWS_ADS,
+  ...FLOOR_FACE_ADS,
+  ...HISTORY_ADS,
+  ...EARLS_ADS,
+] as const;
+
+function shuffleIds(ids: number[], seed: number): number[] {
+  const next = ids.slice();
+  let state = seed || 1;
+  for (let i = next.length - 1; i > 0; i -= 1) {
+    state = (state * 16807) % 2147483647;
+    const j = state % (i + 1);
+    const swap = next[i]!;
+    next[i] = next[j]!;
+    next[j] = swap;
+  }
+  return next;
+}
+
+/** Round-robin the lanes so fundraiser, news, faces, and history stay mixed. */
+export function dealFloorAdOrder(seed: number): number[] {
+  const sizes = [
+    CORNER_ADS.length,
+    NEWS_ADS.length,
+    FLOOR_FACE_ADS.length,
+    HISTORY_ADS.length,
+  ];
+  let offset = 0;
+  const lanes = sizes.map((count, lane) => {
+    const ids = Array.from({ length: count }, (_, i) => offset + i);
+    offset += count;
+    return shuffleIds(ids, (Math.abs(seed) + lane * 97) % 2147483646 || 1);
+  });
+  const lead = Math.abs(seed) % lanes.length;
+  const ordered = lanes.slice(lead).concat(lanes.slice(0, lead));
+  const dealt: number[] = [];
+  let pending = true;
+  while (pending) {
+    pending = false;
+    for (const lane of ordered) {
+      const next = lane.pop();
+      if (next != null) {
+        dealt.push(next);
+        pending = true;
+      }
+    }
+  }
+  const order = dealt.reverse();
+  // One Earl's card every third full pass, so it shows less than the other cards.
+  if (Math.abs(seed) % 3 === 0 && EARLS_ADS.length) {
+    const earlsIndex = order.length;
+    const fromStart = Math.floor(order.length * 0.65);
+    order.splice(order.length - fromStart, 0, earlsIndex);
+  }
+  return order;
+}
 
 function layersFor(folder: string, tvMode: string) {
   let layers: readonly (typeof LAYERS)[number][];
