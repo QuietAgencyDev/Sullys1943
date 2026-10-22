@@ -64,3 +64,23 @@ img {
   background: color-mix(in srgb, var(--brand-red) 70%, black);
   color: var(--brand-cream);
 }
+
+/* Default arrow becomes the Sully's glove. Typing and disabled controls keep their own cursors. */
+@media (hover: hover) and (pointer: fine) {
+  html[data-brand="sullys"] body,
+  html[data-brand="sullys"] body * {
+    cursor: url("/cursors/sullys-glove.png?v=sm") 48 1, auto;
+  }
+
+  html[data-brand="sullys"] input,
+  html[data-brand="sullys"] textarea,
+  html[data-brand="sullys"] select,
+  html[data-brand="sullys"] [contenteditable="true"] {
+    cursor: text;
+  }
+
+  html[data-brand="sullys"] :disabled,
+  html[data-brand="sullys"] [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+}
