@@ -91,6 +91,7 @@ const CAST_STILLS = [
   { file: "teen-2-guard.png", who: "Teen 2", pose: "Guard" },
   { file: "kid-6-guard.png", who: "Kid 6", pose: "Guard" },
   { file: "sully-xp.png", who: "Sully XP", pose: "Badge" },
+  { file: "sullys-xp-shield.png", who: "Sully XP", pose: "Heritage shield" },
   { file: "kid-1-jab.png", who: "Kid 1", pose: "Uppercut" },
   { file: "kid-1-guard.png", who: "Kid 1", pose: "Guard · slip" },
   { file: "kid-2-guard.png", who: "Kid 2", pose: "Guard" },

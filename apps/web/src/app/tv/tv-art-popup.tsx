@@ -453,22 +453,35 @@ function liveText(id: string, spec: ArtSpec, live: TvArtPopupLive): string | nul
   }
 }
 
+function xpBadgeSrc(hero: string | null, tvMode: string): string | null {
+  if (hero?.includes("sullys-xp-shield") || hero?.includes("/sully-xp.png")) return hero;
+  if (hero?.includes("sully-xp-stage") || (!hero && tvMode === "sully_xp")) {
+    return "/tv/cast/sully-xp.png";
+  }
+  return null;
+}
+
 export function TvArtPopup(live: TvArtPopupLive) {
   const spec = SPECS[live.tvMode];
   if (!spec) return null;
   const base = `/tv/popups/${spec.folder}`;
+  const hero = live.heroSrc || CAST_HERO[live.tvMode] || null;
+  const xpBadge = xpBadgeSrc(hero, live.tvMode);
 
   return (
     <div
-      key={live.tvMode}
+      key={`${live.tvMode}-${xpBadge ?? hero ?? ""}`}
       className={`${styles.art} ${live.hold ? styles.hold : ""}`}
       aria-hidden
     >
       <div className={styles.stage}>
         {layersFor(spec.folder, live.tvMode).map((layer) => {
-          if (live.tvMode === "earls_shop" && layer.file === "03_hero.png") return null;
-          const hero =
-            live.heroSrc || CAST_HERO[live.tvMode] || null;
+          if (
+            layer.file === "03_hero.png" &&
+            (live.tvMode === "earls_shop" || xpBadge)
+          ) {
+            return null;
+          }
           const src =
             layer.file === "01_panel.png"
               ? "/tv/popups/_shared/01_panel.png"
@@ -493,38 +506,46 @@ export function TvArtPopup(live: TvArtPopupLive) {
             />
           );
         })}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={SHIELD}
-          alt=""
-          className={styles.logo}
-          draggable={false}
-        />
-        <p
-          className={`${styles.text} ${styles.brand}`}
-          style={{
-            left: pct(228, CANVAS_W),
-            top: pct(139, CANVAS_H),
-            fontSize: vw(36),
-            color: CREAM,
-            ["--in" as string]: "140ms",
-          }}
-        >
-          <span className={styles.line}>{spec.brand}</span>
-        </p>
-        <p
-          className={`${styles.text} ${styles.kind}`}
-          style={{
-            left: pct(228, CANVAS_W),
-            top: pct(182, CANVAS_H),
-            fontSize: vw(24),
-            color: spec.kindFill,
-            ["--in" as string]: "200ms",
-          }}
-        >
-          <span className={styles.line}>{spec.kind}</span>
-        </p>
-        {spec.fields.map((field, i) => {
+        {xpBadge ? null : (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            src={SHIELD}
+            alt=""
+            className={styles.logo}
+            draggable={false}
+          />
+        )}
+        {xpBadge ? null : (
+          <p
+            className={`${styles.text} ${styles.brand}`}
+            style={{
+              left: pct(228, CANVAS_W),
+              top: pct(139, CANVAS_H),
+              fontSize: vw(36),
+              color: CREAM,
+              ["--in" as string]: "140ms",
+            }}
+          >
+            <span className={styles.line}>{spec.brand}</span>
+          </p>
+        )}
+        {xpBadge ? null : (
+          <p
+            className={`${styles.text} ${styles.kind}`}
+            style={{
+              left: pct(228, CANVAS_W),
+              top: pct(182, CANVAS_H),
+              fontSize: vw(24),
+              color: spec.kindFill,
+              ["--in" as string]: "200ms",
+            }}
+          >
+            <span className={styles.line}>{spec.kind}</span>
+          </p>
+        )}
+        {xpBadge
+          ? null
+          : spec.fields.map((field, i) => {
           const text = ((field.live ? liveText(field.id, spec, live) : null) ?? field.text).trim();
           if (!text) return null;
           const tone = HEADLINE_IDS.has(field.id)
@@ -589,19 +610,25 @@ export function TvArtPopup(live: TvArtPopupLive) {
             </div>
           </>
         ) : null}
-        <p
-          className={`${styles.text} ${styles.footer}`}
-          style={{
-            left: pct(118, CANVAS_W),
-            top: pct(794, CANVAS_H),
-            fontSize: vw(22),
-            color: CREAM,
-            ["--in" as string]: `${320 + spec.fields.length * 70}ms`,
-          }}
-        >
-          <span className={styles.line}>{spec.footer}</span>
-        </p>
+        {xpBadge ? null : (
+          <p
+            className={`${styles.text} ${styles.footer}`}
+            style={{
+              left: pct(118, CANVAS_W),
+              top: pct(794, CANVAS_H),
+              fontSize: vw(22),
+              color: CREAM,
+              ["--in" as string]: `${320 + spec.fields.length * 70}ms`,
+            }}
+          >
+            <span className={styles.line}>{spec.footer}</span>
+          </p>
+        )}
       </div>
+      {xpBadge ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={xpBadge} alt="" className={styles.xpBadge} draggable={false} />
+      ) : null}
     </div>
   );
 }
@@ -784,6 +811,13 @@ const FLOOR_FACE_ADS = [
   },
   {
     mode: "sully_xp",
+    hero: "/tv/cast/sullys-xp-shield.png",
+    h1: "SULLY'S",
+    h2: "XP.",
+    msg: "SHOW UP. TRAIN. MOVE UP THE BOARD.",
+  },
+  {
+    mode: "sully_xp",
     hero: "/tv/cast/kid-3-celebrate.png",
     h1: "EARN",
     h2: "IT.",
@@ -857,6 +891,16 @@ const HISTORY_ADS = [
   },
 ] as const;
 
+const GYM_ADS = [
+  {
+    mode: "legend",
+    hero: "/tv/sullys-ossington.jpg",
+    h1: "OSSINGTON",
+    h2: "1966.",
+    msg: "ALI TRAINED ON THIS FLOOR",
+  },
+] as const;
+
 const EARLS_ADS = [
   {
     mode: "earls_shop",
@@ -873,6 +917,7 @@ export const FLOOR_ADS = [
   ...FLOOR_FACE_ADS,
   ...HISTORY_ADS,
   ...EARLS_ADS,
+  ...GYM_ADS,
 ] as const;
 
 function shuffleIds(ids: number[], seed: number): number[] {
@@ -917,11 +962,18 @@ export function dealFloorAdOrder(seed: number): number[] {
     }
   }
   const order = dealt.reverse();
+  const laneCount = order.length;
   // One Earl's card every third full pass, so it shows less than the other cards.
   if (Math.abs(seed) % 3 === 0 && EARLS_ADS.length) {
-    const earlsIndex = order.length;
+    const earlsIndex = laneCount;
     const fromStart = Math.floor(order.length * 0.65);
     order.splice(order.length - fromStart, 0, earlsIndex);
+  }
+  // Old gym still, once each pass. The floor holds it full-screen.
+  if (GYM_ADS.length) {
+    const gymIndex = laneCount + EARLS_ADS.length;
+    const at = Math.max(1, Math.floor(order.length * 0.4));
+    order.splice(at, 0, gymIndex);
   }
   return order;
 }

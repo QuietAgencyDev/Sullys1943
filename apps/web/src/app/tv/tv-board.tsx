@@ -360,6 +360,102 @@ const FLOOR_CURRENT: FeedLine[] = [
   { kind: "trivia", text: "Eleider Alvarez · Montreal · the night he dropped Kovalev." },
 ];
 
+const FLOOR_TORONTO: FeedLine[] = [
+  { kind: "trivia", text: "Toronto boxing · Chuvalo's chin, O'Sullivan's amateur run, Ruddock's smash, Morrison on this floor." },
+  { kind: "trivia", text: "Parkdale raised this gym. Ossington made it famous. Dundas West kept the doors open." },
+  { kind: "trivia", text: "Dundas and Dufferin · the current chapter. The rules did not move." },
+  { kind: "trivia", text: "Earl Sullivan was Mimico-born. The west end never left the name." },
+  { kind: "trivia", text: "Maple Leaf Gardens, March 29, 1966 · 15 rounds · the building still hums." },
+  { kind: "trivia", text: "The Gardens is a grocery store and a university gym now. Chuvalo's night is still in it." },
+  { kind: "trivia", text: "Charles “Spider” Jones · three-time Golden Gloves · Canadian Boxing Hall of Fame." },
+  { kind: "trivia", text: "Spider Jones was 22, working at Sully's, the day Ali walked onto Ossington." },
+  { kind: "trivia", text: "Ossington, 1966 · two dollars to watch Ali hit the bag. The street filled up anyway." },
+  { kind: "trivia", text: "Jim Brown and Howard Cosell came through with Ali. Spider Jones never forgot the noise." },
+  { kind: "trivia", text: "Spider Jones called it the most electrifying day Toronto ever saw. It happened at Sully's." },
+  { kind: "trivia", text: "Joe Manteiga came in 1966 to see Ali. He never really left." },
+  { kind: "trivia", text: "Manteiga · North American Golden Gloves, 1973 · then he stayed to teach." },
+  { kind: "trivia", text: "Mike Tyson once came by Sully's at seven in the morning. The door was still locked." },
+  { kind: "trivia", text: "Fern Bull · another name on this roll, with Chuvalo, Clyde Gray, and Lewis." },
+  { kind: "trivia", text: "Donovan “Razor” Ruddock · Jamaica to Toronto · the leaping left they named the Smash." },
+  { kind: "trivia", text: "Ruddock and Tyson, twice in 1991. Toronto had a heavyweight the world had to answer." },
+  { kind: "trivia", text: "Clyde Gray · Jamaica to Toronto · welterweight nights this city still says out loud." },
+  { kind: "trivia", text: "Los Angeles 1984 · O'Sullivan and Frank Tate · Toronto still replays that final." },
+  { kind: "trivia", text: "Cabbagetown Boxing Club · O'Sullivan's neighbourhood · still on the same Ontario cards." },
+  { kind: "trivia", text: "From Cabbagetown to Dundas West, Toronto amateur boxing is one city." },
+  { kind: "trivia", text: "Mark Leduc · Olympic silver for Toronto · then the courage to live in the open." },
+  { kind: "trivia", text: "Toronto 2015 · Pan Am boxing on home canvas. The hemisphere came here." },
+  { kind: "trivia", text: "Arthur Biyarslanov · Pan Am gold in his own city, 2015 · then Rio with Team Canada." },
+  { kind: "trivia", text: "Frenchy Belanger · Cabbagetown flyweight · world champion in 1927, when this city was the fight." },
+  { kind: "trivia", text: "Sammy Luftspring left Berlin off the team sheet. He brought the Canadian welter belt home instead." },
+  { kind: "trivia", text: "Mutual Street Arena, 1938 · Luftspring stops Frankie Genovese in 13. Toronto packed the house." },
+  { kind: "trivia", text: "Even the nights Chuvalo lost, the canvas never got him." },
+  { kind: "trivia", text: "Ali at the Gardens. Frazier in New York. Foreman in the lights. Chuvalo stayed upright." },
+];
+
+const FLOOR_STORIES: FeedLine[] = [
+  { kind: "trivia", text: "Montreal Forum, 1958 · round 1 · Durelle drops Archie Moore three times." },
+  { kind: "trivia", text: "Moore gets up. Round 11, Moore ends it. The greatest Canadian round was the first." },
+  { kind: "trivia", text: "Boxing Day 1908 · Sydney · Tommy Burns and Jack Johnson. A Canadian heavyweight champ in the fight that changed the line." },
+  { kind: "trivia", text: "Burns was 5-foot-7 and took the fights bigger men ducked. Hanover, Ontario, on the throne." },
+  { kind: "trivia", text: "George Dixon · Africville · shadowboxing, the bag, and the modern gym. He built the homework." },
+  { kind: "trivia", text: "Sam Langford never got the title shot his wins had already earned. Nova Scotia still knows." },
+  { kind: "trivia", text: "Lennox Lewis vs Vitali Klitschko, 2003 · a cut stops the night · Lewis leaves as champion." },
+  { kind: "trivia", text: "Lewis retired on his feet. Not every heavyweight gets to write the last line." },
+  { kind: "trivia", text: "Gatti and Ward, three times. A Montreal-born fighter in the wars people still screen." },
+  { kind: "trivia", text: "Adonis Stevenson · 76 seconds · Chad Dawson down · the WBC belt changes corners." },
+  { kind: "trivia", text: "Beterbiev does not nick rounds. Montreal houses a light heavyweight who ends them." },
+  { kind: "trivia", text: "Eleider Alvarez · Storm · the Montreal night Kovalev went down." },
+  { kind: "trivia", text: "Lucian Bute's left hook had its own area code. The Bell Centre answered." },
+  { kind: "trivia", text: "Jean Pascal and Bernard Hopkins · old lion, young lion · Montreal would not sit down." },
+  { kind: "trivia", text: "Kim Clavel · La Petite Furie · Montreal champion, and a nurse when the gloves came off." },
+  { kind: "trivia", text: "Mandy Bujold · Kitchener · fought a ranking rule after pregnancy to get back to the Olympics." },
+  { kind: "trivia", text: "Mary Spencer · Windsor · three amateur world titles before the Olympic door even opened for women." },
+  { kind: "trivia", text: "Tammara Thibeault · world champion, Commonwealth champion, two Olympic teams. The middleweight standard." },
+  { kind: "trivia", text: "Wyatt Sanford · Kennetcook · Paris bronze. Twenty-eight years is a long wait. He ended it." },
+  { kind: "trivia", text: "Tony Pep · Winnipeg featherweight · years of world-title nights, Canadian to the laces." },
+  { kind: "trivia", text: "Kevin Bizier · Quebec's Gentleman · a welterweight night with Errol Spence on the other side." },
+  { kind: "trivia", text: "Steve Molitor · Sarnia · Casino Rama · the Canadian Kid with the IBF belt in the building." },
+  { kind: "trivia", text: "Donny Lalonde put two belts on the line with Sugar Ray Leonard. Winnipeg's Golden Boy did not blink first." },
+  { kind: "trivia", text: "Yvon Durelle was a fisherman who almost stole the light-heavyweight crown in one round." },
+  { kind: "trivia", text: "Seoul 1988 · Lewis gold, Egerton Marcus silver, Ray Downey bronze. Canada on one podium night." },
+  { kind: "trivia", text: "Antwerp 1920 · five Canadian boxing medals. Schneider's gold was the first." },
+  { kind: "trivia", text: "Lefty Gwynne · Toronto bantamweight · Olympic gold, Los Angeles 1932. The city already knew how." },
+  { kind: "trivia", text: "Jimmy McLarnin · Vancouver's Baby Face · welterweight wars with Barney Ross that still teach the craft." },
+  { kind: "trivia", text: "Arturo Gatti was born in Montreal. The Garden learned his name the hard way." },
+  { kind: "trivia", text: "Trevor Berbick held the WBC heavyweight belt. Tyson was 20. It lasted two rounds." },
+  { kind: "trivia", text: "Otis Grant · first Black Quebecer to win a world title · then ten rounds with Roy Jones." },
+  { kind: "trivia", text: "David Lemieux · Montreal middleweight power · an IBF belt and a city that likes a finisher." },
+  { kind: "trivia", text: "Marie-Eve Dicaire · technician · IBF super welterweight · Montreal again." },
+  { kind: "trivia", text: "Jelena Mrdjenovich · Edmonton · featherweight champion so long the belt looked borrowed from nobody." },
+];
+
+const FLOOR_ONTARIO: FeedLine[] = [
+  { kind: "trivia", text: "Boxing Ontario runs the provincial card. This floor is on it." },
+  { kind: "trivia", text: "Brampton Cup · Boxing Ontario · the GTA's proving ground. Four rings. Four days." },
+  { kind: "trivia", text: "Brampton Cup 2025 · January 30 to February 2 · hosted by Bramalea Boxing Club." },
+  { kind: "trivia", text: "Over 700 boxers. Sully's sent 22. Nineteen came home with medals." },
+  { kind: "trivia", text: "Sully's took the Brampton Cup team award. The west end travelled in a pack." },
+  { kind: "trivia", text: "Viktoria Penney · gold · women's 80 kg · Brampton Cup 2025 · trained on this floor." },
+  { kind: "trivia", text: "Penney calls Sully's a family inside a gym. The medal says the work was real." },
+  { kind: "trivia", text: "From Dundas West to Brampton. Same hands. Bigger room." },
+  { kind: "trivia", text: "Silver Gloves · Ontario's youth crucible. Sully's has brought them home." },
+  { kind: "trivia", text: "Golden Gloves · Manteiga in 1973, Spider Jones three times. The standard is old." },
+  { kind: "trivia", text: "1973 · Azores, Canadian Golden Gloves. Manteiga, North American Golden Gloves. Both from this gym." },
+  { kind: "trivia", text: "Club show, then Boxing Ontario, then Boxing Canada nationals. That is the staircase." },
+  { kind: "trivia", text: "A provincial title is still a real belt. Earn it in an Ontario ring." },
+  { kind: "trivia", text: "Novice, then open. The card says so. So does the homework." },
+  { kind: "trivia", text: "Development rounds grow up: three by one, then three by two, then the open distance." },
+  { kind: "trivia", text: "A 3-0 scorecard is a sweep. A 2-1 is the fight they argue about on the ride home." },
+  { kind: "trivia", text: "RSC means the referee stopped it. Both corners live with that walk back." },
+  { kind: "trivia", text: "Headgear on the development card. The pros take it off. The work is the same." },
+  { kind: "trivia", text: "Win the room on Dundas. Then go win a weekend in Brampton." },
+  { kind: "trivia", text: "Toronto kept the heavyweights. Montreal kept a generation of titles. The country kept the stories." },
+  { kind: "trivia", text: "Kitchener gave us Lewis and Bujold. Sarnia gave us Molitor. Windsor gave us Spencer. Toronto gave us the floor." },
+  { kind: "trivia", text: "Hamilton had Jackie Callura. Halifax had Dixon's memory. Every Canadian room is in this ticker." },
+  { kind: "trivia", text: "The Canadian title is not a rumour. It is a belt you can still fight for." },
+  { kind: "trivia", text: "Olympic trials start as a Tuesday in a provincial gym. Nobody skips the Tuesday." },
+];
+
 const FLOOR_SYSTEM: FeedLine[] = [
   { kind: "system", text: "Sully XP for showing up. Levels for staying." },
   { kind: "system", text: "Passport stamps every class you finish." },
@@ -375,11 +471,23 @@ const FLOOR_SYSTEM: FeedLine[] = [
   { kind: "system", text: "Coach Tony is off the floor, recovering. Scan In His Corner." },
   { kind: "system", text: "Shout out Viktoria Penney · she organised Coach Tony's fundraiser." },
   { kind: "system", text: "Earl's Fight Shop · 1385 Dundas St. W · (416) 531-1331 · Mon & Tue 12–3 · Wed–Sun 12–7." },
+  { kind: "system", text: "Sully's exclusive merch and fight gear are on the way for 2027." },
+  { kind: "system", text: "New Sully's kit · made for this floor · fight gear arriving 2027." },
+  { kind: "system", text: "XP leaders in each weight class win prizes. Climb your division." },
+  { kind: "system", text: "Flyweight to heavyweight · the Sully XP leader in your class takes the prize." },
+  { kind: "system", text: "Same weight class. Same leaderboard. Prizes for the ones who stay on it." },
+  { kind: "system", text: "Brampton Cup 2025 · 22 from this gym · 19 medals · Penney with the gold." },
+  { kind: "system", text: "New Sully's boxing card and passport · your QR signs you in when you arrive." },
+  { kind: "system", text: "Open your check-in card. Hold the QR at the desk. That's the sign-in." },
+  { kind: "system", text: "Members · sign your waiver before you train. Parents · sign for the younger members." },
+  { kind: "system", text: "Attendance earns Sully XP. XP earns rewards. Show up and it counts." },
+  { kind: "system", text: "Passport stamps the classes you finish. The card gets you through the door." },
 ];
 
-const TICKER_FIRST_MS = 10000;
-const TICKER_SCROLL_MS = 18000;
-const TICKER_HOLD_MS = 7000;
+const TICKER_FIRST_MS = 14000;
+const TICKER_SCROLL_MS = 48000;
+const TICKER_HOLD_MS = 5200;
+const TICKER_PX_PER_SEC = 56;
 
 const FLOOR_DEMO_CLASSES = [
   { title: "Beginner Boxing", coach: "Ask the desk" },
@@ -391,12 +499,13 @@ const FLOOR_DEMO_CLASSES = [
   { title: "Youth Boxing", coach: "Winslow" },
 ] as const;
 
-const FLOOR_CLASS_PHOTO_POOLS: { match: RegExp; srcs: string[] }[] = [
+const FLOOR_CLASS_PHOTO_POOLS: { match: RegExp; srcs: string[]; rig?: boolean }[] = [
   {
     match: /tony|morrison|beginner/i,
+    rig: false,
     srcs: [
-      "/tv/cast/coach-tony-uppercut.png?v=hd3",
       "/tv/cast/coach-tony-morrison.png?v=hd2",
+      "/tv/cast/coach-tony-jab.png?v=hd1",
     ],
   },
   {
@@ -404,15 +513,15 @@ const FLOOR_CLASS_PHOTO_POOLS: { match: RegExp; srcs: string[] }[] = [
     srcs: [
       "/tv/cast/coach-5-jab.png?v=hd2",
       "/tv/cast/coach-6-celebrate.png?v=hd2",
-      "/tv/cast/coach-tony-morrison.png?v=hd2",
     ],
   },
   {
     match: /jacklyne|irvine|women/i,
+    rig: false,
     srcs: [
+      "/tv/cast/coach-8-guard.png?v=hd2",
       "/tv/cast/coach-8-hook.png?v=hd3",
       "/tv/cast/coach-8-hook-2.png?v=hd3",
-      "/tv/cast/coach-8-guard.png?v=hd2",
     ],
   },
   {
@@ -449,8 +558,10 @@ function floorClassPhoto(
   const haystack = `${title ?? ""} ${coach ?? ""}`;
   const pool = FLOOR_CLASS_PHOTO_POOLS.find((row) => row.match.test(haystack));
   const stills = pool?.srcs ?? [];
-  // null slot = live Coach 2 rig, so the animated clock stays in the mix
-  const slots: Array<string | null> = [...stills, null];
+  // null slot = live Coach 2 rig. Women's Boxing stays on the female coach stills.
+  const slots: Array<string | null> =
+    pool?.rig === false ? stills : [...stills, null];
+  if (!slots.length) return null;
   return slots[Math.abs(seed) % slots.length] ?? null;
 }
 
@@ -503,6 +614,9 @@ function weaveFloorFeed(input: {
       ...FLOOR_OLYMPIANS,
       ...FLOOR_WOMEN,
       ...FLOOR_CURRENT,
+      ...FLOOR_TORONTO,
+      ...FLOOR_STORIES,
+      ...FLOOR_ONTARIO,
       ...FLOOR_TRIVIA,
       ...FLOOR_SYSTEM,
     ].filter(
@@ -560,6 +674,12 @@ function weaveFloorFeed(input: {
   while (extraIndex < extras.length) {
     out.push(extras[extraIndex]);
     extraIndex += 1;
+  }
+  if (input.minute % 4 === 0) {
+    out.push({
+      kind: "system",
+      text: "This boxing system was developed by Quiet Agency for Sully's Gym.",
+    });
   }
   return out;
 }
@@ -703,6 +823,8 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   const [adIndex, setAdIndex] = useState(0);
   const [adOn, setAdOn] = useState(false);
   const [tickerHold, setTickerHold] = useState(false);
+  const tickerTrackRef = useRef<HTMLDivElement>(null);
+  const [marqueeSec, setMarqueeSec] = useState(480);
   const [infoIndex, setInfoIndex] = useState(0);
   const [demoClassIndex, setDemoClassIndex] = useState(0);
   const [poseTick, setPoseTick] = useState(0);
@@ -751,12 +873,14 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       }
       const next = adDeckRef.current.pop();
       if (next != null) setAdIndex(next);
+      return next;
     };
     const show = () => {
       if (cancelled) return;
-      drawAd();
+      const next = drawAd();
       setAdOn(true);
-      timer = setTimeout(hide, jitter(10000, 14000));
+      const gym = next != null && (FLOOR_ADS[next]?.hero ?? "").includes("sullys-ossington");
+      timer = setTimeout(hide, gym ? 15000 : jitter(10000, 14000));
     };
     const hide = () => {
       if (cancelled) return;
@@ -965,6 +1089,19 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     Math.floor(now.getTime() / (10 * 60 * 1000)),
   ]);
 
+  useEffect(() => {
+    const el = tickerTrackRef.current;
+    if (!el) return;
+    const measure = () => {
+      const distance = el.scrollWidth / 2;
+      if (distance > 0) setMarqueeSec(distance / TICKER_PX_PER_SEC);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [floorFeed]);
+
   const demoMode = DEMO_MODES[demoModeIndex] ?? "achievement";
   const coachMode = board?.coachTimer?.tvMode ?? "timer";
   const liveEvent =
@@ -978,6 +1115,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     : null;
   const infoText = (infoLine?.text ?? "").replace(/^Trivia · /, "");
   const floorAd = adOn && profile === "floor" ? FLOOR_ADS[adIndex] : null;
+  const gymScreen = Boolean(floorAd?.hero?.includes("sullys-ossington"));
   const tvMode =
     popupFreeze && profile === "floor"
       ? popupFreeze
@@ -1021,6 +1159,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       Boolean(floorAd));
   const showArtPopup =
     riveActive &&
+    !gymScreen &&
     hasArtPopup(tvMode) &&
     (tvMode !== "timer" || Boolean(popupFreeze) || demoCelebrate || Boolean(floorAd));
   const sceneKey = `${tvMode}:${round.phase}:${round.round}:${
@@ -1051,9 +1190,18 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     <div
       className={`${styles.shell} ${
         round.phase === "work" ? styles.phaseWork : styles.phaseRest
-      } ${showArtPopup ? styles.shellArt : ""}`}
+      } ${showArtPopup ? styles.shellArt : ""} ${gymScreen ? styles.shellGym : ""}`}
       data-profile={profile}
     >
+      {gymScreen ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          className={styles.gymStill}
+          src="/tv/sullys-ossington.jpg"
+          alt=""
+          draggable={false}
+        />
+      ) : null}
       {profile === "reception" && arrivalName ? (
         <div className={styles.arrivalMoment} role="status" aria-live="polite">
           <div className={styles.arrivalMark} aria-hidden>
@@ -1165,10 +1313,14 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                   ? (demoCelebrate ? "Gavin S" : topName)
                   : topName
             }
-            heroSrc={floorAd?.hero ?? null}
-            headline1={floorAd?.h1 ?? null}
-            headline2={floorAd?.h2 ?? null}
-            message={floorAd?.msg ?? board?.coachTimer?.tvMessage}
+            heroSrc={popupFreeze ? null : floorAd?.hero ?? null}
+            headline1={popupFreeze ? null : floorAd?.h1 ?? null}
+            headline2={popupFreeze ? null : floorAd?.h2 ?? null}
+            message={
+              popupFreeze
+                ? board?.coachTimer?.tvMessage
+                : floorAd?.msg ?? board?.coachTimer?.tvMessage
+            }
           />
           {profile === "floor" && riveEnabled && !showArtPopup && !classPhoto ? (
             <TvBoxerRig motion={round.phase === "rest" ? "rest" : "work"} />
@@ -1587,6 +1739,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/tv/icons/canada-flag.png" alt="" draggable={false} />
           </span>
+          <div className={styles.tickerStage}>
           {tickerHold && infoText ? (
             <div className={styles.tickerInfo} aria-live="polite">
               <span className={styles.tickerInfoMark}>INFO</span>
@@ -1600,8 +1753,12 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
               />
             </div>
           ) : null}
-          <div className={styles.tickerCrawl} hidden={tickerHold && Boolean(infoText)}>
-            <div className={styles.tickerTrack}>
+          <div className={styles.tickerCrawl}>
+            <div
+              ref={tickerTrackRef}
+              className={styles.tickerTrack}
+              style={{ animationDuration: `${marqueeSec}s` }}
+            >
             {[0, 1].map((copy) => (
               <div
                 className={styles.tickerCopy}
@@ -1628,6 +1785,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
               </div>
             ))}
             </div>
+          </div>
           </div>
         </div>
         <p className={styles.hint}>

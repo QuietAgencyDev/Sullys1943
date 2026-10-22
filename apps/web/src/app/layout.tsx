@@ -1,22 +1,41 @@
 import type { Metadata, Viewport } from "next";
-import { Bebas_Neue, DM_Sans, Libre_Baskerville } from "next/font/google";
+import localFont from "next/font/local";
 import { getBrand } from "@/lib/brand";
 import "./globals.css";
 
-const display = Bebas_Neue({
+const display = localFont({
+  src: "../fonts/bebas-neue-latin.woff2",
   weight: "400",
-  subsets: ["latin"],
+  style: "normal",
+  display: "swap",
+  adjustFontFallback: false,
   variable: "--font-display-loaded",
 });
 
-const body = DM_Sans({
-  subsets: ["latin"],
+const body = localFont({
+  src: "../fonts/dm-sans-latin.woff2",
+  weight: "100 1000",
+  style: "normal",
+  display: "swap",
+  adjustFontFallback: false,
   variable: "--font-body-loaded",
 });
 
-const heritage = Libre_Baskerville({
-  weight: ["400", "700"],
-  subsets: ["latin"],
+const heritage = localFont({
+  src: [
+    {
+      path: "../fonts/libre-baskerville-latin.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../fonts/libre-baskerville-latin.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  display: "swap",
+  adjustFontFallback: false,
   variable: "--font-heritage-loaded",
 });
 

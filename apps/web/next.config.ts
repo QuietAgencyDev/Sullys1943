@@ -7,6 +7,7 @@ const apiTarget = (
 ).replace(/\/$/, "");
 
 const nextConfig: NextConfig = {
+  devIndicators: false,
   transpilePackages: [
     "@sullys/ui",
     "@sullys/tokens",

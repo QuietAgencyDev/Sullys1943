@@ -34,34 +34,6 @@
   padding-bottom: calc(var(--staff-frame-width) + 3rem);
 }
 
-.woodFrameScreen::after {
-  position: fixed;
-  z-index: 100;
-  inset: 0;
-  box-sizing: border-box;
-  padding: var(--staff-frame-width);
-  background:
-    repeating-linear-gradient(
-      7deg,
-      transparent 0 3px,
-      rgba(71, 36, 14, 0.32) 4px,
-      transparent 6px 11px
-    ),
-    repeating-linear-gradient(
-      94deg,
-      transparent 0 18px,
-      rgba(255, 229, 170, 0.16) 20px,
-      transparent 24px 42px
-    ),
-    linear-gradient(105deg, #6f3e1b, #c18a4d 22%, #e0b871 48%, #8a5127 76%, #d0a05f);
-  content: "";
-  pointer-events: none;
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-}
 
 .softLaunch {
   margin: 1.25rem 0 0;

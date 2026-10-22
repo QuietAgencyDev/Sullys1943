@@ -34,6 +34,7 @@ export default function DeskKioskPage() {
   const [online, setOnline] = useState(true);
   const [flash, setFlash] = useState<Flash>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const tokenRef = useRef("");
   const clearTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const focusScan = useCallback(() => {
@@ -71,6 +72,7 @@ export default function DeskKioskPage() {
       const value = raw.trim();
       if (!value || busy) return;
       setBusy(true);
+      tokenRef.current = "";
       setToken("");
       try {
         const res = await post<ScanResult>("/api/v1/check-in/scan", {
@@ -108,13 +110,22 @@ export default function DeskKioskPage() {
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    void submitScan(token);
+    void submitScan(tokenRef.current);
+  }
+
+  function onChange(value: string) {
+    const cleaned = value.replace(/[\r\n]+/g, "").trim();
+    tokenRef.current = cleaned;
+    setToken(cleaned);
+    if (value.includes("\n") || value.includes("\r")) {
+      void submitScan(cleaned);
+    }
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
       e.preventDefault();
-      void submitScan(token);
+      void submitScan(tokenRef.current);
     }
   }
 
@@ -161,7 +172,7 @@ export default function DeskKioskPage() {
           ref={inputRef}
           className={styles.scanInput}
           value={token}
-          onChange={(e) => setToken(e.target.value)}
+          onChange={(e) => onChange(e.target.value)}
           onBlur={() => {
             requestAnimationFrame(focusScan);
           }}

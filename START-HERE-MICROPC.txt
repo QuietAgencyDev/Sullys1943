@@ -6,7 +6,11 @@ Double-click this file on the USB:
     Start Sullys.bat
 
 That is the whole install. Node.js 24 LTS is already on the stick.
-The local database is already built. The first double-click opens:
+If you already installed Node.js 24 on the mini PC, this still works.
+The typefaces are on the stick. The app does not download fonts.
+The local database is already built. The browser opens only after the site is listening.
+If the page says localhost refused to connect, look at the window titled Sully's Website.
+The first double-click opens:
 
     Floor TV     http://localhost:3000/tv/floor
     Public site  http://localhost:3000/
@@ -22,3 +26,10 @@ Demo password: password123
   member@sullys.local  Member app
 
 Do not run npm install. The libraries are already in node_modules.
+
+To keep Sully's after you unplug the USB, double-click:
+
+    Install to this PC.bat
+
+That copies everything to C:\Sullys and puts Start Sullys on the desktop.
+Then you can unplug the stick and run it from this PC.

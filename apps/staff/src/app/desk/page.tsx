@@ -82,6 +82,7 @@ export default function DeskPage() {
   const [createChild, setCreateChild] = useState(true);
   const [addToMembership, setAddToMembership] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
+  const tokenRef = useRef("");
   const sessionIdRef = useRef(sessionId);
   const overrideRef = useRef(override);
   const reasonRef = useRef(overrideReason);
@@ -154,6 +155,7 @@ export default function DeskPage() {
                 } XP${flagNote}`,
               },
         );
+        tokenRef.current = "";
         setToken("");
         setLastFailedEmail(null);
         setOverride(false);
@@ -169,6 +171,7 @@ export default function DeskPage() {
           title: blocked ? "Member needs attention" : "Scan not accepted",
           detail: msg,
         });
+        tokenRef.current = "";
         setToken("");
         if (email) setLastFailedEmail(email);
         if (blocked) {
@@ -185,23 +188,22 @@ export default function DeskPage() {
   function onTokenKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
       e.preventDefault();
-      void submitScan(token);
+      void submitScan(tokenRef.current);
     }
   }
 
   function onTokenChange(value: string) {
+    const cleaned = value.replace(/[\r\n]+/g, "").trim();
+    tokenRef.current = cleaned;
+    setToken(cleaned);
     if (value.includes("\n") || value.includes("\r")) {
-      const cleaned = value.replace(/[\r\n]+/g, "").trim();
-      setToken(cleaned);
       void submitScan(cleaned);
-      return;
     }
-    setToken(value);
   }
 
   async function scanToken(e: FormEvent) {
     e.preventDefault();
-    await submitScan(token);
+    await submitScan(tokenRef.current);
   }
 
   async function search(e: FormEvent) {
