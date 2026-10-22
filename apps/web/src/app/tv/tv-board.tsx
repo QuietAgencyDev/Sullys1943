@@ -602,7 +602,9 @@ function shuffleFeed<T>(items: T[], seed: number): T[] {
     state = (state * 16807) % 2147483647;
     const j = state % (i + 1);
     const swap = next[i];
-    next[i] = next[j];
+    const other = next[j];
+    if (swap === undefined || other === undefined) continue;
+    next[i] = other;
     next[j] = swap;
   }
   return next;
@@ -667,9 +669,11 @@ function weaveFloorFeed(input: {
     extras.push({ kind: "system", text: `${input.spotsOpen} spots still open` });
   }
   input.checkIns.forEach((person, i) => {
+    const template = CHECKIN_TEMPLATES[i % CHECKIN_TEMPLATES.length];
+    if (!template) return;
     extras.push({
       kind: "checkin",
-      text: CHECKIN_TEMPLATES[i % CHECKIN_TEMPLATES.length](person.name),
+      text: template(person.name),
     });
   });
 
@@ -682,15 +686,18 @@ function weaveFloorFeed(input: {
   knowledge.forEach((line, i) => {
     out.push(line);
     if ((i + 1) % 4 === 0 && chuvaloPulse.length) {
-      out.push(chuvaloPulse[Math.floor(i / 4) % chuvaloPulse.length]);
+      const pulse = chuvaloPulse[Math.floor(i / 4) % chuvaloPulse.length];
+      if (pulse) out.push(pulse);
     }
     if (extraIndex < extras.length && (i + 1) % insertEvery === 0) {
-      out.push(extras[extraIndex]);
+      const extra = extras[extraIndex];
+      if (extra) out.push(extra);
       extraIndex += 1;
     }
   });
   while (extraIndex < extras.length) {
-    out.push(extras[extraIndex]);
+    const extra = extras[extraIndex];
+    if (extra) out.push(extra);
     extraIndex += 1;
   }
   if (input.minute % 4 === 0) {
