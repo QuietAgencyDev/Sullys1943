@@ -8,6 +8,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ApiError, get } from "@/lib/api";
 import { getBrand } from "@/lib/brand";
+import { FLOOR_COACHES } from "@/lib/floor-schedule";
 import { RED_OWL_TEAM } from "@/lib/programs-red-owl";
 import styles from "./coaches.module.css";
 
@@ -18,6 +19,32 @@ type Coach = {
   bio: string;
   photoUrl: string | null;
 };
+
+const ROSTER_ORDER = FLOOR_COACHES.map((coach) =>
+  `${coach.firstName} ${coach.lastName}`.trim().toLowerCase(),
+);
+
+const ROSTER_AVATARS = new Map(
+  FLOOR_COACHES.map((coach) => [
+    `${coach.firstName} ${coach.lastName}`.trim().toLowerCase(),
+    coach.photoUrl,
+  ]),
+);
+
+function withRosterAvatar(coach: Coach): Coach {
+  const known = ROSTER_AVATARS.get(coach.name.trim().toLowerCase());
+  if (!known) return coach;
+  if (!coach.photoUrl || coach.photoUrl.endsWith(".jpg")) {
+    return { ...coach, photoUrl: known };
+  }
+  return coach;
+}
+
+function byRoster(a: Coach, b: Coach) {
+  const ia = ROSTER_ORDER.indexOf(a.name.trim().toLowerCase());
+  const ib = ROSTER_ORDER.indexOf(b.name.trim().toLowerCase());
+  return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+}
 
 function CoachCard({ coach }: { coach: Coach }) {
   const [imgFailed, setImgFailed] = useState(false);
@@ -77,7 +104,7 @@ export default function CoachesPage() {
       try {
         const data = await get<{ coaches: Coach[] }>("/api/v1/portal/coaches");
         if (!active) return;
-        setCoaches(data.coaches ?? []);
+        setCoaches((data.coaches ?? []).map(withRosterAvatar).sort(byRoster));
         setError(null);
       } catch (err) {
         if (!active) return;
