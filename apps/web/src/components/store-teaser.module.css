@@ -26,6 +26,8 @@
   margin: 0;
   font-family: var(--font-display-loaded), var(--font-display);
   font-size: clamp(1.85rem, 5.5vw, 2.8rem);
+  font-weight: 700;
+  -webkit-text-stroke: 0.35px currentColor;
   letter-spacing: 0.03em;
   line-height: 0.98;
   color: var(--brand-cream);

@@ -161,7 +161,7 @@ const sullysBrand: BrandConfig = {
   assets: {
     logoPrimary: "/brand/sullys-logo-primary.png",
     logoAlt: "Sully's Boxing Gym",
-    heroImage: "/gym/hero-floor.jpg",
+    heroImage: "/gym/ossington-1966.png",
   },
   meta: {
     title: "Sully's Boxing Gym | Boxing is the engine · EST 1943",

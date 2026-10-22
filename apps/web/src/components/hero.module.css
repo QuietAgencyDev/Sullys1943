@@ -69,6 +69,7 @@
   margin: 0;
   font-family: var(--font-heritage-loaded), var(--font-heritage);
   font-size: 0.95rem;
+  font-weight: 700;
   color: var(--brand-glove);
   letter-spacing: 0.04em;
 }
@@ -76,14 +77,15 @@
 .manifesto {
   margin: 0;
   display: grid;
-  gap: 0.18em;
+  gap: 0.12em;
   font-family: var(--font-display-loaded), var(--font-display);
   font-size: clamp(2.4rem, 9vw, 4.8rem);
-  line-height: 1.05;
-  letter-spacing: 0.02em;
+  line-height: 0.96;
+  letter-spacing: 0.03em;
   color: var(--brand-cream);
   text-wrap: balance;
-  font-weight: 400;
+  font-weight: 700;
+  -webkit-text-stroke: 0.4px currentColor;
 }
 
 .manifesto span:nth-child(2) {
@@ -98,8 +100,9 @@
   margin: 0.35rem 0 0;
   max-width: 36ch;
   font-size: 1.05rem;
-  line-height: 1.55;
-  color: var(--text-muted);
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--text-primary);
 }
 
 .actions {
@@ -140,6 +143,142 @@
   }
 }
 
+/* Sully's facade sits beside the copy, clear of the wood frame. */
+.hero[data-hero="facade"] {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.92fr) minmax(0, 1.2fr);
+  align-items: end;
+  height: 100svh;
+  min-height: 100svh;
+  max-height: 100svh;
+  background: var(--bg-canvas);
+}
+
+.hero[data-hero="facade"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 46% 58% at 24% 74%, rgba(243, 230, 200, 0.2), transparent 68%),
+    radial-gradient(ellipse 52% 64% at 76% 72%, rgba(200, 32, 38, 0.34), transparent 70%),
+    radial-gradient(ellipse 28% 36% at 80% 80%, rgba(247, 201, 99, 0.16), transparent 72%);
+}
+
+.hero[data-hero="facade"] .media {
+  position: relative;
+  inset: auto;
+  grid-column: 2;
+  grid-row: 1;
+  height: 68%;
+  min-height: 0;
+  align-self: end;
+  margin: 0 0.4% calc(var(--sullys-frame-width, 0px) + 1.5rem) 0;
+  background: transparent;
+  z-index: 1;
+}
+
+.hero[data-hero="facade"] .photo {
+  object-fit: contain;
+  object-position: center bottom;
+  transform: none;
+  animation: none;
+  filter:
+    drop-shadow(0 0 36px rgba(243, 230, 200, 0.22))
+    drop-shadow(0 18px 32px rgba(0, 0, 0, 0.4));
+}
+
+.hero[data-hero="facade"] .mediaWash,
+.hero[data-hero="facade"] .mediaGrain {
+  display: none;
+}
+
+.hero[data-hero="facade"] .content {
+  grid-column: 1;
+  grid-row: 1;
+  width: auto;
+  min-height: 0;
+  z-index: 1;
+  justify-content: flex-end;
+  gap: 0.7rem;
+  padding: calc(var(--site-header-clearance) + 0.35rem) var(--space-5)
+    calc(var(--space-6) + var(--sullys-frame-width, 0px));
+}
+
+.hero[data-hero="facade"] .badge {
+  width: min(132px, 28vw);
+  margin-bottom: 0;
+  filter: drop-shadow(0 0 22px rgba(243, 230, 200, 0.28)) drop-shadow(0 14px 24px rgba(0, 0, 0, 0.4));
+}
+
+.hero[data-hero="facade"] .manifesto {
+  font-size: clamp(2.2rem, 4.4vw, 3.85rem);
+  text-shadow:
+    0 0 22px rgba(243, 230, 200, 0.28),
+    0 10px 24px rgba(0, 0, 0, 0.35);
+}
+
+
+@media (max-width: 860px) {
+  .hero[data-hero="facade"] {
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    overflow: visible;
+    align-items: stretch;
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(210px, 42svh) auto;
+    padding-top: var(--site-header-clearance);
+  }
+
+  .hero[data-hero="facade"] .media {
+    grid-column: 1;
+    grid-row: 1;
+    height: 42svh;
+    min-height: 210px;
+    align-self: stretch;
+    margin: 0;
+  }
+
+  .hero[data-hero="facade"] .photo {
+    object-position: center center;
+  }
+
+  .hero[data-hero="facade"] .content {
+    grid-column: 1;
+    grid-row: 2;
+    padding: var(--space-4) var(--space-4)
+      calc(var(--space-6) + var(--sullys-frame-width, 0px));
+    overflow: visible;
+  }
+
+  .hero[data-hero="facade"] .manifesto {
+    font-size: clamp(2.55rem, 12.5vw, 3.6rem);
+  }
+
+  .hero[data-hero="facade"] .actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .hero[data-hero="facade"] .actions a {
+    display: block;
+  }
+
+  .hero[data-hero="facade"] .actions :global(button),
+  .hero[data-hero="facade"] .actions a {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero[data-hero="facade"] .photo {
+    transform: none;
+  }
+}
+
 @media (min-width: 768px) {
   .content {
     padding: calc(112px + var(--space-7)) var(--space-7) var(--space-8);
@@ -155,9 +294,13 @@
     padding-top: calc(var(--site-header-clearance) + 3.25rem);
   }
 
+  .hero[data-hero="facade"] .content {
+    padding-top: var(--space-4);
+  }
+
   .manifesto {
-    font-size: clamp(2rem, 9.5vw, 2.6rem);
-    line-height: 1.08;
-    gap: 0.14em;
+    font-size: clamp(2.15rem, 11vw, 2.7rem);
+    line-height: 0.96;
+    gap: 0.1em;
   }
 }

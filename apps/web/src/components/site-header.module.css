@@ -61,8 +61,8 @@
   flex-wrap: nowrap;
   justify-content: flex-end;
   gap: 0.55rem;
-  font-size: 0.62rem;
-  font-weight: 600;
+  font-size: 0.68rem;
+  font-weight: 700;
   letter-spacing: 0.03em;
   text-transform: uppercase;
   min-width: 0;
@@ -81,6 +81,7 @@
 .nav a {
   flex: 0 0 auto;
   white-space: nowrap;
+  color: var(--text-primary);
 }
 
 .nav a:hover {
@@ -118,7 +119,7 @@
     max-width: none;
     justify-content: flex-start;
     gap: 0.65rem;
-    font-size: 0.64rem;
+    font-size: 0.72rem;
     letter-spacing: 0.02em;
     line-height: 1.15;
     padding-bottom: 0.2rem;

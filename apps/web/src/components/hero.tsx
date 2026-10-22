@@ -8,7 +8,11 @@ export function Hero() {
   const brand = getBrand();
 
   return (
-    <section className={styles.hero} aria-label={brand.gym.name}>
+    <section
+      className={styles.hero}
+      data-hero={brand.id === "sullys" ? "facade" : undefined}
+      aria-label={brand.gym.name}
+    >
       <div className={styles.media} aria-hidden>
         <Image
           src={brand.assets.heroImage}
