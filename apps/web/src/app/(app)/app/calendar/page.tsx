@@ -18,6 +18,7 @@ type CalendarItem = {
   body?: string;
   booked?: boolean;
   program?: string;
+  coachName?: string | null;
 };
 
 type TodayResponse = {
@@ -34,9 +35,10 @@ function formatTime(value?: string) {
 
 function itemDetails(item: CalendarItem) {
   if (item.kind === "class_session") {
+    const coach = item.coachName ? `Coach ${item.coachName}. ` : "";
     return item.booked
-      ? "Your spot is confirmed."
-      : "Space may still be available.";
+      ? `${coach}Your spot is confirmed.`
+      : `${coach}Space may still be available.`;
   }
   if (item.kind === "achievement_nudge") {
     return "Keep building your boxing passport.";

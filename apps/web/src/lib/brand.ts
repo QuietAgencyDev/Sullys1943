@@ -125,10 +125,10 @@ const sullysBrand: BrandConfig = {
     mapEmbedQuery: "1554+Dundas+St+W,+Toronto,+ON+M6H+1Z6",
     hours: [
       { days: "Mon – Fri", open: "7:30 AM", close: "9:00 PM" },
-      { days: "Saturday", open: "12:00 PM", close: "5:00 PM" },
+      { days: "Saturday", open: "11:00 AM", close: "5:00 PM" },
       { days: "Sunday", open: "Closed", close: "" },
     ],
-    hoursSummary: "Mon–Fri 7:30 AM–9:00 PM · Sat 12–5 PM",
+    hoursSummary: "Mon–Fri 7:30 AM–9:00 PM · Sat 11 AM–5 PM",
     social: {
       instagram: "https://www.instagram.com/sullysboxinggym/",
       facebook: "https://www.facebook.com/sullysboxinggym/",

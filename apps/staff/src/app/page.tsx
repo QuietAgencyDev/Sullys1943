@@ -117,6 +117,18 @@ const ROLE_TITLE: Record<Role, string> = {
 const WEB_ORIGIN =
   process.env.NEXT_PUBLIC_WEB_ORIGIN ?? "https://www.sullys1943.com";
 
+const COACH_SIGNINS = [
+  { name: "Rico Mancini", email: "coach.rico@sullys.local" },
+  { name: "Tommy", email: "coach.tommy@sullys.local" },
+  { name: "Levi", email: "coach.levi@sullys.local" },
+  { name: "Anthony P.", email: "coach.anthony.p@sullys.local" },
+  { name: "Jackie", email: "coach.jackie@sullys.local" },
+  { name: "Viktoria Penney", email: "coach.viktoria@sullys.local" },
+  { name: "Jonathan Bochner", email: "coach.jonathan@sullys.local" },
+  { name: "Tony Morrison", email: "coach@sullys.local" },
+  { name: "Anthony Sky", email: "coach.anthony@sullys.local" },
+] as const;
+
 export default function StaffHome() {
   const [user, setUser] = useState<User | null>(null);
   const [email, setEmail] = useState("");
@@ -214,7 +226,22 @@ export default function StaffHome() {
           <Button type="submit" disabled={pending}>
             {pending ? "Signing in…" : "Sign in"}
           </Button>
-          <p className={styles.hint}>Use your assigned Sully&apos;s staff account.</p>
+          <p className={styles.hint}>Coach sign-in. Password is password123.</p>
+          <div className={styles.coachSignins} aria-label="Coach accounts">
+            {COACH_SIGNINS.map((coach) => (
+              <button
+                key={coach.email}
+                type="button"
+                className={styles.coachChip}
+                onClick={() => {
+                  setEmail(coach.email);
+                  setPassword("password123");
+                }}
+              >
+                {coach.name}
+              </button>
+            ))}
+          </div>
         </form>
       ) : (
         <>

@@ -40,6 +40,7 @@ export default function CardPage() {
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [expiresAt, setExpiresAt] = useState<number | null>(null);
   const [secondsLeft, setSecondsLeft] = useState(0);
+  const [windowSeconds, setWindowSeconds] = useState(180);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [tokenError, setTokenError] = useState<string | null>(null);
@@ -61,6 +62,7 @@ export default function CardPage() {
         signal: controller.signal,
       });
       setToken(tokenRes.token);
+      setWindowSeconds(tokenRes.expiresInSeconds || 180);
       setExpiresAt(new Date(tokenRes.expiresAt).getTime());
       setTokenError(null);
       const url = await QRCode.toDataURL(tokenRes.token, {
@@ -169,7 +171,7 @@ export default function CardPage() {
   const waiverOk = card?.waiverStatus === "signed";
   const membershipOk = status === "active";
   const scanReady = membershipOk && waiverOk && Boolean(qrDataUrl && token);
-  const qrProgress = Math.max(0, Math.min(100, (secondsLeft / 60) * 100));
+  const qrProgress = Math.max(0, Math.min(100, (secondsLeft / windowSeconds) * 100));
 
   return (
     <div className={styles.page}>

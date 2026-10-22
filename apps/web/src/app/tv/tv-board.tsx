@@ -89,6 +89,7 @@ type Board = {
   live: SessionCard | null;
   next: SessionCard | null;
   schedule: SessionCard[];
+  calendar?: { label: string; sessions: SessionCard[] };
   leaderboard: {
     rank: number;
     displayName: string;
@@ -490,21 +491,45 @@ const TICKER_HOLD_MS = 5200;
 const TICKER_PX_PER_SEC = 56;
 
 const FLOOR_DEMO_CLASSES = [
-  { title: "Beginner Boxing", coach: "Ask the desk" },
-  { title: "Open Gym", coach: "Ask the desk" },
-  { title: "Women's Boxing", coach: "Jacklyne Irvine" },
-  { title: "Competitive Team", coach: "Rico Mancini" },
-  { title: "Pads", coach: "Winslow" },
-  { title: "Kids Boxing", coach: "Winslow" },
-  { title: "Youth Boxing", coach: "Winslow" },
+  { title: "Boxtech", coach: "Rico Mancini" },
+  { title: "Fight Path 2", coach: "Rico Mancini" },
+  { title: "On the floor", coach: "Tommy" },
+  { title: "On the floor", coach: "Levi" },
+  { title: "On the floor", coach: "Viktoria Penney" },
+  { title: "Tony's House of Pain", coach: "Tony Morrison" },
+  { title: "Body Shop", coach: "Jackie" },
+  { title: "Sweet Science", coach: "Anthony" },
 ] as const;
 
 const FLOOR_CLASS_PHOTO_POOLS: { match: RegExp; srcs: string[]; rig?: boolean }[] = [
   {
-    match: /tony|morrison|beginner/i,
+    match: /rico|boxtech/i,
+    rig: false,
+    srcs: ["/tv/cast/coach-rico.png?v=1"],
+  },
+  {
+    match: /\btommy\b/i,
+    rig: false,
+    srcs: ["/tv/cast/coach-tommy.png?v=1"],
+  },
+  {
+    match: /\blevi\b/i,
+    rig: false,
+    srcs: ["/tv/cast/coach-levi.png?v=1"],
+  },
+  {
+    match: /viktoria|penney|\bvik\b/i,
     rig: false,
     srcs: [
-      "/tv/cast/coach-tony-morrison.png?v=hd2",
+      "/tv/cast/coach-viktoria.png?v=1",
+      "/tv/cast/coach-viktoria-blue.png?v=1",
+    ],
+  },
+  {
+    match: /tony|morrison|house of pain/i,
+    rig: false,
+    srcs: [
+      "/coaches/tony-morrison.png?v=1",
       "/tv/cast/coach-tony-jab.png?v=hd1",
     ],
   },
@@ -516,19 +541,12 @@ const FLOOR_CLASS_PHOTO_POOLS: { match: RegExp; srcs: string[]; rig?: boolean }[
     ],
   },
   {
-    match: /jacklyne|irvine|women/i,
+    match: /jackie|body shop|jacklyne|irvine|women/i,
     rig: false,
     srcs: [
       "/tv/cast/coach-8-guard.png?v=hd2",
       "/tv/cast/coach-8-hook.png?v=hd3",
       "/tv/cast/coach-8-hook-2.png?v=hd3",
-    ],
-  },
-  {
-    match: /rico|competitive/i,
-    srcs: [
-      "/tv/cast/coach-7-jab.png?v=hd3",
-      "/tv/cast/coach-7-guard.png?v=hd2",
     ],
   },
   { match: /pads/i, srcs: ["/tv/cast/coach-1-pads.png"] },
@@ -865,6 +883,18 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       setAdOn(false);
       return;
     }
+    const pin = new URLSearchParams(window.location.search).get("card");
+    if (pin) {
+      const needle = pin.toLowerCase();
+      const idx = FLOOR_ADS.findIndex((ad) =>
+        `${ad.h1} ${ad.h2} ${ad.msg}`.toLowerCase().includes(needle),
+      );
+      if (idx >= 0) {
+        setAdIndex(idx);
+        setAdOn(true);
+        return;
+      }
+    }
     let timer: ReturnType<typeof setTimeout>;
     let cancelled = false;
     const drawAd = () => {
@@ -880,7 +910,8 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       const next = drawAd();
       setAdOn(true);
       const gym = next != null && (FLOOR_ADS[next]?.hero ?? "").includes("sullys-ossington");
-      timer = setTimeout(hide, gym ? 15000 : jitter(10000, 14000));
+      const calendar = next != null && FLOOR_ADS[next]?.mode === "floor_calendar";
+      timer = setTimeout(hide, calendar ? 18000 : gym ? 15000 : jitter(10000, 14000));
     };
     const hide = () => {
       if (cancelled) return;
@@ -965,7 +996,12 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   const latestArrivalAt = board?.ticker?.[0]?.at ?? null;
 
   useEffect(() => {
-    if (profile !== "reception" || !latestArrivalName || !latestArrivalAt) return;
+    if (
+      (profile !== "floor" && profile !== "reception") ||
+      !latestArrivalName ||
+      !latestArrivalAt
+    )
+      return;
     const arrivalKey = `${latestArrivalName}:${latestArrivalAt}`;
     if (lastArrivalRef.current === arrivalKey) return;
     lastArrivalRef.current = arrivalKey;
@@ -1115,6 +1151,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     : null;
   const infoText = (infoLine?.text ?? "").replace(/^Trivia · /, "");
   const floorAd = adOn && profile === "floor" ? FLOOR_ADS[adIndex] : null;
+  const calendarScreen = floorAd?.mode === "floor_calendar";
   const gymScreen = Boolean(floorAd?.hero?.includes("sullys-ossington"));
   const tvMode =
     popupFreeze && profile === "floor"
@@ -1153,6 +1190,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     (profile === "floor" || board?.live?.phase === "live");
   const riveActive =
     profile === "floor" &&
+    !calendarScreen &&
     (Boolean(board?.coachTimer) ||
       demoCelebrate ||
       Boolean(popupFreeze) ||
@@ -1202,7 +1240,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
           draggable={false}
         />
       ) : null}
-      {profile === "reception" && arrivalName ? (
+      {(profile === "floor" || profile === "reception") && arrivalName ? (
         <div className={styles.arrivalMoment} role="status" aria-live="polite">
           <div className={styles.arrivalMark} aria-hidden>
             S
@@ -1266,6 +1304,38 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       </header>
 
       <div className={`${styles.main} ${showArtPopup ? styles.mainArt : ""}`}>
+        {calendarScreen ? (
+          <div className={styles.floorCalendar} role="region" aria-label="Class calendar">
+            <div className={styles.calHead}>
+              <p className={styles.calKicker}>Class calendar</p>
+              <h2 className={styles.calTitle}>{board?.calendar?.label ?? "Today"}</h2>
+            </div>
+            <ul className={styles.calGrid}>
+              {(board?.calendar?.sessions ?? []).map((session) => (
+                <li
+                  key={session.id}
+                  className={`${styles.calRow} ${session.phase === "done" ? styles.calDone : ""} ${session.phase === "live" ? styles.calLive : ""}`}
+                >
+                  <span className={styles.calTime}>
+                    {new Date(session.startsAt).toLocaleTimeString([], {
+                      hour: "numeric",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                  <span className={styles.calName}>{session.title}</span>
+                  <span className={styles.calCoach}>
+                    {session.coach ?? ""}
+                    {session.phase === "live"
+                      ? " · live"
+                      : session.spotsLeft === 0
+                        ? " · full"
+                        : ""}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
         <section
           className={`${styles.hero} ${showArtPopup ? styles.heroArt : ""}`}
           aria-live="polite"

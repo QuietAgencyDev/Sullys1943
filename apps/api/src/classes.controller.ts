@@ -15,22 +15,11 @@ export class ClassesController {
       where: { startsAt: { gte: start, lt: end } },
       include: { bookings: true },
       orderBy: { startsAt: "asc" },
-      take: 8,
+      take: 12,
     });
 
     if (sessions.length === 0) {
-      return {
-        classes: [
-          {
-            id: "seed-fallback",
-            startsAt: "6:00 PM",
-            name: "Boxing Fundamentals",
-            spotsLeft: 8,
-            capacity: 16,
-            status: "open" as const,
-          },
-        ],
-      };
+      return { classes: [] };
     }
 
     return {

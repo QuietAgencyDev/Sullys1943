@@ -50,6 +50,12 @@ function dayLabel(d: Date) {
   return d.toLocaleDateString([], { weekday: "short" });
 }
 
+function localDayKey(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value.slice(0, 10);
+  return isoDate(date);
+}
+
 function calendarStamp(value: string) {
   return new Date(value).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
 }
@@ -137,7 +143,7 @@ export default function BookPage() {
   }, [load]);
 
   const daySessions = useMemo(() => {
-    return sessions.filter((s) => s.startsAt.slice(0, 10) === selectedDay);
+    return sessions.filter((s) => localDayKey(s.startsAt) === selectedDay);
   }, [sessions, selectedDay]);
 
   async function bookOrWaitlist(session: Session) {
@@ -211,7 +217,7 @@ export default function BookPage() {
           const key = isoDate(d);
           const active = key === selectedDay;
           const count = sessions.filter(
-            (s) => s.startsAt.slice(0, 10) === key,
+            (s) => localDayKey(s.startsAt) === key,
           ).length;
           return (
             <button

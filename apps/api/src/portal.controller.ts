@@ -14,15 +14,17 @@ export class PortalController {
   /** Public coach directory for marketing. */
   @Get("coaches")
   async coaches() {
-    // Official site order — https://www.sullysboxinggym.com/trainers/
+    // Floor roster. Anthony Sky is Anthony S. Sweet Science "Anthony" is not assigned here.
     const ROSTER_ORDER = [
-      "tony morrison",
       "rico mancini",
-      "winslow",
+      "tommy",
+      "levi",
+      "anthony p.",
+      "jackie",
+      "viktoria penney",
       "jonathan bochner",
+      "tony morrison",
       "anthony sky",
-      "jacklyne irvine",
-      "jack hemmings",
     ];
 
     const coaches = await this.prisma.user.findMany({

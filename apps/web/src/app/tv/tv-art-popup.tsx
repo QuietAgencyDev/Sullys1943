@@ -280,6 +280,9 @@ const SPECS: Record<string, ArtSpec> = {
     { id: "message", text: "BEGINNER BOXING", x: 118, y: 543, size: 42, fill: CREAM, live: true },
     { id: "timer", text: "00:02:00", x: 118, y: 665, size: 72, fill: GOLD, live: true },
   ]),
+  coach_card: card("announcement", "COACH", "ON THE", "FLOOR.", "CANADA'S OLDEST BOXING CLUB", [
+    { id: "message", text: "ON THE FLOOR", x: 118, y: 560, size: 28, fill: GOLD, live: true },
+  ]),
   last_spots: card("last_spots", "FILL THE RING", "2 SPOTS", "LEFT.", "CLAIM THEM BEFORE THE BELL.", [
     { id: "message", text: "ADULTS BOXING", x: 118, y: 543, size: 36, fill: CREAM, live: true },
   ]),
@@ -466,11 +469,13 @@ export function TvArtPopup(live: TvArtPopupLive) {
   if (!spec) return null;
   const base = `/tv/popups/${spec.folder}`;
   const hero = live.heroSrc || CAST_HERO[live.tvMode] || null;
-  const xpBadge = xpBadgeSrc(hero, live.tvMode);
+  const mark = hero?.startsWith("mark:") ? hero.slice(5) : "";
+  const portrait = mark ? null : hero;
+  const xpBadge = xpBadgeSrc(portrait, live.tvMode);
 
   return (
     <div
-      key={`${live.tvMode}-${xpBadge ?? hero ?? ""}`}
+      key={`${live.tvMode}-${xpBadge ?? portrait ?? mark ?? ""}`}
       className={`${styles.art} ${live.hold ? styles.hold : ""}`}
       aria-hidden
     >
@@ -482,19 +487,32 @@ export function TvArtPopup(live: TvArtPopupLive) {
           ) {
             return null;
           }
+          if (layer.file === "03_hero.png" && mark) {
+            return (
+              <div key="coach-mark" className={styles.coachPlate}>
+                <span className={styles.coachMark}>{mark}</span>
+                <span className={styles.coachPlateLabel}>Coach</span>
+              </div>
+            );
+          }
           const src =
             layer.file === "01_panel.png"
               ? "/tv/popups/_shared/01_panel.png"
-              : layer.file === "03_hero.png" && hero
-                ? hero
+              : layer.file === "03_hero.png" && portrait
+                ? portrait
                 : `${base}/${layer.file}`;
           const wide =
             layer.file === "03_hero.png" &&
-            (WIDE_HERO.has(live.tvMode) || (hero ?? "").includes("sparring"));
+            (WIDE_HERO.has(live.tvMode) || (portrait ?? "").includes("sparring"));
           const belt =
-            layer.file === "03_hero.png" && (hero ?? "").includes("champion-belt");
+            layer.file === "03_hero.png" && (portrait ?? "").includes("champion-belt");
           const cast =
-            layer.file === "03_hero.png" && Boolean(hero) && !belt;
+            layer.file === "03_hero.png" && Boolean(portrait) && !belt;
+          const cutout =
+            cast &&
+            /\/coach-(rico|tommy|levi|viktoria|tony-|8-)|\/tony-morrison\.png/i.test(
+              portrait ?? "",
+            );
           const tony = cast && live.tvMode === "tony_corner";
           return (
             <ArtLayer
@@ -502,7 +520,7 @@ export function TvArtPopup(live: TvArtPopupLive) {
               src={src}
               className={`${styles.layer} ${layerClass(layer.className)} ${
                 belt ? styles.beltHero : cast ? styles.castHero : ""
-              } ${tony ? styles.tonyHero : ""} ${wide ? styles.wideHero : ""}`.trim()}
+              } ${cutout ? styles.coachCutout : ""} ${tony ? styles.tonyHero : ""} ${wide ? styles.wideHero : ""}`.trim()}
             />
           );
         })}
@@ -693,21 +711,108 @@ const CORNER_ADS = [
   },
 ] as const;
 
-const NEWS_ADS = [
+const COACH_ADS = [
   {
-    mode: "class_starting",
+    mode: "coach_card",
+    hero: "/tv/cast/coach-rico.png?v=1",
+    h1: "RICO",
+    h2: "MANCINI.",
+    msg: "COMPETITIVE COACH · BOXTECH",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/coach-rico.png?v=1",
+    h1: "FIGHT",
+    h2: "PATH.",
+    msg: "RICO MANCINI · FRIDAY 7:15",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/coach-tommy.png?v=1",
+    h1: "COACH",
+    h2: "TOMMY.",
+    msg: "ON THE FLOOR",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/coach-levi.png?v=1",
+    h1: "COACH",
+    h2: "LEVI.",
+    msg: "ON THE FLOOR",
+  },
+  {
+    mode: "coach_card",
+    hero: "mark:AP",
+    h1: "ANTHONY",
+    h2: "P.",
+    msg: "ON THE FLOOR",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/coach-8-guard.png?v=hd2",
+    h1: "COACH",
+    h2: "JACKIE.",
+    msg: "BODY SHOP · WEDNESDAYS",
+  },
+  {
+    mode: "coach_card",
     hero: "/tv/cast/coach-8-hook.png?v=hd3",
-    h1: "WOMEN'S",
-    h2: "BOXING.",
-    msg: "JACKLYNE IRVINE · 7 PM · ALL LEVELS",
+    h1: "COACH",
+    h2: "JACKIE.",
+    msg: "BODY SHOP · ON THE FLOOR",
   },
   {
-    mode: "class_starting",
-    hero: "/tv/cast/coach-7-jab.png?v=hd3",
-    h1: "COMPETITIVE",
-    h2: "TEAM.",
-    msg: "RICO MANCINI · 6 PM · BRING THE WORK",
+    mode: "coach_card",
+    hero: "/tv/cast/coach-8-hook-2.png?v=hd3",
+    h1: "COACH",
+    h2: "JACKIE.",
+    msg: "BODY SHOP · BOTH HANDS",
   },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/coach-viktoria.png?v=1",
+    h1: "VIKTORIA",
+    h2: "PENNEY.",
+    msg: "BRAMPTON CUP GOLD · 80 KG",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/coach-viktoria-blue.png?v=1",
+    h1: "VIKTORIA",
+    h2: "PENNEY.",
+    msg: "ON THE FLOOR · BOTH CORNERS",
+  },
+  {
+    mode: "coach_card",
+    hero: "mark:JB",
+    h1: "JONATHAN",
+    h2: "BOCHNER.",
+    msg: "CHARTERED COACH · TEAM CANADA",
+  },
+  {
+    mode: "coach_card",
+    hero: "/coaches/tony-morrison.png?v=1",
+    h1: "TONY",
+    h2: "MORRISON.",
+    msg: "HEAVYWEIGHT CHAMP · 1991",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/coach-tony-jab.png?v=hd1",
+    h1: "HOUSE",
+    h2: "OF PAIN.",
+    msg: "TONY MORRISON · LITTLE CHAMPS",
+  },
+  {
+    mode: "coach_card",
+    hero: "mark:AS",
+    h1: "ANTHONY",
+    h2: "SKY.",
+    msg: "NOVICE TO FIGHTERS",
+  },
+] as const;
+
+const NEWS_ADS = [
   {
     mode: "class_starting",
     hero: "/tv/cast/coach-5-jab.png?v=hd2",
@@ -911,13 +1016,25 @@ const EARLS_ADS = [
   },
 ] as const;
 
+const SCHEDULE_ADS = [
+  {
+    mode: "floor_calendar",
+    hero: "",
+    h1: "ON THE",
+    h2: "FLOOR.",
+    msg: "TODAY'S CLASSES",
+  },
+] as const;
+
 export const FLOOR_ADS = [
   ...CORNER_ADS,
+  ...COACH_ADS,
   ...NEWS_ADS,
   ...FLOOR_FACE_ADS,
   ...HISTORY_ADS,
   ...EARLS_ADS,
   ...GYM_ADS,
+  ...SCHEDULE_ADS,
 ] as const;
 
 function shuffleIds(ids: number[], seed: number): number[] {
@@ -933,10 +1050,11 @@ function shuffleIds(ids: number[], seed: number): number[] {
   return next;
 }
 
-/** Round-robin the lanes so fundraiser, news, faces, and history stay mixed. */
+/** Round-robin the lanes so coaches, news, faces, and history stay mixed. */
 export function dealFloorAdOrder(seed: number): number[] {
   const sizes = [
     CORNER_ADS.length,
+    COACH_ADS.length,
     NEWS_ADS.length,
     FLOOR_FACE_ADS.length,
     HISTORY_ADS.length,
@@ -974,6 +1092,9 @@ export function dealFloorAdOrder(seed: number): number[] {
     const gymIndex = laneCount + EARLS_ADS.length;
     const at = Math.max(1, Math.floor(order.length * 0.4));
     order.splice(at, 0, gymIndex);
+  }
+  if (SCHEDULE_ADS.length) {
+    order.push(laneCount + EARLS_ADS.length + GYM_ADS.length);
   }
   return order;
 }

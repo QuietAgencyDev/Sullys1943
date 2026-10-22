@@ -246,12 +246,11 @@ export class CoachController {
     const now = new Date();
     const start = new Date(now);
     start.setHours(0, 0, 0, 0);
-    const end = new Date(start);
-    end.setDate(end.getDate() + 1);
+    const horizon = new Date(start);
+    horizon.setDate(horizon.getDate() + 2);
 
     const where = {
-      startsAt: { gte: start, lt: end },
-      ...(canSeeAllSessions(auth) ? {} : { coachUserId: auth.sub }),
+      startsAt: { gte: start, lt: horizon },
     };
 
     const sessions = await this.prisma.session.findMany({
@@ -298,17 +297,20 @@ export class CoachController {
         spotsLeft: Math.max(0, s.capacity - booked),
         phase,
         coachName: s.coach
-          ? `${s.coach.firstName} ${s.coach.lastName}`
+          ? `${s.coach.firstName} ${s.coach.lastName}`.trim()
           : s.coachName,
+        mine: canSeeAllSessions(auth) || s.coachUserId === auth.sub,
         live: serializeLive(s.liveState, now),
       };
     });
 
+    const coming = mapped.filter((s) => s.phase !== "done");
+    const own = canSeeAllSessions(auth) ? coming : coming.filter((s) => s.mine);
     const current =
-      mapped.find((s) => s.live.status === "running" || s.live.status === "paused") ??
-      mapped.find((s) => s.phase === "live") ??
+      own.find((s) => s.live.status === "running" || s.live.status === "paused") ??
+      own.find((s) => s.phase === "live") ??
       null;
-    const next = mapped.find((s) => s.phase === "upcoming") ?? null;
+    const next = own.find((s) => s.phase === "upcoming") ?? null;
 
     const waitlistTotal = mapped.reduce((n, s) => n + s.waitlisted, 0);
     const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
@@ -421,9 +423,11 @@ export class CoachController {
       },
       current,
       next,
-      today: mapped,
+      today: coming,
       kpis: {
-        classesToday: mapped.length,
+        classesToday: mapped.filter(
+          (s) => new Date(s.startsAt).toDateString() === start.toDateString(),
+        ).length,
         checkedInToday: mapped.reduce((n, s) => n + s.checkedIn, 0),
         spotsOpen: mapped.reduce((n, s) => n + s.spotsLeft, 0),
         waitlist: waitlistTotal,

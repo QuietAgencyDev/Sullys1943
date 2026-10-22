@@ -146,6 +146,93 @@
   grid-row: 2;
 }
 
+.floorCalendar {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.35rem 0.8rem 0.7rem;
+  background: rgba(12, 9, 8, 0.94);
+  overflow: hidden;
+}
+
+.calHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.calKicker {
+  margin: 0;
+  color: var(--brand-red);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.calTitle {
+  margin: 0;
+  color: var(--brand-cream);
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 0.9;
+  letter-spacing: 0.03em;
+}
+
+.calGrid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.15rem 1.4rem;
+  align-content: start;
+  min-height: 0;
+}
+
+.calRow {
+  display: grid;
+  grid-template-columns: 5.4rem minmax(0, 1fr);
+  gap: 0.15rem 0.55rem;
+  align-items: baseline;
+  padding: 0.28rem 0;
+  border-bottom: 1px solid rgba(243, 230, 200, 0.16);
+}
+
+.calTime {
+  color: var(--brand-glove);
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.calName {
+  color: var(--brand-cream);
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 1.2rem;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.calCoach {
+  grid-column: 2;
+  color: var(--brand-red);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+.calDone {
+  opacity: 0.42;
+}
+
+.calLive .calName {
+  color: var(--brand-glove);
+}
+
 .bottom {
   grid-row: 3;
 }

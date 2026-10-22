@@ -21,11 +21,13 @@ export class TvController {
     start.setHours(0, 0, 0, 0);
     const end = new Date(start);
     end.setDate(end.getDate() + 1);
+    const horizon = new Date(end);
+    horizon.setDate(horizon.getDate() + 1);
 
     const [sessions, checkInsToday, xpRows, announcements, activeLive] =
       await Promise.all([
       this.prisma.session.findMany({
-        where: { startsAt: { gte: start, lt: end } },
+        where: { startsAt: { gte: start, lt: horizon } },
         include: {
           bookings: { where: { status: { not: "cancelled" } } },
           coach: { select: { firstName: true, lastName: true } },
@@ -33,7 +35,7 @@ export class TvController {
           liveState: true,
         },
         orderBy: { startsAt: "asc" },
-        take: 12,
+        take: 24,
       }),
       this.prisma.attendanceEvent.count({
         where: { checkedInAt: { gte: start, lt: end } },
@@ -164,7 +166,7 @@ export class TvController {
       else if (msToStart <= 0) phase = "live";
 
       const coachLabel = s.coach
-        ? `${s.coach.firstName} ${s.coach.lastName.charAt(0)}.`
+        ? `${s.coach.firstName} ${s.coach.lastName}`.trim()
         : s.coachName;
 
       return {
@@ -183,10 +185,21 @@ export class TvController {
       };
     });
 
-    const live = mapped.find((s) => s.phase === "live") ?? null;
+    const todaySessions = mapped.filter((s) => s.startsAt < end.toISOString());
+    const tomorrowSessions = mapped.filter((s) => s.startsAt >= end.toISOString());
+    const todayOpen = todaySessions.some((s) => s.phase !== "done");
+    const calendarSessions = todayOpen ? todaySessions : tomorrowSessions;
+    const calendarWhen = calendarSessions[0]
+      ? new Date(calendarSessions[0].startsAt)
+      : todayOpen
+        ? start
+        : end;
+
+    const live = todaySessions.find((s) => s.phase === "live") ?? null;
     const next =
-      mapped.find((s) => s.phase === "upcoming") ??
-      mapped.find((s) => s.phase === "live") ??
+      todaySessions.find((s) => s.phase === "upcoming") ??
+      tomorrowSessions.find((s) => s.phase === "upcoming") ??
+      todaySessions.find((s) => s.phase === "live") ??
       null;
 
     const recentCheckIns = await this.prisma.attendanceEvent.findMany({
@@ -208,12 +221,18 @@ export class TvController {
       },
       kpis: {
         checkInsToday,
-        classesToday: mapped.length,
-        spotsOpen: mapped.reduce((n, s) => n + s.spotsLeft, 0),
+        classesToday: todaySessions.length,
+        spotsOpen: todaySessions.reduce((n, s) => n + s.spotsLeft, 0),
       },
       live,
       next,
-      schedule: mapped.filter((s) => s.phase !== "done").slice(0, 6),
+      schedule: (todayOpen ? todaySessions : tomorrowSessions)
+        .filter((s) => s.phase !== "done")
+        .slice(0, 8),
+      calendar: {
+        label: calendarWhen.toLocaleDateString("en-US", { weekday: "long" }),
+        sessions: calendarSessions,
+      },
       leaderboard: gameLeaderboard.length ? gameLeaderboard : leaderboard,
       ticker: recentCheckIns.map((c) => ({
         name: `${c.user.firstName} ${c.user.lastName.charAt(0)}.`,

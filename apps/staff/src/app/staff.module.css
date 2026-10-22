@@ -268,6 +268,29 @@
   font-size: 0.85rem;
 }
 
+.coachSignins {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+}
+
+.coachChip {
+  border: 1px solid rgba(243, 230, 200, 0.28);
+  background: transparent;
+  color: var(--brand-cream);
+  font: inherit;
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+}
+
+.coachChip:hover {
+  border-color: var(--brand-red);
+  color: var(--brand-red);
+}
+
 @media (max-width: 560px) {
   .headingRow {
     align-items: flex-start;

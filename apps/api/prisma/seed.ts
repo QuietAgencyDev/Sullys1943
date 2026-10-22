@@ -1,5 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import * as bcrypt from "bcryptjs";
+import {
+  FLOOR_COACHES,
+  FLOOR_SLOTS,
+  coachDisplayName,
+} from "../../web/src/lib/floor-schedule";
 
 const prisma = new PrismaClient();
 
@@ -107,111 +112,26 @@ async function main() {
     },
   });
 
-  // Official floor roster — https://www.sullysboxinggym.com/trainers/
-  const coach = await prisma.user.create({
-    data: {
-      organizationId: org.id,
-      email: mail("coach"),
-      passwordHash,
-      firstName: "Tony",
-      lastName: "Morrison",
-      role: "coach",
-      title: "1991 Canadian Heavyweight Champion",
-      bio: "Tony Morrison, the former Canadian Heavyweight Champion who held the title in 1991, brings years of experience in the ring and as a trainer. Whether you’re a seasoned athlete or just starting out, Tony’s guidance helps you reach your full potential.",
-      photoUrl: "/coaches/tony-morrison.jpg",
-      points: { create: { balance: 0 } },
-    },
-  });
-
-  const coachRico = await prisma.user.create({
-    data: {
-      organizationId: org.id,
-      email: mail("coach.rico"),
-      passwordHash,
-      firstName: "Rico",
-      lastName: "Mancini",
-      role: "coach",
-      title: "Boxing Canada Competitive Coach",
-      bio: "Rico prepares prospective fighters for competitive matches with a meticulous focus on mechanics and technique. His regimen covers mobility, strength, HIIT, ring, pad, and sparring work.",
-      photoUrl: "/coaches/rico-mancini.jpg",
-      points: { create: { balance: 0 } },
-    },
-  });
-
-  const coachWinslow = await prisma.user.create({
-    data: {
-      organizationId: org.id,
-      email: mail("coach.winslow"),
-      passwordHash,
-      firstName: "Winslow",
-      lastName: " ",
-      role: "coach",
-      title: "Technical Boxing Coach",
-      bio: "Known for attention to detail and emphasis on footwork and weight shifting. You’ll find him at Sully’s at night training youth fighters — ask for help and he’ll teach you step by step.",
-      photoUrl: "/coaches/winslow.jpg",
-      points: { create: { balance: 0 } },
-    },
-  });
-
-  await prisma.user.create({
-    data: {
-      organizationId: org.id,
-      email: mail("coach.jonathan"),
-      passwordHash,
-      firstName: "Jonathan",
-      lastName: "Bochner",
-      role: "coach",
-      title: "Chartered Professional Boxing Coach",
-      bio: "Jonathan brings three decades in boxing, 172 bouts, and training under high-performance and Olympic coaches. Former Canadian Champion, Chartered Professional Coach (ChPc), AIBA 1-star Coach, and former Team Canada coach.",
-      photoUrl: "/coaches/jonathan-bochner.jpg",
-      points: { create: { balance: 0 } },
-    },
-  });
-
-  await prisma.user.create({
-    data: {
-      organizationId: org.id,
-      email: mail("coach.anthony"),
-      passwordHash,
-      firstName: "Anthony",
-      lastName: "Sky",
-      role: "coach",
-      title: "Professional Boxing Coach (Novice – Fighters)",
-      bio: "A Downtown Toronto native who started boxing at 13, Anthony supports athletes at every stage — sharing the mindset and craft that keep the next generation of boxers sharp.",
-      photoUrl: "/coaches/anthony-sky.jpg",
-      points: { create: { balance: 0 } },
-    },
-  });
-
-  const coachJacklyne = await prisma.user.create({
-    data: {
-      organizationId: org.id,
-      email: mail("coach.jacklyne"),
-      passwordHash,
-      firstName: "Jacklyne",
-      lastName: "Irvine",
-      role: "coach",
-      title: "Boxing & Fitness Instructor",
-      bio: "An undefeated amateur boxer from Toronto, Jacklyne coaches technique, form, and mental toughness in a supportive, challenging environment that brings out the best in her athletes.",
-      photoUrl: "/coaches/jacklyne-irvine.jpg",
-      points: { create: { balance: 0 } },
-    },
-  });
-
-  await prisma.user.create({
-    data: {
-      organizationId: org.id,
-      email: mail("coach.jack"),
-      passwordHash,
-      firstName: "Jack",
-      lastName: "Hemmings",
-      role: "coach",
-      title: "Boxing & Fitness Instructor",
-      bio: "Jack has 9+ years in the sport, 50+ amateur tournaments, and is a 3x Ontario Champion. As a pro he is 5-1 with all wins by knockout — still chasing excellence every round.",
-      photoUrl: "/coaches/jack-hemmings.jpg",
-      points: { create: { balance: 0 } },
-    },
-  });
+  const coachByName = new Map<string, string>();
+  let coach!: { id: string };
+  for (const entry of FLOOR_COACHES) {
+    const user = await prisma.user.create({
+      data: {
+        organizationId: org.id,
+        email: mail(entry.emailLocal),
+        passwordHash,
+        firstName: entry.firstName,
+        lastName: entry.lastName,
+        role: "coach",
+        title: entry.title,
+        bio: entry.bio,
+        photoUrl: entry.photoUrl,
+        points: { create: { balance: 0 } },
+      },
+    });
+    coachByName.set(coachDisplayName(user), user.id);
+    if (entry.emailLocal === "coach") coach = user;
+  }
 
   await prisma.user.create({
     data: {
@@ -471,89 +391,70 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
     });
   }
 
-  const today = new Date();
-  const sessions = [
-    {
-      title: "Beginner Boxing",
-      programId: boxing.id,
-      start: atHour(today, 12, 0),
-      end: atHour(today, 13, 0),
-      capacity: 16,
-      coachUserId: coach.id,
-      coachName: "Tony Morrison",
-    },
-    {
-      title: "Competitive Team",
-      programId: boxing.id,
-      start: atHour(today, 18, 0),
-      end: atHour(today, 19, 30),
-      capacity: 12,
-      coachUserId: coachRico.id,
-      coachName: "Rico Mancini",
-    },
-    {
-      title: "Women's Boxing",
-      programId: boxing.id,
-      start: atHour(today, 19, 0),
-      end: atHour(today, 20, 0),
-      capacity: 14,
-      coachUserId: coachJacklyne.id,
-      coachName: "Jacklyne Irvine",
-    },
-    {
-      title: "Kids Boxing",
-      programId: kids.id,
-      start: atHour(today, 16, 0),
-      end: atHour(today, 17, 0),
-      capacity: 12,
-      coachUserId: coachWinslow.id,
-      coachName: "Winslow",
-    },
-  ];
-
-  const createdSessions = [];
-  for (const s of sessions) {
+  const createdSessions: { id: string }[] = [];
+  if (!isRedOwl) {
+    const weekStart = new Date();
+    weekStart.setHours(0, 0, 0, 0);
+    for (let i = 0; i < 14; i++) {
+      const day = new Date(weekStart);
+      day.setDate(weekStart.getDate() + i);
+      const dow = day.getDay();
+      for (const slot of FLOOR_SLOTS) {
+        if (slot.day !== dow) continue;
+        const startsAt = atHour(day, slot.hour, slot.minute);
+        const endsAt = new Date(startsAt.getTime() + slot.minutes * 60_000);
+        createdSessions.push(
+          await prisma.session.create({
+            data: {
+              locationId: location.id,
+              programId: slot.youth ? kids.id : boxing.id,
+              roomId: room.id,
+              title: slot.title,
+              startsAt,
+              endsAt,
+              capacity:
+                slot.youth || slot.tone === "fight" || slot.tone === "sparring"
+                  ? 12
+                  : 16,
+              coachName: slot.coach,
+              coachUserId: slot.coach
+                ? coachByName.get(slot.coach)
+                : undefined,
+            },
+          }),
+        );
+      }
+    }
+  } else {
+    const today = new Date();
     createdSessions.push(
       await prisma.session.create({
         data: {
           locationId: location.id,
-          programId: s.programId,
+          programId: boxing.id,
           roomId: room.id,
-          title: s.title,
-          startsAt: s.start,
-          endsAt: s.end,
-          capacity: s.capacity,
-          coachName: s.coachName,
-          coachUserId: s.coachUserId,
+          title: "Beginner Boxing",
+          startsAt: atHour(today, 18, 0),
+          endsAt: atHour(today, 19, 0),
+          capacity: 16,
+          coachName: "Tony Morrison",
+          coachUserId: coach.id,
         },
       }),
     );
   }
 
-  // Book member into first session for roster demo
-  await prisma.booking.create({
-    data: {
-      sessionId: createdSessions[0]!.id,
-      userId: member.id,
-      status: "confirmed",
-    },
-  });
-
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  await prisma.session.create({
-    data: {
-      locationId: location.id,
-      programId: boxing.id,
-      roomId: room.id,
-      title: "Open Gym",
-      startsAt: atHour(tomorrow, 17, 30),
-      endsAt: atHour(tomorrow, 19, 0),
-      capacity: 20,
-      coachName: "Tony Morrison",
-      coachUserId: coach.id,
-    },
-  });
+  const bookable =
+    createdSessions.find((session) => session.id) ?? createdSessions[0];
+  if (bookable) {
+    await prisma.booking.create({
+      data: {
+        sessionId: bookable.id,
+        userId: member.id,
+        status: "confirmed",
+      },
+    });
+  }
 
   await prisma.announcement.create({
     data: {

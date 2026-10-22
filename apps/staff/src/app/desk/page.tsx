@@ -46,6 +46,7 @@ type DeskPulse = {
     capacity: number;
     fillPct: number;
   }[];
+  arrivals?: { id: string; at: string; name: string }[];
 };
 
 function isToday(iso: string) {
@@ -90,6 +91,14 @@ export default function DeskPage() {
   overrideRef.current = override;
   reasonRef.current = overrideReason;
 
+  const loadPulse = useCallback(
+    () =>
+      get<DeskPulse>("/api/v1/owner/morning-brief")
+        .then(setPulse)
+        .catch(() => undefined),
+    [],
+  );
+
   useEffect(() => {
     get<{ sessions: Session[] }>("/api/v1/sessions")
       .then((res) => {
@@ -98,15 +107,11 @@ export default function DeskPage() {
         if (today[0]) setSessionId(today[0].id);
       })
       .catch(() => setSessions([]));
-    const loadPulse = () =>
-      get<DeskPulse>("/api/v1/owner/morning-brief")
-        .then(setPulse)
-        .catch(() => undefined);
-    loadPulse();
-    const refresh = window.setInterval(loadPulse, 15_000);
+    void loadPulse();
+    const refresh = window.setInterval(() => void loadPulse(), 5_000);
     inputRef.current?.focus();
     return () => window.clearInterval(refresh);
-  }, []);
+  }, [loadPulse]);
 
   const submitScan = useCallback(
     async (raw: string, email?: string) => {
@@ -160,6 +165,7 @@ export default function DeskPage() {
         setLastFailedEmail(null);
         setOverride(false);
         setOverrideReason("");
+        void loadPulse();
       } catch (err) {
         const msg = err instanceof ApiError ? err.message : "Scan failed";
         setError(msg);
@@ -182,7 +188,7 @@ export default function DeskPage() {
         inputRef.current?.focus();
       }
     },
-    [busy],
+    [busy, loadPulse],
   );
 
   function onTokenKeyDown(e: KeyboardEvent<HTMLInputElement>) {
@@ -364,6 +370,11 @@ export default function DeskPage() {
             </small>
           </div>
         </section>
+      ) : null}
+      {pulse?.arrivals?.length ? (
+        <p className={styles.copy}>
+          On the floor: {pulse.arrivals.map((person) => person.name).join(" · ")}
+        </p>
       ) : null}
 
       <section className={deskStyles.commandGrid}>

@@ -27,6 +27,7 @@ type SessionRow = {
   waitlisted: number;
   phase: string;
   coachName: string | null;
+  mine?: boolean;
   live: Live;
 };
 
@@ -277,19 +278,26 @@ export default function CoachHomePage() {
           ) : null}
 
           <section className={styles.card} style={{ marginTop: "1rem" }}>
-            <p className={styles.eyebrow}>Today&apos;s classes</p>
+            <p className={styles.eyebrow}>Floor calendar</p>
             <ul className={styles.list}>
-              {home.today.map((s) => (
-                <li key={s.id}>
-                  <Link className={styles.row} href={`/coach/live/${s.id}`}>
-                    <span className={styles.rowTitle}>{s.title}</span>
-                    <span className={styles.rowMeta}>
-                      {fmtTime(s.startsAt)} · {s.checkedIn}/{s.capacity} in ·{" "}
-                      {s.waitlisted} wait · timer {s.live.status}
-                    </span>
-                  </Link>
-                </li>
-              ))}
+              {home.today.map((s) => {
+                const meta = `${fmtTime(s.startsAt)} · ${s.coachName ?? "Coach"} · ${s.checkedIn}/${s.capacity} in`;
+                return (
+                  <li key={s.id}>
+                    {s.mine === false ? (
+                      <div className={styles.row}>
+                        <span className={styles.rowTitle}>{s.title}</span>
+                        <span className={styles.rowMeta}>{meta}</span>
+                      </div>
+                    ) : (
+                      <Link className={styles.row} href={`/coach/live/${s.id}`}>
+                        <span className={styles.rowTitle}>{s.title}</span>
+                        <span className={styles.rowMeta}>{meta}</span>
+                      </Link>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </section>
         </>

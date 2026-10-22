@@ -110,7 +110,11 @@ export class SessionsController {
       }
     }
 
-    const start = from ? new Date(from) : new Date();
+    const start = new Date();
+    const dayMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(from ?? "");
+    if (dayMatch) {
+      start.setFullYear(Number(dayMatch[1]), Number(dayMatch[2]) - 1, Number(dayMatch[3]));
+    }
     start.setHours(0, 0, 0, 0);
     const end = new Date(start);
     end.setDate(end.getDate() + 14);
@@ -154,7 +158,7 @@ export class SessionsController {
           spotsLeft,
           status: spotsLeft <= 0 ? "full" : "open",
           coachName: s.coach
-            ? `${s.coach.firstName} ${s.coach.lastName}`
+            ? `${s.coach.firstName} ${s.coach.lastName}`.trim()
             : s.coachName,
           coachUserId: s.coachUserId,
           room: s.room?.name,
@@ -452,6 +456,7 @@ export class CalendarController {
       include: {
         bookings: { where: { userId: auth.sub, status: { not: "cancelled" } } },
         program: true,
+        coach: { select: { firstName: true, lastName: true } },
       },
       orderBy: { startsAt: "asc" },
     });
@@ -485,6 +490,9 @@ export class CalendarController {
         endsAt: s.endsAt.toISOString(),
         booked: s.bookings.length > 0,
         program: s.program.name,
+        coachName: s.coach
+          ? `${s.coach.firstName} ${s.coach.lastName}`.trim()
+          : s.coachName,
       })),
       ...announcements.map((a) => ({
         id: a.id,
@@ -710,7 +718,7 @@ export class CheckInController {
     }
 
     const token = `SUL-${auth.sub.slice(0, 8)}-${Date.now().toString(36).toUpperCase()}`;
-    const expiresAt = new Date(Date.now() + 60_000);
+    const expiresAt = new Date(Date.now() + 180_000);
     await this.prisma.checkInCredential.create({
       data: { userId: auth.sub, token, expiresAt },
     });
@@ -719,7 +727,7 @@ export class CheckInController {
     });
     return {
       token,
-      expiresInSeconds: 60,
+      expiresInSeconds: 180,
       expiresAt: expiresAt.toISOString(),
       userId: auth.sub,
     };
@@ -760,11 +768,22 @@ export class CheckInController {
     let memberUserId: string | undefined;
 
     if (body.token) {
+      const raw = body.token.replace(/[\u0000-\u001f]/g, "").trim();
+      const token = raw.match(/SUL-[A-Za-z0-9]+-[A-Za-z0-9]+/)?.[0] ?? raw;
       const cred = await this.prisma.checkInCredential.findUnique({
-        where: { token: body.token },
+        where: { token },
       });
-      if (!cred || cred.expiresAt.getTime() < Date.now()) {
-        throw new BadRequestException("Invalid or expired check-in token");
+      if (!cred) {
+        throw new BadRequestException(
+          token.startsWith("SUL-")
+            ? "That check-in code is not on this desk. Reload the card and scan the new QR."
+            : "The scanner did not read a Sully's check-in QR. Scan the code on the member card.",
+        );
+      }
+      if (cred.expiresAt.getTime() < Date.now()) {
+        throw new BadRequestException(
+          "That check-in code expired. Reload the card and scan while the timer is still counting.",
+        );
       }
       memberUserId = cred.userId;
       await this.prisma.checkInCredential.delete({ where: { id: cred.id } });
@@ -2317,13 +2336,13 @@ export class FamilyController {
     }
 
     const token = `SUL-${childId.slice(0, 8)}-${Date.now().toString(36).toUpperCase()}`;
-    const expiresAt = new Date(Date.now() + 60_000);
+    const expiresAt = new Date(Date.now() + 180_000);
     await this.prisma.checkInCredential.create({
       data: { userId: childId, token, expiresAt },
     });
     return {
       token,
-      expiresInSeconds: 60,
+      expiresInSeconds: 180,
       expiresAt: expiresAt.toISOString(),
       userId: childId,
     };
@@ -2452,6 +2471,7 @@ export class OwnerBriefController {
 
     const [
       checkInsToday,
+      arrivalsToday,
       overridesToday,
       sessionsToday,
       kitchenOpen,
@@ -2461,6 +2481,14 @@ export class OwnerBriefController {
     ] = await Promise.all([
       this.prisma.attendanceEvent.count({
         where: { checkedInAt: { gte: start, lt: end } },
+      }),
+      this.prisma.attendanceEvent.findMany({
+        where: { checkedInAt: { gte: start, lt: end } },
+        include: {
+          user: { select: { firstName: true, lastName: true } },
+        },
+        take: 8,
+        orderBy: { checkedInAt: "desc" },
       }),
       this.prisma.attendanceEvent.findMany({
         where: {
@@ -2518,6 +2546,11 @@ export class OwnerBriefController {
         classesToday: classes.length,
       },
       classes,
+      arrivals: arrivalsToday.map((a) => ({
+        id: a.id,
+        at: a.checkedInAt.toISOString(),
+        name: `${a.user.firstName} ${a.user.lastName}`,
+      })),
       overrides: overridesToday.map((o) => ({
         id: o.id,
         at: o.checkedInAt.toISOString(),
