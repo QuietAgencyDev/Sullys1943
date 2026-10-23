@@ -138,6 +138,22 @@
   background: rgba(10, 8, 7, 0.78);
 }
 
+.posterStill {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  background: linear-gradient(180deg, #f7f2e8 0%, #f7f2e8 46%, #102a56 54%, #102a56 100%);
+}
+
+.shellPoster .hero,
+.shellPoster .side {
+  visibility: hidden;
+}
+
 .top {
   grid-row: 1;
 }

@@ -513,7 +513,7 @@ export function TvArtPopup(live: TvArtPopupLive) {
             layer.file === "03_hero.png" && Boolean(portrait) && !belt;
           const cutout =
             cast &&
-            /\/coach-(rico|tommy|levi|viktoria|tony-|jackie|jonathan|anthony-p|anthony-sky)(?!-skip)(?!-point)(?!-push)|\/owner-(welcome|boss)|\/tony-morrison\.png|\/anthony-sky\.png|\/jackie\.png/i.test(
+            /\/coach-(rico|tommy|levi|viktoria|tony-|jackie|jonathan|anthony-p|anthony-sky)(?!-skip)(?!-point)(?!-push)|\/owner-(welcome|boss|advertise)|\/tony-morrison\.png|\/anthony-sky\.png|\/jackie\.png/i.test(
               portrait ?? "",
             );
           const scene =
@@ -868,6 +868,13 @@ const COACH_ADS = [
     h2: "MORE.",
     msg: "CHARACTER IS THE LEGACY",
   },
+  {
+    mode: "house_card",
+    hero: "/tv/cast/owner-advertise.png?v=1",
+    h1: "ADVERTISE",
+    h2: "HERE.",
+    msg: "PROMOTE YOUR BUSINESS · ASK THE FRONT DESK",
+  },
 ] as const;
 
 const NEWS_ADS = [
@@ -1091,6 +1098,16 @@ const SCHEDULE_ADS = [
   },
 ] as const;
 
+const SUGO_ADS = [
+  {
+    mode: "sugo_poster",
+    hero: "/tv/sponsors/sugo-round-two.jpg",
+    h1: "ROUND",
+    h2: "TWO.",
+    msg: "SUGO PIZZA · 1279 BLOOR ST W",
+  },
+] as const;
+
 export const FLOOR_ADS = [
   ...CORNER_ADS,
   ...COACH_ADS,
@@ -1100,6 +1117,7 @@ export const FLOOR_ADS = [
   ...EARLS_ADS,
   ...GYM_ADS,
   ...SCHEDULE_ADS,
+  ...SUGO_ADS,
 ] as const;
 
 function shuffleIds(ids: number[], seed: number): number[] {
@@ -1160,6 +1178,12 @@ export function dealFloorAdOrder(seed: number): number[] {
   }
   if (SCHEDULE_ADS.length) {
     order.push(laneCount + EARLS_ADS.length + GYM_ADS.length);
+  }
+  // Pizza sits after the class board, and only on every fifth pass.
+  if (Math.abs(seed) % 5 === 0 && SUGO_ADS.length) {
+    order.push(
+      laneCount + EARLS_ADS.length + GYM_ADS.length + SCHEDULE_ADS.length,
+    );
   }
   return order;
 }

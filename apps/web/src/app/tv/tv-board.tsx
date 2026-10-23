@@ -671,7 +671,12 @@ function weaveFloorFeed(input: {
     input.minute,
   );
 
-  const extras: FeedLine[] = [];
+  const extras: FeedLine[] = [
+    {
+      kind: "system",
+      text: "Bar Sugo · Round Two Pizza · 1279 Bloor St W · Mon–Sat 5–11 PM · Sun 3:30–9:30 PM · bar.sugotoronto.com",
+    },
+  ];
   if (input.roundLabel) {
     extras.push({ kind: "system", text: input.roundLabel });
   }
@@ -943,7 +948,8 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       setAdOn(true);
       const gym = next != null && (FLOOR_ADS[next]?.hero ?? "").includes("sullys-ossington");
       const calendar = next != null && FLOOR_ADS[next]?.mode === "floor_calendar";
-      timer = setTimeout(hide, calendar ? 18000 : gym ? 15000 : jitter(10000, 14000));
+      const poster = next != null && FLOOR_ADS[next]?.mode === "sugo_poster";
+      timer = setTimeout(hide, poster ? 18000 : calendar ? 18000 : gym ? 15000 : jitter(10000, 14000));
     };
     const hide = () => {
       if (cancelled) return;
@@ -1184,6 +1190,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   const infoText = (infoLine?.text ?? "").replace(/^Trivia · /, "");
   const floorAd = adOn && profile === "floor" ? FLOOR_ADS[adIndex] : null;
   const calendarScreen = floorAd?.mode === "floor_calendar";
+  const posterScreen = floorAd?.mode === "sugo_poster";
   const gymScreen = Boolean(floorAd?.hero?.includes("sullys-ossington"));
   const tvMode =
     popupFreeze && profile === "floor"
@@ -1223,6 +1230,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   const riveActive =
     profile === "floor" &&
     !calendarScreen &&
+    !posterScreen &&
     (Boolean(board?.coachTimer) ||
       demoCelebrate ||
       Boolean(popupFreeze) ||
@@ -1260,7 +1268,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     <div
       className={`${styles.shell} ${
         round.phase === "work" ? styles.phaseWork : styles.phaseRest
-      } ${showArtPopup ? styles.shellArt : ""} ${gymScreen ? styles.shellGym : ""}`}
+      } ${showArtPopup ? styles.shellArt : ""} ${gymScreen ? styles.shellGym : ""} ${posterScreen ? styles.shellPoster : ""}`}
       data-profile={profile}
     >
       {gymScreen ? (
@@ -1336,6 +1344,15 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       </header>
 
       <div className={`${styles.main} ${showArtPopup ? styles.mainArt : ""}`}>
+        {posterScreen ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            className={styles.posterStill}
+            src={floorAd?.hero || "/tv/sponsors/sugo-round-two.jpg"}
+            alt=""
+            draggable={false}
+          />
+        ) : null}
         {calendarScreen ? (
           <div className={styles.floorCalendar} role="region" aria-label="Class calendar">
             <div className={styles.calHead}>
