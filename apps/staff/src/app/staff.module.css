@@ -276,19 +276,41 @@
 }
 
 .coachChip {
-  border: 1px solid rgba(243, 230, 200, 0.28);
-  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid rgba(243, 230, 200, 0.35);
+  background: rgba(20, 15, 12, 0.55);
   color: var(--brand-cream);
   font: inherit;
   font-size: 0.82rem;
   letter-spacing: 0.03em;
-  padding: 0.35rem 0.6rem;
+  padding: 0.22rem 0.7rem 0.22rem 0.22rem;
+  border-radius: 999px;
   cursor: pointer;
+}
+
+.coachChip img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 12%;
+  background: #140f0c;
 }
 
 .coachChip:hover {
   border-color: var(--brand-red);
   color: var(--brand-red);
+}
+
+.sessionFace {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 12%;
+  background: #140f0c;
 }
 
 @media (max-width: 560px) {

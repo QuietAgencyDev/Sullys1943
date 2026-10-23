@@ -8,7 +8,13 @@ import { GYM } from "@/lib/gym-info";
 import styles from "./staff.module.css";
 
 type Role = "coach" | "front_desk" | "admin" | "owner";
-type User = { email: string; role: string; firstName?: string; lastName?: string };
+type User = {
+  email: string;
+  role: string;
+  firstName?: string;
+  lastName?: string;
+  photoUrl?: string | null;
+};
 
 const ACTIONS: {
   href: string;
@@ -118,15 +124,16 @@ const WEB_ORIGIN =
   process.env.NEXT_PUBLIC_WEB_ORIGIN ?? "https://www.sullys1943.com";
 
 const COACH_SIGNINS = [
-  { name: "Rico Mancini", email: "coach.rico@sullys.local" },
-  { name: "Tommy", email: "coach.tommy@sullys.local" },
-  { name: "Levi", email: "coach.levi@sullys.local" },
-  { name: "Anthony P.", email: "coach.anthony.p@sullys.local" },
-  { name: "Jackie", email: "coach.jackie@sullys.local" },
-  { name: "Viktoria Penney", email: "coach.viktoria@sullys.local" },
-  { name: "Jonathan Bochner", email: "coach.jonathan@sullys.local" },
-  { name: "Tony Morrison", email: "coach@sullys.local" },
-  { name: "Anthony Sky", email: "coach.anthony@sullys.local" },
+  { name: "Rico Mancini", email: "coach.rico@sullys.local", photo: "/coaches/rico-mancini.png" },
+  { name: "Tommy", email: "coach.tommy@sullys.local", photo: "/coaches/tommy.png" },
+  { name: "Levi", email: "coach.levi@sullys.local", photo: "/coaches/levi.png" },
+  { name: "Anthony P.", email: "coach.anthony.p@sullys.local", photo: "/coaches/anthony-p.png" },
+  { name: "Jackie", email: "coach.jackie@sullys.local", photo: "/coaches/jackie.png" },
+  { name: "Viktoria Penney", email: "coach.viktoria@sullys.local", photo: "/coaches/viktoria-penney.png" },
+  { name: "Jonathan Bochner", email: "coach.jonathan@sullys.local", photo: "/coaches/jonathan-bochner.png" },
+  { name: "Tony Morrison", email: "coach@sullys.local", photo: "/coaches/tony-morrison.png" },
+  { name: "Anthony Sky", email: "coach.anthony@sullys.local", photo: "/coaches/anthony-sky.png" },
+  { name: "Owner", email: "owner@sullys.local", photo: "/tv/cast/owner-welcome.png" },
 ] as const;
 
 export default function StaffHome() {
@@ -238,7 +245,9 @@ export default function StaffHome() {
                   setPassword("password123");
                 }}
               >
-                {coach.name}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={coach.photo} alt="" />
+                <span>{coach.name}</span>
               </button>
             ))}
           </div>
@@ -246,7 +255,12 @@ export default function StaffHome() {
       ) : (
         <>
           <div className={styles.sessionBar}>
-            <span className={styles.sessionDot} aria-hidden />
+            {user.photoUrl ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img className={styles.sessionFace} src={user.photoUrl} alt="" />
+            ) : (
+              <span className={styles.sessionDot} aria-hidden />
+            )}
             <span>
               Signed in as{" "}
               <strong>

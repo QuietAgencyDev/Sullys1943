@@ -283,6 +283,9 @@ const SPECS: Record<string, ArtSpec> = {
   coach_card: card("announcement", "COACH", "ON THE", "FLOOR.", "CANADA'S OLDEST BOXING CLUB", [
     { id: "message", text: "ON THE FLOOR", x: 118, y: 560, size: 28, fill: GOLD, live: true },
   ]),
+  house_card: card("announcement", "THE HOUSE", "COME", "IN.", "CANADA'S OLDEST BOXING CLUB", [
+    { id: "message", text: "YOUTH BOXING", x: 118, y: 560, size: 28, fill: GOLD, live: true },
+  ]),
   last_spots: card("last_spots", "FILL THE RING", "2 SPOTS", "LEFT.", "CLAIM THEM BEFORE THE BELL.", [
     { id: "message", text: "ADULTS BOXING", x: 118, y: 543, size: 36, fill: CREAM, live: true },
   ]),
@@ -510,9 +513,15 @@ export function TvArtPopup(live: TvArtPopupLive) {
             layer.file === "03_hero.png" && Boolean(portrait) && !belt;
           const cutout =
             cast &&
-            /\/coach-(rico|tommy|levi|viktoria|tony-|8-)|\/tony-morrison\.png/i.test(
+            /\/coach-(rico|tommy|levi|viktoria|tony-|jackie|jonathan|anthony-p|anthony-sky)(?!-skip)(?!-point)(?!-push)|\/owner-(welcome|boss)|\/tony-morrison\.png|\/anthony-sky\.png|\/jackie\.png/i.test(
               portrait ?? "",
             );
+          const scene =
+            cast && /anthony-sky-skip/i.test(portrait ?? "");
+          const plank =
+            cast && /anthony-p-push/i.test(portrait ?? "");
+          const bust =
+            cast && /rico-point|owner-point/i.test(portrait ?? "");
           const tony = cast && live.tvMode === "tony_corner";
           return (
             <ArtLayer
@@ -520,7 +529,7 @@ export function TvArtPopup(live: TvArtPopupLive) {
               src={src}
               className={`${styles.layer} ${layerClass(layer.className)} ${
                 belt ? styles.beltHero : cast ? styles.castHero : ""
-              } ${cutout ? styles.coachCutout : ""} ${tony ? styles.tonyHero : ""} ${wide ? styles.wideHero : ""}`.trim()}
+              } ${cutout ? styles.coachCutout : ""} ${scene ? styles.coachScene : ""} ${plank ? styles.coachPlank : ""} ${bust ? styles.coachPortrait : ""} ${tony ? styles.tonyHero : ""} ${wide ? styles.wideHero : ""}`.trim()}
             />
           );
         })}
@@ -674,7 +683,7 @@ const CAST_HERO: Record<string, string> = {
   class_starting: "/tv/cast/coach-2-welcome-stage.png",
   streak: "/tv/cast/teen-1-guard-stage.png",
   welcome_back: "/tv/cast/coach-2-guard-stage.png",
-  announcement: "/tv/cast/coach-8-hook.png?v=hd3",
+  announcement: "/tv/cast/coach-jackie.png?v=2",
   tony_corner: "/tv/cast/coach-tony-morrison.png?v=hd2",
   timer: "/tv/cast/coach-1-rest-stage.png",
   sparring: "/tv/cast/kids-sparring-4-stage.png",
@@ -728,6 +737,13 @@ const COACH_ADS = [
   },
   {
     mode: "coach_card",
+    hero: "/tv/cast/coach-rico-point.png?v=1",
+    h1: "YOUR",
+    h2: "ROUND.",
+    msg: "RICO MANCINI · BOXTECH",
+  },
+  {
+    mode: "coach_card",
     hero: "/tv/cast/coach-tommy.png?v=1",
     h1: "COACH",
     h2: "TOMMY.",
@@ -742,31 +758,38 @@ const COACH_ADS = [
   },
   {
     mode: "coach_card",
-    hero: "mark:AP",
+    hero: "/tv/cast/coach-anthony-p.png?v=1",
     h1: "ANTHONY",
     h2: "P.",
     msg: "ON THE FLOOR",
   },
   {
     mode: "coach_card",
-    hero: "/tv/cast/coach-8-guard.png?v=hd2",
+    hero: "/tv/cast/coach-anthony-p-mitts.png?v=1",
+    h1: "MITTS",
+    h2: "UP.",
+    msg: "ANTHONY P. · ON THE FLOOR",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/coach-anthony-p-push.png?v=1",
+    h1: "PUSH",
+    h2: "UP.",
+    msg: "ANTHONY P. · CHEST TO THE FLOOR",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/coach-jackie.png?v=2",
     h1: "COACH",
     h2: "JACKIE.",
     msg: "BODY SHOP · WEDNESDAYS",
   },
   {
     mode: "coach_card",
-    hero: "/tv/cast/coach-8-hook.png?v=hd3",
+    hero: "/tv/cast/coach-jackie-2.png?v=1",
     h1: "COACH",
     h2: "JACKIE.",
     msg: "BODY SHOP · ON THE FLOOR",
-  },
-  {
-    mode: "coach_card",
-    hero: "/tv/cast/coach-8-hook-2.png?v=hd3",
-    h1: "COACH",
-    h2: "JACKIE.",
-    msg: "BODY SHOP · BOTH HANDS",
   },
   {
     mode: "coach_card",
@@ -784,7 +807,7 @@ const COACH_ADS = [
   },
   {
     mode: "coach_card",
-    hero: "mark:JB",
+    hero: "/tv/cast/coach-jonathan.png?v=1",
     h1: "JONATHAN",
     h2: "BOCHNER.",
     msg: "CHARTERED COACH · TEAM CANADA",
@@ -805,10 +828,45 @@ const COACH_ADS = [
   },
   {
     mode: "coach_card",
-    hero: "mark:AS",
+    hero: "/tv/cast/coach-anthony-sky.png?v=2",
     h1: "ANTHONY",
     h2: "SKY.",
     msg: "NOVICE TO FIGHTERS",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/coach-anthony-sky-guard.png?v=1",
+    h1: "ANTHONY",
+    h2: "SKY.",
+    msg: "ON THE FLOOR",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/coach-anthony-sky-skip.png?v=1",
+    h1: "ROPE",
+    h2: "WORK.",
+    msg: "ANTHONY SKY · STAY LIGHT",
+  },
+  {
+    mode: "house_card",
+    hero: "/tv/cast/owner-welcome.png?v=1",
+    h1: "COME",
+    h2: "IN.",
+    msg: "YOUTH BOXING · AGES 6–18",
+  },
+  {
+    mode: "house_card",
+    hero: "/tv/cast/owner-point.png?v=1",
+    h1: "GET",
+    h2: "UP.",
+    msg: "YOU ONLY LOSE WHEN YOU STAY DOWN",
+  },
+  {
+    mode: "house_card",
+    hero: "/tv/cast/owner-boss.png?v=1",
+    h1: "ONE",
+    h2: "MORE.",
+    msg: "CHARACTER IS THE LEGACY",
   },
 ] as const;
 
@@ -934,6 +992,13 @@ const FLOOR_FACE_ADS = [
     h1: "HANDS",
     h2: "HOME.",
     msg: "CHIN DOWN. HANDS BACK.",
+  },
+  {
+    mode: "announcement",
+    hero: "/tv/cast/coach-2-guard.png",
+    h1: "CLOCK",
+    h2: "ON.",
+    msg: "COACH ON THE CLOCK · STAY WITH THE ROUND",
   },
 ] as const;
 

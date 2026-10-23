@@ -74,7 +74,7 @@ export const FLOOR_COACHES: FloorCoach[] = [
     lastName: "P.",
     title: "Coach",
     bio: "Coach on the Sully's floor.",
-    photoUrl: "/coaches/anthony-p.jpg",
+    photoUrl: "/coaches/anthony-p.png",
   },
   {
     emailLocal: "coach.jackie",
@@ -98,7 +98,7 @@ export const FLOOR_COACHES: FloorCoach[] = [
     lastName: "Bochner",
     title: "Chartered Professional Boxing Coach",
     bio: "Jonathan brings three decades in boxing, 172 bouts, and training under high-performance and Olympic coaches. Former Canadian Champion, Chartered Professional Coach (ChPc), AIBA 1-star Coach, and former Team Canada coach.",
-    photoUrl: "/coaches/jonathan-bochner.jpg",
+    photoUrl: "/coaches/jonathan-bochner.png",
   },
   {
     emailLocal: "coach",
@@ -114,7 +114,7 @@ export const FLOOR_COACHES: FloorCoach[] = [
     lastName: "Sky",
     title: "Professional Boxing Coach (Novice – Fighters)",
     bio: "A Downtown Toronto native who started boxing at 13, Anthony supports athletes at every stage — sharing the mindset and craft that keep the next generation of boxers sharp.",
-    photoUrl: "/coaches/anthony-sky.jpg",
+    photoUrl: "/coaches/anthony-sky.png",
   },
 ];
 

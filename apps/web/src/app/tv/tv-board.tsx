@@ -505,7 +505,10 @@ const FLOOR_CLASS_PHOTO_POOLS: { match: RegExp; srcs: string[]; rig?: boolean }[
   {
     match: /rico|boxtech/i,
     rig: false,
-    srcs: ["/tv/cast/coach-rico.png?v=1"],
+    srcs: [
+      "/tv/cast/coach-rico.png?v=1",
+      "/tv/cast/coach-rico-point.png?v=1",
+    ],
   },
   {
     match: /\btommy\b/i,
@@ -516,6 +519,15 @@ const FLOOR_CLASS_PHOTO_POOLS: { match: RegExp; srcs: string[]; rig?: boolean }[
     match: /\blevi\b/i,
     rig: false,
     srcs: ["/tv/cast/coach-levi.png?v=1"],
+  },
+  {
+    match: /anthony sky/i,
+    rig: false,
+    srcs: [
+      "/tv/cast/coach-anthony-sky.png?v=2",
+      "/tv/cast/coach-anthony-sky-guard.png?v=1",
+      "/tv/cast/coach-anthony-sky-skip.png?v=1",
+    ],
   },
   {
     match: /viktoria|penney|\bvik\b/i,
@@ -541,12 +553,25 @@ const FLOOR_CLASS_PHOTO_POOLS: { match: RegExp; srcs: string[]; rig?: boolean }[
     ],
   },
   {
-    match: /jackie|body shop|jacklyne|irvine|women/i,
+    match: /jackie|body shop/i,
     rig: false,
     srcs: [
-      "/tv/cast/coach-8-guard.png?v=hd2",
-      "/tv/cast/coach-8-hook.png?v=hd3",
-      "/tv/cast/coach-8-hook-2.png?v=hd3",
+      "/tv/cast/coach-jackie.png?v=2",
+      "/tv/cast/coach-jackie-2.png?v=1",
+    ],
+  },
+  {
+    match: /jonathan|bochner/i,
+    rig: false,
+    srcs: ["/tv/cast/coach-jonathan.png?v=1"],
+  },
+  {
+    match: /anthony p\b/i,
+    rig: false,
+    srcs: [
+      "/tv/cast/coach-anthony-p.png?v=1",
+      "/tv/cast/coach-anthony-p-mitts.png?v=1",
+      "/tv/cast/coach-anthony-p-push.png?v=1",
     ],
   },
   { match: /pads/i, srcs: ["/tv/cast/coach-1-pads.png"] },

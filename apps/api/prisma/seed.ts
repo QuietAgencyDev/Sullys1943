@@ -108,6 +108,7 @@ async function main() {
       firstName: "Gym",
       lastName: "Owner",
       role: "owner",
+      photoUrl: "/tv/cast/owner-welcome.png",
       points: { create: { balance: 0 } },
     },
   });
