@@ -2,7 +2,7 @@
  * Weekly floor schedule from the gym's class poster.
  * Coach names follow the floor roster. A coach is attached only when the
  * poster or the gym's own class list names them.
- * Sweet Science says "Anthony" and does not say P. or S.
+ * Sweet Science says "Anthony" and does not say A. or S.
  */
 
 export type ScheduleTone =
@@ -71,9 +71,9 @@ export const FLOOR_COACHES: FloorCoach[] = [
   {
     emailLocal: "coach.anthony.p",
     firstName: "Anthony",
-    lastName: "P.",
+    lastName: "A.",
     title: "Coach",
-    bio: "Coach on the Sully's floor.",
+    bio: "Anthony A. coaches on the Sully's floor.",
     photoUrl: "/coaches/anthony-p.png",
   },
   {

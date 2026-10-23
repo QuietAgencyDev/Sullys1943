@@ -26,7 +26,7 @@ const COACHES = [
   ["Rico Mancini", "coach.rico@sullys.local", "Boxtech, Mon-Fri 6:30 PM. Friday Fight Path 2, 7:15 PM. Saturday Beginner Boxing, 11:00 AM. Saturday Fight Path 1 & 2, 12:30 PM."],
   ["Tommy", "coach.tommy@sullys.local", "On the floor. No class is pinned to Tommy on the poster."],
   ["Levi", "coach.levi@sullys.local", "On the floor. No class is pinned to Levi on the poster."],
-  ["Anthony P.", "coach.anthony.p@sullys.local", "On the floor. Sweet Science says Anthony only, so it is not assigned to Anthony P."],
+  ["Anthony A.", "coach.anthony.p@sullys.local", "On the floor. Sweet Science says Anthony only, so it is not assigned to Anthony A."],
   ["Jackie", "coach.jackie@sullys.local", "Body Shop, Wednesday 7:30 AM and 9:00 AM."],
   ["Viktoria Penney", "coach.viktoria@sullys.local", "On the floor. No class is pinned to Viktoria on the poster."],
   ["Jonathan Bochner", "coach.jonathan@sullys.local", "On the floor. No class is pinned to Jonathan on the poster."],
@@ -139,7 +139,7 @@ body("Front desk: desk@sullys.local  -  password123");
 body("Open Desk check-in to scan a member card. Open Opening check (http://localhost:3001/desk/dry-run) if the scanner needs a test before the floor opens. Coaches do not scan cards. The desk scan is what puts a member on the class roster.");
 
 h2("Keep these private");
-body("This sheet is for coaches and the front desk. It is not a page on the public website. Sweet Science is listed as Anthony, with no P. and no S., so Anthony P. and Anthony Sky both stay on the floor until a class poster names them.");
+body("This sheet is for coaches and the front desk. It is not a page on the public website. Sweet Science is listed as Anthony, with no A. and no S., so Anthony A. and Anthony Sky both stay on the floor until a class poster names them.");
 
 doc.end();
 console.log(dest);

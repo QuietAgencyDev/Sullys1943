@@ -471,7 +471,7 @@ const FLOOR_SYSTEM: FeedLine[] = [
   { kind: "system", text: "Youth boxing · kids 6–14 · ask the desk." },
   { kind: "system", text: "Coach Tony is off the floor, recovering. Scan In His Corner." },
   { kind: "system", text: "Shout out Viktoria Penney · she organised Coach Tony's fundraiser." },
-  { kind: "system", text: "Earl's Fight Shop · 1385 Dundas St. W · (416) 531-1331 · Mon & Tue 12–3 · Wed–Sun 12–7." },
+  { kind: "system", text: "Earl's Fight Shop · 1385 Dundas St. W · earlsfightshop.com · Mon & Tue 12–3 · Wed–Sun 12–7 · (416) 531-1331." },
   { kind: "system", text: "Sully's exclusive merch and fight gear are on the way for 2027." },
   { kind: "system", text: "New Sully's kit · made for this floor · fight gear arriving 2027." },
   { kind: "system", text: "XP leaders in each weight class win prizes. Climb your division." },
@@ -566,7 +566,7 @@ const FLOOR_CLASS_PHOTO_POOLS: { match: RegExp; srcs: string[]; rig?: boolean }[
     srcs: ["/tv/cast/coach-jonathan.png?v=1"],
   },
   {
-    match: /anthony p\b/i,
+    match: /anthony a\b/i,
     rig: false,
     srcs: [
       "/tv/cast/coach-anthony-p.png?v=1",
@@ -674,7 +674,11 @@ function weaveFloorFeed(input: {
   const extras: FeedLine[] = [
     {
       kind: "system",
-      text: "Bar Sugo · Round Two Pizza · 1279 Bloor St W · Mon–Sat 5–11 PM · Sun 3:30–9:30 PM · bar.sugotoronto.com",
+      text: "Bar Sugo · Pizza with the crew · Round Two · 1279 Bloor St W · Mon–Sat 5–11 PM · Sun 3:30–9:30 PM · bar.sugotoronto.com",
+    },
+    {
+      kind: "system",
+      text: "Dad's · coffee and breakfast sandwiches · 1473 Dundas St W · Mon–Fri 8 AM–3 PM · Sat–Sun 9 AM–3 PM",
     },
   ];
   if (input.roundLabel) {
@@ -948,7 +952,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       setAdOn(true);
       const gym = next != null && (FLOOR_ADS[next]?.hero ?? "").includes("sullys-ossington");
       const calendar = next != null && FLOOR_ADS[next]?.mode === "floor_calendar";
-      const poster = next != null && FLOOR_ADS[next]?.mode === "sugo_poster";
+      const poster = next != null && FLOOR_ADS[next]?.mode === "sponsor_poster";
       timer = setTimeout(hide, poster ? 18000 : calendar ? 18000 : gym ? 15000 : jitter(10000, 14000));
     };
     const hide = () => {
@@ -1190,7 +1194,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   const infoText = (infoLine?.text ?? "").replace(/^Trivia · /, "");
   const floorAd = adOn && profile === "floor" ? FLOOR_ADS[adIndex] : null;
   const calendarScreen = floorAd?.mode === "floor_calendar";
-  const posterScreen = floorAd?.mode === "sugo_poster";
+  const posterScreen = floorAd?.mode === "sponsor_poster";
   const gymScreen = Boolean(floorAd?.hero?.includes("sullys-ossington"));
   const tvMode =
     popupFreeze && profile === "floor"

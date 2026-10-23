@@ -760,7 +760,7 @@ const COACH_ADS = [
     mode: "coach_card",
     hero: "/tv/cast/coach-anthony-p.png?v=1",
     h1: "ANTHONY",
-    h2: "P.",
+    h2: "A.",
     msg: "ON THE FLOOR",
   },
   {
@@ -768,14 +768,14 @@ const COACH_ADS = [
     hero: "/tv/cast/coach-anthony-p-mitts.png?v=1",
     h1: "MITTS",
     h2: "UP.",
-    msg: "ANTHONY P. · ON THE FLOOR",
+    msg: "ANTHONY A. · ON THE FLOOR",
   },
   {
     mode: "coach_card",
     hero: "/tv/cast/coach-anthony-p-push.png?v=1",
     h1: "PUSH",
     h2: "UP.",
-    msg: "ANTHONY P. · CHEST TO THE FLOOR",
+    msg: "ANTHONY A. · CHEST TO THE FLOOR",
   },
   {
     mode: "coach_card",
@@ -1098,13 +1098,34 @@ const SCHEDULE_ADS = [
   },
 ] as const;
 
-const SUGO_ADS = [
+const SPONSOR_ADS = [
   {
-    mode: "sugo_poster",
-    hero: "/tv/sponsors/sugo-round-two.jpg",
+    mode: "sponsor_poster",
+    hero: "/tv/sponsors/sugo-crew.jpg",
+    h1: "PIZZA",
+    h2: "CREW.",
+    msg: "SUGO · PIZZA WITH THE CREW",
+  },
+  {
+    mode: "sponsor_poster",
+    hero: "/tv/sponsors/sugo-round-two.jpg?v=2",
     h1: "ROUND",
     h2: "TWO.",
     msg: "SUGO PIZZA · 1279 BLOOR ST W",
+  },
+  {
+    mode: "sponsor_poster",
+    hero: "/tv/sponsors/earls-gear-up.jpg",
+    h1: "GEAR",
+    h2: "UP.",
+    msg: "EARL'S FIGHT SHOP · 1385 DUNDAS",
+  },
+  {
+    mode: "sponsor_poster",
+    hero: "/tv/sponsors/dads-coffee.jpg",
+    h1: "DAD'S",
+    h2: "COFFEE.",
+    msg: "1473 DUNDAS · BREAKFAST AND COFFEE",
   },
 ] as const;
 
@@ -1117,7 +1138,7 @@ export const FLOOR_ADS = [
   ...EARLS_ADS,
   ...GYM_ADS,
   ...SCHEDULE_ADS,
-  ...SUGO_ADS,
+  ...SPONSOR_ADS,
 ] as const;
 
 function shuffleIds(ids: number[], seed: number): number[] {
@@ -1176,14 +1197,14 @@ export function dealFloorAdOrder(seed: number): number[] {
     const at = Math.max(1, Math.floor(order.length * 0.4));
     order.splice(at, 0, gymIndex);
   }
+  // One neighbourhood poster, taking turns, and it is drawn right after the class board.
+  if (SPONSOR_ADS.length) {
+    const sponsorBase =
+      laneCount + EARLS_ADS.length + GYM_ADS.length + SCHEDULE_ADS.length;
+    order.push(sponsorBase + (Math.abs(seed) % SPONSOR_ADS.length));
+  }
   if (SCHEDULE_ADS.length) {
     order.push(laneCount + EARLS_ADS.length + GYM_ADS.length);
-  }
-  // Pizza sits after the class board, and only on every fifth pass.
-  if (Math.abs(seed) % 5 === 0 && SUGO_ADS.length) {
-    order.push(
-      laneCount + EARLS_ADS.length + GYM_ADS.length + SCHEDULE_ADS.length,
-    );
   }
   return order;
 }

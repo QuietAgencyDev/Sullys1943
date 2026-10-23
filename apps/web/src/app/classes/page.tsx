@@ -121,7 +121,7 @@ export default function ClassesPage() {
             valid medical.
           </li>
           <li>
-            Sweet Science is listed with Anthony. The poster does not say Anthony P.
+            Sweet Science is listed with Anthony. The poster does not say Anthony A.
             or Anthony Sky.
           </li>
         </ul>

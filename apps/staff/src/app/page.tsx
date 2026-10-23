@@ -127,7 +127,7 @@ const COACH_SIGNINS = [
   { name: "Rico Mancini", email: "coach.rico@sullys.local", photo: "/coaches/rico-mancini.png" },
   { name: "Tommy", email: "coach.tommy@sullys.local", photo: "/coaches/tommy.png" },
   { name: "Levi", email: "coach.levi@sullys.local", photo: "/coaches/levi.png" },
-  { name: "Anthony P.", email: "coach.anthony.p@sullys.local", photo: "/coaches/anthony-p.png" },
+  { name: "Anthony A.", email: "coach.anthony.p@sullys.local", photo: "/coaches/anthony-p.png" },
   { name: "Jackie", email: "coach.jackie@sullys.local", photo: "/coaches/jackie.png" },
   { name: "Viktoria Penney", email: "coach.viktoria@sullys.local", photo: "/coaches/viktoria-penney.png" },
   { name: "Jonathan Bochner", email: "coach.jonathan@sullys.local", photo: "/coaches/jonathan-bochner.png" },
