@@ -85,7 +85,7 @@ const ACTIONS: {
   {
     href: "/kitchen",
     title: "Kitchen display",
-    description: "Allergen-aware orders and ticket status",
+    description: "Coming soon — the gym is not serving food yet",
     group: "Operations",
     roles: ["admin", "owner"],
   },

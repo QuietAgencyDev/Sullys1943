@@ -181,7 +181,7 @@ export default function ProfilePage() {
             </Link>
             <Link href="/app/nutrition">
               <Button type="button" variant="secondary">
-                Nutrition & kitchen
+                Kitchen — coming soon
               </Button>
             </Link>
             <Link href="/app/attendance">

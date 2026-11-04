@@ -136,7 +136,7 @@ export default function CalendarPage() {
           <p className={styles.eyebrow}>Training hub</p>
           <h1 className={styles.title}>Today</h1>
           <p className={styles.lead}>
-            Classes, gym updates, progress, and nutrition in one corner.
+            Classes, gym updates, and progress in one corner.
           </p>
         </div>
         <div className={calendarStyles.dateBlock} aria-label="Today’s date">

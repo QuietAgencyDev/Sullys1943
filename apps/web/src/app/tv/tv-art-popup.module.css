@@ -578,6 +578,11 @@
   animation-name: castHeroIn;
 }
 
+.coachDuo {
+  object-position: 100% 100%;
+  padding: 1% 0 0 8%;
+}
+
 .coachPlate {
   position: absolute;
   z-index: 3;

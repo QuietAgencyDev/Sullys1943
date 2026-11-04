@@ -438,6 +438,7 @@ const FLOOR_ONTARIO: FeedLine[] = [
   { kind: "trivia", text: "Over 700 boxers. Sully's sent 22. Nineteen came home with medals." },
   { kind: "trivia", text: "Sully's took the Brampton Cup team award. The west end travelled in a pack." },
   { kind: "trivia", text: "Viktoria Penney · gold · women's 80 kg · Brampton Cup 2025 · trained on this floor." },
+  { kind: "trivia", text: "Women's boxing · Viktoria and Jackie · this corner is open." },
   { kind: "trivia", text: "Penney calls Sully's a family inside a gym. The medal says the work was real." },
   { kind: "trivia", text: "From Dundas West to Brampton. Same hands. Bigger room." },
   { kind: "trivia", text: "Silver Gloves · Ontario's youth crucible. Sully's has brought them home." },
@@ -531,11 +532,21 @@ const FLOOR_CLASS_PHOTO_POOLS: { match: RegExp; srcs: string[]; rig?: boolean }[
     ],
   },
   {
+    match: /women/i,
+    rig: false,
+    srcs: [
+      "/tv/cast/coach-women-duo.png?v=1",
+      "/tv/cast/coach-viktoria.png?v=1",
+      "/tv/cast/coach-jackie-guard.png?v=3",
+    ],
+  },
+  {
     match: /viktoria|penney|\bvik\b/i,
     rig: false,
     srcs: [
       "/tv/cast/coach-viktoria.png?v=1",
       "/tv/cast/coach-viktoria-blue.png?v=1",
+      "/tv/cast/coach-women-duo.png?v=1",
     ],
   },
   {
@@ -563,6 +574,7 @@ const FLOOR_CLASS_PHOTO_POOLS: { match: RegExp; srcs: string[]; rig?: boolean }[
       "/tv/cast/coach-jackie-jab.png?v=3",
       "/tv/cast/coach-jackie-hook.png?v=3",
       "/tv/cast/coach-jackie-victory.png?v=3",
+      "/tv/cast/coach-women-duo.png?v=1",
     ],
   },
   {

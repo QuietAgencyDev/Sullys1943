@@ -52,9 +52,10 @@ export default function KitchenKdsPage() {
   return (
     <main className={styles.main}>
       <p className={styles.eyebrow}>KITCHEN</p>
-      <h1 className={styles.title}>KDS</h1>
+      <h1 className={styles.title}>Coming soon</h1>
       <p className={styles.copy}>
-        Live tickets — allergen warnings highlighted. Auto-refreshes every 5s.
+        The gym is not serving food yet. This screen stays here for later.
+        No tickets should be taken today.
       </p>
       <p>
         <Link href="/">← Staff home</Link>

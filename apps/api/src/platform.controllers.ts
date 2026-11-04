@@ -1726,6 +1726,11 @@ export class KitchenController {
     @CurrentUser() auth: AuthPayload,
     @Body() body: { items?: { menuItemId: string; quantity?: number }[]; notes?: string },
   ) {
+    if (process.env.KITCHEN_ORDERS !== "open") {
+      throw new BadRequestException(
+        "Kitchen is coming soon. Food orders are not open yet.",
+      );
+    }
     if (!body.items?.length) throw new BadRequestException("items required");
     const location = await this.prisma.location.findFirst({
       where: { organizationId: auth.orgId },

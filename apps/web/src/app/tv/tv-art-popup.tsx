@@ -504,16 +504,21 @@ export function TvArtPopup(live: TvArtPopupLive) {
               : layer.file === "03_hero.png" && portrait
                 ? portrait
                 : `${base}/${layer.file}`;
+          const duo =
+            layer.file === "03_hero.png" &&
+            /women-duo/i.test(portrait ?? "");
           const wide =
             layer.file === "03_hero.png" &&
-            (WIDE_HERO.has(live.tvMode) || (portrait ?? "").includes("sparring"));
+            (duo ||
+              WIDE_HERO.has(live.tvMode) ||
+              (portrait ?? "").includes("sparring"));
           const belt =
             layer.file === "03_hero.png" && (portrait ?? "").includes("champion-belt");
           const cast =
             layer.file === "03_hero.png" && Boolean(portrait) && !belt;
           const cutout =
             cast &&
-            /\/coach-(rico|tommy|levi|viktoria|tony-|jackie|jonathan|anthony-p|anthony-sky)(?!-skip)(?!-point)(?!-push)|\/owner-(welcome|boss|advertise)|\/joe-manteiga|\/tony-morrison\.png|\/anthony-sky\.png|\/jackie\.png/i.test(
+            /women-duo|\/coach-(rico|tommy|levi|viktoria|tony-|jackie|jonathan|anthony-p|anthony-sky)(?!-skip)(?!-point)(?!-push)|\/owner-(welcome|boss|advertise)|\/joe-manteiga|\/tony-morrison\.png|\/anthony-sky\.png|\/jackie\.png/i.test(
               portrait ?? "",
             );
           const scene =
@@ -529,7 +534,7 @@ export function TvArtPopup(live: TvArtPopupLive) {
               src={src}
               className={`${styles.layer} ${layerClass(layer.className)} ${
                 belt ? styles.beltHero : cast ? styles.castHero : ""
-              } ${cutout ? styles.coachCutout : ""} ${scene ? styles.coachScene : ""} ${plank ? styles.coachPlank : ""} ${bust ? styles.coachPortrait : ""} ${tony ? styles.tonyHero : ""} ${wide ? styles.wideHero : ""}`.trim()}
+              } ${cutout ? styles.coachCutout : ""} ${duo ? styles.coachDuo : ""} ${scene ? styles.coachScene : ""} ${plank ? styles.coachPlank : ""} ${bust ? styles.coachPortrait : ""} ${tony ? styles.tonyHero : ""} ${wide ? styles.wideHero : ""}`.trim()}
             />
           );
         })}
@@ -832,6 +837,13 @@ const COACH_ADS = [
     h1: "VIKTORIA",
     h2: "PENNEY.",
     msg: "ON THE FLOOR · BOTH CORNERS",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/coach-women-duo.png?v=1",
+    h1: "WOMEN'S",
+    h2: "BOXING.",
+    msg: "VIKTORIA AND JACKIE · THIS CORNER",
   },
   {
     mode: "coach_card",
