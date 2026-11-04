@@ -20,9 +20,9 @@ const INK = "#1a120e";
 const VERSION = "Version 2.0 · September 2026 · Production";
 
 const outDir = path.join(root, "docs", "09-manuals");
-const publicDir = path.join(root, "apps", "web", "public", "docs");
+const privateDir = path.join(root, "apps", "api", "private", "manuals");
 fs.mkdirSync(outDir, { recursive: true });
-fs.mkdirSync(publicDir, { recursive: true });
+fs.mkdirSync(privateDir, { recursive: true });
 
 function writePdf(filename, build) {
   return new Promise((resolve, reject) => {
@@ -42,7 +42,7 @@ function writePdf(filename, build) {
     build(doc);
     doc.end();
     stream.on("finish", () => {
-      fs.copyFileSync(dest, path.join(publicDir, filename));
+      fs.copyFileSync(dest, path.join(privateDir, filename));
       resolve(dest);
     });
     stream.on("error", reject);
@@ -543,4 +543,4 @@ const ownerFile = await writePdf(
 console.log("Generated:");
 console.log(" ", memberFile);
 console.log(" ", ownerFile);
-console.log("Copied to apps/web/public/docs/ for download from the site.");
+console.log("Copied into the private manuals folder. Not published on the website.");

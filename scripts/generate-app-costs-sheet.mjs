@@ -13,9 +13,9 @@ const require = createRequire(path.join(root, "apps/api/package.json"));
 const PDFDocument = require("pdfkit");
 
 const outDir = path.join(root, "docs", "09-manuals");
-const publicDir = path.join(root, "apps", "web", "public", "docs");
+const privateDir = path.join(root, "apps", "api", "private", "manuals");
 fs.mkdirSync(outDir, { recursive: true });
-fs.mkdirSync(publicDir, { recursive: true });
+fs.mkdirSync(privateDir, { recursive: true });
 
 const RED = "#C82026";
 const BROWN = "#3A2418";
@@ -72,6 +72,6 @@ doc.fillColor(BROWN).font("Helvetica-Bold").fontSize(12).text(
 
 doc.end();
 stream.on("finish", () => {
-  fs.copyFileSync(dest, path.join(publicDir, "Sullys-App-Hard-Costs.pdf"));
+  fs.copyFileSync(dest, path.join(privateDir, "Sullys-App-Hard-Costs.pdf"));
   console.log(dest);
 });

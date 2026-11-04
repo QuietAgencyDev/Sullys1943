@@ -30,6 +30,7 @@ import { CoachController } from "./coach.controller";
 import { ProgressionService } from "./progression.service";
 import { CommerceController } from "./commerce.controller";
 import { FighterVerificationController } from "./fighter-verification.controller";
+import { ManualsController } from "./manuals.controller";
 
 @Module({
   controllers: [
@@ -59,6 +60,7 @@ import { FighterVerificationController } from "./fighter-verification.controller
     FamilyController,
     OwnerBriefController,
     FighterVerificationController,
+    ManualsController,
   ],
   providers: [PrismaService, AuthGuard, ProgressionService],
 })

@@ -98,6 +98,13 @@ const ACTIONS: {
     priority: true,
   },
   {
+    href: "/manuals",
+    title: "Manuals",
+    description: "Private guides. Not on the public website.",
+    group: "Operations",
+    roles: ["coach", "front_desk", "admin", "owner"],
+  },
+  {
     href: "/admin/users",
     title: "People and access",
     description: "Invite staff, change roles and disable access",

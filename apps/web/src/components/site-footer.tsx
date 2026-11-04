@@ -176,12 +176,6 @@ export function SiteFooter() {
               <span aria-hidden>📺</span>
               <span className={styles.srOnly}>TV</span>
             </Link>
-            {brand.id !== "red-owl" ? (
-              <Link href="/manuals" className={styles.opsIcon} title="Manuals">
-                <span aria-hidden>📖</span>
-                <span className={styles.srOnly}>Manuals</span>
-              </Link>
-            ) : null}
           </nav>
         </div>
       </div>

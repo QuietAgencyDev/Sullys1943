@@ -189,6 +189,11 @@ export default function ProfilePage() {
                 Attendance history
               </Button>
             </Link>
+            <Link href="/app/manuals">
+              <Button type="button" variant="secondary">
+                Manuals
+              </Button>
+            </Link>
             <Link href="/app/family">
               <Button type="button" variant="ghost">
                 Family
