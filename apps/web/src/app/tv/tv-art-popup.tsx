@@ -1148,7 +1148,7 @@ const SCHEDULE_ADS = [
 const SPONSOR_ADS = [
   {
     mode: "sponsor_poster",
-    hero: "/tv/sponsors/sugo-crew.jpg",
+    hero: "/tv/sponsors/sugo-crew.jpg?v=3",
     h1: "PIZZA",
     h2: "CREW.",
     msg: "SUGO · PIZZA WITH THE CREW",
