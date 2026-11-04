@@ -232,9 +232,10 @@ async function main() {
     data: {
       organizationId: org.id,
       code: "youth",
-      name: "Youth Monthly",
+      name: "Youth — free",
+      description: "Little Champs and Jab Lab. Ages 6–18. Free at Sully's.",
       interval: "monthly",
-      priceCents: 9900,
+      priceCents: 0,
     },
   });
 

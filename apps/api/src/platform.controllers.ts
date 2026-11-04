@@ -337,6 +337,26 @@ export class SessionsController {
           data: { status: "confirmed" },
         });
         promoted = { userId: next.userId, bookingId: next.id };
+        const person = await this.prisma.user.findUnique({
+          where: { id: next.userId },
+          select: { email: true, firstName: true },
+        });
+        const session = await this.prisma.session.findUnique({
+          where: { id },
+          select: { title: true, startsAt: true },
+        });
+        const hook = process.env.NOTIFY_WEBHOOK_URL;
+        if (hook && person?.email && session) {
+          await fetch(hook, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              kind: "waitlist_promoted",
+              to: person.email,
+              text: `${person.firstName}, a spot opened in ${session.title}. You're booked.`,
+            }),
+          }).catch(() => undefined);
+        }
       }
     }
 
@@ -610,6 +630,8 @@ export async function performCheckIn(
         id: dupUser.id,
         name: `${dupUser.firstName} ${dupUser.lastName}`,
         email: dupUser.email,
+        photoUrl: dupUser.photoUrl,
+        late: false,
       },
     };
   }
@@ -696,6 +718,8 @@ export async function performCheckIn(
       id: user.id,
       name: `${user.firstName} ${user.lastName}`,
       email: user.email,
+      photoUrl: user.photoUrl,
+      late: Boolean(lateBySeconds && lateBySeconds > 600),
     },
   };
 }
@@ -2540,6 +2564,54 @@ export class OwnerBriefController {
       };
     });
 
+    const since = new Date(start);
+    since.setDate(since.getDate() - 14);
+    const horizon = new Date(end);
+    horizon.setDate(horizon.getDate() + 14);
+    const [noShowRows, endingMemberships] = await Promise.all([
+      this.prisma.booking.findMany({
+        where: {
+          status: "no_show",
+          session: { startsAt: { gte: since, lt: end } },
+        },
+        select: {
+          userId: true,
+          user: { select: { firstName: true, lastName: true } },
+        },
+      }),
+      this.prisma.membership.findMany({
+        where: {
+          status: "active",
+          endsAt: { gte: start, lte: horizon },
+        },
+        include: {
+          payer: { select: { firstName: true, lastName: true } },
+          product: { select: { name: true } },
+        },
+        take: 20,
+      }),
+    ]);
+    const missed = new Map<string, { name: string; count: number }>();
+    for (const row of noShowRows) {
+      const current = missed.get(row.userId) ?? {
+        name: `${row.user.firstName} ${row.user.lastName}`,
+        count: 0,
+      };
+      current.count += 1;
+      missed.set(row.userId, current);
+    }
+    const callList = [...missed.values()]
+      .filter((row) => row.count >= 2)
+      .map((row) => ({
+        name: row.name,
+        reason: `Missed ${row.count} classes in two weeks`,
+      }));
+    const renewals = endingMemberships.map((membership) => ({
+      name: `${membership.payer.firstName} ${membership.payer.lastName}`,
+      plan: membership.product.name,
+      endsAt: membership.endsAt?.toISOString() ?? null,
+    }));
+
     return {
       asOf: new Date().toISOString(),
       kpis: {
@@ -2564,6 +2636,8 @@ export class OwnerBriefController {
         flags: o.flags,
       })),
       stripeMode: process.env.STRIPE_SECRET_KEY ? "live_keys" : "mock",
+      callList,
+      renewals,
     };
   }
 

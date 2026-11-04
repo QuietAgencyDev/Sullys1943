@@ -34,6 +34,8 @@ type Brief = {
     reason: string | null;
     flags: string;
   }[];
+  callList?: { name: string; reason: string }[];
+  renewals?: { name: string; plan: string; endsAt: string | null }[];
 };
 
 type Analytics = {
@@ -500,6 +502,32 @@ export default function OwnerBriefPage() {
                 </strong>
                 <p>{analytics.quickbooks.note}</p>
               </div>
+              <h3 className={styles.auditTitle}>Call this week</h3>
+              <ul className={styles.auditList}>
+                {(brief.callList ?? []).map((row) => (
+                  <li key={row.name}>
+                    <strong>{row.name}</strong>
+                    <span>{row.reason}</span>
+                  </li>
+                ))}
+                {(brief.renewals ?? []).map((row) => (
+                  <li key={`${row.name}-${row.endsAt}`}>
+                    <strong>{row.name}</strong>
+                    <span>
+                      {row.plan} ends{" "}
+                      {row.endsAt
+                        ? new Date(row.endsAt).toLocaleDateString()
+                        : "soon"}
+                    </span>
+                  </li>
+                ))}
+                {(brief.callList ?? []).length + (brief.renewals ?? []).length ===
+                0 ? (
+                  <li className={styles.emptyState}>
+                    Nobody to call for missed classes or a membership ending.
+                  </li>
+                ) : null}
+              </ul>
               <h3 className={styles.auditTitle}>Staff overrides today</h3>
               <ul className={styles.auditList}>
                 {brief.overrides.map((override) => (

@@ -180,8 +180,8 @@ export default function FamilyPage() {
         <p className={styles.eyebrow}>Parent portal</p>
         <h1 className={styles.title}>Family</h1>
         <p className={styles.lead}>
-          Sign youth waivers as guardian, book classes, and issue a desk QR for
-          your child.
+          This page is the child only: class, waiver, and check-in. Adult
+          billing stays on the membership page, not here.
         </p>
       </div>
 

@@ -23,6 +23,7 @@ type ScanFeedback = {
   kind: "ok" | "duplicate" | "blocked" | "error";
   title: string;
   detail: string;
+  photoUrl?: string | null;
 };
 type Session = {
   id: string;
@@ -123,7 +124,7 @@ export default function DeskPage() {
       setScanFeedback(null);
       try {
         const res = await post<{
-          member?: { name: string };
+          member?: { name: string; photoUrl?: string | null; late?: boolean };
           xpAwarded?: number;
           duplicate?: boolean;
           overridden?: boolean;
@@ -151,10 +152,16 @@ export default function DeskPage() {
                 kind: "duplicate",
                 title: "Already on the floor",
                 detail: res.member?.name ?? "Member",
+                photoUrl: res.member?.photoUrl,
               }
             : {
                 kind: "ok",
-                title: res.overridden ? "Override accepted" : "Check-in complete",
+                title: res.member?.late
+                  ? "Late check-in"
+                  : res.overridden
+                    ? "Override accepted"
+                    : "Check-in complete",
+                photoUrl: res.member?.photoUrl,
                 detail: `${res.member?.name ?? "Member"} · +${
                   res.xpAwarded ?? 10
                 } XP${flagNote}`,
@@ -496,6 +503,16 @@ export default function DeskPage() {
                     : "Hold at desk"}
               </p>
               <h2>{scanFeedback.title}</h2>
+              {scanFeedback.photoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={scanFeedback.photoUrl}
+                  alt=""
+                  width={72}
+                  height={72}
+                  style={{ borderRadius: 8, objectFit: "cover" }}
+                />
+              ) : null}
               <p>{scanFeedback.detail}</p>
             </>
           ) : (

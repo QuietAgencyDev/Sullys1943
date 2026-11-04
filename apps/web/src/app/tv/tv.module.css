@@ -150,7 +150,9 @@
 }
 
 .shellPoster .hero,
-.shellPoster .side {
+.shellPoster .side,
+.shellCalendar .hero,
+.shellCalendar .side {
   visibility: hidden;
 }
 
@@ -165,12 +167,12 @@
 .floorCalendar {
   position: absolute;
   inset: 0;
-  z-index: 6;
+  z-index: 8;
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
-  padding: 0.35rem 0.8rem 0.7rem;
-  background: rgba(12, 9, 8, 0.94);
+  gap: 0.85rem;
+  padding: 0.4rem 0.2rem 0.2rem;
+  background: #0c0908;
   overflow: hidden;
 }
 
@@ -184,18 +186,18 @@
 .calKicker {
   margin: 0;
   color: var(--brand-red);
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: clamp(1rem, 1.6vw, 1.35rem);
+  font-weight: 800;
 }
 
 .calTitle {
   margin: 0;
   color: var(--brand-cream);
   font-family: var(--font-display-loaded), var(--font-display);
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  line-height: 0.9;
+  font-size: clamp(3.4rem, 6.4vw, 5.6rem);
+  line-height: 0.86;
   letter-spacing: 0.03em;
 }
 
@@ -205,39 +207,41 @@
   padding: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.15rem 1.4rem;
+  gap: 0.15rem 2.4rem;
   align-content: start;
   min-height: 0;
 }
 
 .calRow {
   display: grid;
-  grid-template-columns: 5.4rem minmax(0, 1fr);
-  gap: 0.15rem 0.55rem;
+  grid-template-columns: 8.6rem minmax(0, 1fr);
+  gap: 0.1rem 0.85rem;
   align-items: baseline;
-  padding: 0.28rem 0;
-  border-bottom: 1px solid rgba(243, 230, 200, 0.16);
+  padding: 0.55rem 0;
+  border-bottom: 1px solid rgba(243, 230, 200, 0.2);
 }
 
 .calTime {
   color: var(--brand-glove);
-  font-size: 0.82rem;
-  letter-spacing: 0.06em;
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .calName {
   color: var(--brand-cream);
   font-family: var(--font-display-loaded), var(--font-display);
-  font-size: 1.2rem;
+  font-size: clamp(1.7rem, 2.8vw, 2.55rem);
   letter-spacing: 0.02em;
-  line-height: 1;
+  line-height: 0.95;
 }
 
 .calCoach {
   grid-column: 2;
   color: var(--brand-red);
-  font-size: 0.78rem;
+  font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+  font-weight: 700;
   letter-spacing: 0.04em;
 }
 

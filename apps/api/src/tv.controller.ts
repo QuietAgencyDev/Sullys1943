@@ -235,8 +235,12 @@ export class TvController {
       },
       leaderboard: gameLeaderboard.length ? gameLeaderboard : leaderboard,
       ticker: recentCheckIns.map((c) => ({
-        name: `${c.user.firstName} ${c.user.lastName.charAt(0)}.`,
+        name:
+          c.status === "late"
+            ? c.user.firstName
+            : `${c.user.firstName} ${c.user.lastName.charAt(0)}.`,
         at: c.checkedInAt.toISOString(),
+        late: c.status === "late",
       })),
       announcements: announcements.map((a) => ({
         title: a.title,

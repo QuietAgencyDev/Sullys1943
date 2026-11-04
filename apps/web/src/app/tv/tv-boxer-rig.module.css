@@ -132,7 +132,7 @@
 
 .shinL {
   top: -0.37%;
-  z-index: 5;
+  z-index: 4;
 }
 
 .pelvis {
@@ -140,7 +140,7 @@
 }
 
 .thighL {
-  z-index: 7;
+  z-index: 5;
 }
 
 .head {

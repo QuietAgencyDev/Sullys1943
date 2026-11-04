@@ -175,7 +175,10 @@ export default function PassportPage() {
               style={{ width: `${pct}%` }}
             />
           </div>
-          <small>{data.progression.xpToNextLevel ?? 0} XP to go</small>
+          <small>
+            Next to earn: Level {data.progression.level + 1}.{" "}
+            {data.progression.xpToNextLevel ?? 0} XP from here.
+          </small>
         </div>
         <div className={passportStyles.heroStat}>
           <strong>{data.attendance.total}</strong>

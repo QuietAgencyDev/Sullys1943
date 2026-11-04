@@ -97,7 +97,7 @@ type Board = {
     level: number;
     score?: number;
   }[];
-  ticker: { name: string; at: string }[];
+  ticker: { name: string; at: string; late?: boolean }[];
   manifesto: string[];
   refreshSeconds: number;
   coachTimer?: CoachTimer | null;
@@ -937,7 +937,13 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   }, [demoCelebrate, popupFreeze, profile]);
 
   useEffect(() => {
-    if (profile !== "floor" || popupFreeze || demoCelebrate) {
+    const classOnFloor = Boolean(board?.live || board?.coachTimer);
+    if (
+      profile !== "floor" ||
+      popupFreeze ||
+      demoCelebrate ||
+      (classOnFloor && round.phase === "work")
+    ) {
       setAdOn(false);
       return;
     }
@@ -982,7 +988,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [demoCelebrate, popupFreeze, profile]);
+  }, [board?.coachTimer, board?.live, demoCelebrate, popupFreeze, profile, round.phase]);
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
@@ -1066,7 +1072,8 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     lastArrivalRef.current = arrivalKey;
     const age = Date.now() - new Date(latestArrivalAt).getTime();
     if (age < 0 || age > 60_000) return;
-    setArrivalName(latestArrivalName);
+    const late = board?.ticker?.[0]?.late;
+    setArrivalName(late ? `Late · ${latestArrivalName}` : latestArrivalName);
     const hide = window.setTimeout(() => setArrivalName(null), 7_000);
     return () => window.clearTimeout(hide);
   }, [latestArrivalAt, latestArrivalName, profile]);
@@ -1289,7 +1296,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     <div
       className={`${styles.shell} ${
         round.phase === "work" ? styles.phaseWork : styles.phaseRest
-      } ${showArtPopup ? styles.shellArt : ""} ${gymScreen ? styles.shellGym : ""} ${posterScreen ? styles.shellPoster : ""}`}
+      } ${showArtPopup ? styles.shellArt : ""} ${gymScreen ? styles.shellGym : ""} ${posterScreen ? styles.shellPoster : ""} ${calendarScreen ? styles.shellCalendar : ""}`}
       data-profile={profile}
     >
       {gymScreen ? (

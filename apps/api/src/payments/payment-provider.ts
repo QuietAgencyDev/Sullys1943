@@ -3,7 +3,7 @@
  * Membership Stripe path stays in billing.controller.ts until consolidated.
  */
 
-export type PaymentProviderName = "mock" | "moneris";
+export type PaymentProviderName = "mock" | "moneris" | "helcim";
 
 export type CheckoutCreateInput = {
   amountCents: number;
@@ -22,7 +22,14 @@ export type CheckoutCreateResult = {
   ticket?: string;
 };
 
+export function helcimReady() {
+  return Boolean(process.env.HELCIM_API_TOKEN);
+}
+
 export function commerceProvider(): PaymentProviderName {
+  if (process.env.PAYMENT_PROVIDER === "helcim" && helcimReady()) {
+    return "helcim";
+  }
   if (
     process.env.MONERIS_STORE_ID &&
     process.env.MONERIS_API_TOKEN &&
@@ -31,6 +38,39 @@ export function commerceProvider(): PaymentProviderName {
     return "moneris";
   }
   return "mock";
+}
+
+/** HelcimPay initialize. Throws if Helcim is selected and does not answer. */
+export async function initializeHelcimPay(input: {
+  amountCents: number;
+  description: string;
+}) {
+  const token = process.env.HELCIM_API_TOKEN;
+  if (!token) {
+    throw new Error("HELCIM_API_TOKEN is not set");
+  }
+  const res = await fetch("https://api.helcim.com/v2/helcim-pay/initialize", {
+    method: "POST",
+    headers: {
+      "api-token": token,
+      "Content-Type": "application/json",
+      accept: "application/json",
+    },
+    body: JSON.stringify({
+      paymentType: "purchase",
+      amount: Number(dollarsFromCents(input.amountCents)),
+      currency: "CAD",
+      paymentMethod: "cc",
+    }),
+  });
+  const data = (await res.json().catch(() => ({}))) as {
+    checkoutToken?: string;
+    errors?: unknown;
+  };
+  if (!res.ok || !data.checkoutToken) {
+    throw new Error("Helcim did not start a checkout");
+  }
+  return { checkoutToken: data.checkoutToken };
 }
 
 export function webOrigin() {
@@ -50,6 +90,22 @@ export async function createCommerceCheckout(
 ): Promise<CheckoutCreateResult> {
   const provider = commerceProvider();
   const externalId = `com_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+
+  if (provider === "helcim") {
+    const helcim = await initializeHelcimPay({
+      amountCents: input.amountCents,
+      description: input.description,
+    });
+    const url = new URL("/pay/helcim", webOrigin());
+    url.searchParams.set("checkoutToken", helcim.checkoutToken);
+    url.searchParams.set("token", externalId);
+    return {
+      provider: "helcim",
+      externalId,
+      checkoutUrl: url.toString(),
+      ticket: helcim.checkoutToken,
+    };
+  }
 
   if (provider === "mock") {
     const url = new URL("/pay/mock", webOrigin());

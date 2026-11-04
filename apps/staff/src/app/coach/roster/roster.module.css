@@ -707,6 +707,24 @@
   }
 }
 
+.printSheet {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+@media print {
+  .rosterNav,
+  .sessionRail,
+  .printSheet {
+    display: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .athleteRow,
   .skillMatrix button {

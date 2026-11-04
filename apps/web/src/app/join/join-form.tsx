@@ -8,7 +8,7 @@ import { register } from "@/lib/auth-client";
 import styles from "./join.module.css";
 
 type Step = "account" | "waiver" | "plan" | "done";
-type PlanId = "monthly" | "trial";
+type PlanId = "monthly" | "youth" | "trial";
 
 const STEPS: { id: Step; label: string }[] = [
   { id: "account", label: "Account" },
@@ -27,10 +27,33 @@ type Packet = {
 };
 
 type CheckoutResponse = {
-  mode: "mock" | "stripe";
+  mode?: "mock" | "stripe" | "helcim" | "free";
+  checkoutToken?: string | null;
+  note?: string | null;
   checkoutUrl?: string | null;
   membershipId: string;
 };
+
+async function openHelcimPay(checkoutToken: string) {
+  await new Promise<void>((resolve, reject) => {
+    const existing = document.querySelector("script[data-helcim-pay]");
+    if (existing) {
+      resolve();
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://secure.helcim.app/helcim-pay/services/start.js";
+    script.dataset.helcimPay = "1";
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Helcim checkout did not load"));
+    document.body.appendChild(script);
+  });
+  const start = (
+    window as unknown as { appendHelcimPayIframe?: (token: string) => void }
+  ).appendHelcimPayIframe;
+  if (!start) throw new Error("Helcim checkout is not available");
+  start(checkoutToken);
+}
 
 export function JoinForm() {
   const [step, setStep] = useState<Step>("account");
@@ -133,6 +156,17 @@ export function JoinForm() {
         "/api/v1/membership/checkout",
         { productCode: plan, plan },
       );
+      if (checkout.mode === "free") {
+        setNote(checkout.note ?? "Youth training is free. You're in.");
+        setStep("done");
+        return;
+      }
+      if (checkout.checkoutToken) {
+        await openHelcimPay(checkout.checkoutToken);
+        setNote("Card checkout is open. Finish it to activate the membership.");
+        setStep("done");
+        return;
+      }
       if (checkout.checkoutUrl) {
         window.location.href = checkout.checkoutUrl;
         return;
@@ -273,7 +307,17 @@ export function JoinForm() {
               >
                 <p className={styles.planName}>Monthly membership</p>
                 <p className={styles.planMeta}>
-                  $149 / mo · unlimited class access
+                  $149 / mo · unlimited adult classes
+                </p>
+              </button>
+              <button
+                type="button"
+                className={`${styles.plan} ${plan === "youth" ? styles.planSelected : ""}`}
+                onClick={() => setPlan("youth")}
+              >
+                <p className={styles.planName}>Youth</p>
+                <p className={styles.planMeta}>
+                  Free · ages 6–18 · Little Champs and Jab Lab
                 </p>
               </button>
               <button
@@ -287,6 +331,11 @@ export function JoinForm() {
                 </p>
               </button>
             </div>
+            <p className={styles.copy}>
+              Youth classes are free, the way the gym already runs them. The
+              adult monthly rate stays the desk rate until you confirm a new
+              number. The public plans page does not publish one.
+            </p>
             {error ? <p className={styles.error}>{error}</p> : null}
             <div className={styles.actions}>
               <Button

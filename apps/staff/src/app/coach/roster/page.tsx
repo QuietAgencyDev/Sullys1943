@@ -378,6 +378,13 @@ export default function CoachRosterPage() {
           </p>
         </div>
         <nav className={rosterStyles.rosterNav} aria-label="Coach navigation">
+          <button
+            type="button"
+            className={rosterStyles.printSheet}
+            onClick={() => window.print()}
+          >
+            Print class sheet
+          </button>
           <Link href="/coach">Coach home</Link>
           <Link href="/coach/builder">Builder</Link>
           {activeId ? (

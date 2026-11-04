@@ -10,6 +10,7 @@ import {
   type CSSProperties,
 } from "react";
 import QRCode from "qrcode";
+import { resolveMemberPhoto } from "@/lib/member-photo";
 import { Alert, Badge, Button, Card, Skeleton } from "@sullys/ui";
 import { ApiError, get, post } from "@/lib/api";
 import styles from "../ui.module.css";
@@ -24,6 +25,7 @@ type MembershipCard = {
 };
 
 type PassportLite = {
+  member?: { photoUrl?: string | null; name?: string };
   progression: { rank: string; level: number; xp: number };
 };
 
@@ -196,7 +198,12 @@ export default function CardPage() {
             <div className={cardStyles.cardHeader}>
               <div className={cardStyles.identity}>
                 <Image
-                  src="/brand/sullys-logo-primary.png"
+                  src={
+                    resolveMemberPhoto({
+                      photoUrl: passport?.member?.photoUrl,
+                      name: card?.name,
+                    }) ?? "/brand/sullys-logo-primary.png"
+                  }
                   alt=""
                   width={72}
                   height={72}
