@@ -513,7 +513,7 @@ export function TvArtPopup(live: TvArtPopupLive) {
             layer.file === "03_hero.png" && Boolean(portrait) && !belt;
           const cutout =
             cast &&
-            /\/coach-(rico|tommy|levi|viktoria|tony-|jackie|jonathan|anthony-p|anthony-sky)(?!-skip)(?!-point)(?!-push)|\/owner-(welcome|boss|advertise)|\/tony-morrison\.png|\/anthony-sky\.png|\/jackie\.png/i.test(
+            /\/coach-(rico|tommy|levi|viktoria|tony-|jackie|jonathan|anthony-p|anthony-sky)(?!-skip)(?!-point)(?!-push)|\/owner-(welcome|boss|advertise)|\/joe-manteiga|\/tony-morrison\.png|\/anthony-sky\.png|\/jackie\.png/i.test(
               portrait ?? "",
             );
           const scene =
@@ -683,7 +683,7 @@ const CAST_HERO: Record<string, string> = {
   class_starting: "/tv/cast/coach-2-welcome-stage.png",
   streak: "/tv/cast/teen-1-guard-stage.png",
   welcome_back: "/tv/cast/coach-2-guard-stage.png",
-  announcement: "/tv/cast/coach-jackie.png?v=2",
+  announcement: "/tv/cast/coach-jackie-tracksuit.png?v=3",
   tony_corner: "/tv/cast/coach-tony-morrison.png?v=hd2",
   timer: "/tv/cast/coach-1-rest-stage.png",
   sparring: "/tv/cast/kids-sparring-4-stage.png",
@@ -779,17 +779,45 @@ const COACH_ADS = [
   },
   {
     mode: "coach_card",
-    hero: "/tv/cast/coach-jackie.png?v=2",
+    hero: "/tv/cast/coach-jackie-tracksuit.png?v=3",
     h1: "COACH",
     h2: "JACKIE.",
-    msg: "BODY SHOP · WEDNESDAYS",
+    msg: "BODY SHOP · WEDNESDAY MORNINGS",
   },
   {
     mode: "coach_card",
-    hero: "/tv/cast/coach-jackie-2.png?v=1",
-    h1: "COACH",
-    h2: "JACKIE.",
-    msg: "BODY SHOP · ON THE FLOOR",
+    hero: "/tv/cast/coach-jackie-welcome.png?v=3",
+    h1: "COME",
+    h2: "IN.",
+    msg: "COACH JACKIE · FIRST GLOVE UP",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/coach-jackie-guard.png?v=3",
+    h1: "HANDS",
+    h2: "UP.",
+    msg: "COACH JACKIE · READY GUARD",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/coach-jackie-jab.png?v=3",
+    h1: "STICK",
+    h2: "IT.",
+    msg: "COACH JACKIE · JAB FIRST",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/coach-jackie-hook.png?v=3",
+    h1: "TURN",
+    h2: "IT.",
+    msg: "COACH JACKIE · LEFT HOOK",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/coach-jackie-victory.png?v=3",
+    h1: "ARMS",
+    h2: "UP.",
+    msg: "COACH JACKIE · THAT'S THE ROUND",
   },
   {
     mode: "coach_card",
@@ -874,6 +902,13 @@ const COACH_ADS = [
     h1: "ADVERTISE",
     h2: "HERE.",
     msg: "PROMOTE YOUR BUSINESS · ASK THE FRONT DESK",
+  },
+  {
+    mode: "house_card",
+    hero: "/tv/cast/joe-manteiga.png?v=1",
+    h1: "JOE",
+    h2: "MANTEIGA.",
+    msg: "HE KEPT THE DOORS OPEN · THE LEGACY STAYED",
   },
 ] as const;
 

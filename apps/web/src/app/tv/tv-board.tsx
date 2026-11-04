@@ -149,6 +149,7 @@ const FLOOR_SULLYS: FeedLine[] = [
   { kind: "trivia", text: "Joe Azores · Sully's amateur · Canadian Golden Gloves, 1973." },
   { kind: "trivia", text: "Earl Sullivan passed in 1999. The gym kept the name and the rules." },
   { kind: "trivia", text: "Joe Manteiga kept Sully's doors open after Sully." },
+  { kind: "trivia", text: "Joe Manteiga kept the lights on. The name stayed. The work stayed." },
   { kind: "trivia", text: "Danielle Manteiga · next generation · same gym, same mission." },
   { kind: "trivia", text: "Coaches Dupont and Wade held the floor through the Ossington years." },
   { kind: "trivia", text: "2019 · Sully's moved to 1554 Dundas St W · west-end chapter." },
@@ -556,8 +557,12 @@ const FLOOR_CLASS_PHOTO_POOLS: { match: RegExp; srcs: string[]; rig?: boolean }[
     match: /jackie|body shop/i,
     rig: false,
     srcs: [
-      "/tv/cast/coach-jackie.png?v=2",
-      "/tv/cast/coach-jackie-2.png?v=1",
+      "/tv/cast/coach-jackie-tracksuit.png?v=3",
+      "/tv/cast/coach-jackie-welcome.png?v=3",
+      "/tv/cast/coach-jackie-guard.png?v=3",
+      "/tv/cast/coach-jackie-jab.png?v=3",
+      "/tv/cast/coach-jackie-hook.png?v=3",
+      "/tv/cast/coach-jackie-victory.png?v=3",
     ],
   },
   {

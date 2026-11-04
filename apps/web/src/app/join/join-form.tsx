@@ -245,7 +245,12 @@ export function JoinForm() {
                 checked={accepted}
                 onChange={(e) => setAccepted(e.target.checked)}
               />
-              <span>I have read and electronically sign this waiver.</span>
+              <span>
+                I have read and electronically sign this waiver. The{" "}
+                <Link href="/terms">terms</Link> and{" "}
+                <Link href="/privacy">privacy notice</Link> apply to this
+                account.
+              </span>
             </label>
             {error ? <p className={styles.error}>{error}</p> : null}
             <div className={styles.actions}>

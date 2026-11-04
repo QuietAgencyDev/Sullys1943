@@ -8,7 +8,7 @@ Portraits show on `/coaches` when the file name matches. Until a file is here, t
 | `tommy.png` | Tommy |
 | `levi.png` | Levi |
 | `anthony-p.png` | Anthony A. |
-| `jackie.png` | Jackie |
+| `jackie.png` | Jackie — tracksuit portrait on the website and staff sign-in |
 | `viktoria-penney.png` | Viktoria Penney |
 | `viktoria-penney-blue.png` | Viktoria Penney, second pose |
 | `jonathan-bochner.png` | Jonathan Bochner |

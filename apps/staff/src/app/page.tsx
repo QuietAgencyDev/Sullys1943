@@ -233,7 +233,9 @@ export default function StaffHome() {
           <Button type="submit" disabled={pending}>
             {pending ? "Signing in…" : "Sign in"}
           </Button>
-          <p className={styles.hint}>Coach sign-in. Password is password123.</p>
+          {process.env.NODE_ENV !== "production" ? (
+            <p className={styles.hint}>Coach sign-in. Password is password123.</p>
+          ) : null}
           <div className={styles.coachSignins} aria-label="Coach accounts">
             {COACH_SIGNINS.map((coach) => (
               <button
@@ -242,7 +244,9 @@ export default function StaffHome() {
                 className={styles.coachChip}
                 onClick={() => {
                   setEmail(coach.email);
-                  setPassword("password123");
+                  if (process.env.NODE_ENV !== "production") {
+                    setPassword("password123");
+                  }
                 }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
