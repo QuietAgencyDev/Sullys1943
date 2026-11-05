@@ -211,6 +211,16 @@ export default function MemberHomePage() {
         </section>
       ) : null}
 
+      {data.user.role !== "child" ? (
+        <Link href="/app/shadow" className={styles.journeyCard}>
+          <div className={styles.journeyRank}>
+            <span>SHADOW ROUND</span>
+            <strong>One fix between classes</strong>
+            <p>Adults. The film stays on your phone. Your coach confirms the note.</p>
+          </div>
+        </Link>
+      ) : null}
+
       <Link href="/app/passport" className={styles.journeyCard}>
         <div className={styles.journeyRank}>
           <span>YOUR BOXING JOURNEY</span>

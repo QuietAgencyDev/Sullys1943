@@ -84,6 +84,7 @@ model User {
   messageParticipants MessageParticipant[]
   threadsCreated      MessageThread[] @relation("ThreadCreator")
   gameScores          GameScore[]
+  shadowRounds        ShadowRound[]
 
   @@unique([organizationId, email])
 }
@@ -635,6 +636,40 @@ model KitchenOrder {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   items       KitchenOrderItem[]
+}
+
+model ShadowRound {
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id])
+  engine           String
+  modelId          String   @default("mediapipe-pose-lite-v1")
+  signalsJson      String   @default("{}")
+  stance           String
+  durationSec      Int
+  frames           Int
+  visibleFrames    Int
+  guardLowFrames   Int
+  feetNarrowFrames Int
+  chinUpFrames     Int
+  punches          Int
+  jabs             Int
+  crosses          Int
+  hooks            Int
+  uppercuts        Int
+  shortStraights   Int
+  missedReturns    Int
+  signal           String
+  correction       String
+  drillTitle       String
+  drillSteps       String
+  coachStatus      String   @default("open")
+  coachNote        String?
+  reviewedById     String?
+  createdAt        DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([coachStatus, createdAt])
 }
 
 model KitchenOrderItem {

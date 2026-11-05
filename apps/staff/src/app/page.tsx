@@ -25,6 +25,13 @@ const ACTIONS: {
   priority?: boolean;
 }[] = [
   {
+    href: "/shadow",
+    title: "Shadow rounds",
+    description: "Adult form reads. Confirm or change the one drill.",
+    group: "Floor",
+    roles: ["coach", "front_desk", "admin", "owner"],
+  },
+  {
     href: "/coach",
     title: "Coach command",
     description: "Today’s classes, roster and Live Class Mode",

@@ -164,6 +164,13 @@ export default function ProfilePage() {
           </section>
 
           <div className={styles.actions}>
+            {me?.role === "child" ? null : (
+              <Link href="/app/shadow">
+                <Button type="button" variant="secondary">
+                  Shadow round
+                </Button>
+              </Link>
+            )}
             <Link href="/app/passport">
               <Button type="button" variant="secondary">
                 Boxing Passport

@@ -693,3 +693,407 @@
   border: 1px dashed var(--border);
   border-radius: var(--radius-lg);
 }
+
+.shadowPage {
+  padding-bottom: 7.5rem;
+}
+
+.shadowWarn {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--brand-red);
+  border-radius: var(--radius-md);
+  color: var(--brand-cream);
+  background: color-mix(in srgb, var(--brand-red) 22%, transparent);
+}
+
+.shadowRing {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--brand-glove) 55%, transparent);
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(circle at 50% 18%, rgba(200, 32, 38, 0.28), transparent 42%),
+    var(--bg-canvas);
+}
+
+.shadowRingStill {
+  overflow: visible;
+  border: none;
+  background: transparent;
+}
+
+.shadowStage {
+  width: 100%;
+  height: 100%;
+  min-height: min(48vw, 300px);
+  object-fit: cover;
+  transform: scaleX(-1);
+  background: #120c09;
+}
+
+.shadowHidden {
+  display: none;
+}
+
+.shadowPlate,
+.shadowOverlay,
+.shadowHud {
+  display: grid;
+  align-content: end;
+  gap: 0.35rem;
+  min-height: min(48vw, 300px);
+  padding: 0;
+}
+
+.shadowPlate {
+  position: relative;
+  display: block;
+  min-height: 0;
+}
+
+.shadowLesson,
+.shadowCard {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  background: #f3e6c8;
+}
+
+.shadowLesson {
+  border: 1px solid color-mix(in srgb, var(--brand-glove) 55%, transparent);
+  border-radius: var(--radius-xl);
+}
+
+.shadowCard {
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--brand-glove) 45%, transparent);
+}
+
+.shadowStatus {
+  position: absolute;
+  left: var(--space-4);
+  bottom: var(--space-4);
+  margin: 0;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  color: var(--brand-cream);
+  background: rgba(18, 12, 9, 0.82);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.shadowOverlay strong {
+  margin: 0;
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(2.4rem, 9vw, 4.2rem);
+  line-height: 0.9;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.shadowOverlay span,
+.shadowHud .shadowSeen {
+  margin: 0;
+  color: var(--brand-glove);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.shadowOverlay,
+.shadowHud {
+  position: absolute;
+  inset: 0;
+  padding: var(--space-5);
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(12, 8, 6, 0.88) 0%, rgba(12, 8, 6, 0.05) 52%);
+}
+
+.shadowOverlay {
+  background: linear-gradient(to top, rgba(12, 8, 6, 0.9) 0%, rgba(12, 8, 6, 0) 42%);
+}
+
+.shadowGuide {
+  position: absolute;
+  inset: 9% 14% 24%;
+  border: 2px solid rgba(243, 230, 200, 0.92);
+  border-radius: 48% 48% 16% 16%;
+  pointer-events: none;
+}
+
+.shadowGuide::before {
+  content: "";
+  position: absolute;
+  top: 36%;
+  left: 10%;
+  right: 10%;
+  border-top: 2px solid var(--brand-red);
+}
+
+.shadowGuide::after {
+  content: "Chest";
+  position: absolute;
+  top: calc(36% + 0.35rem);
+  left: 0;
+  right: 0;
+  color: var(--brand-cream);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.shadowClock {
+  margin: 0;
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(5.5rem, 22vw, 8rem);
+  line-height: 0.8;
+  letter-spacing: 0.02em;
+}
+
+.shadowHud .shadowCall {
+  margin: 0;
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  line-height: 0.95;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.shadowTally {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shadowTally li {
+  display: grid;
+  gap: 0.15rem;
+  padding: var(--space-3) var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  text-align: center;
+}
+
+.shadowTally span {
+  color: var(--brand-glove);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.shadowTally strong {
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.shadowPop {
+  border-color: var(--brand-red);
+  animation: shadowPop 280ms ease;
+}
+
+@keyframes shadowPop {
+  from { transform: translateY(-3px); }
+  to { transform: translateY(0); }
+}
+
+.shadowResult .shadowClock {
+  font-size: clamp(4.2rem, 18vw, 6.4rem);
+}
+
+.shadowSrOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.shadowSetup,
+.shadowResult {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.shadowSetup > button,
+.shadowResult > button {
+  width: 100%;
+}
+
+.shadowStance {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.shadowStance button {
+  display: grid;
+  gap: 0.2rem;
+  min-height: 4.6rem;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--brand-cream);
+  background: var(--bg-elevated);
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.shadowStance button span {
+  color: var(--text-muted);
+  font-family: var(--font-body, inherit);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.shadowStanceOn {
+  border-color: var(--brand-red) !important;
+  background:
+    linear-gradient(180deg, rgba(200, 32, 38, 0.28), transparent 70%),
+    var(--bg-elevated) !important;
+}
+
+.shadowAdult {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.shadowAdult input {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--brand-red);
+}
+
+.shadowResult h2 {
+  margin: 0;
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(2.2rem, 8vw, 3.4rem);
+  line-height: 0.92;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.shadowResult p,
+.shadowHistory span,
+.shadowHistory em {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.shadowResult ol {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shadowResult li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.shadowResult li span {
+  display: grid;
+  width: 1.8rem;
+  height: 1.8rem;
+  place-items: center;
+  border-radius: 999px;
+  color: var(--brand-cream);
+  background: var(--brand-red);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.shadowNote {
+  color: var(--brand-glove) !important;
+  font-size: 0.84rem;
+  letter-spacing: 0.04em;
+}
+
+.shadowHistory h2 {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: 1.4rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.shadowHistory ul {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shadowHistory li {
+  display: grid;
+  grid-template-columns: 4.6rem 1fr;
+  gap: var(--space-3);
+  align-items: center;
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.shadowHistory img {
+  width: 4.6rem;
+  height: 4.6rem;
+  object-fit: cover;
+  object-position: center;
+  border-radius: var(--radius-md);
+  background: #f3e6c8;
+}
+
+.shadowHistory li div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.shadowHistory strong {
+  font-family: var(--font-display-loaded), var(--font-display);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.shadowHistory em {
+  color: var(--brand-glove);
+  font-style: normal;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shadowPop {
+    animation: none;
+  }
+}

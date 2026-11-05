@@ -114,6 +114,19 @@
   text-transform: uppercase;
 }
 
+.noteField {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.75rem 0;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+
+.noteField input {
+  width: 100%;
+}
+
 .input {
   min-height: var(--touch-min);
   padding: 0 0.9rem;

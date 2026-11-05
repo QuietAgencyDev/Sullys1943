@@ -938,11 +938,23 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
 
   useEffect(() => {
     const classOnFloor = Boolean(board?.live || board?.coachTimer);
+    const coachClock = board?.coachTimer;
+    const phase = coachClock?.syncedToCoach
+      ? coachClock.phase === "rest"
+        ? "rest"
+        : "work"
+      : computeRoundState(
+          new Date(),
+          board?.live ?? null,
+          timerCfg.workSec,
+          timerCfg.restSec,
+          timerCfg.rounds,
+        ).phase;
     if (
       profile !== "floor" ||
       popupFreeze ||
       demoCelebrate ||
-      (classOnFloor && round.phase === "work")
+      (classOnFloor && phase === "work")
     ) {
       setAdOn(false);
       return;
@@ -988,7 +1000,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [board?.coachTimer, board?.live, demoCelebrate, popupFreeze, profile, round.phase]);
+  }, [board?.coachTimer, board?.live, demoCelebrate, popupFreeze, profile, timerCfg]);
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;

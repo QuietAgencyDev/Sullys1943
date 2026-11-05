@@ -31,6 +31,7 @@ import { ProgressionService } from "./progression.service";
 import { CommerceController } from "./commerce.controller";
 import { FighterVerificationController } from "./fighter-verification.controller";
 import { ManualsController } from "./manuals.controller";
+import { ShadowController } from "./shadow.controller";
 
 @Module({
   controllers: [
@@ -61,6 +62,7 @@ import { ManualsController } from "./manuals.controller";
     OwnerBriefController,
     FighterVerificationController,
     ManualsController,
+    ShadowController,
   ],
   providers: [PrismaService, AuthGuard, ProgressionService],
 })
