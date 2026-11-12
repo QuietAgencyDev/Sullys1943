@@ -7,6 +7,7 @@ import { PrismaClient } from "@prisma/client";
 import * as bcrypt from "bcryptjs";
 import {
   APP_FLOOR_SLOTS,
+  DESK_STAFF,
   FLOOR_COACHES,
   RETIRED_COACH_EMAILS,
   coachDisplayName,
@@ -83,6 +84,41 @@ async function main() {
       });
       coachByName.set(name, created.id);
       console.log(`added ${name}`);
+    }
+  }
+
+  for (const entry of DESK_STAFF) {
+    const email = `${entry.emailLocal}@sullys.local`;
+    const existing = await prisma.user.findFirst({
+      where: { organizationId: org.id, email },
+    });
+    if (existing) {
+      await prisma.user.update({
+        where: { id: existing.id },
+        data: {
+          firstName: entry.firstName,
+          lastName: entry.lastName,
+          role: "front_desk",
+          title: entry.title,
+          disabledAt: null,
+        },
+      });
+      console.log(`updated desk ${entry.firstName}`);
+    } else {
+      await prisma.user.create({
+        data: {
+          organizationId: org.id,
+          email,
+          passwordHash: await newCoachPassword(),
+          firstName: entry.firstName,
+          lastName: entry.lastName,
+          role: "front_desk",
+          title: entry.title,
+          invitedAt: new Date(),
+          points: { create: { balance: 0 } },
+        },
+      });
+      console.log(`added desk ${entry.firstName}`);
     }
   }
 

@@ -42,6 +42,22 @@ export const RETIRED_COACH_EMAILS = [
   "coach.jack@sullys.local",
 ] as const;
 
+/** People who cover the front desk. Not coaches, and not on the public roster. */
+export const DESK_STAFF = [
+  {
+    emailLocal: "jacob",
+    firstName: "Jacob",
+    lastName: "",
+    title: "Front desk",
+  },
+  {
+    emailLocal: "jesse",
+    firstName: "Jesse",
+    lastName: "",
+    title: "Front desk",
+  },
+] as const;
+
 /** Floor order requested for the site. */
 export const FLOOR_COACHES: FloorCoach[] = [
   {

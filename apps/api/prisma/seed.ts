@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import * as bcrypt from "bcryptjs";
 import {
+  DESK_STAFF,
   FLOOR_COACHES,
   FLOOR_SLOTS,
   coachDisplayName,
@@ -151,6 +152,21 @@ async function main() {
       points: { create: { balance: 0 } },
     },
   });
+
+  for (const entry of DESK_STAFF) {
+    await prisma.user.create({
+      data: {
+        organizationId: org.id,
+        email: mail(entry.emailLocal),
+        passwordHash,
+        firstName: entry.firstName,
+        lastName: entry.lastName,
+        role: "front_desk",
+        title: entry.title,
+        points: { create: { balance: 0 } },
+      },
+    });
+  }
 
   await prisma.user.create({
     data: {

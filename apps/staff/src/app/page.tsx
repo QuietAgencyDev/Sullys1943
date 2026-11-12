@@ -149,6 +149,8 @@ const COACH_SIGNINS = [
   { name: "Tony Morrison", email: "coach@sullys.local", photo: "/coaches/tony-morrison.png" },
   { name: "Anthony Sky", email: "coach.anthony@sullys.local", photo: "/coaches/anthony-sky.png" },
   { name: "Owner", email: "owner@sullys.local", photo: "/tv/cast/owner-welcome.png" },
+  { name: "Jacob", email: "jacob@sullys.local" },
+  { name: "Jesse", email: "jesse@sullys.local" },
 ] as const;
 
 export default function StaffHome() {
@@ -258,8 +260,14 @@ export default function StaffHome() {
                   setEmail(coach.email);
                 }}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={coach.photo} alt="" />
+                {"photo" in coach && coach.photo ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img src={coach.photo} alt="" />
+                ) : (
+                  <span className={styles.coachInitial} aria-hidden>
+                    {coach.name.slice(0, 1)}
+                  </span>
+                )}
                 <span>{coach.name}</span>
               </button>
             ))}
