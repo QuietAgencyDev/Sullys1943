@@ -138,6 +138,51 @@ export default function CoachesPage() {
             : "The floor staff at Canada's oldest boxing gym — champions, competitive coaches, and instructors who build craft and character every round."}
         </p>
 
+        {!isRedOwl ? (
+          <section className={styles.founder} aria-label="Founder">
+            <p className={styles.role}>Founder</p>
+            <h2 className={styles.name}>Earl “Sully” Sullivan</h2>
+            <p className={styles.bio}>
+              Founder of Sully’s Boxing Gym. 1914–1999. The floor still carries his name.
+            </p>
+            <ul className={styles.founderRow}>
+              <li>
+                <div className={styles.photoWrap}>
+                  <Image
+                    src="/tv/cast/founder-sully-portrait.png"
+                    alt="Earl Sully Sullivan, founder, in a pinstripe suit"
+                    fill
+                    className={styles.photo}
+                    sizes="(max-width: 720px) 100vw, 280px"
+                  />
+                </div>
+              </li>
+              <li>
+                <div className={styles.photoWrap}>
+                  <Image
+                    src="/tv/cast/founder-sully-wave.png"
+                    alt="Earl Sully Sullivan waving"
+                    fill
+                    className={styles.photo}
+                    sizes="(max-width: 720px) 100vw, 280px"
+                  />
+                </div>
+              </li>
+              <li>
+                <div className={styles.photoWrap}>
+                  <Image
+                    src="/tv/cast/founder-sully-guard.png"
+                    alt="Earl Sully Sullivan in a boxing guard"
+                    fill
+                    className={styles.photo}
+                    sizes="(max-width: 720px) 100vw, 280px"
+                  />
+                </div>
+              </li>
+            </ul>
+          </section>
+        ) : null}
+
         {loading ? (
           <p className={styles.copy}>Loading coaches…</p>
         ) : error ? (

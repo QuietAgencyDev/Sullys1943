@@ -728,6 +728,27 @@ const CORNER_ADS = [
 const COACH_ADS = [
   {
     mode: "coach_card",
+    hero: "/tv/cast/founder-sully-portrait.png?v=1",
+    h1: "EARL",
+    h2: "SULLY.",
+    msg: "FOUNDER · 1914–1999",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/founder-sully-wave.png?v=1",
+    h1: "THE",
+    h2: "FOUNDER.",
+    msg: "EARL “SULLY” SULLIVAN",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/founder-sully-guard.png?v=1",
+    h1: "HANDS",
+    h2: "UP.",
+    msg: "EARL “SULLY” SULLIVAN · FOUNDER",
+  },
+  {
+    mode: "coach_card",
     hero: "/tv/cast/coach-rico.png?v=1",
     h1: "RICO",
     h2: "MANCINI.",
