@@ -405,6 +405,47 @@ export const FLOOR_SLOTS: FloorSlot[] = [
   },
 ];
 
+/**
+ * Floor TV and member app. Same class names as the public poster.
+ * Times follow the evening sheet while the gym fills the week in.
+ * The public /classes page keeps FLOOR_SLOTS.
+ */
+export const APP_FLOOR_SLOTS: FloorSlot[] = [
+  ...FLOOR_SLOTS.flatMap((slot) => {
+    if (slot.title === "Tony's House of Pain" && slot.hour === 20) return [];
+    if (slot.day === 5 && slot.title === "Boxtech") {
+      return [{ ...slot, hour: 18, minute: 0 }];
+    }
+    if (slot.day === 5 && slot.title === "Fight Path 2") {
+      return [
+        {
+          day: 5,
+          hour: 19,
+          minute: 15,
+          minutes: 60,
+          title: "Sparring",
+          level: "Sparring",
+          tone: "sparring" as const,
+          coach: "Rico Mancini",
+          note: "New time",
+        },
+        { ...slot, hour: 19, minute: 45, note: undefined, coach: undefined },
+      ];
+    }
+    return [slot];
+  }),
+  {
+    day: 6,
+    hour: 9,
+    minute: 0,
+    minutes: 60,
+    title: "Beginner Boxing",
+    level: "Beginner",
+    tone: "beginner",
+    coach: "Viktoria Penney",
+  },
+];
+
 export const SCHEDULE_DAYS = [
   { day: 1, label: "Monday" },
   { day: 2, label: "Tuesday" },

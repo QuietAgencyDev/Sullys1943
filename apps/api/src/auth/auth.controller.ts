@@ -12,6 +12,7 @@ import {
 import type { Response } from "express";
 import { randomBytes } from "crypto";
 import * as bcrypt from "bcryptjs";
+import { sendPasswordResetEmail } from "../mail";
 import { PrismaService } from "../prisma.service";
 import {
   AuthGuard,
@@ -163,7 +164,7 @@ export class AuthController {
     const base = {
       ok: true,
       message:
-        "If that email is on file, a reset link is ready. Check your inbox (demo: see resetLink below).",
+        "If that email is on file, a reset link is on its way. It expires in one hour.",
     };
     if (!user || user.disabledAt) return base;
 
@@ -178,12 +179,19 @@ export class AuthController {
       process.env.NEXT_PUBLIC_WEB_URL ??
       "http://localhost:3000";
     const resetLink = `${webOrigin}/app/reset-password?token=${token}`;
-    console.log(`[auth] password reset for ${email}: ${resetLink}`);
+    const sent = await sendPasswordResetEmail({
+      to: user.email,
+      firstName: user.firstName,
+      resetLink,
+    });
+    if (!sent) {
+      console.log(`[auth] password reset was not emailed for ${email}: ${resetLink}`);
+    }
 
     const isProd = process.env.NODE_ENV === "production";
     return {
       ...base,
-      ...(isProd ? {} : { resetLink, demoHint: true }),
+      ...(isProd || sent ? {} : { resetLink, demoHint: true }),
     };
   }
 

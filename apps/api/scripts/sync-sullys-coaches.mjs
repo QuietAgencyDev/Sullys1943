@@ -3,6 +3,7 @@
  * Usage (from apps/api): node scripts/sync-sullys-coaches.mjs
  * Requires DATABASE_URL.
  */
+import { randomBytes } from "node:crypto";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
@@ -85,7 +86,13 @@ async function main() {
   const org = await prisma.organization.findFirst({ orderBy: { createdAt: "asc" } });
   if (!org) throw new Error("No organization found");
 
-  const passwordHash = await bcrypt.hash("password123", 10);
+  const seedPassword = process.env.SEED_PASSWORD;
+  const passwordHash = await bcrypt.hash(
+    seedPassword && seedPassword.length >= 12
+      ? seedPassword
+      : randomBytes(18).toString("base64url"),
+    10,
+  );
   const ids = {};
 
   for (const c of ROSTER) {
@@ -162,7 +169,7 @@ async function main() {
   }
 
   console.log("\nDone. Public directory: GET /api/v1/portal/coaches");
-  console.log("Demo login still: coach@sullys.local / password123 (Tony Morrison)");
+  console.log("Coach passwords are not printed.");
 }
 
 main()

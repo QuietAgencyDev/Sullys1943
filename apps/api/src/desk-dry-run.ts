@@ -1,3 +1,4 @@
+import { randomBytes } from "node:crypto";
 import { ForbiddenException } from "@nestjs/common";
 import * as bcrypt from "bcryptjs";
 import type { PrismaService } from "./prisma.service";
@@ -151,7 +152,7 @@ export async function runDeskDryRun(
   let unsignedId: string | null = null;
   if (location) {
     const dryEmail = `dryrun.unsigned.${Date.now()}@sullys.local`;
-    const hash = await bcrypt.hash("password123", 8);
+    const hash = await bcrypt.hash(randomBytes(18).toString("base64url"), 8);
     const unsigned = await prisma.user.create({
       data: {
         organizationId: auth.orgId,

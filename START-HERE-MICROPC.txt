@@ -20,7 +20,7 @@ Leave the three black windows open while you use the app.
 If Windows asks, allow Node on private networks.
 If a window says SmartScreen, choose More info, then Run anyway.
 
-Demo password: password123
+Staff passwords are handed over in person and are not written in this sheet.
   coach@sullys.local   Floor TV + Live Mode
   desk@sullys.local    Front desk
   member@sullys.local  Member app

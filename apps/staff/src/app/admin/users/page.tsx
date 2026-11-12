@@ -37,7 +37,7 @@ export default function AdminUsersPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("front_desk");
-  const [password, setPassword] = useState("password123");
+  const [password, setPassword] = useState("");
 
   const refresh = useCallback(async () => {
     const res = await get<{ users: StaffUser[] }>("/api/v1/admin/users");
@@ -71,14 +71,14 @@ export default function AdminUsersPage() {
         name: name.trim(),
         email: email.trim(),
         role,
-        password: password.trim(),
+        ...(password.trim() ? { password: password.trim() } : {}),
       });
       setMessage(
         `Invited ${res.user.name} (${res.user.role}). Temp password: ${res.temporaryPassword}`,
       );
       setName("");
       setEmail("");
-      setPassword("password123");
+      setPassword("");
       await refresh();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Invite failed");
@@ -179,10 +179,12 @@ export default function AdminUsersPage() {
                 <span>Temporary password</span>
                 <input
                   className={styles.input}
+                  type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  minLength={8}
-                  required
+                  minLength={password ? 8 : undefined}
+                  autoComplete="new-password"
+                  placeholder="Leave blank to generate one"
                 />
               </label>
               <Button type="submit" disabled={pending}>

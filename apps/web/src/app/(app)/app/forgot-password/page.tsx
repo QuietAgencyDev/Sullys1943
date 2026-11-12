@@ -48,8 +48,8 @@ export default function ForgotPasswordPage() {
         <p className={styles.eyebrow}>Account recovery</p>
         <h1 className={styles.title}>Forgot password</h1>
         <p className={styles.lead}>
-          Enter the email on your {brand.copy.appName} account. We&apos;ll
-          prepare a reset link (demo shows it on screen).
+          Enter the email on your {brand.copy.appName} account. If it is on
+          file, we send a link that expires in one hour.
         </p>
       </div>
 

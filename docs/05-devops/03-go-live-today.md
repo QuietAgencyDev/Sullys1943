@@ -72,7 +72,7 @@ NEXT_PUBLIC_QUIET_AGENCY_URL=https://quietagency.co
 - `/tv/demo`  
 - `/tv/floor` (press **F**; round timer)  
 - `/join`  
-- `/app` after `member@sullys.local` / `password123`  
+- `/app` after member sign-in. The password is not printed here.  
 - `/app/book` (week strip + waitlist when full)  
 - See also [05-aaa-pack-ready.md](./05-aaa-pack-ready.md)
 

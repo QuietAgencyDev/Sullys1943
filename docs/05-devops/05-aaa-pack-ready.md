@@ -15,7 +15,7 @@ The **AAA polish pack** is implemented locally. Public deploy is the next human 
 | PWA | `/manifest.webmanifest` + `/icons/icon-192.png` / `icon-512.png` |
 | Visual | Logo + `/gym/*` photos load on home, TV, coaches |
 
-Demo login: `member@sullys.local` / `password123`
+Demo login: `member@sullys.local`. The password is handed over in person and is not printed here.
 
 ## Deploy (Quiet Agency)
 

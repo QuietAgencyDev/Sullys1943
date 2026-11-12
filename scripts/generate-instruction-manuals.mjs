@@ -216,7 +216,7 @@ function buildMemberManual(doc) {
   );
   note(
     doc,
-    "Demo logins (local/seed): member@sullys.local or parent@sullys.local · password password123",
+    "Passwords are handed over in person and are not printed in this guide.",
   );
 
   h1(doc, "2. Quick start — Join");
@@ -371,7 +371,7 @@ function buildOwnerManual(doc) {
   h1(doc, "2. Staff logins (seed / demo)");
   note(
     doc,
-    "Password for all seed accounts: password123",
+    "Staff passwords are handed over in person and are not printed in this manual.",
   );
   bullet(doc, [
     "owner@sullys.local — Owner morning brief + staff admin",

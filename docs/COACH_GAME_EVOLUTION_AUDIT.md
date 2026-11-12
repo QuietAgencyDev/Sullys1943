@@ -345,4 +345,4 @@ Approved and implemented:
 | Notes / assessments | `POST /api/v1/coach/notes` · `POST /api/v1/coach/assessments` |
 | Class-complete XP | +25 idempotent on FINISH |
 
-**Try locally:** sign in `coach@sullys.local` / `password123` on staff → **Coach Command Center** → **Open Live Class Mode** → START · open `/tv/floor` on second screen.
+**Try locally:** sign in as `coach@sullys.local` on staff → **Coach Command Center** → **Open Live Class Mode** → START · open `/tv/floor` on second screen. The password is handed over in person.

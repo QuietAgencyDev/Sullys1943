@@ -32,7 +32,7 @@ These IDs are seeded for today — if a link 404s later, use Coach home instead.
 
 ## 2. Demo logins
 
-All demo passwords: **`password123`**
+All demo passwords are handed over in person and are not printed in this guide.
 
 | Role | Email | Use for |
 |------|-------|---------|
@@ -75,7 +75,7 @@ All demo passwords: **`password123`**
 ### B. Member journey
 
 1. Open https://www.sullys1943.com/app/login  
-2. Tap **Fill member demo** (or use `member@sullys.local` / `password123`).  
+2. Sign in as `member@sullys.local`. The password is handed over in person.  
 3. Sign in → Member home (Gavin / member experience).  
 4. Walk:
    - **Book a class** (if slots show)
@@ -90,7 +90,7 @@ All demo passwords: **`password123`**
 #### Option 1 — Phone coach (member app, coach account)
 
 1. https://www.sullys1943.com/app/login  
-2. Tap **Fill coach demo** → `coach@sullys.local` / `password123`  
+2. Sign in as `coach@sullys.local`. The password is handed over in person.  
 3. Open https://www.sullys1943.com/app/coach  
 4. Tap **Demo Live Class** (or today’s class) → **Open Live Mode**  
    - If no class is listed, open Staff Live (Option 2) or ask eng to seed today’s session.
@@ -98,7 +98,7 @@ All demo passwords: **`password123`**
 #### Option 2 — Staff console (tablet / laptop)
 
 1. https://sullys1943-staff.vercel.app  
-2. Sign in: `coach@sullys.local` / `password123`  
+2. Sign in: `coach@sullys.local`. The password is handed over in person.  
 3. Go to **Coach** → pick today’s class → **Live**
 
 #### Timer test (both options)
@@ -139,7 +139,7 @@ If coach session is not running:
 ### E. Front desk (optional)
 
 1. https://sullys1943-staff.vercel.app  
-2. Sign in: `desk@sullys.local` / `password123`  
+2. Sign in: `desk@sullys.local`. The password is handed over in person.  
 3. Show desk / kiosk path as available in the staff hub.
 
 ---

@@ -1,3 +1,4 @@
+import { randomBytes } from "node:crypto";
 import {
   BadRequestException,
   Body,
@@ -105,7 +106,8 @@ export class AdminUsersController {
 
     const email = body.email?.trim().toLowerCase();
     const role = body.role?.trim() || "front_desk";
-    const password = body.password?.trim() || "password123";
+    const password =
+      body.password?.trim() || randomBytes(9).toString("base64url");
 
     if (!email) throw new BadRequestException("email required");
     if (!MANAGEABLE_ROLES.has(role)) {

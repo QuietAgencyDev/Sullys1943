@@ -98,7 +98,13 @@ async function main() {
     },
   });
 
-  const passwordHash = await bcrypt.hash("password123", 10);
+  const seedPassword = process.env.SEED_PASSWORD;
+  if (!seedPassword || seedPassword.length < 12) {
+    throw new Error(
+      "Set SEED_PASSWORD to 12 or more characters before seeding. Do not print it.",
+    );
+  }
+  const passwordHash = await bcrypt.hash(seedPassword, 10);
 
   const owner = await prisma.user.create({
     data: {
@@ -869,7 +875,7 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
       ? "Seeded Red Owl Boxing Scarborough data"
       : "Seeded Sully's flagship data",
   );
-  console.log("Logins (password: password123):");
+  console.log("Seed accounts (password is SEED_PASSWORD, not printed):");
   const domain = isRedOwl ? "redowl.local" : "sullys.local";
   for (const local of [
     "member",

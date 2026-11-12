@@ -79,14 +79,14 @@ bar();
 h1("Coach accounts");
 doc.fillColor(MUTED).font("Helvetica").fontSize(9).text("1554 Dundas St W (lower level), Toronto  -  October 22, 2026");
 doc.moveDown(0.4);
-body("Each coach already has an account. Sign in with the email below. The password on every coach account is password123. Sign in once at the gym computer before class so the roster and the round clock are ready.");
+body("Each coach already has an account. Sign in with the email below. The password is handed over in person and is not printed here. Sign in once at the gym computer before class so the roster and the round clock are ready.");
 
 h2("Where to sign in");
 body("Gym computer, staff app:  http://localhost:3001");
 body("Phone or a computer away from the desk:  https://www.sullys1943.com/app/login");
 body("Floor TV, already on the gym screens:  http://localhost:3000/tv/floor");
 doc.moveDown(0.2);
-body("On the staff sign-in page, tap your name. The email and password fill in. Then press Sign in. You land in Coach Corner.");
+body("On the staff sign-in page, tap your name. The email fills in. Type the password you were given, then press Sign in. You land in Coach Corner.");
 
 h2("Set up a class");
 step(1, "Open Coach command. Today's class is at the top. If it is yours, you will see the title, time, and how many people are checked in.");
@@ -135,7 +135,7 @@ for (const [name, email, note] of COACHES) {
 
 doc.y = y + 6;
 h2("Desk scanner, for today's test");
-body("Front desk: desk@sullys.local  -  password123");
+body("Front desk: desk@sullys.local. The password is handed over in person.");
 body("Open Desk check-in to scan a member card. Open Opening check (http://localhost:3001/desk/dry-run) if the scanner needs a test before the floor opens. Coaches do not scan cards. The desk scan is what puts a member on the class roster.");
 
 h2("Keep these private");

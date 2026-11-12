@@ -77,17 +77,43 @@ function pick(record, names) {
 }
 
 function planCode(label) {
-  return /youth|kid|child|little champ|jab lab|free/i.test(label)
+  return /youth|kid|child|little champ|jab lab|complimentary/i.test(label)
     ? "youth"
     : "monthly";
 }
 
-function memberStatus(label) {
+function parseWhen(raw) {
+  if (!raw) return null;
+  const us = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  const date = us
+    ? new Date(Number(us[3]), Number(us[1]) - 1, Number(us[2]))
+    : new Date(raw);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function memberStatus(label, plan, endsAt) {
   const value = label.toLowerCase();
   if (/cancel|expired|inactive|frozen/.test(value)) return "cancelled";
   if (/pause/.test(value)) return "paused";
-  return "active";
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  if (endsAt && endsAt >= today) return "active";
+  if (/complimentary youth/i.test(plan)) return "active";
+  return "cancelled";
 }
+
+function loadEnv() {
+  if (process.env.DATABASE_URL) return;
+  const envFile = path.join(root, "apps", "api", ".env");
+  if (!fs.existsSync(envFile)) return;
+  for (const line of fs.readFileSync(envFile, "utf8").split(/\r?\n/)) {
+    const match = line.match(/^([A-Z0-9_]+)=(.*)$/);
+    if (!match || process.env[match[1]]) continue;
+    process.env[match[1]] = match[2].replace(/^"|"$/g, "");
+  }
+}
+
+loadEnv();
 
 const records = parseCsv(fs.readFileSync(path.resolve(file), "utf8"));
 const prisma = new PrismaClient();
@@ -104,6 +130,8 @@ if (!org || !location) {
 let created = 0;
 let updated = 0;
 let skipped = 0;
+let active = 0;
+const plans = new Map();
 
 for (const record of records) {
   const email = pick(record, ["email", "e-mail", "email address"]).toLowerCase();
@@ -111,20 +139,34 @@ for (const record of records) {
   const lastName = pick(record, ["last name", "lastname", "last"]);
   if (!email || !firstName || !lastName) {
     skipped += 1;
-    console.log(`skip incomplete row: ${email || "(no email)"}`);
+    console.log("skip incomplete row");
     continue;
   }
-  const code = planCode(
-    pick(record, ["membership", "membership name", "plan", "membership type"]),
+  const plan = pick(record, [
+    "membership",
+    "membership name",
+    "plan",
+    "membership type",
+  ]);
+  const code = planCode(plan);
+  const endsAt = parseWhen(
+    pick(record, [
+      "end",
+      "end date",
+      "expiry",
+      "expires",
+      "membership expiry date",
+    ]),
   );
   const status = memberStatus(
     pick(record, ["status", "membership status", "member status"]),
+    plan,
+    endsAt,
   );
-  const endsRaw = pick(record, ["end", "end date", "expiry", "expires"]);
-  const endsAt = endsRaw ? new Date(endsRaw) : null;
-  console.log(
-    `${commit ? "write" : "dry"} ${email} · ${firstName} ${lastName} · ${code} · ${status}`,
-  );
+  if (status === "active") {
+    active += 1;
+    plans.set(`${code}`, (plans.get(code) ?? 0) + 1);
+  }
   if (!commit) continue;
 
   const product = await prisma.membershipProduct.findFirst({
@@ -147,6 +189,9 @@ for (const record of records) {
         firstName,
         lastName,
         phone: pick(record, ["phone", "mobile", "phone number"]) || null,
+        dateOfBirth: parseWhen(
+          pick(record, ["date of birth", "dob", "birth date"]),
+        ),
         passwordHash: await bcrypt.hash(
           `set-me-${Math.random().toString(36).slice(2)}`,
           10,
@@ -178,7 +223,7 @@ for (const record of records) {
 
 console.log(
   commit
-    ? `Created ${created}, updated ${updated}, skipped ${skipped}. They set a password from Forgot password. Waiver still required.`
-    : `Dry run only. ${records.length} rows, ${skipped} skipped. Re-run with --commit to write.`,
+    ? `Created ${created}, updated ${updated}, skipped ${skipped}, active memberships ${active}. Password email is not sent. Waiver still required.`
+    : `Dry run only. ${records.length} rows, ${skipped} skipped, ${active} would be active (${[...plans.entries()].map(([k, v]) => `${k} ${v}`).join(", ")}).`,
 );
 await prisma.$disconnect();

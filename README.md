@@ -15,7 +15,9 @@ Current public site: [sullysboxinggym.com](https://www.sullysboxinggym.com)
 | API | http://localhost:4000/api/v1/health |
 | Staff shell | http://localhost:3001 |
 
-### Demo logins (password: `password123`)
+### Seed accounts
+
+Passwords are handed over in person and are not printed here.
 
 - `member@sullys.local` — active membership + signed waiver  
 - `parent@sullys.local` — linked to child Emma  

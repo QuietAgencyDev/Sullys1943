@@ -6,8 +6,8 @@
 import { PrismaClient } from "@prisma/client";
 import * as bcrypt from "bcryptjs";
 import {
+  APP_FLOOR_SLOTS,
   FLOOR_COACHES,
-  FLOOR_SLOTS,
   RETIRED_COACH_EMAILS,
   coachDisplayName,
   type FloorSlot,
@@ -31,7 +31,18 @@ async function main() {
   });
   if (!org) throw new Error("Sully's organization was not found.");
 
-  const passwordHash = await bcrypt.hash("password123", 10);
+  let passwordHash: string | null = null;
+  async function newCoachPassword() {
+    if (passwordHash) return passwordHash;
+    const seedPassword = process.env.SEED_PASSWORD;
+    if (!seedPassword || seedPassword.length < 12) {
+      throw new Error(
+        "Set SEED_PASSWORD to 12 or more characters before adding a coach.",
+      );
+    }
+    passwordHash = await bcrypt.hash(seedPassword, 10);
+    return passwordHash;
+  }
   const coachByName = new Map<string, string>();
 
   for (const entry of FLOOR_COACHES) {
@@ -60,7 +71,7 @@ async function main() {
         data: {
           organizationId: org.id,
           email,
-          passwordHash,
+          passwordHash: await newCoachPassword(),
           firstName: entry.firstName,
           lastName: entry.lastName,
           role: "coach",
@@ -113,7 +124,7 @@ async function main() {
     const day = new Date(weekStart);
     day.setDate(weekStart.getDate() + i);
     const dow = day.getDay();
-    for (const slot of FLOOR_SLOTS) {
+    for (const slot of APP_FLOOR_SLOTS) {
       if (slot.day !== dow) continue;
       const startsAt = atHour(day, slot.hour, slot.minute);
       const endsAt = new Date(startsAt.getTime() + slot.minutes * 60_000);

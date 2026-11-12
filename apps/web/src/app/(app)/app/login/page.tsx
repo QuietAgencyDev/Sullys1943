@@ -16,8 +16,6 @@ function safeAppNext(raw: string | null): string {
   return raw;
 }
 
-const showDemoLogins = process.env.NODE_ENV !== "production";
-
 function LoginForm() {
   const brand = getBrand();
   const router = useRouter();
@@ -100,58 +98,6 @@ function LoginForm() {
               Create an account
             </Link>
           </p>
-          {showDemoLogins ? (
-            <>
-              <p className={styles.muted}>
-                Demo:{" "}
-                <button
-                  type="button"
-                  className={styles.link}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    padding: 0,
-                    font: "inherit",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => {
-                    setEmail(brand.copy.demoMemberEmail);
-                    setPassword("password123");
-                  }}
-                >
-                  Fill member demo
-                </button>
-                {" · "}
-                <button
-                  type="button"
-                  className={styles.link}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    padding: 0,
-                    font: "inherit",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => {
-                    setEmail(brand.copy.demoCoachEmail);
-                    setPassword("password123");
-                  }}
-                >
-                  Fill coach demo
-                </button>
-              </p>
-              <p className={styles.muted}>
-                Coach: <code>{brand.copy.demoCoachEmail}</code> /{" "}
-                <code>password123</code>
-                {brand.id === "red-owl" ? (
-                  <>
-                    {" "}
-                    (seed with <code>npm run db:seed:red-owl</code>)
-                  </>
-                ) : null}
-              </p>
-            </>
-          ) : null}
         </div>
       </form>
     </div>

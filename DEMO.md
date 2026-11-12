@@ -34,7 +34,9 @@ Internal Quiet Agency full cost sheet (do not share):
 
 - **PDF:** [docs/08-process/Sullys-Costs-Quiet-Agency-Internal.pdf](./docs/08-process/Sullys-Costs-Quiet-Agency-Internal.pdf)
 
-### Fast logins (`password123`)
+### Fast logins
+
+Seed account passwords are handed over in person and are not printed here.
 
 | Role | Email |
 |------|-------|

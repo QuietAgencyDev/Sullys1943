@@ -89,7 +89,7 @@ Git: **`QuietAgencyDev/Sullys1943`** · branch `main`
 - https://api.sullys1943.com/api/v1/health  
 - https://www.sullys1943.com/coaches  
 - https://www.sullys1943.com/tv/floor  
-- https://www.sullys1943.com/app — `member@sullys.local` / `password123`
+- https://www.sullys1943.com/app — member sign-in. The password is not printed here.
 
 ---
 

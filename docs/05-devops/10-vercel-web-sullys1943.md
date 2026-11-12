@@ -41,7 +41,7 @@ NEXT_PUBLIC_QUIET_AGENCY_URL=https://quietagency.co
 - https://www.sullys1943.com
 - https://www.sullys1943.com/coaches
 - https://www.sullys1943.com/tv/floor
-- https://www.sullys1943.com/app/login → `member@sullys.local` / `password123`
+- https://www.sullys1943.com/app/login — member sign-in. The password is not printed here.
 
 ## Note
 
