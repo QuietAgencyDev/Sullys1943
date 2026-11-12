@@ -203,4 +203,4 @@ If coach session is not running:
 - Demo coach account maps to **Tony Morrison**.  
 - API: Railway (`api.sullys1943.com`). Web/Staff: Vercel.  
 - Floor TV polls ~500ms while coach timer is live.  
-- Payments remain **mock** until Helcim keys are configured.
+- Payments remain **mock** until Stripe is connected. Bank debit moves to GoCardless later. Helcim is not used.

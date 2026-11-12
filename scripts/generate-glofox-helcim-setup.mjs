@@ -134,7 +134,7 @@ const doc = new PDFDocument({
   info: {
     Title: "Sully's Master Setup",
     Author: "Quiet Agency",
-    Subject: "Office print for Glofox, Helcim, logins, and the desk",
+    Subject: "Office print for Glofox, Stripe, GoCardless, the desk, and the wall TV",
   },
 });
 const stream = fs.createWriteStream(out);
@@ -144,7 +144,7 @@ if (fs.existsSync(LOGO)) doc.image(LOGO, 196, 48, { width: 220 });
 doc.y = 300;
 doc.fillColor(INK).font("Helvetica-Bold").fontSize(22).text("Master Setup", 54, doc.y, { width: 504, align: "center" });
 doc.moveDown(0.3);
-doc.font("Helvetica").fontSize(12).text("Leave Glofox. Set up Helcim. Open the gym.", { width: 504, align: "center" });
+doc.font("Helvetica").fontSize(12).text("Leave Glofox. Cards on Stripe. Bank debit on GoCardless.", { width: 504, align: "center" });
 doc.moveDown(0.8);
 doc.fontSize(11).text("1554 Dundas St W (lower level), Toronto, ON M6H 1Z6", { width: 504, align: "center" });
 doc.text("(416) 805-8108  ·  info@sullysboxinggym.com", { width: 504, align: "center" });
@@ -153,7 +153,7 @@ doc.moveDown(1.2);
 doc.font("Helvetica-Bold").fontSize(12).text("Developed by Quiet Agency", { width: 504, align: "center" });
 doc.font("Helvetica").fontSize(10).text("quietagency.co", { width: 504, align: "center" });
 doc.moveDown(0.8);
-doc.fontSize(9).text("Office print  ·  5 November 2026  ·  Letter  ·  Black and white", { width: 504, align: "center" });
+doc.fontSize(9).text("Office print  ·  12 November 2026  ·  Letter  ·  Black and white", { width: 504, align: "center" });
 doc.moveDown(0.4);
 doc.font("Helvetica-Oblique").fontSize(9).text("Keep this book in the office. Do not leave the login page on a floor TV.", {
   width: 460,
@@ -178,6 +178,7 @@ const logins = [
   ["Rico Mancini", "coach.rico@sullys.local", staff],
   ["Tommy", "coach.tommy@sullys.local", staff],
   ["Levi", "coach.levi@sullys.local", staff],
+  ["Liznell", "coach.liznell@sullys.local", staff],
   ["Anthony A.", "coach.anthony.p@sullys.local", staff],
   ["Jackie", "coach.jackie@sullys.local", staff],
   ["Viktoria Penney", "coach.viktoria@sullys.local", staff],
@@ -213,15 +214,15 @@ h1(doc, "3  ·  Owner manual");
 para(doc, "Sign in on the staff console before the first member reaches the desk. If the staff page will not load, check the gym internet first.");
 para(doc, "Morning. Open the owner brief. Read revenue against yesterday, check-ins, classes and how full they are, active members split youth and adult, pending waivers, pending payments, then staff overrides. Every override needs a real reason. Pending waivers and pending payments should be near empty before the evening classes.");
 para(doc, "Open the gym.");
-num(doc, "1", "Power the desk computer, the scanner, the network, and every screen. One cable from the computer to each TV. A splitter copies one picture and cannot give each TV its own page.");
-num(doc, "2", "Sign in as the owner.");
-num(doc, "3", "Read the owner brief. Confirm today's classes are on the board.");
-num(doc, "4", "Reception: open the reception address and press F for fullscreen.");
-num(doc, "5", "Floor: open the floor address, press F, then tap the page once so the bell can play.");
-num(doc, "6", "Open desk check-in. Click the scan box. Scan one test card before the door opens.");
-para(doc, "The scanner is a keyboard. It types the code and presses Enter. If the cursor is in the wrong box, the scan is missed. Hold the phone about a hand's width away, brightness up. The code changes about every 60 seconds.");
-para(doc, "A clean scan checks the member in. If the system blocks them, read the reason. It is usually an unsigned waiver or a membership that is not active. An override needs a written reason of more than a word. That reason shows on the owner brief. No signed waiver, no QR. A child card waits for the guardian waiver at Family.");
-para(doc, "Cash stays on the Sully's desk ledger. Do not tell members that tap or card-on-file is live until one real Helcim charge matches the owner total. Never write a card number down.");
+num(doc, "1", "The desk computer is the 22-inch STGSivir all-in-one. It stays on the desk. The 50-inch Roku TV goes on the wall. One HDMI cable runs from the computer's HDMI port to an HDMI input on the TV. On the Roku remote, choose that HDMI input and leave it there. The Roku home screen does not run the gym.");
+num(doc, "2", "On the computer, press the Windows key and P, then choose Extend. The 22-inch screen and the wall TV are two different pages.");
+num(doc, "3", "Sign in as the owner on the desk screen, at the staff address.");
+num(doc, "4", "Read the owner brief. Confirm today's classes are on the board.");
+num(doc, "5", "On the wall TV, open the floor address in Chrome and press F for fullscreen. Tap the page once so the bell can play. When two classes are on at once, the wall splits them.");
+num(doc, "6", "On the desk screen, open desk check-in. Click the scan box. Scan one test card before the door opens.");
+para(doc, "The scanner is a keyboard. It types the code and presses Enter. If the cursor is in the wrong box, the scan is missed. Hold the phone about a hand's width away, brightness up. The code changes about every three minutes.");
+para(doc, "A person is on the floor only after a scan. Booking a class is not a check-in. The wall TV lists who scanned in, and who booked but has not scanned. If the system blocks them, read the reason. It is usually an unsigned waiver or a membership that is not active. An unpaid or past-due account shows on the desk. An override needs a written reason of more than a word. That reason shows on the owner brief. No signed waiver, no QR. A child card waits for the guardian waiver at Family.");
+para(doc, "Payments are not live. Contact Glofox, cancel, and request the transfer before any card or bank debit runs here. Card memberships will be Stripe. Bank-debit memberships will be GoCardless. Cash stays on the Sully's desk ledger. Do not bill the same month in Glofox and here. Never write a card number down.");
 para(doc, "People. Only the owner and an admin open staff accounts. Invite the person, hand them a temporary password in person, and have them replace it. When someone leaves, disable the account before they leave the building. You cannot disable your own account.");
 para(doc, "Messages from the owner brief go to a group: active members, youth, adults, trial, monthly, or people who still owe a waiver. No medical detail and no card number in a broadcast. The kitchen is not open. Do not take food orders on the system.");
 para(doc, "Close. Coaches finalize attendance. Read the owner brief once more. Log out of the staff console if the desk computer stays where members can reach it. The last person out is the person who looked at the owner brief.");
@@ -251,50 +252,57 @@ para(doc, "A row with no email or no name is skipped. An email already in Sully'
 para(doc, "Quiet Agency runs a dry pass, then the write. New people set a password from Forgot password and sign the Sully's waiver before a check-in card will issue.");
 urlLine(doc, "Dry run, writes nothing", "node scripts/import-glofox-members.mjs members.csv");
 urlLine(doc, "Write", "node scripts/import-glofox-members.mjs members.csv --commit");
-para(doc, "When a person is active in Sully's, has a password, and has signed the waiver, stop their next Glofox renewal. Stop new Glofox sales when the lists match. Cancel Glofox only after the owner says the two lists agree.");
+para(doc, "The November 11 member file is already in Sully's. 2,445 accounts were added. 177 of them have a current membership. Nobody was emailed. The old Glofox waiver was not copied. A check-in still needs a Sully's waiver.");
+para(doc, "Next, contact Glofox. Cancel the service and request the transfer of recurring payments. Do not turn Stripe or GoCardless on until that transfer is agreed, and do not bill the same month in both places.");
 
-h1(doc, "6  ·  Helcim");
-para(doc, "Helcim takes the card. Sully's keeps memberships, waivers, cash, and the owner totals. The gym system never stores a full card number. The processing rate is the rate in the Helcim merchant agreement, not a number from a marketing page.");
-num(doc, "1", "Open a Canadian Helcim merchant account. Finish identity checks and the bank deposit account.");
-num(doc, "2", "Turn on online payments. Order the Smart Terminal from the Helcim dashboard. Leave it in standalone mode until Quiet Agency says to pair it.");
-num(doc, "3", "Create an API access configuration that can start a HelcimPay purchase. Copy the API token once. Helcim will not show it again.");
-num(doc, "4", "Send Quiet Agency the token, the account id, and, when Helcim shows them, the webhook secret and the terminal device code. Use the private channel you already use for passwords. Do not write them on this paper.");
-num(doc, "5", "Quiet Agency sets PAYMENT_PROVIDER to helcim and sets HELCIM_API_TOKEN. Those two are what the software reads today. They open a HelcimPay checkout in Canadian dollars. The account id, webhook secret, and terminal id are collected now and are not read by the software yet. Do not invent a webhook address.");
-urlLine(doc, "Helcim", "https://www.helcim.com/");
-urlLine(doc, "Helcim sales", "sales@helcim.com    +1 (877) 643-5246");
-urlLine(doc, "Smart Terminal", "https://www.helcim.com/smart-terminal/");
-urlLine(doc, "Create the API token", "https://devdocs.helcim.com/docs/authentication-with-the-helcim-api-and-helcimpayjs");
-urlLine(doc, "Pair the terminal later", "https://learn.helcim.com/docs/using-the-helcim-smart-terminal-api");
-para(doc, "A standalone terminal sale is a Helcim sale. Write it on the desk ledger until the owner total matches the terminal. QuickBooks comes after a settled Helcim week. If Helcim's own QuickBooks switch is on, do not post the same deposits a second way.");
+h1(doc, "6  ·  Stripe and GoCardless");
+para(doc, "Payments stay off. Stripe is the card path for memberships. GoCardless is the bank-debit path for members who pay from their account. Helcim is not the processor. The gym system never stores a full card number.");
+num(doc, "1", "Contact Glofox. Cancel, and request the transfer of recurring payments.");
+num(doc, "2", "When that transfer is agreed, connect Stripe for card memberships. Monthly plans become subscriptions. One real charge must match the owner total before members are told card pay is live.");
+num(doc, "3", "Connect GoCardless only for the bank-debit members on that transfer. Do not put those people on Stripe as well.");
+num(doc, "4", "Cash stays on the desk ledger. The desk already flags an unpaid or past-due account and will not scan them onto the floor without a staff override.");
+urlLine(doc, "Stripe", "https://dashboard.stripe.com/");
+urlLine(doc, "GoCardless", "https://manage.gocardless.com/");
+para(doc, "QuickBooks comes after a settled week on Stripe or GoCardless. Do not post the same deposit a second way.");
 
 h1(doc, "7  ·  Test before you announce it");
-check(doc, "Desk computer is on the wired network. Chrome is open. Each TV has its own cable. No splitter.");
+check(doc, "The 22-inch computer is on the gym Wi-Fi. Chrome is open. Windows key and P is set to Extend. The HDMI cable reaches the wall TV, and the Roku is on that HDMI input.");
 check(doc, "Owner sign-in opens the owner brief.");
 check(doc, "Front desk sign-in opens check-in. The cursor is in the scan box. One test QR checks in.");
-check(doc, "Coach sign-in opens Today on the floor, not a member session.");
-check(doc, "Reception and floor each show their own page. The floor page was tapped once for sound.");
-check(doc, "A person with no waiver cannot get a QR. A youth card waits for the guardian.");
-check(doc, "A cash drop-in is on the Sully's ledger, not in Helcim.");
-check(doc, "One small Helcim test charge, after the token is in, matches the owner total.");
-check(doc, "An imported member can use Forgot password, sign in, and sign the waiver.");
-check(doc, "Nobody is billed in Glofox and Helcim for the same month.");
+check(doc, "Coach sign-in opens Today on the floor, not a member session. Liznell is on the staff list.");
+check(doc, "The wall TV shows the floor page, full screen. Two live classes split side by side. The page was tapped once for sound.");
+check(doc, "A person with no waiver cannot get a QR. A youth card waits for the guardian. A booking without a scan is not on the floor.");
+check(doc, "An unpaid account is named on the desk and does not scan in without an override.");
+check(doc, "A cash drop-in is on the Sully's ledger. Stripe and GoCardless are still off.");
+check(doc, "An imported member can use Forgot password once that email is turned on, then sign the waiver.");
+check(doc, "Nobody is billed in Glofox and here for the same month.");
 
-h1(doc, "8  ·  Computer, scanner, terminal");
-para(doc, "Buy a current Windows 11 computer with 16 GB of memory, Chrome, a wired network port, and one video output for each screen that must show its own page. The desk can use the computer's own screen. Reception and the floor are two more screens. A machine with only two HDMI ports needs a third video output. Skip AI and gaming models. A Lenovo ThinkCentre small desktop is the office choice. A mini PC with two HDMI ports is enough if the third output is added.");
-para(doc, "The member card is a QR code on a phone. A laser gun that only reads printed bars will not read it. Buy a 2D imager, USB, that types as a keyboard and adds Enter. Zebra DS2208 is the one-cord counter scanner. Honeywell Voyager XP 1472g is the cordless kit. The base still has to arrive as keyboard input with Enter on the end.");
-para(doc, "One HDMI cable per TV, labeled desk, reception, and floor. Order the Helcim Smart Terminal inside the Helcim account. Do not buy a card-number keyboard or a magstripe reader for the computer.");
-urlLine(doc, "Windows 11 requirements", "https://www.microsoft.com/en-ca/windows/windows-11-specifications");
+h1(doc, "8  ·  Computer, wall TV, scanner");
+para(doc, "Nothing is installed on the computer. Chrome is the gym. The 22-inch screen is the desk. The HDMI port feeds the 50-inch TV on the wall.");
+bullet(doc, "Computer: STGSivir All-in-One Desktop, 22-inch FHD display.");
+bullet(doc, "Processor: Intel Core i7, up to 3.9 GHz.");
+bullet(doc, "Memory: 16 GB. Storage: 1 TB SSD.");
+bullet(doc, "Network: Wi-Fi and Bluetooth 5.0. Use the gym Wi-Fi.");
+bullet(doc, "Included: RGB keyboard, RGB mouse, mouse pad, webcam.");
+bullet(doc, "System: Windows 11 Home. Browser: Chrome. No gym software to install.");
+bullet(doc, "Video: one HDMI port. That port goes to the wall TV.");
+bullet(doc, "Floor TV: 50-inch Roku, mounted on the wall. Middle of the screen about standing eye height.");
+bullet(doc, "Cable: HDMI from the computer's HDMI port to an HDMI input on the Roku. Run it along the wall with slack. Power behind the TV.");
+bullet(doc, "On the Roku remote, select that HDMI input and leave it. The Roku home screen does not run the gym.");
+bullet(doc, "On the computer, press the Windows key and P, then Extend. Desk keeps staff check-in. Wall keeps the floor page, full screen.");
+para(doc, "The member card is a QR code on a phone. A laser gun that only reads printed bars will not read it. Use a 2D imager, USB, that types as a keyboard and adds Enter. Zebra DS2208 is the one-cord counter scanner. Honeywell Voyager XP 1472g is the cordless kit. The base still has to arrive as keyboard input with Enter on the end. Plug the scanner into the all-in-one.");
 urlLine(doc, "Chrome", "https://www.google.com/chrome/");
-urlLine(doc, "Lenovo ThinkCentre, Canada", "https://www.lenovo.com/ca/en/c/desktops/thinkcentre/");
-urlLine(doc, "Beelink mini PCs. Choose dual HDMI, not an AI model.", "https://www.bee-link.com/");
+urlLine(doc, "Floor page on the wall TV", "https://www.sullys1943.com/tv/floor");
+urlLine(doc, "Desk check-in", "https://staff.sullys1943.com/desk");
 urlLine(doc, "Zebra DS2208 guide", "https://www.zebra.com/content/dam/support-dam/en/documentation/unrestricted/guide/product/ds2208-prg-en.pdf");
 urlLine(doc, "Honeywell Voyager XP 1472g USB kit", "https://www.barcodefactory.com/honeywell/scanners/voyager-1472g/1472g2d-2usb-5-n");
 
 h1(doc, "9  ·  Not live yet");
-bullet(doc, "Helcim webhooks. Collect the secret. Do not point Helcim at the gym until Quiet Agency gives the address.");
-bullet(doc, "The paired terminal. Standalone tap can be written on the desk ledger. The desk screen does not drive the terminal yet.");
-bullet(doc, "QuickBooks. Planned after a settled Helcim week. It is not connected.");
-bullet(doc, "Glofox billing. Importing the list does not stop it.");
+bullet(doc, "Stripe. Card memberships. Off until Glofox is cancelled and the transfer is requested.");
+bullet(doc, "GoCardless. Bank debit. Off until that same transfer says which members pay from their bank.");
+bullet(doc, "Password-reset email. Accounts exist. The email is not turned on, so do not send the member letter yet.");
+bullet(doc, "QuickBooks. After a settled week. It is not connected.");
+bullet(doc, "Glofox billing. The member list is in Sully's. Glofox is still billing until they cancel it.");
 para(doc, "Support for the system: Quiet Agency, quietagency.co. Gym questions: the owner, then info@sullysboxinggym.com.");
 para(doc, "Boxing is the engine. People are the purpose. Character is the legacy.");
 para(doc, "Developed by Quiet Agency.");

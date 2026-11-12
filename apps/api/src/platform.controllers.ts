@@ -2545,7 +2545,9 @@ export class OwnerBriefController {
       }),
       this.prisma.signaturePacket.count({ where: { status: "required" } }),
       this.prisma.membership.count({ where: { status: "active" } }),
-      this.prisma.membership.count({ where: { status: "pending_payment" } }),
+      this.prisma.membership.count({
+        where: { status: { in: ["pending_payment", "past_due"] } },
+      }),
     ]);
 
     const classes = sessionsToday.map((s) => {
@@ -2611,6 +2613,15 @@ export class OwnerBriefController {
       plan: membership.product.name,
       endsAt: membership.endsAt?.toISOString() ?? null,
     }));
+    const unpaidMemberships = await this.prisma.membership.findMany({
+      where: { status: { in: ["pending_payment", "past_due"] } },
+      include: {
+        payer: { select: { firstName: true, lastName: true } },
+        product: { select: { name: true } },
+      },
+      orderBy: { startsAt: "desc" },
+      take: 8,
+    });
 
     return {
       asOf: new Date().toISOString(),
@@ -2636,6 +2647,11 @@ export class OwnerBriefController {
         flags: o.flags,
       })),
       stripeMode: process.env.STRIPE_SECRET_KEY ? "live_keys" : "mock",
+      paymentsLive: false,
+      unpaid: unpaidMemberships.map((membership) => ({
+        name: `${membership.payer.firstName} ${membership.payer.lastName}`,
+        plan: membership.product.name,
+      })),
       callList,
       renewals,
     };

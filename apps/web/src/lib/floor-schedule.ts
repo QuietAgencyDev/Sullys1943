@@ -69,6 +69,14 @@ export const FLOOR_COACHES: FloorCoach[] = [
     photoUrl: "/coaches/levi.png",
   },
   {
+    emailLocal: "coach.liznell",
+    firstName: "Liznell",
+    lastName: "",
+    title: "Coach",
+    bio: "Coach on the Sully's floor.",
+    photoUrl: "/coaches/liznell.png",
+  },
+  {
     emailLocal: "coach.anthony.p",
     firstName: "Anthony",
     lastName: "A.",

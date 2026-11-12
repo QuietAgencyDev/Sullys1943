@@ -15,7 +15,6 @@ import {
 import type { Request, Response } from "express";
 import { PrismaService } from "./prisma.service";
 import { AuthGuard, CurrentUser, type AuthPayload } from "./auth/auth.guard";
-import { helcimReady, initializeHelcimPay } from "./payments/payment-provider";
 
 function webOrigin() {
   return process.env.WEB_ORIGIN ?? "http://localhost:3000";
@@ -74,33 +73,6 @@ export class BillingController {
         membershipId: membership.id,
         checkoutUrl: null,
         note: "Youth training is free at Sully's. You're in.",
-      };
-    }
-
-    if (process.env.PAYMENT_PROVIDER === "helcim" && helcimReady()) {
-      const helcim = await initializeHelcimPay({
-        amountCents: product.priceCents,
-        description: product.name,
-      });
-      const externalId = `helcim_${membership.id}`;
-      await this.prisma.paymentEvent.create({
-        data: {
-          membershipId: membership.id,
-          provider: "helcim",
-          externalId,
-          type: "helcim.initialize",
-          status: "pending",
-          amountCents: product.priceCents,
-          raw: JSON.stringify({ checkoutToken: helcim.checkoutToken }),
-        },
-      });
-      return {
-        mode: "helcim" as const,
-        membershipId: membership.id,
-        checkoutUrl: null,
-        checkoutToken: helcim.checkoutToken,
-        amountCents: product.priceCents,
-        productName: product.name,
       };
     }
 
@@ -229,8 +201,8 @@ export class BillingController {
       mode: stripeEnabled() ? ("stripe" as const) : ("mock" as const),
       webhookConfigured: Boolean(process.env.STRIPE_WEBHOOK_SECRET),
       hint: stripeEnabled()
-        ? "Stripe Checkout + Customer Portal enabled"
-        : "Set STRIPE_SECRET_KEY=sk_test_... in apps/api/.env to enable live test checkout",
+        ? "Stripe handles card memberships. GoCardless is for bank debit later. Nobody is billed twice."
+        : "Card memberships stay in test until Stripe is connected. GoCardless is the later bank-debit path. Helcim is not used.",
     };
   }
 

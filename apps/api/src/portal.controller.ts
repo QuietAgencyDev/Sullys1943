@@ -19,6 +19,7 @@ export class PortalController {
       "rico mancini",
       "tommy",
       "levi",
+      "liznell",
       "anthony p.",
       "jackie",
       "viktoria penney",

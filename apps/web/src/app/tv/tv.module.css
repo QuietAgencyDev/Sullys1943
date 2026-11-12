@@ -1248,6 +1248,81 @@
   }
 }
 
+.leaderCrawl {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.leaderCrawl > div {
+  display: inline-flex;
+  gap: 1.5rem;
+  animation: marquee 28s linear infinite;
+}
+
+.leaderCrawl span {
+  color: #f3e6c8;
+  font-size: 0.95rem;
+}
+
+.splitRing {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.splitCard {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(243, 230, 200, 0.22);
+  background: rgba(0, 0, 0, 0.42);
+}
+
+.splitTitle {
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 2.6rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.splitClock {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  font-variant-numeric: tabular-nums;
+}
+
+.spotsFlash {
+  margin: 0;
+  color: #f3e6c8;
+  background: #c82026;
+  justify-self: start;
+  padding: 0.2rem 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.nameRail {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.nameRail li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  color: #f3e6c8;
+}
+
+.nameRail span {
+  color: rgba(243, 230, 200, 0.72);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .timer,
   .hero,

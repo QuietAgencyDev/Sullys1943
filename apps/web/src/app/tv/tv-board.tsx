@@ -42,6 +42,7 @@ type SessionCard = {
   endsAt: string;
   capacity: number;
   booked: number;
+  checkedIn?: number;
   spotsLeft: number;
   phase: "upcoming" | "live" | "done";
   secondsToStart: number;
@@ -87,6 +88,9 @@ type Board = {
   gym: { name: string; tagline: string; established: number };
   kpis: { checkInsToday: number; classesToday: number; spotsOpen: number };
   live: SessionCard | null;
+  liveClasses?: SessionCard[];
+  onFloor?: { name: string; classTitle: string }[];
+  waitingScan?: { name: string; classTitle: string }[];
   next: SessionCard | null;
   schedule: SessionCard[];
   calendar?: { label: string; sessions: SessionCard[] };
@@ -523,6 +527,16 @@ const FLOOR_CLASS_PHOTO_POOLS: { match: RegExp; srcs: string[]; rig?: boolean }[
     srcs: ["/tv/cast/coach-levi.png?v=1"],
   },
   {
+    match: /liznell/i,
+    rig: false,
+    srcs: [
+      "/tv/cast/coach-liznell-mitts.png?v=1",
+      "/tv/cast/coach-liznell-jab.png?v=1",
+      "/tv/cast/coach-liznell-cross.png?v=1",
+      "/tv/cast/coach-liznell-hook.png?v=1",
+    ],
+  },
+  {
     match: /anthony sky/i,
     rig: false,
     srcs: [
@@ -910,6 +924,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   const [arrivalName, setArrivalName] = useState<string | null>(null);
   const lastArrivalRef = useRef<string | null>(null);
   const adDeckRef = useRef<number[]>([]);
+  const busyRef = useRef(false);
 
   useEffect(() => {
     setTimerCfg(readTimerConfig());
@@ -988,12 +1003,23 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       const gym = next != null && (FLOOR_ADS[next]?.hero ?? "").includes("sullys-ossington");
       const calendar = next != null && FLOOR_ADS[next]?.mode === "floor_calendar";
       const poster = next != null && FLOOR_ADS[next]?.mode === "sponsor_poster";
-      timer = setTimeout(hide, poster ? 18000 : calendar ? 18000 : gym ? 15000 : jitter(10000, 14000));
+      timer = setTimeout(
+        hide,
+        busyRef.current
+          ? jitter(8000, 11000)
+          : poster
+            ? 18000
+            : calendar
+              ? 18000
+              : gym
+                ? 15000
+                : jitter(10000, 14000),
+      );
     };
     const hide = () => {
       if (cancelled) return;
       setAdOn(false);
-      timer = setTimeout(show, jitter(12000, 18000));
+      timer = setTimeout(show, busyRef.current ? jitter(4000, 7000) : jitter(12000, 18000));
     };
     timer = setTimeout(show, jitter(5000, 8000));
     return () => {
@@ -1105,6 +1131,17 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   }, []);
 
   const focus = board?.live ?? board?.next ?? null;
+  const liveClasses = (
+    board?.liveClasses?.length
+      ? board.liveClasses
+      : board?.live
+        ? [board.live]
+        : []
+  ).slice(0, 2);
+  const splitFloor = profile === "floor" && liveClasses.length >= 2;
+  const busyFloor =
+    (board?.kpis.checkInsToday ?? 0) >= 8 || (board?.onFloor?.length ?? 0) >= 8;
+  busyRef.current = busyFloor;
   const demoClass =
     FLOOR_DEMO_CLASSES[demoOrder[demoClassIndex % demoOrder.length] ?? 0] ??
     FLOOR_DEMO_CLASSES[0];
@@ -1505,6 +1542,31 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
               }
             />
           ) : null}
+          {splitFloor && !showArtPopup ? (
+            <div className={styles.splitRing} aria-label="Two classes on the floor">
+              {liveClasses.map((session) => (
+                <article key={session.id} className={styles.splitCard}>
+                  <p className={styles.phase}>Live now</p>
+                  <h2 className={styles.splitTitle}>{session.title}</h2>
+                  <p className={styles.meta}>
+                    {session.coach ? `Coach ${session.coach}` : "On the floor"}
+                    {" · "}
+                    {session.checkedIn ?? 0} scanned
+                    {" · "}
+                    {session.spotsLeft} spots
+                  </p>
+                  {session.spotsLeft > 0 && session.spotsLeft <= 6 ? (
+                    <p className={styles.spotsFlash}>
+                      {session.spotsLeft} {session.spotsLeft === 1 ? "spot" : "spots"} open
+                    </p>
+                  ) : null}
+                  <p className={styles.splitClock}>
+                    {formatCountdown(session.secondsRemaining)}
+                  </p>
+                </article>
+              ))}
+            </div>
+          ) : null}
           {showRoundHero && !showArtPopup ? (
             <div className={styles.phaseCurtain} key={`curtain-${sceneKey}`}>
               <span>{round.phase === "work" ? "WORK" : "REST"}</span>
@@ -1814,6 +1876,55 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                 {" · "}
                 {formatCountdown(round.secondsLeft)} left
               </p>
+            </div>
+          ) : null}
+
+          {profile === "floor" ? (
+            <div className={styles.panel}>
+              <p className={styles.panelTitle}>On the floor</p>
+              <ul className={styles.nameRail}>
+                {(board?.onFloor ?? []).slice(0, 10).map((row, index) => (
+                  <li key={`${row.name}-${row.classTitle}-${index}`}>
+                    <strong>{row.name}</strong>
+                    <span>{row.classTitle}</span>
+                  </li>
+                ))}
+                {!board?.onFloor?.length ? (
+                  <li>
+                    <span>Scan in to train. A booking is not a check-in.</span>
+                  </li>
+                ) : null}
+              </ul>
+              {(board?.waitingScan ?? []).length ? (
+                <>
+                  <p className={styles.panelTitle}>Not scanned</p>
+                  <ul className={styles.nameRail}>
+                    {(board?.waitingScan ?? []).slice(0, 8).map((row, index) => (
+                      <li key={`${row.name}-wait-${index}`}>
+                        <strong>{row.name}</strong>
+                        <span>{row.classTitle}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : null}
+            </div>
+          ) : null}
+
+          {profile === "floor" && busyFloor ? (
+            <div className={styles.panel}>
+              <p className={styles.panelTitle}>Leaderboard</p>
+              <div className={styles.leaderCrawl} aria-label="Scrolling leaderboard">
+                <div>
+                  {(board?.leaderboard ?? [])
+                    .concat(board?.leaderboard ?? [])
+                    .map((row, index) => (
+                      <span key={`${row.rank}-${index}`}>
+                        {String(row.rank).padStart(2, "0")} {row.displayName} · {row.xp} XP
+                      </span>
+                    ))}
+                </div>
+              </div>
             </div>
           ) : null}
 

@@ -39,6 +39,8 @@ type DeskPulse = {
     pendingPayments: number;
     classesToday: number;
   };
+  unpaid?: { name: string; plan: string }[];
+  paymentsLive?: boolean;
   classes: {
     id: string;
     title: string;
@@ -329,9 +331,20 @@ export default function DeskPage() {
       <p className={styles.eyebrow}>FRONT DESK</p>
       <h1 className={styles.title}>Scanner</h1>
       <p className={styles.copy}>
-        USB scanner → focused field → auto check-in. Attach today&apos;s class
-        for late flags. Staff override available when waiver/membership blocks.
+        USB scanner → focused field → auto check-in. A person is on the floor
+        only after this scan. Book the class, then sign in and scan. Attach
+        today&apos;s class for late flags.
       </p>
+      {pulse?.kpis.pendingPayments ? (
+        <p className={styles.error} role="alert">
+          {pulse.kpis.pendingPayments} unpaid in this system. Payments stay off
+          until Glofox is cancelled and the transfer is done. Do not let an
+          unpaid account onto the floor without a staff override.
+          {pulse.unpaid?.length
+            ? ` ${pulse.unpaid.map((row) => row.name).join(", ")}.`
+            : ""}
+        </p>
+      ) : null}
       <p>
         <Link href="/">← Staff home</Link>
       </p>

@@ -158,6 +158,7 @@ export class TvController {
 
     const mapped = sessions.map((s) => {
       const booked = s.bookings.length;
+      const checkedIn = s.bookings.filter((b) => b.status === "checked_in").length;
       const endsAt = s.endsAt ?? new Date(s.startsAt.getTime() + 60 * 60 * 1000);
       const msToStart = s.startsAt.getTime() - now.getTime();
       const msToEnd = endsAt.getTime() - now.getTime();
@@ -178,6 +179,7 @@ export class TvController {
         endsAt: endsAt.toISOString(),
         capacity: s.capacity,
         booked,
+        checkedIn,
         spotsLeft: Math.max(0, s.capacity - booked),
         phase,
         secondsToStart: Math.max(0, Math.floor(msToStart / 1000)),
@@ -195,21 +197,52 @@ export class TvController {
         ? start
         : end;
 
-    const live = todaySessions.find((s) => s.phase === "live") ?? null;
+    const liveClasses = todaySessions.filter((s) => s.phase === "live").slice(0, 2);
+    const live = liveClasses[0] ?? null;
     const next =
       todaySessions.find((s) => s.phase === "upcoming") ??
       tomorrowSessions.find((s) => s.phase === "upcoming") ??
-      todaySessions.find((s) => s.phase === "live") ??
+      live ??
       null;
-
-    const recentCheckIns = await this.prisma.attendanceEvent.findMany({
-      where: { checkedInAt: { gte: start, lt: end } },
-      include: {
-        user: { select: { firstName: true, lastName: true } },
-      },
-      orderBy: { checkedInAt: "desc" },
-      take: 6,
-    });
+    const liveIds = liveClasses.map((s) => s.id);
+    const [recentCheckIns, floorScans, waitingBookings] = await Promise.all([
+      this.prisma.attendanceEvent.findMany({
+        where: { checkedInAt: { gte: start, lt: end } },
+        include: {
+          user: { select: { firstName: true, lastName: true } },
+        },
+        orderBy: { checkedInAt: "desc" },
+        take: 6,
+      }),
+      liveIds.length
+        ? this.prisma.attendanceEvent.findMany({
+            where: {
+              sessionId: { in: liveIds },
+              checkedInAt: { gte: start, lt: end },
+              status: { not: "voided" },
+            },
+            include: {
+              user: { select: { firstName: true, lastName: true } },
+              session: { select: { title: true } },
+            },
+            orderBy: { checkedInAt: "desc" },
+            take: 24,
+          })
+        : Promise.resolve([]),
+      liveIds.length
+        ? this.prisma.booking.findMany({
+            where: {
+              sessionId: { in: liveIds },
+              status: { in: ["confirmed", "waitlisted"] },
+            },
+            include: {
+              user: { select: { firstName: true } },
+              session: { select: { title: true } },
+            },
+            take: 16,
+          })
+        : Promise.resolve([]),
+    ]);
 
     return {
       profile,
@@ -225,6 +258,15 @@ export class TvController {
         spotsOpen: todaySessions.reduce((n, s) => n + s.spotsLeft, 0),
       },
       live,
+      liveClasses,
+      onFloor: floorScans.map((row) => ({
+        name: row.user.firstName,
+        classTitle: row.session?.title ?? "",
+      })),
+      waitingScan: waitingBookings.map((row) => ({
+        name: row.user.firstName,
+        classTitle: row.session?.title ?? "",
+      })),
       next,
       schedule: (todayOpen ? todaySessions : tomorrowSessions)
         .filter((s) => s.phase !== "done")

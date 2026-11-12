@@ -763,6 +763,34 @@ const COACH_ADS = [
   },
   {
     mode: "coach_card",
+    hero: "/tv/cast/coach-liznell-mitts.png?v=1",
+    h1: "COACH",
+    h2: "LIZNELL.",
+    msg: "ON THE FLOOR",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/coach-liznell-jab.png?v=1",
+    h1: "JAB",
+    h2: "OUT.",
+    msg: "COACH LIZNELL · ON THE FLOOR",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/coach-liznell-cross.png?v=1",
+    h1: "CROSS",
+    h2: "THROUGH.",
+    msg: "COACH LIZNELL · ON THE FLOOR",
+  },
+  {
+    mode: "coach_card",
+    hero: "/tv/cast/coach-liznell-hook.png?v=1",
+    h1: "HOOK",
+    h2: "HOME.",
+    msg: "COACH LIZNELL · ON THE FLOOR",
+  },
+  {
+    mode: "coach_card",
     hero: "/tv/cast/coach-anthony-p.png?v=1",
     h1: "ANTHONY",
     h2: "A.",
@@ -952,6 +980,20 @@ const NEWS_ADS = [
     h1: "2 SPOTS",
     h2: "LEFT.",
     msg: "ADULTS BOXING · CLAIM THEM",
+  },
+  {
+    mode: "merch",
+    hero: "/brand/sullys-heritage-shield.png",
+    h1: "SULLY'S",
+    h2: "KIT.",
+    msg: "FIGHT GEAR ARRIVING 2027 · ASK THE DESK",
+  },
+  {
+    mode: "merch",
+    hero: "/brand/sullys-logo-primary.png",
+    h1: "NEW",
+    h2: "KIT.",
+    msg: "MADE FOR THIS FLOOR · GEAR ON THE WAY",
   },
 ] as const;
 
