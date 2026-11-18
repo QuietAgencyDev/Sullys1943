@@ -119,6 +119,39 @@
   font-size: 0.95rem;
 }
 
+.record {
+  margin: 0.55rem 0 0;
+  color: var(--brand-cream);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.record a,
+.fighterList a {
+  color: var(--brand-cream);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.fighters {
+  margin-top: 2.5rem;
+}
+
+.fighterTitle {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  color: var(--brand-cream);
+}
+
+.fighterList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1.1rem;
+}
+
 .empty {
   display: grid;
   gap: 1rem;

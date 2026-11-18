@@ -9,6 +9,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { ApiError, get } from "@/lib/api";
 import { getBrand } from "@/lib/brand";
 import { FLOOR_COACHES } from "@/lib/floor-schedule";
+import { BOXREC_FIGHTERS, boxrecForName } from "@/lib/boxrec-roster";
 import { RED_OWL_TEAM } from "@/lib/programs-red-owl";
 import styles from "./coaches.module.css";
 
@@ -46,6 +47,19 @@ function byRoster(a: Coach, b: Coach) {
   return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
 }
 
+function BoxRecLine({ name }: { name: string }) {
+  const person = boxrecForName(name);
+  if (!person) return null;
+  return (
+    <p className={styles.record}>
+      <a href={person.href}>
+        BoxRec {person.kind} #{person.id}
+      </a>
+      {person.record ? ` · ${person.record}` : " · trainer page, no bout record posted"}
+    </p>
+  );
+}
+
 function CoachCard({ coach }: { coach: Coach }) {
   const [imgFailed, setImgFailed] = useState(false);
   const showPhoto = Boolean(coach.photoUrl) && !imgFailed;
@@ -72,6 +86,7 @@ function CoachCard({ coach }: { coach: Coach }) {
         <p className={styles.role}>{coach.title}</p>
         <h2 className={styles.name}>{coach.name}</h2>
         <p className={styles.bio}>{coach.bio}</p>
+        <BoxRecLine name={coach.name} />
       </div>
     </li>
   );
@@ -210,6 +225,29 @@ export default function CoachesPage() {
             ))}
           </ul>
         )}
+
+        {!isRedOwl ? (
+          <section className={styles.fighters} aria-label="Fighters on BoxRec">
+            <h2 className={styles.fighterTitle}>Fighters on BoxRec</h2>
+            <p className={styles.copy}>
+              These boxers list Sully&apos;s on BoxRec. A record is shown only when BoxRec prints one. Viktoria Penney is on the floor and on Boxing Canada&apos;s national team. BoxRec does not have a page for her.
+            </p>
+            <ul className={styles.fighterList}>
+              {BOXREC_FIGHTERS.map((fighter) => (
+                <li key={fighter.id}>
+                  <a href={fighter.href}>{fighter.name}</a>
+                  <span>
+                    {" "}
+                    · amateur #{fighter.id}
+                    {fighter.record ? ` · ${fighter.record}` : ""}
+                    {fighter.active ? "" : " · inactive on BoxRec"}
+                  </span>
+                  <p className={styles.bio}>{fighter.detail}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
         <div className={styles.cta}>
           <Link href={isRedOwl ? "/smartbox" : "/join"}>

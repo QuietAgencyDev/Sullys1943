@@ -40,6 +40,11 @@ export class PortalController {
         title: true,
         bio: true,
         photoUrl: true,
+        isCompetitiveFighter: true,
+        boxrecIdPro: true,
+        boxrecIdAmateur: true,
+        boxrecTrainerId: true,
+        boxrecRecord: true,
       },
     });
 
@@ -63,6 +68,13 @@ export class PortalController {
           c.bio ??
           "Building character through the craft of boxing at Sully's.",
         photoUrl: c.photoUrl,
+        boxrec: {
+          proId: c.boxrecIdPro,
+          amateurId: c.boxrecIdAmateur,
+          trainerId: c.boxrecTrainerId,
+          record: c.boxrecRecord,
+          competitive: c.isCompetitiveFighter,
+        },
       })),
     };
   }

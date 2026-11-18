@@ -56,6 +56,8 @@ model User {
   boxingOntarioRegNum  String? @map("boxing_ontario_reg_num")
   boxrecIdPro          String? @map("boxrec_id_pro")
   boxrecIdAmateur      String? @map("boxrec_id_amateur")
+  boxrecTrainerId      String? @map("boxrec_trainer_id")
+  boxrecRecord         String? @map("boxrec_record")
 
   classTeamMembers ClassTeamMember[]
 

@@ -1,0 +1,2 @@
+ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "boxrec_trainer_id" TEXT;
+ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "boxrec_record" TEXT;
