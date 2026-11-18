@@ -40,7 +40,7 @@ export default function ContactPage() {
               </>
             ) : (
               <>
-                Lower level at Dundas &amp; Sheridan. Ring, bags, and
+                Down the stairs at 1305 Dundas Street West. Ring, bags, and
                 eighty-plus years of Toronto boxing history.
               </>
             )}

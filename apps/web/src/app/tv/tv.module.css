@@ -214,7 +214,7 @@
 
 .calRow {
   display: grid;
-  grid-template-columns: 8.6rem minmax(0, 1fr);
+  grid-template-columns: 12.5rem minmax(0, 1fr);
   gap: 0.1rem 0.85rem;
   align-items: baseline;
   padding: 0.55rem 0;

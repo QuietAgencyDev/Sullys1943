@@ -806,6 +806,10 @@ function formatClock(d: Date) {
   return d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 }
 
+function formatClassWindow(startsAt: string, endsAt: string) {
+  return `${formatClock(new Date(startsAt))}–${formatClock(new Date(endsAt))}`;
+}
+
 function formatCountdown(totalSeconds: number) {
   const s = Math.max(0, Math.floor(totalSeconds));
   const m = Math.floor(s / 60);
@@ -1234,6 +1238,32 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     };
   }, [now, board?.live, board?.coachTimer, timerCfg]);
 
+  const classWindow = focus
+    ? formatClassWindow(focus.startsAt, focus.endsAt)
+    : null;
+  const onScheduleClock = Boolean(
+    focus && classCountdown !== null && !round.coachControlled,
+  );
+  const shownSeconds = onScheduleClock ? classCountdown ?? 0 : round.secondsLeft;
+  const classSpanSec = focus
+    ? Math.max(
+        1,
+        Math.floor(
+          (new Date(focus.endsAt).getTime() - new Date(focus.startsAt).getTime()) / 1000,
+        ),
+      )
+    : 1;
+  const shownProgress = onScheduleClock
+    ? focus?.phase === "live"
+      ? 1 - shownSeconds / classSpanSec
+      : 0
+    : round.progress;
+  const scheduleLabel = onScheduleClock
+    ? focus?.phase === "live"
+      ? `${focus.title} · ${classWindow}`
+      : `Next · ${focus?.title} · ${classWindow}`
+    : `${round.phase === "work" ? "Work" : "Rest"} · round ${round.round}${round.totalRounds ? ` of ${round.totalRounds}` : ""}`;
+
   const floorFeed = useMemo(() => {
     const checkIns = board?.ticker?.length ? board.ticker : [];
     const liveTitle = board?.live?.title ?? board?.coachTimer?.title ?? null;
@@ -1241,7 +1271,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     return weaveFloorFeed({
       checkIns,
       liveTitle,
-      roundLabel: `${round.phase === "work" ? "Work" : "Rest"} · round ${round.round}${round.totalRounds ? ` of ${round.totalRounds}` : ""}`,
+      roundLabel: scheduleLabel,
       leaderName: leader?.displayName ?? null,
       leaderXp: leader?.xp ?? null,
       checkInsToday: board?.kpis.checkInsToday ?? null,
@@ -1253,6 +1283,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     round.phase,
     round.round,
     round.totalRounds,
+    scheduleLabel,
     Math.floor(now.getTime() / (10 * 60 * 1000)),
   ]);
 
@@ -1459,10 +1490,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                   className={`${styles.calRow} ${session.phase === "done" ? styles.calDone : ""} ${session.phase === "live" ? styles.calLive : ""}`}
                 >
                   <span className={styles.calTime}>
-                    {new Date(session.startsAt).toLocaleTimeString([], {
-                      hour: "numeric",
-                      minute: "2-digit",
-                    })}
+                    {formatClassWindow(session.startsAt, session.endsAt)}
                   </span>
                   <span className={styles.calName}>{session.title}</span>
                   <span className={styles.calCoach}>
@@ -1490,8 +1518,14 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             xpBonus={riveXp}
             bonusLabel={riveBonusLabel}
             artCover={showArtPopup}
-            roundClock={formatCountdown(round.secondsLeft)}
-            roundLabel={`${round.phase === "rest" ? "REST" : "WORK"}  •  ROUND ${round.round}${round.totalRounds ? ` / ${round.totalRounds}` : ""}`}
+            roundClock={formatCountdown(shownSeconds)}
+            roundLabel={
+              onScheduleClock
+                ? focus?.phase === "live"
+                  ? `CLASS  •  ${classWindow}`
+                  : `NEXT  •  ${classWindow}`
+                : `${round.phase === "rest" ? "REST" : "WORK"}  •  ROUND ${round.round}${round.totalRounds ? ` / ${round.totalRounds}` : ""}`
+            }
             rankLabel={board?.leaderboard?.[0] ? String(board.leaderboard[0].rank).padStart(2, "0") : null}
             scoreLabel={
               board?.leaderboard?.[0]
@@ -1728,12 +1762,11 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
           {showRoundHero ? (
             <>
               <p className={styles.phase}>
-                {round.phase === "work" ? "Work" : "Rest"}
-                {" · "}
-                Round {String(round.round).padStart(2, "0")}
-                {round.totalRounds
-                  ? ` / ${String(round.totalRounds).padStart(2, "0")}`
-                  : ""}
+                {onScheduleClock
+                  ? focus?.phase === "live"
+                    ? `Live · ${classWindow}`
+                    : `Next · ${classWindow}`
+                  : `${round.phase === "work" ? "Work" : "Rest"} · Round ${String(round.round).padStart(2, "0")}${round.totalRounds ? ` / ${String(round.totalRounds).padStart(2, "0")}` : ""}`}
               </p>
               <h1 className={styles.classTitle}>
                 {floorClassTitle}
@@ -1749,41 +1782,40 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                   ? ` · ${focus.booked}/${focus.capacity} · ${focus.spotsLeft} spots`
                   : ""}
                 {round.paused ? " · PAUSED" : ""}
-                {classCountdown !== null && focus?.phase === "live" && !board?.coachTimer
-                  ? ` · class ${formatCountdown(classCountdown)}`
-                  : focus?.phase === "upcoming" && classCountdown !== null
-                    ? ` · starts ${formatCountdown(classCountdown)}`
-                    : ""}
               </p>
               <p className={styles.timerLabel}>
-                {round.phase === "work" ? "Round clock" : "Rest clock"}
+                {onScheduleClock
+                  ? focus?.phase === "live"
+                    ? "Class clock · time left"
+                    : "Class clock · until start"
+                  : round.phase === "work"
+                    ? "Round clock"
+                    : "Rest clock"}
                 {round.coachControlled
                   ? " · coach controlled"
-                  : round.syncedToClass
-                    ? " · synced to class"
-                    : " · open gym sync"}
+                  : onScheduleClock
+                    ? ""
+                    : " · open gym"}
               </p>
               <p className={styles.timer}>
-                {formatCountdown(round.secondsLeft)}
+                {formatCountdown(shownSeconds)}
               </p>
               <div
                 className={styles.roundBar}
                 role="progressbar"
-                aria-valuenow={Math.round(round.progress * 100)}
+                aria-valuenow={Math.round(shownProgress * 100)}
                 aria-valuemin={0}
                 aria-valuemax={100}
               >
                 <div
                   className={styles.roundBarFill}
-                  style={{ width: `${Math.min(100, round.progress * 100)}%` }}
+                  style={{ width: `${Math.min(100, Math.max(0, shownProgress) * 100)}%` }}
                 />
               </div>
               <p className={styles.roundMeta}>
-                {Math.floor(timerCfg.workSec / 60)}:
-                {String(timerCfg.workSec % 60).padStart(2, "0")} work
-                {" · "}
-                {Math.floor(timerCfg.restSec / 60)}:
-                {String(timerCfg.restSec % 60).padStart(2, "0")} rest
+                {onScheduleClock
+                  ? `${Math.round(classSpanSec / 60)} min class · ${classWindow}`
+                  : `${Math.floor(timerCfg.workSec / 60)}:${String(timerCfg.workSec % 60).padStart(2, "0")} work · ${Math.floor(timerCfg.restSec / 60)}:${String(timerCfg.restSec % 60).padStart(2, "0")} rest`}
               </p>
             </>
           ) : !modeActive ? (
@@ -1806,10 +1838,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                 <p className={styles.meta}>
                   {focus?.coach ? `Coach ${focus.coach}` : "Front desk ready"}
                   {focus
-                    ? ` · ${new Date(focus.startsAt).toLocaleTimeString([], {
-                        hour: "numeric",
-                        minute: "2-digit",
-                      })}`
+                    ? ` · ${formatClassWindow(focus.startsAt, focus.endsAt)}`
                     : " · Come in and say hello"}
                 </p>
                 {classCountdown !== null ? (
