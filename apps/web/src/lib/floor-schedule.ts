@@ -223,6 +223,12 @@ export function posterForClass(title: string): string | null {
   return found?.poster ?? null;
 }
 
+export function classInfo(title: string): { tone: ScheduleTone; level: string } {
+  const found = FLOOR_SLOTS.find((slot) => slot.title === title);
+  if (found) return { tone: found.tone, level: found.level };
+  return { tone: "plus", level: "All levels" };
+}
+
 export const SCHEDULE_DAYS = [
   { day: 1, label: "Monday" },
   { day: 2, label: "Tuesday" },

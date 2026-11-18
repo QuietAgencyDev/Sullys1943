@@ -3,10 +3,8 @@ import type { PrismaService } from "./prisma.service";
 const WINDOW_MS = 30 * 60 * 1000;
 
 /**
- * Pick the best session for an unattended check-in when none was chosen:
- * 1) Member booking live or starting within ±30 min
- * 2) Nearest currently live class
- * 3) null → open gym
+ * The class this member actually booked, live now or starting within ±30 min.
+ * A scan does not get dropped onto whichever class happens to be live.
  */
 export async function resolveSessionForMember(
   prisma: PrismaService,
@@ -27,17 +25,7 @@ export async function resolveSessionForMember(
         ],
       },
     },
-    include: { session: true },
     orderBy: { session: { startsAt: "asc" } },
   });
-  if (booking?.sessionId) return booking.sessionId;
-
-  const live = await prisma.session.findFirst({
-    where: {
-      startsAt: { lte: now },
-      endsAt: { gte: now },
-    },
-    orderBy: { startsAt: "asc" },
-  });
-  return live?.id ?? null;
+  return booking?.sessionId ?? null;
 }

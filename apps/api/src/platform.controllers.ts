@@ -14,6 +14,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import type { Request, Response } from "express";
+import { Prisma } from "@prisma/client";
 import { PrismaService } from "./prisma.service";
 import {
   AuthGuard,
@@ -327,33 +328,47 @@ export class SessionsController {
 
     let promoted: { userId: string; bookingId: string } | null = null;
     if (["confirmed", "checked_in"].includes(existing.status)) {
-      const next = await this.prisma.booking.findFirst({
-        where: { sessionId: id, status: "waitlisted" },
-        orderBy: { createdAt: "asc" },
-      });
+      const next = await this.prisma.$transaction(
+        async (tx) => {
+          const confirmed = await tx.booking.count({
+            where: {
+              sessionId: id,
+              status: { in: ["confirmed", "checked_in"] },
+            },
+          });
+          const room = await tx.session.findUnique({
+            where: { id },
+            select: { capacity: true, title: true, startsAt: true },
+          });
+          if (!room || confirmed >= room.capacity) return null;
+          const waiting = await tx.booking.findFirst({
+            where: { sessionId: id, status: "waitlisted" },
+            orderBy: { createdAt: "asc" },
+          });
+          if (!waiting) return null;
+          await tx.booking.update({
+            where: { id: waiting.id },
+            data: { status: "confirmed" },
+          });
+          return { waiting, room };
+        },
+        { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+      );
       if (next) {
-        await this.prisma.booking.update({
-          where: { id: next.id },
-          data: { status: "confirmed" },
-        });
-        promoted = { userId: next.userId, bookingId: next.id };
+        promoted = { userId: next.waiting.userId, bookingId: next.waiting.id };
         const person = await this.prisma.user.findUnique({
-          where: { id: next.userId },
+          where: { id: next.waiting.userId },
           select: { email: true, firstName: true },
         });
-        const session = await this.prisma.session.findUnique({
-          where: { id },
-          select: { title: true, startsAt: true },
-        });
         const hook = process.env.NOTIFY_WEBHOOK_URL;
-        if (hook && person?.email && session) {
+        if (hook && person?.email) {
           await fetch(hook, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               kind: "waitlist_promoted",
               to: person.email,
-              text: `${person.firstName}, a spot opened in ${session.title}. You're booked.`,
+              text: `${person.firstName}, a spot opened in ${next.room.title}. You're booked.`,
             }),
           }).catch(() => undefined);
         }
@@ -381,41 +396,64 @@ export class SessionsController {
       bookFor = body.forUserId;
     }
 
-    const session = await this.prisma.session.findUnique({
-      where: { id },
-      include: { bookings: true },
-    });
-    if (!session) throw new BadRequestException("Session not found");
+    let placed: { waitlisted: boolean; message: string } | null = null;
+    for (let attempt = 0; attempt < 2 && !placed; attempt += 1) {
+      try {
+        placed = await this.prisma.$transaction(
+      async (tx) => {
+        const session = await tx.session.findUnique({
+          where: { id },
+          include: {
+            bookings: { select: { userId: true, status: true } },
+          },
+        });
+        if (!session) throw new BadRequestException("Session not found");
 
-    const confirmed = session.bookings.filter((b) =>
-      ["confirmed", "checked_in"].includes(b.status),
-    ).length;
-    const full = confirmed >= session.capacity;
-    const status = full ? "waitlisted" : "confirmed";
-    if (full && body.waitlist === false) {
-      throw new BadRequestException("Class is full");
+        const mine = session.bookings.find((b) => b.userId === bookFor);
+        if (mine && ["confirmed", "checked_in"].includes(mine.status)) {
+          return {
+            waitlisted: false,
+            message: "You're already booked for this class.",
+          };
+        }
+
+        const confirmed = session.bookings.filter((b) =>
+          ["confirmed", "checked_in"].includes(b.status),
+        ).length;
+        const full = confirmed >= session.capacity;
+        if (full && body.waitlist === false) {
+          throw new BadRequestException("Class is full");
+        }
+        const status = full ? "waitlisted" : "confirmed";
+        await tx.booking.upsert({
+          where: {
+            sessionId_userId: { sessionId: id, userId: bookFor },
+          },
+          create: { sessionId: id, userId: bookFor, status },
+          update: { status },
+        });
+        return {
+          waitlisted: status === "waitlisted",
+          message:
+            status === "waitlisted"
+              ? "Class is full. You're on the waitlist, and the class size stays the same."
+              : "Booked. See you on the floor.",
+        };
+      },
+      { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+    );
+      } catch (error) {
+        const code = (error as { code?: string }).code;
+        if (code === "P2034" && attempt === 0) continue;
+        throw error;
+      }
     }
-
-    const booking = await this.prisma.booking.upsert({
-      where: {
-        sessionId_userId: { sessionId: id, userId: bookFor },
-      },
-      create: {
-        sessionId: id,
-        userId: bookFor,
-        status,
-      },
-      update: { status },
-    });
+    if (!placed) throw new BadRequestException("Could not book. Try again.");
 
     return {
-      booking,
       forUserId: bookFor,
-      waitlisted: status === "waitlisted",
-      message:
-        status === "waitlisted"
-          ? "Class full — you're on the waitlist"
-          : "Booked. See you on the floor.",
+      waitlisted: placed.waitlisted,
+      message: placed.message,
     };
   }
 }
@@ -766,6 +804,11 @@ export class CheckInController {
     const sessionId =
       body.sessionId?.trim() ||
       (await resolveSessionForMember(this.prisma, auth.sub));
+    if (!sessionId) {
+      throw new BadRequestException(
+        "Book a class before you check in. A booking is not a check-in.",
+      );
+    }
     const result = await performCheckIn(this.prisma, {
       memberUserId: auth.sub,
       orgId: auth.orgId,
@@ -790,6 +833,8 @@ export class CheckInController {
     requireStaff(auth);
 
     let memberUserId: string | undefined;
+    let spentToken: { token: string; userId: string; expiresAt: Date } | null =
+      null;
 
     if (body.token) {
       const raw = body.token.replace(/[\u0000-\u001f]/g, "").trim();
@@ -811,6 +856,11 @@ export class CheckInController {
       }
       memberUserId = cred.userId;
       await this.prisma.checkInCredential.delete({ where: { id: cred.id } });
+      spentToken = {
+        token: cred.token,
+        userId: cred.userId,
+        expiresAt: cred.expiresAt,
+      };
     } else if (body.email) {
       const user = await this.prisma.user.findFirst({
         where: {
@@ -824,20 +874,41 @@ export class CheckInController {
       throw new BadRequestException("token or email required");
     }
 
-    const sessionId =
-      body.sessionId?.trim() ||
-      (await resolveSessionForMember(this.prisma, memberUserId));
+    const bookedId = await resolveSessionForMember(this.prisma, memberUserId);
+    const requested = body.sessionId?.trim() || "";
+    let sessionId: string | null = bookedId;
+    if (body.override && requested) sessionId = requested;
+    else if (!sessionId && requested) sessionId = requested;
+    if (!sessionId && !body.override) {
+      if (spentToken) {
+        await this.prisma.checkInCredential
+          .create({ data: spentToken })
+          .catch(() => undefined);
+      }
+      throw new BadRequestException(
+        "Book a class before scanning in. A booking is not a check-in.",
+      );
+    }
 
-    const result = await performCheckIn(this.prisma, {
-      memberUserId,
-      orgId: auth.orgId,
-      sessionId: sessionId ?? undefined,
-      method: body.token ? "qr_scan" : "manual",
-      recordedById: auth.sub,
-      override: body.override,
-      overrideReason: body.overrideReason,
-    });
-    return this.withSessionLabel(result, sessionId);
+    try {
+      const result = await performCheckIn(this.prisma, {
+        memberUserId,
+        orgId: auth.orgId,
+        sessionId: sessionId ?? undefined,
+        method: body.token ? "qr_scan" : "manual",
+        recordedById: auth.sub,
+        override: body.override,
+        overrideReason: body.overrideReason,
+      });
+      return this.withSessionLabel(result, sessionId);
+    } catch (err) {
+      if (spentToken && spentToken.expiresAt.getTime() > Date.now()) {
+        await this.prisma.checkInCredential
+          .create({ data: spentToken })
+          .catch(() => undefined);
+      }
+      throw err;
+    }
   }
 
   private async withSessionLabel<T extends object>(

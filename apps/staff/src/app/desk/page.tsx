@@ -107,7 +107,6 @@ export default function DeskPage() {
       .then((res) => {
         const today = res.sessions.filter((s) => isToday(s.startsAt));
         setSessions(today);
-        if (today[0]) setSessionId(today[0].id);
       })
       .catch(() => setSessions([]));
     void loadPulse();
@@ -332,8 +331,8 @@ export default function DeskPage() {
       <h1 className={styles.title}>Scanner</h1>
       <p className={styles.copy}>
         USB scanner → focused field → auto check-in. A person is on the floor
-        only after this scan. Book the class, then sign in and scan. Attach
-        today&apos;s class for late flags.
+        only after this scan. Leave the menu on their booked class. Pick a
+        class only to place someone who is not booked.
       </p>
       {pulse?.kpis.pendingPayments ? (
         <p className={styles.error} role="alert">
@@ -422,7 +421,7 @@ export default function DeskPage() {
             value={sessionId}
             onChange={(e) => setSessionId(e.target.value)}
           >
-            <option value="">Open gym / no class</option>
+            <option value="">Their booked class</option>
             {sessions.map((s) => (
               <option key={s.id} value={s.id}>
                 {new Date(s.startsAt).toLocaleTimeString([], {
