@@ -30,7 +30,7 @@ export class TvController {
         where: { startsAt: { gte: start, lt: horizon } },
         include: {
           bookings: { where: { status: { not: "cancelled" } } },
-          coach: { select: { firstName: true, lastName: true } },
+          coach: { select: { firstName: true, lastName: true, photoUrl: true } },
           program: { select: { name: true } },
           liveState: true,
         },
@@ -189,6 +189,7 @@ export class TvController {
         title: s.title,
         program: s.program?.name ?? null,
         coach: coachLabel,
+        coachPhoto: s.coach?.photoUrl ?? null,
         startsAt: s.startsAt.toISOString(),
         endsAt: endsAt.toISOString(),
         capacity: s.capacity,

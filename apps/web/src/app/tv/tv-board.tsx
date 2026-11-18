@@ -40,6 +40,7 @@ type SessionCard = {
   title: string;
   program: string | null;
   coach: string | null;
+  coachPhoto?: string | null;
   startsAt: string;
   endsAt: string;
   capacity: number;
@@ -507,8 +508,6 @@ const FLOOR_SYSTEM: FeedLine[] = [
   { kind: "system", text: "Passport stamps the classes you finish. The card gets you through the door." },
 ];
 
-const TICKER_PX_PER_SEC = 44;
-
 const FLOOR_DEMO_CLASSES = [
   { title: "Boxtech", coach: "Rico Mancini" },
   { title: "Fight Path 2", coach: "Rico Mancini" },
@@ -929,7 +928,6 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   });
   const [adIndex, setAdIndex] = useState(0);
   const [adOn, setAdOn] = useState(false);
-  const tickerTrackRef = useRef<HTMLDivElement>(null);
   const [demoClassIndex, setDemoClassIndex] = useState(0);
   const [pairExample, setPairExample] = useState(false);
   const [poseTick, setPoseTick] = useState(0);
@@ -1042,29 +1040,6 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       clearTimeout(timer);
     };
   }, [board?.coachTimer, board?.live, demoCelebrate, popupFreeze, profile, timerCfg]);
-
-  useEffect(() => {
-    const track = tickerTrackRef.current;
-    if (!track) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let raf = 0;
-    let last = performance.now();
-    let x = 0;
-    const step = (now: number) => {
-      const dt = Math.min(32, now - last) / 1000;
-      last = now;
-      const copy = track.firstElementChild as HTMLElement | null;
-      const width = copy?.getBoundingClientRect().width ?? 0;
-      if (width > 0) {
-        x += TICKER_PX_PER_SEC * dt;
-        if (x >= width) x -= width;
-        track.style.transform = `translate3d(${-x}px,0,0)`;
-      }
-      raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, []);
 
   useEffect(() => {
     if (profile !== "floor") return;
@@ -1593,10 +1568,10 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                 : floorAd?.msg ?? board?.coachTimer?.tvMessage
             }
           />
-          {profile === "floor" && riveEnabled && !showArtPopup && !classPhoto ? (
+          {profile === "floor" && riveEnabled && !showArtPopup && !splitFloor && !classPhoto ? (
             <TvBoxerRig motion={round.phase === "rest" ? "rest" : "work"} />
           ) : null}
-          {profile === "floor" && classPhoto && !showArtPopup ? (
+          {profile === "floor" && classPhoto && !showArtPopup && !splitFloor ? (
             <div className={styles.classFigure} aria-hidden>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -1620,23 +1595,33 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
           {splitFloor && !showArtPopup ? (
             <div className={styles.splitRing} aria-label="Two classes on the floor">
               {pairExample ? <p className={styles.exampleFlag}>Example · two classes</p> : null}
-              {liveClasses.map((session) => (
+              {liveClasses.map((session) => {
+                const portrait =
+                  session.coachPhoto ||
+                  floorClassPhoto(session.title, session.coach, 1) ||
+                  "/tv/cast/coach-2-guard.png";
+                return (
                 <article key={session.id} className={styles.splitCard}>
-                  <p className={styles.phase}>Live · {formatClassWindow(session.startsAt, session.endsAt)}</p>
-                  <h2 className={styles.splitTitle}>{session.title}</h2>
-                  <p className={styles.meta}>
-                    {session.coach ? `Coach ${session.coach}` : "On the floor"}
-                    {" · "}
-                    {session.checkedIn ?? 0}/{session.capacity}
-                    {" · "}
-                    {session.spotsLeft} spots
-                  </p>
-                  <p className={styles.splitClock}>
-                    {formatCountdown(session.secondsRemaining)}
-                  </p>
-                  <p className={styles.roundMeta}>Time left in this class</p>
+                  <div className={styles.splitCopy}>
+                    <p className={styles.phase}>Live · {formatClassWindow(session.startsAt, session.endsAt)}</p>
+                    <h2 className={styles.splitTitle}>{session.title}</h2>
+                    <p className={styles.meta}>
+                      {session.coach ? `Coach ${session.coach}` : "Coach on duty"}
+                    </p>
+                    <p className={styles.splitClock}>
+                      {formatCountdown(session.secondsRemaining)}
+                    </p>
+                    <p className={styles.roundMeta}>
+                      {session.spotsLeft} spots left · {session.checkedIn ?? 0}/{session.capacity} in
+                    </p>
+                  </div>
+                  <div className={styles.splitAvatar}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={portrait} alt="" draggable={false} />
+                  </div>
                 </article>
-              ))}
+                );
+              })}
             </div>
           ) : null}
           {showRoundHero && !showArtPopup && !splitFloor ? (
@@ -2116,7 +2101,6 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
           <div className={styles.tickerStage}>
           <div className={styles.tickerCrawl}>
             <div
-              ref={tickerTrackRef}
               className={styles.tickerTrack}
             >
             {[0, 1].map((copy) => (

@@ -1013,7 +1013,7 @@
   font-size: clamp(1.05rem, 1.85vw, 1.42rem);
   font-weight: 700;
   letter-spacing: 0.04em;
-  transform: translate3d(0, 0, 0);
+  animation: marquee 110s linear infinite;
   backface-visibility: hidden;
   will-change: transform;
 }
@@ -1293,12 +1293,40 @@
 }
 
 .splitCard {
+  position: relative;
   display: grid;
-  align-content: center;
-  gap: 0.45rem;
-  padding: 1.1rem 1.2rem;
+  grid-template-columns: minmax(0, 1fr) minmax(9rem, 38%);
+  align-items: end;
+  gap: 0.4rem;
+  min-height: 0;
+  padding: 1.1rem 0.4rem 0.4rem 1.15rem;
+  overflow: hidden;
   border: 1px solid rgba(243, 230, 200, 0.28);
   background: #120e0c;
+}
+
+.splitCopy {
+  align-self: center;
+  min-width: 0;
+  z-index: 1;
+}
+
+.splitAvatar {
+  align-self: end;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.splitAvatar img {
+  display: block;
+  height: 96%;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: center bottom;
 }
 
 .splitTitle {
@@ -1355,8 +1383,7 @@
   .phaseCurtain::before,
   .phaseCurtain::after,
   .arrivalMoment,
-  .leaderCrawl > div,
-  .tickerTrack {
+  .leaderCrawl > div {
     animation: none;
   }
 
