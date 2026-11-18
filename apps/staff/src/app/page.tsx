@@ -326,6 +326,7 @@ export default function StaffHome() {
                   <span>New window</span>
                 </div>
                 <div className={styles.nav}>
+                  {role === "owner" || role === "admin" ? (
                   <a
                     className={styles.navCard}
                     href={
@@ -343,7 +344,8 @@ export default function StaffHome() {
                       ↗
                     </span>
                   </a>
-                  {role !== "coach" ? (
+                  ) : null}
+                  {role === "owner" || role === "admin" ? (
                     <a
                       className={styles.navCard}
                       href={

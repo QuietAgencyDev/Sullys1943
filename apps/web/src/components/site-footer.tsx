@@ -171,12 +171,6 @@ export function SiteFooter() {
             <Link href="/terms">Terms</Link>
             <Link href="/privacy">Privacy</Link>
           </nav>
-          <nav className={styles.opsIcons} aria-label="Internal tools">
-            <Link href="/tv/demo" className={styles.opsIcon} title="TV">
-              <span aria-hidden>📺</span>
-              <span className={styles.srOnly}>TV</span>
-            </Link>
-          </nav>
         </div>
       </div>
     </footer>

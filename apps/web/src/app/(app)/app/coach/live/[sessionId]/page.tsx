@@ -445,9 +445,6 @@ export default function AppCoachLivePage() {
             <p className={styles.meta}>
               {live.tvMessage?.trim() || "Round clock on floor"}
             </p>
-            <a className={styles.tvLink} href="/tv/floor" target="_blank" rel="noreferrer">
-              Open floor TV →
-            </a>
             <div className={styles.controls}>
               {(
                 [

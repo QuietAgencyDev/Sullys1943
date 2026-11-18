@@ -101,15 +101,6 @@ function formatCountdown(totalSeconds: number) {
   return `${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
 }
 
-function floorTvHref() {
-  if (typeof window === "undefined") return "https://www.sullys1943.com/tv/floor";
-  const host = window.location.hostname;
-  if (host === "localhost" || host === "127.0.0.1") {
-    return "http://localhost:3000/tv/floor";
-  }
-  return "https://www.sullys1943.com/tv/floor";
-}
-
 export default function LiveClassPage() {
   const params = useParams<{ sessionId: string }>();
   const sessionId = params.sessionId;
@@ -753,19 +744,8 @@ export default function LiveClassPage() {
                 {(live.tvMode || "timer").replace(/_/g, " ").toUpperCase()}
               </p>
               <p className={styles.hint}>
-                {live.tvMessage?.trim() ||
-                  (live.tvMode === "timer" || !live.tvMode
-                    ? "Round clock on floor"
-                    : "Live to /tv/floor")}
+                {live.tvMessage?.trim() || "Round clock on floor"}
               </p>
-              <a
-                className={styles.tvFloorLink}
-                href={floorTvHref()}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Open floor TV →
-              </a>
             </div>
             <p className={styles.phase}>TV mode</p>
             <div className={styles.controls}>
@@ -1090,20 +1070,6 @@ export default function LiveClassPage() {
         </section>
       </div>
 
-      <p className={styles.hint} style={{ marginTop: "1rem" }}>
-        Open{" "}
-        <a
-          href={
-            (process.env.NEXT_PUBLIC_WEB_ORIGIN ?? "http://localhost:3000") +
-            "/tv/floor"
-          }
-          target="_blank"
-          rel="noreferrer"
-        >
-          /tv/floor
-        </a>{" "}
-        on the gym screen.
-      </p>
     </main>
   );
 }
