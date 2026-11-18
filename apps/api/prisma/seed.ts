@@ -86,7 +86,7 @@ async function main() {
       organizationId: org.id,
       name: isRedOwl
         ? "Red Owl · 2206 Eglinton Ave E"
-        : "Sully's · 1554 Dundas St W",
+        : "Sully's · 1305 Dundas Street West",
       timezone: "America/Toronto",
     },
   });

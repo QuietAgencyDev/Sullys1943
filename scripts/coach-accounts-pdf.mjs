@@ -77,7 +77,7 @@ function step(n, text) {
 
 bar();
 h1("Coach accounts");
-doc.fillColor(MUTED).font("Helvetica").fontSize(9).text("1554 Dundas St W (lower level), Toronto  -  October 22, 2026");
+doc.fillColor(MUTED).font("Helvetica").fontSize(9).text("1305 Dundas Street West (down the stairs), Toronto  -  October 22, 2026");
 doc.moveDown(0.4);
 body("Each coach already has an account. Sign in with the email below. The password is handed over in person and is not printed here. Sign in once at the gym computer before class so the roster and the round clock are ready.");
 

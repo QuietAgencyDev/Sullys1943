@@ -61,7 +61,7 @@ function bar() {
 
 bar();
 doc.fillColor(RED).font("Helvetica-Bold").fontSize(18).text("Gym computer equipment");
-doc.fillColor(MUTED).font("Helvetica").fontSize(9).text("1554 Dundas St W (lower level), Toronto  -  for the desktop PC arriving today");
+doc.fillColor(MUTED).font("Helvetica").fontSize(9).text("1305 Dundas Street West (down the stairs), Toronto  -  for the desktop PC arriving today");
 doc.moveDown(0.35);
 doc.fillColor(INK).font("Helvetica").fontSize(10).text(
   "This is the list for the desk computer that runs Sully's: staff console, desk scanner, reception screen, and floor TV. It is not a boxing-gear list. One computer drives the desk and both TVs.",

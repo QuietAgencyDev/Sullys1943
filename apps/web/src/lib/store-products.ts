@@ -11,7 +11,7 @@ export type StoreProduct = {
   id: string;
   name: string;
   priceCents: number;
-  category: "gear" | "apparel";
+  category: "gear" | "apparel" | "gift";
   blurb: string;
   legacySlug: string;
   image: string;
@@ -101,6 +101,33 @@ export const SULLYS_STORE_PRODUCTS: StoreProduct[] = [
     legacySlug: "product-1",
     image: "/store/sullys-boxing-gym-t-shirts.jpg",
   },
+  {
+    id: "gift-certificate-50",
+    name: "Gift Certificate — $50",
+    priceCents: 5000,
+    category: "gift",
+    blurb: "Worth $50 at the desk. Membership, classes, or gear.",
+    legacySlug: "gift-certificate-50",
+    image: "/store/gift-certificate.jpg",
+  },
+  {
+    id: "gift-certificate-100",
+    name: "Gift Certificate — $100",
+    priceCents: 10000,
+    category: "gift",
+    blurb: "Worth $100 at the desk. Membership, classes, or gear.",
+    legacySlug: "gift-certificate-100",
+    image: "/store/gift-certificate.jpg",
+  },
+  {
+    id: "gift-certificate-150",
+    name: "Gift Certificate — $150",
+    priceCents: 15000,
+    category: "gift",
+    blurb: "Worth $150 at the desk. One month of the adult membership, or gear.",
+    legacySlug: "gift-certificate-150",
+    image: "/store/gift-certificate.jpg",
+  },
 ];
 
 export type CatalogProduct = StoreProduct | RedOwlStoreProduct;
@@ -134,6 +161,7 @@ export function productShopUrl(product: CatalogProduct) {
   if (getBrandId() === "red-owl" && "handle" in product) {
     return redOwlProductUrl(product);
   }
+  if (product.category === "gift") return "/store#checkout";
   return `${SHOP_BASE_SULLYS}/${product.legacySlug}/`;
 }
 

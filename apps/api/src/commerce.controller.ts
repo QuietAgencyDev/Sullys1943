@@ -43,6 +43,9 @@ const STORE_CATALOG: {
     priceCents: 4000,
     category: "apparel",
   },
+  { id: "gift-certificate-50", name: "Gift Certificate — $50", priceCents: 5000, category: "gift" },
+  { id: "gift-certificate-100", name: "Gift Certificate — $100", priceCents: 10000, category: "gift" },
+  { id: "gift-certificate-150", name: "Gift Certificate — $150", priceCents: 15000, category: "gift" },
 ];
 
 const DONATION_PRESETS = [2500, 5000, 10000, 25000];

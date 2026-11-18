@@ -15,7 +15,7 @@ export const metadata = {
   description:
     brand.id === "red-owl"
       ? "Hours, address, map, and contact details for Red Owl Boxing Scarborough at 2206 Eglinton Ave E, Unit 120."
-      : "Hours, address, and contact for Sully's Boxing Gym — Canada's oldest boxing club at 1554 Dundas St W, Toronto.",
+      : "Hours, address, and contact for Sully's Boxing Gym — Canada's oldest boxing club at 1305 Dundas Street West, Toronto.",
 };
 
 export default function ContactPage() {

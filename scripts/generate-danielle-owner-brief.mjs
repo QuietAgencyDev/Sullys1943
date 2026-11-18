@@ -106,7 +106,7 @@ doc.fillColor(BROWN).font("Helvetica").fontSize(13).text(
 
 doc.y = 190;
 h1("Why this is easier than Glofox");
-p("Glofox is a booking app you rent. It was built for every kind of studio. This one was built for the door, the floor, and the morning you already run at 1554 Dundas.");
+p("Glofox is a booking app you rent. It was built for every kind of studio. This one was built for the door, the floor, and the morning you already run at 1305 Dundas Street West.");
 bullets([
   "The member's phone is the card. The desk scans it. If the waiver is missing, the card does not open. Staff can override, and the reason lands on your brief.",
   "The coach runs the round from one page. The floor TV follows that clock, then returns to the house cards between rounds.",

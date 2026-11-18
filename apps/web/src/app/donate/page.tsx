@@ -78,7 +78,7 @@ export default function DonatePage() {
           <div className={styles.way}>
             <h3 className={styles.wayLabel}>In person</h3>
             <p className={styles.copy}>
-              Come down the stairs at {GYM.addressLine1}. Desk staff can take
+              The desk is down the stairs at 1305 Dundas Street West. Desk staff can take
               your gift and issue a receipt path with the board.
             </p>
             <Link href="/contact" className={styles.link}>

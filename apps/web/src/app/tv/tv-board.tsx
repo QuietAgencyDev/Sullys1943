@@ -160,7 +160,7 @@ const FLOOR_SULLYS: FeedLine[] = [
   { kind: "trivia", text: "Coaches Dupont and Wade held the floor through the Ossington years." },
   { kind: "trivia", text: "2019 · Sully's moved to 1554 Dundas St W · west-end chapter." },
   { kind: "trivia", text: "Sully's · about 2,000 square feet · bags, ring, and a packed floor." },
-  { kind: "trivia", text: "Sully's · 1554 Dundas St W · same mission, new chapter." },
+  { kind: "trivia", text: "Sully's · 1305 Dundas Street West · down the stairs · Toronto M6J 1X8." },
   { kind: "trivia", text: "Heritage Toronto marked 109 Ossington. The work moved west." },
 ];
 
@@ -180,6 +180,13 @@ const FLOOR_CHUVALO: FeedLine[] = [
 ];
 
 const FLOOR_CANADA: FeedLine[] = [
+  { kind: "trivia", text: "Rubin “Hurricane” Carter died at home in Toronto on 20 April 2014. He was 76." },
+  { kind: "trivia", text: "Carter made Toronto his home and became a Canadian citizen." },
+  { kind: "trivia", text: "A U.S. federal judge set the convictions aside in November 1985. Carter’s next chapter was in this city." },
+  { kind: "trivia", text: "From 1993, Carter was executive director of Toronto’s Association in Defence of the Wrongly Convicted, for about ten years." },
+  { kind: "trivia", text: "That Toronto group is now Innocence Canada. Carter’s work was for people convicted of crimes they did not commit." },
+  { kind: "trivia", text: "York University gave Carter an honorary doctorate in 2005. The WBC gave him an honorary championship belt in 1993." },
+  { kind: "trivia", text: "Carter’s ring book: 40 fights, 27 wins, 19 knockouts, 12 losses, 1 draw. Middleweight." },
   { kind: "trivia", text: "Canada · George Dixon, 1890 — first Canadian-born world champ." },
   { kind: "trivia", text: "Canada · Tommy Burns, 1906 — first Canadian heavyweight world champ." },
   { kind: "trivia", text: "Canada · Bert Schneider — Olympic gold, Antwerp 1920." },
@@ -371,7 +378,7 @@ const FLOOR_CURRENT: FeedLine[] = [
 const FLOOR_TORONTO: FeedLine[] = [
   { kind: "trivia", text: "Toronto boxing · Chuvalo's chin, O'Sullivan's amateur run, Ruddock's smash, Morrison on this floor." },
   { kind: "trivia", text: "Parkdale raised this gym. Ossington made it famous. Dundas West kept the doors open." },
-  { kind: "trivia", text: "Dundas and Dufferin · the current chapter. The rules did not move." },
+  { kind: "trivia", text: "1305 Dundas Street West · down the stairs · the current chapter. The rules did not move." },
   { kind: "trivia", text: "Lee Reeves · Limerick · died 16 November 2026 · aged 31." },
   { kind: "trivia", text: "Lee Reeves fought in Toronto. Danforth Music Hall, 20 April 2019. Rebel, 5 May 2022, NABF super lightweight." },
   { kind: "trivia", text: "Lee Reeves trained with Hardknocks Boxing Club. He was part of this city's boxing community." },

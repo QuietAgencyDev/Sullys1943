@@ -46,7 +46,7 @@ Manifesto, always the footer, never a slogan swap:
 
 Address block, exact:
 
-1554 Dundas St W (lower level), Toronto, ON M6H 1Z6
+1305 Dundas Street West (down the stairs), Toronto, ON M6J 1X8
 (416) 805-8108 · info@sullysboxinggym.com
 Mon–Fri 7:30 AM–9:00 PM · Sat 11:00 AM–5:00 PM · Sunday closed
 

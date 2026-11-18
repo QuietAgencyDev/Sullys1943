@@ -39,7 +39,7 @@ Small line under the wordmark, in red:
 
 Address, small, at the bottom. Do not enlarge it.
 
-1554 Dundas St W (lower level), Toronto
+1305 Dundas Street West (down the stairs), Toronto
 (416) 805-8108
 
 No Quiet Agency credit on this sign. No passwords. No QR code. No website address. No phone mockup. No second character. No stock photo. No emoji.

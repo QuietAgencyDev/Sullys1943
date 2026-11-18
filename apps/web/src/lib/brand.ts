@@ -108,8 +108,8 @@ const sullysBrand: BrandConfig = {
     name: "Sully's Boxing Gym",
     legalName: "Sully's Recreation & Athletic Centre",
     tagline: "Canada's oldest boxing club · EST 1943",
-    addressLine1: "1554 Dundas St W (lower level)",
-    addressLine2: "Toronto, ON M6H 1Z6",
+    addressLine1: "1305 Dundas Street West, down the stairs",
+    addressLine2: "Toronto, ON M6J 1X8",
     phoneDisplay: "(416) 805-8108",
     phoneTel: "+14168058108",
     phoneAltDisplay: "+1-647-284-1510",
@@ -121,8 +121,8 @@ const sullysBrand: BrandConfig = {
     donationsUrl: "https://www.sullysboxinggym.com/donations/",
     boxrecUrl: "https://boxrec.com/en/club/3854",
     mapUrl:
-      "https://www.google.com/maps/search/?api=1&query=1554+Dundas+St+W+Toronto+ON+M6H+1Z6",
-    mapEmbedQuery: "1554+Dundas+St+W,+Toronto,+ON+M6H+1Z6",
+      "https://www.google.com/maps/search/?api=1&query=1305+Dundas+Street+West+Toronto+ON+M6J+1X8",
+    mapEmbedQuery: "1305+Dundas+Street+West,+Toronto,+ON+M6J+1X8",
     hours: [
       { days: "Mon – Fri", open: "7:30 AM", close: "9:00 PM" },
       { days: "Saturday", open: "11:00 AM", close: "5:00 PM" },

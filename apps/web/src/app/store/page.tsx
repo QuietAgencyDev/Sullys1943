@@ -24,13 +24,14 @@ export const metadata = {
     : "Store · Sully's Boxing Gym",
   description: isRedOwl
     ? "Red Owl Boxing merchandise — gloves, hoodies, tees, and hats. Shop the official collection."
-    : "Sully's gear and apparel — wraps, gloves, hats, and tees. Support Canada's oldest boxing club.",
+    : "Sully's gear, gift certificates, and apparel. Support Canada's oldest boxing club.",
 };
 
 export default function StorePage() {
   const products = getStoreProducts();
   const gear = products.filter((p) => p.category === "gear");
   const apparel = products.filter((p) => p.category === "apparel");
+  const gifts = products.filter((p) => p.category === "gift");
   const shopBase = getShopBase();
 
   return (
@@ -57,7 +58,7 @@ export default function StorePage() {
           <p className={styles.lead}>
             {isRedOwl
               ? "Gloves, hoodies, tees, and hats from the Red Owl collection. Checkout on redowlboxing.com."
-              : "Wraps, gloves, hats, and tees. Buy online or pick up at the desk. Proceeds support the non-profit mission."}
+              : "Wraps, gloves, hats, tees, and gift certificates. Buy online or pick up at the desk. Proceeds support the non-profit mission."}
           </p>
           <div className={styles.actions}>
             <a href={shopBase} target="_blank" rel="noreferrer">
@@ -81,6 +82,7 @@ export default function StorePage() {
           </div>
         </div>
 
+        <ProductBlock title="Gift certificates" products={gifts} />
         <ProductBlock title="Training gear" products={gear} />
         <ProductBlock title="Apparel" products={apparel} />
 
@@ -123,6 +125,8 @@ function ProductBlock({
             "compareAtCents" in p && p.compareAtCents
               ? p.compareAtCents
               : null;
+          const href = productShopUrl(p);
+          const external = href.startsWith("http");
           return (
             <li key={p.id} className={styles.item}>
               <div className={styles.thumb}>
@@ -158,9 +162,10 @@ function ProductBlock({
                 ) : (
                   <a
                     className={styles.buy}
-                    href={productShopUrl(p)}
-                    target="_blank"
-                    rel="noreferrer"
+                    href={href}
+                    {...(external
+                      ? { target: "_blank", rel: "noreferrer" }
+                      : undefined)}
                   >
                     Buy
                   </a>

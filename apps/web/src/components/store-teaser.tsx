@@ -9,10 +9,10 @@ import {
 import styles from "./store-teaser.module.css";
 
 const SULLYS_FEATURED_IDS = [
+  "gift-certificate-100",
   "adult-hand-wraps",
   "sullys-boxing-gloves-black",
   "sullys-baseball-hat",
-  "sullys-boxing-gym-t-shirts",
 ] as const;
 
 const RED_OWL_FEATURED_IDS = [

@@ -318,7 +318,7 @@ function buildMemberManual(doc) {
 
   h1(doc, "11. Visit & contact");
   bullet(doc, [
-    "Address: 1554 Dundas St W (lower level), Toronto, ON M6H 1Z6",
+    "Address: 1305 Dundas Street West (down the stairs), Toronto, ON M6J 1X8",
     "Hours: Mon–Fri 7:30 AM–9:00 PM · Sat 12–5 PM",
     "Phone: (416) 805-8108 · info@sullysboxinggym.com",
     "Website visit page: /contact",
@@ -476,7 +476,7 @@ function buildOwnerManual(doc) {
 
   h1(doc, "12. Gym facts");
   bullet(doc, [
-    "1554 Dundas St W (lower level), Toronto, ON M6H 1Z6",
+    "1305 Dundas Street West (down the stairs), Toronto, ON M6J 1X8",
     "Mon–Fri 7:30 AM–9:00 PM · Sat 12–5 PM",
     "(416) 805-8108 · info@sullysboxinggym.com",
     "Shown on marketing /contact, footer, and desk banner.",

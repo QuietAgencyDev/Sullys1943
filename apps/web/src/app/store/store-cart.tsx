@@ -63,7 +63,7 @@ export function StoreCart() {
   }
 
   return (
-    <section className={styles.desk} aria-label="Checkout">
+    <section id="checkout" className={styles.desk} aria-label="Checkout">
       <h2 className={styles.subhead}>Checkout on Sully&apos;s</h2>
       <p className={styles.copy}>
         Native checkout (Moneris when configured · mock demo otherwise). Desk
