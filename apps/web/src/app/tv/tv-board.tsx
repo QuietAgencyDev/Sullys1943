@@ -1889,18 +1889,34 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
 
         <aside className={styles.side}>
           {profile === "floor" ? (
+            splitFloor ? (
+              <div className={`${styles.panel} ${styles.roundPanel}`}>
+                <p className={styles.panelTitle}>Both classes</p>
+                {liveClasses.map((session) => (
+                  <p key={session.id} className={styles.meta}>
+                    {session.title}
+                    {" · "}
+                    {formatClassWindow(session.startsAt, session.endsAt)}
+                    {" · "}
+                    {formatCountdown(session.secondsRemaining)} left
+                  </p>
+                ))}
+              </div>
+            ) : (
             <div className={`${styles.panel} ${styles.roundPanel}`}>
-              <p className={styles.panelTitle}>Round status</p>
+              <p className={styles.panelTitle}>
+                {onScheduleClock ? "Class clock" : "Round status"}
+              </p>
               <p className={styles.roundStatusBig}>
-                {round.phase === "work" ? "WORK" : "REST"}
+                {onScheduleClock ? formatCountdown(shownSeconds) : round.phase === "work" ? "WORK" : "REST"}
               </p>
               <p className={styles.meta}>
-                Round {round.round}
-                {round.totalRounds ? ` of ${round.totalRounds}` : ""}
-                {" · "}
-                {formatCountdown(round.secondsLeft)} left
+                {onScheduleClock
+                  ? `${focus?.title ?? "Class"} · ${classWindow}`
+                  : `Round ${round.round}${round.totalRounds ? ` of ${round.totalRounds}` : ""} · ${formatCountdown(round.secondsLeft)} left`}
               </p>
             </div>
+            )
           ) : null}
 
           {profile === "floor" ? (
