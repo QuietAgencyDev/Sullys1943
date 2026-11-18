@@ -439,7 +439,7 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
               capacity:
                 slot.youth || slot.tone === "fight" || slot.tone === "sparring"
                   ? 12
-                  : 16,
+                  : 25,
               coachName: slot.coach,
               coachUserId: slot.coach
                 ? coachByName.get(slot.coach)
@@ -460,7 +460,7 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
           title: "Beginner Boxing",
           startsAt: atHour(today, 18, 0),
           endsAt: atHour(today, 19, 0),
-          capacity: 16,
+          capacity: 25,
           coachName: "Tony Morrison",
           coachUserId: coach.id,
         },

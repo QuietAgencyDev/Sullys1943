@@ -507,10 +507,7 @@ const FLOOR_SYSTEM: FeedLine[] = [
   { kind: "system", text: "Passport stamps the classes you finish. The card gets you through the door." },
 ];
 
-const TICKER_FIRST_MS = 14000;
-const TICKER_SCROLL_MS = 48000;
-const TICKER_HOLD_MS = 5200;
-const TICKER_PX_PER_SEC = 56;
+const TICKER_PX_PER_SEC = 44;
 
 const FLOOR_DEMO_CLASSES = [
   { title: "Boxtech", coach: "Rico Mancini" },
@@ -932,10 +929,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   });
   const [adIndex, setAdIndex] = useState(0);
   const [adOn, setAdOn] = useState(false);
-  const [tickerHold, setTickerHold] = useState(false);
   const tickerTrackRef = useRef<HTMLDivElement>(null);
-  const [marqueeSec, setMarqueeSec] = useState(480);
-  const [infoIndex, setInfoIndex] = useState(0);
   const [demoClassIndex, setDemoClassIndex] = useState(0);
   const [poseTick, setPoseTick] = useState(0);
   const [demoOrder, setDemoOrder] = useState<number[]>(() =>
@@ -1049,16 +1043,26 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   }, [board?.coachTimer, board?.live, demoCelebrate, popupFreeze, profile, timerCfg]);
 
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
-    let holding = false;
-    const tick = () => {
-      holding = !holding;
-      setTickerHold(holding);
-      if (holding) setInfoIndex((i) => i + 1);
-      timer = setTimeout(tick, holding ? TICKER_HOLD_MS : TICKER_SCROLL_MS);
+    const track = tickerTrackRef.current;
+    if (!track) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let raf = 0;
+    let last = performance.now();
+    let x = 0;
+    const step = (now: number) => {
+      const dt = Math.min(32, now - last) / 1000;
+      last = now;
+      const copy = track.firstElementChild as HTMLElement | null;
+      const width = copy?.getBoundingClientRect().width ?? 0;
+      if (width > 0) {
+        x += TICKER_PX_PER_SEC * dt;
+        if (x >= width) x -= width;
+        track.style.transform = `translate3d(${-x}px,0,0)`;
+      }
+      raf = requestAnimationFrame(step);
     };
-    timer = setTimeout(tick, TICKER_FIRST_MS);
-    return () => window.clearTimeout(timer);
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   useEffect(() => {
@@ -1287,31 +1291,10 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     Math.floor(now.getTime() / (10 * 60 * 1000)),
   ]);
 
-  useEffect(() => {
-    const el = tickerTrackRef.current;
-    if (!el) return;
-    const measure = () => {
-      const distance = el.scrollWidth / 2;
-      if (distance > 0) setMarqueeSec(distance / TICKER_PX_PER_SEC);
-    };
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [floorFeed]);
-
   const demoMode = DEMO_MODES[demoModeIndex] ?? "achievement";
   const coachMode = board?.coachTimer?.tvMode ?? "timer";
   const liveEvent =
     coachMode !== "timer" && hasArtPopup(coachMode) && !popupFreeze && !demoCelebrate;
-  const infoFacts = useMemo(
-    () => floorFeed.filter((line) => line.kind === "trivia"),
-    [floorFeed],
-  );
-  const infoLine = infoFacts.length
-    ? infoFacts[infoIndex % infoFacts.length]
-    : null;
-  const infoText = (infoLine?.text ?? "").replace(/^Trivia · /, "");
   const floorAd = adOn && profile === "floor" ? FLOOR_ADS[adIndex] : null;
   const calendarScreen = floorAd?.mode === "floor_calendar";
   const posterScreen = floorAd?.mode === "sponsor_poster";
@@ -2047,7 +2030,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
 
       <footer className={styles.bottom}>
         <div
-          className={`${styles.ticker} ${tickerHold && infoText ? styles.isHold : ""}`}
+          className={styles.ticker}
           aria-label="Canadian boxing news"
         >
           <span className={styles.tickerFlag} aria-hidden="true">
@@ -2055,24 +2038,10 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             <img src="/tv/icons/canada-flag.png" alt="" draggable={false} />
           </span>
           <div className={styles.tickerStage}>
-          {tickerHold && infoText ? (
-            <div className={styles.tickerInfo} aria-live="polite">
-              <span className={styles.tickerInfoMark}>INFO</span>
-              <p className={styles.tickerInfoCopy}>{infoText}</p>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/tv/icons/info.png"
-                alt=""
-                className={styles.tickerInfoIcon}
-                draggable={false}
-              />
-            </div>
-          ) : null}
           <div className={styles.tickerCrawl}>
             <div
               ref={tickerTrackRef}
               className={styles.tickerTrack}
-              style={{ animationDuration: `${marqueeSec}s` }}
             >
             {[0, 1].map((copy) => (
               <div

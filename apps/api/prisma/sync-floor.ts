@@ -197,7 +197,7 @@ async function main() {
         capacity:
           slot.youth || slot.tone === "fight" || slot.tone === "sparring"
             ? 12
-            : 16,
+            : 25,
         coachName: slot.coach,
         coachUserId: slot.coach ? coachByName.get(slot.coach) : undefined,
       },

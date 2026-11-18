@@ -22,7 +22,7 @@ const fallbackClasses: LiveClass[] = [
     startsAt: "12:00 PM",
     name: "Beginner Boxing",
     spotsLeft: 8,
-    capacity: 16,
+    capacity: 25,
     status: "open",
   },
   {

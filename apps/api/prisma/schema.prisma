@@ -259,7 +259,7 @@ model Session {
   title       String
   startsAt    DateTime
   endsAt      DateTime
-  capacity    Int      @default(16)
+  capacity    Int      @default(25)
   coachName   String?
   coachUserId String?
   coach       User?    @relation("CoachSessions", fields: [coachUserId], references: [id])
