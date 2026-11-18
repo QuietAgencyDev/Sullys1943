@@ -1316,7 +1316,12 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       leaderName: leader?.displayName ?? null,
       leaderXp: leader?.xp ?? null,
       checkInsToday: board?.kpis.checkInsToday ?? null,
-      spotsOpen: board?.kpis.spotsOpen ?? null,
+      spotsOpen:
+        profile === "floor"
+          ? splitFloor
+            ? null
+            : (focus?.spotsLeft ?? null)
+          : (board?.kpis.spotsOpen ?? null),
       minute: Math.floor(now.getTime() / (10 * 60 * 1000)),
     });
   }, [
@@ -1937,6 +1942,8 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                     {formatClassWindow(session.startsAt, session.endsAt)}
                     {" · "}
                     {formatCountdown(session.secondsRemaining)} left
+                    {" · "}
+                    {session.spotsLeft} spots
                   </p>
                 ))}
               </div>
@@ -2020,10 +2027,29 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
               <p className={styles.kpiLabel}>Classes</p>
             </div>
             <div className={styles.kpi}>
-              <p className={styles.kpiValue}>
-                {board?.kpis.spotsOpen ?? "—"}
-              </p>
-              <p className={styles.kpiLabel}>Spots open</p>
+              {profile === "floor" && (splitFloor ? liveClasses : focus ? [focus] : []).length > 0 ? (
+                <div className={splitFloor ? styles.kpiSplit : undefined}>
+                  {(splitFloor ? liveClasses : [focus!]).map((session) => (
+                    <div key={session.id}>
+                      <p className={`${styles.kpiValue} ${splitFloor ? styles.kpiValueSmall : ""}`}>
+                        {session.spotsLeft}
+                      </p>
+                      <p className={styles.kpiLabel}>
+                        {splitFloor ? session.title : "Spots open"}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <>
+                  <p className={styles.kpiValue}>
+                    {profile === "floor"
+                      ? (focus?.spotsLeft ?? "—")
+                      : (board?.kpis.spotsOpen ?? "—")}
+                  </p>
+                  <p className={styles.kpiLabel}>Spots open</p>
+                </>
+              )}
             </div>
           </div>
 

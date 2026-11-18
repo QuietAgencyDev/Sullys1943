@@ -863,6 +863,16 @@
   text-transform: uppercase;
 }
 
+.kpiSplit {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem;
+}
+
+.kpiValueSmall {
+  font-size: clamp(1.7rem, 3.2vw, 2.3rem);
+}
+
 .bottom {
   display: grid;
   gap: 0.35rem;
