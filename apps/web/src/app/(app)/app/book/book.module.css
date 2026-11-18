@@ -139,6 +139,14 @@
   min-width: 0;
 }
 
+.poster {
+  display: block;
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
 .titleRow {
   display: flex;
   align-items: flex-start;

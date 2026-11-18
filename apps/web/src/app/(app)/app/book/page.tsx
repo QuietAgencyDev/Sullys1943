@@ -5,6 +5,7 @@ import { Alert, Badge, Button, Card, Skeleton } from "@sullys/ui";
 import { ApiError, get, post } from "@/lib/api";
 import styles from "../ui.module.css";
 import bookStyles from "./book.module.css";
+import { posterForClass } from "@/lib/floor-schedule";
 
 type Session = {
   id: string;
@@ -321,6 +322,10 @@ export default function BookPage() {
                       </small>
                     </div>
                     <div className={bookStyles.sessionCopy}>
+                      {posterForClass(title) ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img className={bookStyles.poster} src={posterForClass(title) ?? ""} alt="" />
+                      ) : null}
                       <div className={bookStyles.titleRow}>
                         <h2>{title}</h2>
                         {mine === "confirmed" ? (

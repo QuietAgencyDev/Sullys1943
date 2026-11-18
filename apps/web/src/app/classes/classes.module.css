@@ -79,7 +79,7 @@
 
 .board {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0.7rem;
   align-items: start;
 }
@@ -132,6 +132,22 @@
 }
 .slot.sparring {
   border-left-color: #8d6bb8;
+}
+
+.poster {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 2px;
+  margin-bottom: 0.45rem;
+}
+
+.blurb {
+  margin: 0.3rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  line-height: 1.35;
 }
 
 .time {

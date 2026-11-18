@@ -27,7 +27,9 @@ const DEMO_MODES = [
   "timer",
 ] as const;
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+const API_URL = typeof window === "undefined"
+  ? (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000")
+  : "";
 
 function floorLabel(brandName: string) {
   return `${brandName} floor`;
@@ -164,7 +166,7 @@ const FLOOR_SULLYS: FeedLine[] = [
 
 const FLOOR_CHUVALO: FeedLine[] = [
   { kind: "trivia", text: "George Chuvalo · 1937–2026 · Toronto's heavyweight rests." },
-  { kind: "trivia", text: "Chuvalo passed Feb 12, 2026. The chin that never went down." },
+  { kind: "trivia", text: "Chuvalo died 12 September 2026, his 89th birthday. Born 12 September 1937." },
   { kind: "trivia", text: "Rest in peace, George Chuvalo · 93 fights · never knocked down." },
   { kind: "trivia", text: "Chuvalo · never knocked down in 93 pro fights." },
   { kind: "trivia", text: "March 29, 1966 · Chuvalo goes 15 with Ali at the Gardens." },
@@ -370,6 +372,10 @@ const FLOOR_TORONTO: FeedLine[] = [
   { kind: "trivia", text: "Toronto boxing · Chuvalo's chin, O'Sullivan's amateur run, Ruddock's smash, Morrison on this floor." },
   { kind: "trivia", text: "Parkdale raised this gym. Ossington made it famous. Dundas West kept the doors open." },
   { kind: "trivia", text: "Dundas and Dufferin · the current chapter. The rules did not move." },
+  { kind: "trivia", text: "Lee Reeves · Limerick · died 16 November 2026 · aged 31." },
+  { kind: "trivia", text: "Lee Reeves fought in Toronto. Danforth Music Hall, 20 April 2019. Rebel, 5 May 2022, NABF super lightweight." },
+  { kind: "trivia", text: "Lee Reeves trained with Hardknocks Boxing Club. He was part of this city's boxing community." },
+  { kind: "trivia", text: "Rest in peace, Lee Reeves. Toronto remembers a fighter who worked here." },
   { kind: "trivia", text: "Earl Sullivan was Mimico-born. The west end never left the name." },
   { kind: "trivia", text: "Maple Leaf Gardens, March 29, 1966 · 15 rounds · the building still hums." },
   { kind: "trivia", text: "The Gardens is a grocery store and a university gym now. Chuvalo's night is still in it." },
@@ -442,6 +448,9 @@ const FLOOR_ONTARIO: FeedLine[] = [
   { kind: "trivia", text: "Over 700 boxers. Sully's sent 22. Nineteen came home with medals." },
   { kind: "trivia", text: "Sully's took the Brampton Cup team award. The west end travelled in a pack." },
   { kind: "trivia", text: "Viktoria Penney · gold · women's 80 kg · Brampton Cup 2025 · trained on this floor." },
+  { kind: "trivia", text: "Viktoria Penney · Canadian Elite Nationals · Cape Breton · won her opener Tuesday." },
+  { kind: "trivia", text: "Viktoria Penney · unanimous decision over Melina Laplante · women's 70 kg · 17 November 2026." },
+  { kind: "trivia", text: "Viktoria fights again Thursday at the Canadian Elite Nationals. The gym is with her." },
   { kind: "trivia", text: "Women's boxing · Viktoria and Jackie · this corner is open." },
   { kind: "trivia", text: "Penney calls Sully's a family inside a gym. The medal says the work was real." },
   { kind: "trivia", text: "From Dundas West to Brampton. Same hands. Bigger room." },
@@ -1911,7 +1920,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             </div>
           ) : null}
 
-          {profile === "floor" && busyFloor ? (
+          {profile === "floor" && busyFloor && (board?.leaderboard?.length ?? 0) > 0 ? (
             <div className={styles.panel}>
               <p className={styles.panelTitle}>Leaderboard</p>
               <div className={styles.leaderCrawl} aria-label="Scrolling leaderboard">

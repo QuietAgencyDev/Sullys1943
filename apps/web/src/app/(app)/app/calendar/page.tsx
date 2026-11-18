@@ -6,6 +6,7 @@ import { Alert, Badge, Button, Card, Skeleton } from "@sullys/ui";
 import { ApiError, get } from "@/lib/api";
 import styles from "../ui.module.css";
 import calendarStyles from "./calendar.module.css";
+import { posterForClass } from "@/lib/floor-schedule";
 
 type CalendarItem = {
   id: string;
@@ -257,6 +258,10 @@ export default function CalendarPage() {
                     <Card className={calendarStyles.timelineCard}>
                       <div className={calendarStyles.itemHeading}>
                         <div>
+                          {item.kind === "class_session" && posterForClass(item.title) ? (
+                            /* eslint-disable-next-line @next/next/no-img-element */
+                            <img className={calendarStyles.poster} src={posterForClass(item.title) ?? ""} alt="" />
+                          ) : null}
                           <Badge tone={itemTone(item)}>
                             {itemLabel(item.kind)}
                           </Badge>

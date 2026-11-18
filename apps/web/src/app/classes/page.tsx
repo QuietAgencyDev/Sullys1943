@@ -91,6 +91,10 @@ export default function ClassesPage() {
                       key={`${slot.hour}-${slot.minute}-${slot.title}`}
                       className={`${styles.slot} ${styles[slot.tone]}`}
                     >
+                      {slot.poster ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img className={styles.poster} src={slot.poster} alt="" />
+                      ) : null}
                       <p className={styles.time}>
                         {formatSlotTime(slot.hour, slot.minute)}
                       </p>
@@ -105,6 +109,7 @@ export default function ClassesPage() {
                         ) : null}
                         {slot.note ? ` · ${slot.note}` : ""}
                       </p>
+                      {slot.blurb ? <p className={styles.blurb}>{slot.blurb}</p> : null}
                     </li>
                   ))}
                 </ul>
@@ -114,16 +119,10 @@ export default function ClassesPage() {
         </div>
 
         <ul className={styles.notes}>
-          <li>Free youth classes are Little Champs (ages 6–12) and Jab Lab (ages 13–18).</li>
-          <li>Tony&apos;s House of Pain at 8:00 PM runs Monday through Thursday.</li>
-          <li>
-            Fight Team and Sparring need an active Boxing Ontario membership and a
-            valid medical.
-          </li>
-          <li>
-            Sweet Science is listed with Anthony. The poster does not say Anthony A.
-            or Anthony Sky.
-          </li>
+          <li>The posted week is Monday to Friday. Sunday the gym is closed.</li>
+          <li>Youth Boxing is free Monday, Wednesday, and Friday, 4:30–5:20, ages 13–17. Junior Boxing is free Tuesday and Thursday, 4:30–5:20, ages 8–12. A parent books the child before they arrive. No walk-ins.</li>
+          <li>Fight Team and Sparring are invite only. Coach approval, an active Boxing Ontario membership, a valid medical, a mouthguard, and headgear.</li>
+          <li>A class marked B+C runs at the same time as the class beside it.</li>
         </ul>
 
         {classes.length > 0 ? (

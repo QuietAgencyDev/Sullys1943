@@ -2,7 +2,7 @@
  * Weekly floor schedule from the gym's class poster.
  * Coach names follow the floor roster. A coach is attached only when the
  * poster or the gym's own class list names them.
- * Sweet Science says "Anthony" and does not say A. or S.
+ * Monday to Friday follows the posted floor sheet. Saturday is not on that sheet.
  */
 
 export type ScheduleTone =
@@ -33,6 +33,8 @@ export type FloorSlot = {
   tone: ScheduleTone;
   coach?: string;
   note?: string;
+  blurb?: string;
+  poster?: string;
   youth?: boolean;
 };
 
@@ -142,333 +144,84 @@ export const FLOOR_COACHES: FloorCoach[] = [
   },
 ];
 
-const hop = (
+const POSTER = {
+  hop: "/classes/house-of-pain.jpg",
+  strength: "/classes/strength-conditioning.jpg",
+  beginner: "/classes/beginner-boxing.jpg",
+  junior: "/classes/junior-boxing.jpg",
+  youth: "/classes/youth-boxing.jpg",
+  spar: "/classes/sparring.jpg",
+  path1: "/classes/fight-path-1.jpg",
+  path2: "/classes/fight-path-2.jpg",
+  team: "/classes/fight-team.jpg",
+  boxtech: "/classes/boxtech.jpg",
+} as const;
+
+function slot(
   day: number,
   hour: number,
   minute: number,
-): FloorSlot => ({
-  day,
-  hour,
-  minute,
-  minutes: 60,
-  title: "Tony's House of Pain",
-  level: "Beginner + Intermediate",
-  tone: "plus",
-  coach: "Tony Morrison",
-});
+  minutes: number,
+  title: string,
+  level: string,
+  tone: ScheduleTone,
+  extra: Partial<FloorSlot> = {},
+): FloorSlot {
+  return { day, hour, minute, minutes, title, level, tone, ...extra };
+}
 
-const jab = (day: number): FloorSlot => ({
-  day,
-  hour: 16,
-  minute: 30,
-  minutes: 60,
-  title: "Jab Lab Beginner",
-  level: "Beginner",
-  tone: "beginner",
-  note: "Free · ages 13–18",
-  youth: true,
-});
-
-const youthFight = (day: number): FloorSlot => ({
-  day,
-  hour: 16,
-  minute: 30,
-  minutes: 60,
-  title: "Junior Youth Competition Development",
-  level: "Fight Team",
-  tone: "fight",
-  note: "Boxing Ontario membership and a valid medical",
-  youth: true,
-});
-
-const boxtech = (day: number): FloorSlot => ({
-  day,
-  hour: 18,
-  minute: 30,
-  minutes: 60,
-  title: "Boxtech",
-  level: "Beginner + Intermediate",
-  tone: "plus",
-  coach: "Rico Mancini",
-});
-
-const littleChamps = (day: number): FloorSlot => ({
-  day,
-  hour: 15,
-  minute: 30,
-  minutes: 60,
-  title: "Little Champs Beginner",
-  level: "Beginner",
-  tone: "beginner",
-  coach: "Tony Morrison",
-  note: "Free · ages 6–12",
-  youth: true,
-});
-
-const sweet = (day: number): FloorSlot => ({
-  day,
-  hour: 10,
-  minute: 30,
-  minutes: 60,
-  title: "Sweet Science",
-  level: "Beginner + Intermediate",
-  tone: "plus",
-  coach: "Anthony",
-});
-
-export const FLOOR_SLOTS: FloorSlot[] = [
-  hop(1, 12, 0),
-  hop(1, 13, 30),
-  littleChamps(1),
-  jab(1),
-  youthFight(1),
-  {
-    day: 1,
-    hour: 18,
-    minute: 0,
-    minutes: 60,
-    title: "Beginner Boxing",
-    level: "Beginner",
-    tone: "beginner",
-  },
-  boxtech(1),
-  {
-    day: 1,
-    hour: 19,
-    minute: 15,
-    minutes: 60,
-    title: "Fight Path 1",
-    level: "Intermediate",
-    tone: "intermediate",
-  },
-  hop(1, 20, 0),
-
-  sweet(2),
-  hop(2, 12, 0),
-  hop(2, 13, 30),
-  jab(2),
-  youthFight(2),
-  {
-    day: 2,
-    hour: 17,
-    minute: 30,
-    minutes: 60,
-    title: "Beginner Boxing",
-    level: "Beginner",
-    tone: "beginner",
-  },
-  {
-    day: 2,
-    hour: 18,
-    minute: 0,
-    minutes: 60,
-    title: "Battle Royal",
-    level: "Intermediate",
-    tone: "intermediate",
-  },
-  boxtech(2),
-  {
-    day: 2,
-    hour: 19,
-    minute: 15,
-    minutes: 60,
-    title: "Fight Path 2",
-    level: "Advanced",
-    tone: "advanced",
-  },
-  hop(2, 20, 0),
-
-  {
-    day: 3,
-    hour: 7,
-    minute: 30,
-    minutes: 60,
-    title: "Body Shop",
-    level: "Beginner + Intermediate",
-    tone: "plus",
-    coach: "Jackie",
-  },
-  {
-    day: 3,
-    hour: 9,
-    minute: 0,
-    minutes: 60,
-    title: "Body Shop",
-    level: "Beginner + Intermediate",
-    tone: "plus",
-    coach: "Jackie",
-  },
-  hop(3, 12, 0),
-  hop(3, 13, 30),
-  littleChamps(3),
-  jab(3),
-  youthFight(3),
-  {
-    day: 3,
-    hour: 18,
-    minute: 0,
-    minutes: 60,
-    title: "Fight Path 3",
-    level: "Sparring",
-    tone: "sparring",
-    note: "Boxing Ontario membership and a valid medical",
-  },
-  boxtech(3),
-  {
-    day: 3,
-    hour: 19,
-    minute: 45,
-    minutes: 60,
-    title: "Fight Path 3",
-    level: "Sparring",
-    tone: "sparring",
-    note: "Boxing Ontario membership and a valid medical",
-  },
-  hop(3, 20, 0),
-
-  sweet(4),
-  hop(4, 12, 0),
-  hop(4, 13, 30),
-  jab(4),
-  youthFight(4),
-  {
-    day: 4,
-    hour: 17,
-    minute: 30,
-    minutes: 60,
-    title: "Beginner Boxing",
-    level: "Beginner",
-    tone: "beginner",
-  },
-  boxtech(4),
-  {
-    day: 4,
-    hour: 19,
-    minute: 15,
-    minutes: 60,
-    title: "Fight Path 1",
-    level: "Intermediate",
-    tone: "intermediate",
-  },
-  hop(4, 20, 0),
-
-  {
-    day: 5,
-    hour: 8,
-    minute: 30,
-    minutes: 60,
-    title: "Boxing 101",
-    level: "Beginner",
-    tone: "beginner",
-  },
-  {
-    day: 5,
-    hour: 9,
-    minute: 30,
-    minutes: 60,
-    title: "Powerhouse",
-    level: "Beginner + Intermediate",
-    tone: "plus",
-  },
-  hop(5, 12, 0),
-  hop(5, 13, 30),
-  littleChamps(5),
-  jab(5),
-  youthFight(5),
-  {
-    day: 5,
-    hour: 18,
-    minute: 0,
-    minutes: 60,
-    title: "Beginner Boxing",
-    level: "Beginner",
-    tone: "beginner",
-  },
-  boxtech(5),
-  {
-    day: 5,
-    hour: 19,
-    minute: 15,
-    minutes: 60,
-    title: "Fight Path 2",
-    level: "Advanced",
-    tone: "advanced",
-    coach: "Rico Mancini",
-    note: "New time",
-  },
-
-  {
-    day: 6,
-    hour: 11,
-    minute: 0,
-    minutes: 60,
-    title: "Beginner Boxing",
-    level: "Beginner",
-    tone: "beginner",
-    coach: "Rico Mancini",
-  },
-  {
-    day: 6,
-    hour: 12,
-    minute: 30,
-    minutes: 75,
-    title: "Fight Path 1 & 2",
-    level: "Advanced",
-    tone: "advanced",
-    coach: "Rico Mancini",
-  },
-  {
-    day: 6,
-    hour: 14,
-    minute: 15,
-    minutes: 75,
-    title: "Fight Path 2 & Competitive Sparring",
-    level: "Sparring",
-    tone: "sparring",
-    note: "Boxing Ontario membership and a valid medical",
-  },
-];
-
-/**
- * Floor TV and member app. Same class names as the public poster.
- * Times follow the evening sheet while the gym fills the week in.
- * The public /classes page keeps FLOOR_SLOTS.
- */
-export const APP_FLOOR_SLOTS: FloorSlot[] = [
-  ...FLOOR_SLOTS.flatMap((slot) => {
-    if (slot.title === "Tony's House of Pain" && slot.hour === 20) return [];
-    if (slot.day === 5 && slot.title === "Boxtech") {
-      return [{ ...slot, hour: 18, minute: 0 }];
+export const FLOOR_SLOTS: FloorSlot[] = (() => {
+  const days = [1, 2, 3, 4, 5];
+  const out: FloorSlot[] = [];
+  const hop = 'All levels. Boxing conditioning. 50 minutes. No shortcuts.';
+  const strength = 'All levels. 50 minutes. Strength, stamina, and the muscles behind the punches.';
+  const beginner = 'Beginners only. No experience required. 50 minutes. Stance, footwork, punches, and basic combinations.';
+  const youth = 'Ages 13–17. Free Monday, Wednesday, and Friday, 4:30–5:20. A parent books the child. No walk-ins.';
+  const junior = 'Ages 8–12. Free Tuesday and Thursday, 4:30–5:20. A parent books the child. No walk-ins.';
+  const box = 'All levels. Technique first: footwork, defence, angles, and ring sense. Start here before Fight Path.';
+  const path1 = 'Intermediate. 50 minutes. At least 6 months of boxing. Not for beginners.';
+  const path2 = 'Intermediate and advanced. 50 minutes. At least 6 months, depending on skill. Not for beginners.';
+  const team = 'Invite only. 90 minutes. Coach approval, Boxing Ontario membership, a valid medical, mouthguard, and headgear.';
+  const spar = 'Invite only. 90 minutes. Coach approval, Boxing Ontario membership, a valid medical, mouthguard, and headgear.';
+  for (const day of days) {
+    out.push(slot(day, 12, 0, 50, 'House of Pain', 'All levels', 'plus', { poster: POSTER.hop, blurb: hop }));
+    out.push(slot(day, 13, 0, 50, 'Strength and Conditioning', 'All levels', 'plus', { poster: POSTER.strength, blurb: strength }));
+    if (day === 1 || day === 3 || day === 5) {
+      out.push(slot(day, 16, 30, 50, 'Youth Boxing', 'Ages 13–17', 'beginner', { poster: POSTER.youth, blurb: youth, youth: true, note: 'Free · parent booking required' }));
+    } else {
+      out.push(slot(day, 16, 30, 50, 'Junior Boxing', 'Ages 8–12', 'beginner', { poster: POSTER.junior, blurb: junior, youth: true, note: 'Free · parent booking required' }));
     }
-    if (slot.day === 5 && slot.title === "Fight Path 2") {
-      return [
-        {
-          day: 5,
-          hour: 19,
-          minute: 15,
-          minutes: 60,
-          title: "Sparring",
-          level: "Sparring",
-          tone: "sparring" as const,
-          coach: "Rico Mancini",
-          note: "New time",
-        },
-        { ...slot, hour: 19, minute: 45, note: undefined, coach: undefined },
-      ];
+    out.push(slot(day, 17, 30, 50, 'Beginner Boxing', 'Beginners only', 'beginner', { poster: POSTER.beginner, blurb: beginner }));
+    if (day === 2 || day === 4) {
+      out.push(slot(day, 18, 30, 50, 'House of Pain', 'All levels', 'plus', { poster: POSTER.hop, blurb: hop }));
+    } else {
+      out.push(slot(day, 18, 30, 50, 'BoxTech', 'All levels', 'plus', { poster: POSTER.boxtech, blurb: box }));
     }
-    return [slot];
-  }),
-  {
-    day: 6,
-    hour: 9,
-    minute: 0,
-    minutes: 60,
-    title: "Beginner Boxing",
-    level: "Beginner",
-    tone: "beginner",
-    coach: "Viktoria Penney",
-  },
-];
+    if (day === 1 || day === 3) {
+      out.push(slot(day, 18, 30, 50, 'Fight Path 1', 'Intermediate', 'intermediate', { poster: POSTER.path1, blurb: path1, note: 'B+C · 6+ months' }));
+    } else if (day === 2) {
+      out.push(slot(day, 18, 30, 50, 'Battle Royale', 'Intermediate', 'intermediate', { coach: 'Jonathan Bochner', note: 'B+C', blurb: 'Jonathan Bochner. 50 minutes. The second class at 6:30.' }));
+    } else {
+      out.push(slot(day, 18, 30, 50, 'Fight Path 2', 'Intermediate / Advanced', 'advanced', { poster: POSTER.path2, blurb: path2, note: 'B+C · 6+ months' }));
+    }
+    out.push(slot(day, 19, 30, 50, 'House of Pain', 'All levels', 'plus', { poster: POSTER.hop, blurb: hop }));
+    if (day === 1 || day === 5) {
+      out.push(slot(day, 19, 30, 90, 'Technical Sparring', 'Invite only', 'sparring', { poster: POSTER.spar, blurb: spar, note: 'B+C · coach approval required' }));
+    } else if (day === 3) {
+      out.push(slot(day, 19, 30, 50, 'Strength and Conditioning', 'All levels', 'plus', { poster: POSTER.strength, blurb: strength, note: 'B+C' }));
+    } else {
+      out.push(slot(day, 19, 30, 90, 'Fight Team', 'Invite only', 'fight', { poster: POSTER.team, blurb: team, note: 'B+C · coach approval required' }));
+    }
+  }
+  return out;
+})();
+
+export const APP_FLOOR_SLOTS: FloorSlot[] = FLOOR_SLOTS;
+
+export function posterForClass(title: string): string | null {
+  const found = FLOOR_SLOTS.find((slot) => slot.title === title && slot.poster);
+  return found?.poster ?? null;
+}
 
 export const SCHEDULE_DAYS = [
   { day: 1, label: "Monday" },
@@ -476,7 +229,6 @@ export const SCHEDULE_DAYS = [
   { day: 3, label: "Wednesday" },
   { day: 4, label: "Thursday" },
   { day: 5, label: "Friday" },
-  { day: 6, label: "Saturday" },
 ] as const;
 
 export function coachDisplayName(coach: {

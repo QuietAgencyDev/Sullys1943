@@ -90,13 +90,6 @@ const ACTIONS: {
     roles: ["coach", "admin", "owner"],
   },
   {
-    href: "/kitchen",
-    title: "Kitchen display",
-    description: "Coming soon — the gym is not serving food yet",
-    group: "Operations",
-    roles: ["admin", "owner"],
-  },
-  {
     href: "/owner",
     title: "Owner brief",
     description: "Membership, revenue, waivers and broadcasts",

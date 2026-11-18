@@ -153,7 +153,9 @@ doc.moveDown(1.2);
 doc.font("Helvetica-Bold").fontSize(12).text("Developed by Quiet Agency", { width: 504, align: "center" });
 doc.font("Helvetica").fontSize(10).text("quietagency.co", { width: 504, align: "center" });
 doc.moveDown(0.8);
-doc.fontSize(9).text("Office print  ·  12 November 2026  ·  Letter  ·  Black and white", { width: 504, align: "center" });
+doc.fontSize(9).text("Office print  ·  18 November 2026  ·  Letter  ·  Black and white", { width: 504, align: "center" });
+doc.moveDown(0.3);
+doc.font("Helvetica-Bold").fontSize(10).text("Migration calls: Thursday 19 November 2026", { width: 504, align: "center" });
 doc.moveDown(0.4);
 doc.font("Helvetica-Oblique").fontSize(9).text("Keep this book in the office. Do not leave the login page on a floor TV.", {
   width: 460,
@@ -174,6 +176,8 @@ const logins = [
   ["Owner", "owner@sullys.local", staff],
   ["Admin", "admin@sullys.local", staff],
   ["Front desk", "desk@sullys.local", staff],
+  ["Jacob, front desk", "jacob@sullys.local", staff],
+  ["Jesse, front desk", "jesse@sullys.local", staff],
   ["Tony Morrison", "coach@sullys.local", staff],
   ["Rico Mancini", "coach.rico@sullys.local", staff],
   ["Tommy", "coach.tommy@sullys.local", staff],
@@ -239,33 +243,82 @@ num(doc, "6", "Messages are for that class. Gym-wide notes come from the owner. 
 num(doc, "7", "After class, complete Live, finalize the roster, and leave the next coach a clean page.");
 para(doc, "An athlete who says they paid and is not on the roster goes to the desk. A coach who cannot sign in does not use someone else's account.");
 
-h1(doc, "5  ·  Leave Glofox");
-para(doc, "Do this while Glofox is still billing. Sully's does not cancel Glofox. Do not bill the same month in both places.");
+h1(doc, "5  ·  Migration out — read this before the calls");
+para(doc, "Print this section and take it to the calls on Thursday 19 November 2026. Glofox is still the biller. Stripe and GoCardless are off. The gym keeps using Glofox at the door until the written end date in this section is filled in. One member, one bill, one month. Never both.");
+para(doc, "Already in Sully's from the 11 November 2026 export: 2,445 people, plus one older demo account, 2,446 names. That file is a contact list. It is not 2,446 paying members.");
+bullet(doc, "144 standard adult dues were still in date: 141 at $150 a month, and 3 at $120 a month. List price about $21,510 a month. Not cash collected.");
+bullet(doc, "11 standard adult plans were already expired: 1 at $150, and 10 at $120.");
+bullet(doc, "Also in date, and not part of the 144: 17 youth at $85, 1 youth at $75, 6 complimentary youth at $0, 4 promo at $100, 1 promo at $130, and 4 flex passes.");
+bullet(doc, "Stored cards did not come across. Class history did not come across. The old Glofox waiver did not come across. One Sully's waiver is signed. Password email is not sending. Do not mail the list.");
+para(doc, "Goal after the move: 300 standard adult dues in date. Gap from the 11 November count: 156. The desk scoreboard is Adults in date, Net new this week, Cancellations, Remaining to 300.");
+
+h1(doc, "6  ·  Thursday morning, before anyone is on the phone");
 num(doc, "1", "Sign in to Glofox. Open Manage, then Clients.");
-num(doc, "2", "Optional: filter to active people if that package allows filters.");
-num(doc, "3", "Actions, then Download. Save the CSV.");
-num(doc, "4", "The header must include email, first name, last name, and should include phone, membership, status, start, and end.");
-num(doc, "5", "Send the file to Quiet Agency in private. Do not post it in a group chat. Delete it after the import is confirmed.");
+num(doc, "2", "Actions, then Download. Save the CSV on the office computer. Put today's date in the file name.");
+num(doc, "3", "The header must include email, first name, and last name. It should also include phone, membership name, status, start, and end.");
+num(doc, "4", "Send that file to Quiet Agency in private. Do not post it in a group chat. Delete it after the import is confirmed.");
+num(doc, "5", "Open a blank page in this book. You will write the answers from the call. Do not cancel anything until those answers are written.");
 urlLine(doc, "Glofox sign-in", "https://app.glofox.com/");
 urlLine(doc, "How to download the client list", "https://support.glofox.com/hc/en-us/articles/46433498252564-How-to-Download-a-Client-List");
-para(doc, "A row with no email or no name is skipped. An email already in Sully's is kept. Card numbers are ignored. Waivers, class history, and stored cards do not come across. Youth, kid, child, Little Champ, Jab Lab, or free becomes the youth plan. Everything else becomes the adult monthly plan. Cancelled, expired, inactive, or frozen comes in cancelled. Paused stays paused.");
-para(doc, "Quiet Agency runs a dry pass, then the write. New people set a password from Forgot password and sign the Sully's waiver before a check-in card will issue.");
-urlLine(doc, "Dry run, writes nothing", "node scripts/import-glofox-members.mjs members.csv");
-urlLine(doc, "Write", "node scripts/import-glofox-members.mjs members.csv --commit");
-para(doc, "The November 11 member file is already in Sully's. 2,445 accounts were added. 177 of them have a current membership. Nobody was emailed. The old Glofox waiver was not copied. A check-in still needs a Sully's waiver.");
-para(doc, "Next, contact Glofox. Cancel the service and request the transfer of recurring payments. Do not turn Stripe or GoCardless on until that transfer is agreed, and do not bill the same month in both places.");
 
-h1(doc, "6  ·  Stripe and GoCardless");
-para(doc, "Payments stay off. Stripe is the card path for memberships. GoCardless is the bank-debit path for members who pay from their account. Helcim is not the processor. The gym system never stores a full card number.");
-num(doc, "1", "Contact Glofox. Cancel, and request the transfer of recurring payments.");
-num(doc, "2", "When that transfer is agreed, connect Stripe for card memberships. Monthly plans become subscriptions. One real charge must match the owner total before members are told card pay is live.");
-num(doc, "3", "Connect GoCardless only for the bank-debit members on that transfer. Do not put those people on Stripe as well.");
-num(doc, "4", "Cash stays on the desk ledger. The desk already flags an unpaid or past-due account and will not scan them onto the floor without a staff override.");
+h1(doc, "7  ·  The Glofox call");
+para(doc, "Say this: Sully's Boxing Gym is leaving. We need the software cancellation date, and a list of every member you will still bill, split into card and bank debit. We will not take a month you are still billing.");
+num(doc, "1", "Confirm the account owner and the billing contact. Write the name.");
+num(doc, "2", "Ask the monthly software invoice amount, and the date of the next software invoice.");
+num(doc, "3", "Ask how many members have a live recurring payment today.");
+num(doc, "4", "Ask how many of those are card, and how many are bank debit. Write both numbers.");
+num(doc, "5", "Ask the next date each of those members will be billed. Ask them to stop the next run if that date lands in a month Sully's will bill.");
+num(doc, "6", "Ask the last date they will bill any member. That date is the end. It has to be in writing the same day.");
+num(doc, "7", "They cannot give you the full card number, and you do not want it. Ask for email, plan name, amount, next bill date, card brand, and last four digits only.");
+num(doc, "8", "Ask whether a bank-debit mandate can be transferred. If they say no, those members sign a new GoCardless form. They are not put on a card to avoid the form.");
+num(doc, "9", "Ask what happens to a member whose month is already paid. They train through the date they paid. Sully's does not bill that same month.");
+num(doc, "10", "Do not accept a verbal cancel with no date. Ask them to email the cancellation date and the card-versus-bank list before you hang up.");
+para(doc, "Do not give Glofox a card number. Do not let them talk you into one more software year. Do not turn Stripe on during this call.");
+
+h1(doc, "8  ·  Write the answers here");
+para(doc, "Person on the Glofox call: ________________________________  Date: 19 November 2026");
+para(doc, "Software invoice amount: ______________    Next software invoice date: ______________");
+para(doc, "Live recurring members: ________    Card: ________    Bank debit: ________    Cash only: ________");
+para(doc, "Last date Glofox will bill a member: ____________________");
+para(doc, "First date Sully's may bill that same member: ____________________");
+para(doc, "Written email received the same day:  yes  /  no     Saved where: ____________________");
+para(doc, "Bank-debit mandates transfer:  yes  /  no     If no, GoCardless forms needed: ________");
+
+h1(doc, "9  ·  The Stripe call");
+para(doc, "Stripe is cards only. GoCardless is bank debit only. Helcim is not the processor. The gym system never stores a full card number. Do this after the Glofox list is in hand, the same day if the list arrived.");
+num(doc, "1", "Open or confirm the Stripe account in the gym's legal name. Canada. The statement name is Sully's Boxing Gym.");
+num(doc, "2", "Do not build the live prices until the card list from Glofox is on the desk.");
+num(doc, "3", "Prices to create when the list matches: Monthly $150, ages 19 and up. Monthly $120, ages 19 and up, for the three people still on that price. Any promo still in date stays its own price. Do not fold them into $150.");
+num(doc, "4", "Youth is not an adult dues plan. Complimentary youth is $0 and is not a Stripe subscription.");
+num(doc, "5", "Quiet Agency puts the secret keys on the server. Do not paste a secret key into email, text, or a group chat.");
+num(doc, "6", "Run one real charge. The owner brief total must match Stripe before any member is told that card pay is live.");
+num(doc, "7", "If the totals do not match, stop. Do not announce it. Do not bill the list.");
 urlLine(doc, "Stripe", "https://dashboard.stripe.com/");
+para(doc, "Stripe account email used: ______________________________________");
+para(doc, "One real charge date: ______________    Amount: ______________    Owner brief matched:  yes  /  no");
+
+h1(doc, "10  ·  GoCardless, only for bank debit");
+num(doc, "1", "Open GoCardless only for the people Glofox marked as bank debit.");
+num(doc, "2", "Each of those people signs a new debit mandate. A card on Stripe is not a substitute.");
+num(doc, "3", "Do not put the same person on Stripe and GoCardless.");
+num(doc, "4", "Cash stays on the desk ledger. The desk already flags an unpaid or past-due account and will not scan them onto the floor without a written override.");
 urlLine(doc, "GoCardless", "https://manage.gocardless.com/");
 para(doc, "QuickBooks comes after a settled week on Stripe or GoCardless. Do not post the same deposit a second way.");
 
-h1(doc, "7  ·  Test before you announce it");
+h1(doc, "11  ·  The week of the switch");
+para(doc, "Start this only after the last Glofox bill date is written in section 8 and the one Stripe charge matched.");
+num(doc, "1", "If the Thursday CSV is newer than 11 November, Quiet Agency runs a dry pass, then the write. An email already in Sully's is kept. A row with no email or no name is skipped.");
+num(doc, "2", "Turn on password email. Send one test to the owner. Open it. Use it. Then, and only then, a member can use Forgot password.");
+num(doc, "3", "At the desk, the person sets a password, signs the Sully's waiver, and only then gets a QR. No waiver, no card. A youth card waits for the guardian.");
+num(doc, "4", "Do not email all 2,445 people. Class packages first, then people who booked in the last 90 days.");
+num(doc, "5", "The morning of the first class on this door: floor TV at the floor address, fullscreen, tapped once for sound. Desk scan box clicked. One test QR. Today's classes on the board.");
+num(doc, "6", "Each Monday after the switch, write four numbers: Adults in date, Net new this week, Cancellations, Remaining to 300.");
+urlLine(doc, "Dry run, writes nothing", "node scripts/import-glofox-members.mjs members.csv");
+urlLine(doc, "Write", "node scripts/import-glofox-members.mjs members.csv --commit");
+para(doc, "Floor page: https://www.sullys1943.com/tv/floor");
+para(doc, "A name on the old file is not a member here until the dues are in date, the new waiver is signed, and the desk has scanned them in.");
+
+h1(doc, "12  ·  Test before you announce it");
 check(doc, "The 22-inch computer is on the gym Wi-Fi. Chrome is open. Windows key and P is set to Extend. The HDMI cable reaches the wall TV, and the Roku is on that HDMI input.");
 check(doc, "Owner sign-in opens the owner brief.");
 check(doc, "Front desk sign-in opens check-in. The cursor is in the scan box. One test QR checks in.");
@@ -277,7 +330,7 @@ check(doc, "A cash drop-in is on the Sully's ledger. Stripe and GoCardless are s
 check(doc, "An imported member can use Forgot password once that email is turned on, then sign the waiver.");
 check(doc, "Nobody is billed in Glofox and here for the same month.");
 
-h1(doc, "8  ·  Computer, wall TV, scanner");
+h1(doc, "13  ·  Computer, wall TV, scanner");
 para(doc, "Nothing is installed on the computer. Chrome is the gym. The 22-inch screen is the desk. The HDMI port feeds the 50-inch TV on the wall.");
 bullet(doc, "Computer: STGSivir All-in-One Desktop, 22-inch FHD display.");
 bullet(doc, "Processor: Intel Core i7, up to 3.9 GHz.");
@@ -297,7 +350,7 @@ urlLine(doc, "Desk check-in", "https://staff.sullys1943.com/desk");
 urlLine(doc, "Zebra DS2208 guide", "https://www.zebra.com/content/dam/support-dam/en/documentation/unrestricted/guide/product/ds2208-prg-en.pdf");
 urlLine(doc, "Honeywell Voyager XP 1472g USB kit", "https://www.barcodefactory.com/honeywell/scanners/voyager-1472g/1472g2d-2usb-5-n");
 
-h1(doc, "9  ·  Not live yet");
+h1(doc, "14  ·  Not live yet");
 bullet(doc, "Stripe. Card memberships. Off until Glofox is cancelled and the transfer is requested.");
 bullet(doc, "GoCardless. Bank debit. Off until that same transfer says which members pay from their bank.");
 bullet(doc, "Password-reset email. Accounts exist. The email is not turned on, so do not send the member letter yet.");

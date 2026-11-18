@@ -47,6 +47,16 @@ export class TvController {
         take: 8,
       }),
       this.prisma.announcement.findMany({
+        where: {
+          NOT: {
+            OR: [
+              { title: { contains: "Kitchen", mode: "insensitive" } },
+              { title: { contains: "Fight Night", mode: "insensitive" } },
+              { body: { contains: "Chicken", mode: "insensitive" } },
+              { body: { contains: "pre-order", mode: "insensitive" } },
+            ],
+          },
+        },
         orderBy: { createdAt: "desc" },
         take: 3,
       }),
@@ -142,19 +152,23 @@ export class TvController {
       : [];
     const userMap = new Map(users.map((u) => [u.id, u]));
 
-    const leaderboard = xpRows
-      .map((row, index) => {
-        const u = userMap.get(row.userId);
-        if (!u) return null;
-        const xp = row._sum.delta ?? 0;
-        return {
-          rank: index + 1,
-          displayName: `${u.firstName} ${u.lastName.charAt(0)}.`,
+    const leaderboard = xpRows.flatMap((row) => {
+      const u = userMap.get(row.userId);
+      if (!u) return [];
+      const xp = row._sum.delta ?? 0;
+      const initial = u.lastName.trim().charAt(0);
+      return [
+        {
+          rank: 0,
+          displayName: initial ? `${u.firstName} ${initial}.` : u.firstName,
           xp,
           level: Math.floor(xp / 100) + 1,
-        };
-      })
-      .filter(Boolean);
+        },
+      ];
+    });
+    leaderboard.forEach((row, index) => {
+      row.rank = index + 1;
+    });
 
     const mapped = sessions.map((s) => {
       const booked = s.bookings.length;
