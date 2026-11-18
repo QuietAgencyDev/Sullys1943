@@ -306,10 +306,8 @@ export class CoachController {
 
     const coming = mapped.filter((s) => s.phase !== "done");
     const own = canSeeAllSessions(auth) ? coming : coming.filter((s) => s.mine);
-    const current =
-      own.find((s) => s.live.status === "running" || s.live.status === "paused") ??
-      own.find((s) => s.phase === "live") ??
-      null;
+    const liveNow = own.filter((s) => s.phase === "live");
+    const current = liveNow[0] ?? null;
     const next = own.find((s) => s.phase === "upcoming") ?? null;
 
     const waitlistTotal = mapped.reduce((n, s) => n + s.waitlisted, 0);
@@ -422,6 +420,7 @@ export class CoachController {
         email: auth.email,
       },
       current,
+      liveNow,
       next,
       today: coming,
       kpis: {

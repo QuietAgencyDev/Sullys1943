@@ -1261,32 +1261,36 @@
 }
 
 .splitRing {
-  position: relative;
-  z-index: 4;
+  position: absolute;
+  inset: 0;
+  z-index: 5;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
+  gap: 1rem;
+  align-items: stretch;
 }
 
 .splitCard {
   display: grid;
-  gap: 0.35rem;
-  padding: 0.85rem 1rem;
-  border: 1px solid rgba(243, 230, 200, 0.22);
-  background: rgba(0, 0, 0, 0.42);
+  align-content: center;
+  gap: 0.45rem;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid rgba(243, 230, 200, 0.28);
+  background: rgba(12, 9, 8, 0.72);
 }
 
 .splitTitle {
   margin: 0;
-  font-size: clamp(1.6rem, 3vw, 2.6rem);
-  line-height: 0.95;
+  font-size: clamp(2.1rem, 4.2vw, 3.6rem);
+  line-height: 0.92;
   text-transform: uppercase;
 }
 
 .splitClock {
-  margin: 0;
-  font-size: clamp(2rem, 4vw, 3.4rem);
+  margin: 0.2rem 0 0;
+  font-size: clamp(3.2rem, 7vw, 5.4rem);
   font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
 }
 
 .spotsFlash {

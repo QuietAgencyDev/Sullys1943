@@ -33,6 +33,7 @@ type SessionRow = {
 
 type Home = {
   current: SessionRow | null;
+  liveNow?: SessionRow[];
   next: SessionRow | null;
   today: SessionRow[];
   kpis: {
@@ -144,6 +145,29 @@ export default function CoachHomePage() {
           </div>
 
           <div className={`${styles.grid} ${styles.grid2}`} style={{ marginTop: "1.25rem" }}>
+            {(home.liveNow ?? []).length > 1 ? (
+              <section className={`${styles.card} ${styles.pulseIn}`} style={{ gridColumn: "1 / -1" }}>
+                <p className={styles.eyebrow}>Two classes now</p>
+                <div className={`${styles.grid} ${styles.grid2}`}>
+                  {(home.liveNow ?? []).map((session) => (
+                    <div key={session.id}>
+                      <h2>{session.title}</h2>
+                      <p className={styles.rowMeta}>
+                        {fmtTime(session.startsAt)}–{fmtTime(session.endsAt)}
+                        {" · "}
+                        {session.checkedIn}/{session.capacity}
+                        {session.coachName ? ` · ${session.coachName}` : ""}
+                      </p>
+                      <p>
+                        <Link className={styles.ctaLink} href={`/coach/live/${session.id}`}>
+                          PROGRAM THIS CLASS →
+                        </Link>
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ) : (
             <section className={`${styles.card} ${styles.pulseIn}`}>
               <p className={styles.eyebrow}>
                 {home.current ? "Current class" : "Up next"}
@@ -167,7 +191,7 @@ export default function CoachHomePage() {
                       className={styles.ctaLink}
                       href={`/coach/live/${(home.current ?? home.next)!.id}`}
                     >
-                      START CLASS →
+                      PROGRAM THIS CLASS →
                     </Link>
                   </p>
                 </>
@@ -175,6 +199,7 @@ export default function CoachHomePage() {
                 <p className={styles.hint}>Nothing on your schedule today.</p>
               )}
             </section>
+            )}
 
             <section className={styles.card}>
               <p className={styles.eyebrow}>Next class</p>
@@ -281,7 +306,10 @@ export default function CoachHomePage() {
             <p className={styles.eyebrow}>Floor calendar</p>
             <ul className={styles.list}>
               {home.today.map((s) => {
-                const meta = `${fmtTime(s.startsAt)} · ${s.coachName ?? "Coach"} · ${s.checkedIn}/${s.capacity} in`;
+                const sameTime = home.today.filter(
+                  (other) => other.id !== s.id && other.startsAt === s.startsAt,
+                ).length;
+                const meta = `${fmtTime(s.startsAt)}–${fmtTime(s.endsAt)}${sameTime ? " · with another class" : ""} · ${s.coachName ?? "Open"} · ${s.checkedIn}/${s.capacity}`;
                 return (
                   <li key={s.id}>
                     {s.mine === false ? (

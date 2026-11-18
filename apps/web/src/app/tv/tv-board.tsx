@@ -1579,28 +1579,24 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             <div className={styles.splitRing} aria-label="Two classes on the floor">
               {liveClasses.map((session) => (
                 <article key={session.id} className={styles.splitCard}>
-                  <p className={styles.phase}>Live now</p>
+                  <p className={styles.phase}>Live · {formatClassWindow(session.startsAt, session.endsAt)}</p>
                   <h2 className={styles.splitTitle}>{session.title}</h2>
                   <p className={styles.meta}>
                     {session.coach ? `Coach ${session.coach}` : "On the floor"}
                     {" · "}
-                    {session.checkedIn ?? 0} scanned
+                    {session.checkedIn ?? 0}/{session.capacity}
                     {" · "}
                     {session.spotsLeft} spots
                   </p>
-                  {session.spotsLeft > 0 && session.spotsLeft <= 6 ? (
-                    <p className={styles.spotsFlash}>
-                      {session.spotsLeft} {session.spotsLeft === 1 ? "spot" : "spots"} open
-                    </p>
-                  ) : null}
                   <p className={styles.splitClock}>
                     {formatCountdown(session.secondsRemaining)}
                   </p>
+                  <p className={styles.roundMeta}>Time left in this class</p>
                 </article>
               ))}
             </div>
           ) : null}
-          {showRoundHero && !showArtPopup ? (
+          {showRoundHero && !showArtPopup && !splitFloor ? (
             <div className={styles.phaseCurtain} key={`curtain-${sceneKey}`}>
               <span>{round.phase === "work" ? "WORK" : "REST"}</span>
               <strong>ROUND {String(round.round).padStart(2, "0")}</strong>
@@ -1742,7 +1738,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
               </ul>
             </>
           ) : null}
-          {showRoundHero ? (
+          {showRoundHero && !splitFloor ? (
             <>
               <p className={styles.phase}>
                 {onScheduleClock
