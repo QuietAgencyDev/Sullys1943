@@ -1270,13 +1270,25 @@
   align-items: stretch;
 }
 
+.exampleFlag {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.7rem;
+  z-index: 6;
+  margin: 0;
+  color: #f3e6c8;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 .splitCard {
   display: grid;
   align-content: center;
   gap: 0.45rem;
   padding: 1.1rem 1.2rem;
   border: 1px solid rgba(243, 230, 200, 0.28);
-  background: rgba(12, 9, 8, 0.72);
+  background: #120e0c;
 }
 
 .splitTitle {

@@ -931,6 +931,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   const [adOn, setAdOn] = useState(false);
   const tickerTrackRef = useRef<HTMLDivElement>(null);
   const [demoClassIndex, setDemoClassIndex] = useState(0);
+  const [pairExample, setPairExample] = useState(false);
   const [poseTick, setPoseTick] = useState(0);
   const [demoOrder, setDemoOrder] = useState<number[]>(() =>
     FLOOR_DEMO_CLASSES.map((_, i) => i),
@@ -1141,6 +1142,10 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   }, [latestArrivalAt, latestArrivalName, profile]);
 
   useEffect(() => {
+    setPairExample(new URLSearchParams(window.location.search).get("example") === "pair");
+  }, []);
+
+  useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key.toLowerCase() === "f") {
         if (!document.fullscreenElement) {
@@ -1155,12 +1160,44 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   }, []);
 
   const focus = board?.live ?? board?.next ?? null;
+  const exampleClasses = useMemo(() => {
+    if (!pairExample) return null;
+    const start = new Date(now);
+    start.setSeconds(0, 0);
+    const end = new Date(start.getTime() + 50 * 60_000);
+    const remaining = Math.max(1, Math.floor((end.getTime() - now.getTime()) / 1000));
+    const card = (
+      id: string,
+      title: string,
+      checkedIn: number,
+      booked: number,
+    ): SessionCard => ({
+      id,
+      title,
+      program: "Boxing",
+      coach: null,
+      startsAt: start.toISOString(),
+      endsAt: end.toISOString(),
+      capacity: 25,
+      booked,
+      checkedIn,
+      spotsLeft: Math.max(0, 25 - booked),
+      phase: "live",
+      secondsToStart: 0,
+      secondsRemaining: remaining,
+    });
+    return [
+      card("example-boxtech", "BoxTech", 9, 14),
+      card("example-path", "Fight Path 1", 7, 11),
+    ];
+  }, [pairExample, now]);
   const liveClasses = (
-    board?.liveClasses?.length
+    exampleClasses ??
+    (board?.liveClasses?.length
       ? board.liveClasses
       : board?.live
         ? [board.live]
-        : []
+        : [])
   ).slice(0, 2);
   const splitFloor = profile === "floor" && liveClasses.length >= 2;
   const busyFloor =
@@ -1295,7 +1332,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   const coachMode = board?.coachTimer?.tvMode ?? "timer";
   const liveEvent =
     coachMode !== "timer" && hasArtPopup(coachMode) && !popupFreeze && !demoCelebrate;
-  const floorAd = adOn && profile === "floor" ? FLOOR_ADS[adIndex] : null;
+  const floorAd = pairExample || !adOn || profile !== "floor" ? null : FLOOR_ADS[adIndex];
   const calendarScreen = floorAd?.mode === "floor_calendar";
   const posterScreen = floorAd?.mode === "sponsor_poster";
   const gymScreen = Boolean(floorAd?.hero?.includes("sullys-ossington"));
@@ -1399,7 +1436,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
           </div>
         </div>
       ) : null}
-      {offline ? (
+      {offline && !pairExample ? (
         <div className={styles.offlineBanner} role="status">
           Offline · last good board · timer running
         </div>
@@ -1577,6 +1614,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
           ) : null}
           {splitFloor && !showArtPopup ? (
             <div className={styles.splitRing} aria-label="Two classes on the floor">
+              {pairExample ? <p className={styles.exampleFlag}>Example · two classes</p> : null}
               {liveClasses.map((session) => (
                 <article key={session.id} className={styles.splitCard}>
                   <p className={styles.phase}>Live · {formatClassWindow(session.startsAt, session.endsAt)}</p>
@@ -1602,7 +1640,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
               <strong>ROUND {String(round.round).padStart(2, "0")}</strong>
             </div>
           ) : null}
-          {showArtPopup ? null : (
+          {showArtPopup || splitFloor ? null : (
           <div
             key={sceneKey}
             className={`${styles.heroContent} ${

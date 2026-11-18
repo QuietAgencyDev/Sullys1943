@@ -31,6 +31,7 @@ export class ClassesController {
           startsAt: s.startsAt.toLocaleTimeString("en-US", {
             hour: "numeric",
             minute: "2-digit",
+            timeZone: "America/Toronto",
           }),
           name: s.title,
           spotsLeft,
