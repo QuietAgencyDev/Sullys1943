@@ -960,6 +960,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   });
   const [adIndex, setAdIndex] = useState(0);
   const [adOn, setAdOn] = useState(false);
+  const [forceChart, setForceChart] = useState(false);
   const [demoClassIndex, setDemoClassIndex] = useState(0);
   const [pairExample, setPairExample] = useState(false);
   const [poseTick, setPoseTick] = useState(0);
@@ -997,6 +998,11 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   }, [demoCelebrate, popupFreeze, profile]);
 
   useEffect(() => {
+    const card = new URLSearchParams(window.location.search).get("card") ?? "";
+    if (card.toLowerCase().includes("100")) setForceChart(true);
+  }, []);
+
+  useEffect(() => {
     const classOnFloor = Boolean(board?.live || board?.coachTimer);
     const coachClock = board?.coachTimer;
     const phase = coachClock?.syncedToCoach
@@ -1010,17 +1016,8 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
           timerCfg.restSec,
           timerCfg.rounds,
         ).phase;
-    if (
-      profile !== "floor" ||
-      popupFreeze ||
-      demoCelebrate ||
-      (classOnFloor && phase === "work")
-    ) {
-      setAdOn(false);
-      return;
-    }
     const pin = new URLSearchParams(window.location.search).get("card");
-    if (pin) {
+    if (profile === "floor" && pin) {
       const needle = pin.toLowerCase();
       const idx = FLOOR_ADS.findIndex((ad) =>
         `${ad.h1} ${ad.h2} ${ad.msg}`.toLowerCase().includes(needle),
@@ -1030,6 +1027,15 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
         setAdOn(true);
         return;
       }
+    }
+    if (
+      profile !== "floor" ||
+      popupFreeze ||
+      demoCelebrate ||
+      (classOnFloor && phase === "work")
+    ) {
+      setAdOn(false);
+      return;
     }
     let timer: ReturnType<typeof setTimeout>;
     let cancelled = false;
@@ -1349,7 +1355,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     coachMode !== "timer" && hasArtPopup(coachMode) && !popupFreeze && !demoCelebrate;
   const floorAd = pairExample || !adOn || profile !== "floor" ? null : FLOOR_ADS[adIndex];
   const calendarScreen = floorAd?.mode === "floor_calendar";
-  const chartScreen = floorAd?.mode === "xp_chart";
+  const chartScreen = forceChart || floorAd?.mode === "xp_chart";
   const posterScreen = floorAd?.mode === "sponsor_poster";
   const gymScreen = Boolean(floorAd?.hero?.includes("sullys-ossington"));
   const tvMode =
