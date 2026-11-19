@@ -264,23 +264,6 @@ function CssFallback({
         </>
       ) : null}
 
-      <div className={styles.gloves}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={pack.left}
-          alt=""
-          className={`${styles.glove} ${styles.gloveLeft}`}
-          draggable={false}
-        />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={pack.right}
-          alt=""
-          className={`${styles.glove} ${styles.gloveRight}`}
-          draggable={false}
-        />
-      </div>
-
       {/* Bottom dock: XP + accent icon — clear of hero titles */}
       <div className={styles.dock}>
         {pack.dock ? (

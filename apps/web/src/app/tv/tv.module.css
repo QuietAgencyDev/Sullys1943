@@ -1,3 +1,8 @@
+.tvScreen,
+.tvScreen * {
+  cursor: none !important;
+}
+
 .shell {
   --tv-frame-width: clamp(24px, 2.7vw, 64px);
   height: 100svh;
@@ -249,8 +254,18 @@
   opacity: 0.42;
 }
 
+.calLive {
+  background: rgba(63, 157, 85, 0.2);
+  border-bottom: 2px solid #3f9d55;
+  border-radius: 0.2rem;
+}
+
 .calLive .calName {
-  color: var(--brand-glove);
+  color: #e7ffe9;
+  text-decoration: underline;
+  text-decoration-color: #3f9d55;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.14em;
 }
 
 .bottom {
@@ -1013,7 +1028,7 @@
   font-size: clamp(1.05rem, 1.85vw, 1.42rem);
   font-weight: 700;
   letter-spacing: 0.04em;
-  animation: marquee 2200s linear infinite;
+  animation: marquee 2500s linear infinite;
   backface-visibility: hidden;
   will-change: transform;
 }

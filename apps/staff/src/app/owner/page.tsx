@@ -169,7 +169,6 @@ export default function OwnerBriefPage() {
   const attentionCount =
     (brief?.kpis.pendingPayments ? 1 : 0) +
     (brief?.kpis.pendingWaivers ? 1 : 0) +
-    (brief?.kpis.kitchenOpenTickets ? 1 : 0) +
     (brief?.overrides.length ? 1 : 0);
 
   return (
@@ -271,10 +270,6 @@ export default function OwnerBriefPage() {
               <div>
                 <strong>{brief.kpis.pendingWaivers}</strong>
                 <span>Unsigned waivers</span>
-              </div>
-              <div>
-                <strong>{brief.kpis.kitchenOpenTickets}</strong>
-                <span>Kitchen tickets</span>
               </div>
               <div>
                 <strong>{brief.overrides.length}</strong>

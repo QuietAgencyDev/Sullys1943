@@ -217,6 +217,18 @@
   line-height: 1.5;
 }
 
+.timelineLive {
+  border-color: #3f9d55;
+  box-shadow: inset 4px 0 0 #3f9d55;
+}
+
+.timelineLive h3 {
+  text-decoration: underline;
+  text-decoration-color: #3f9d55;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.16em;
+}
+
 @media (max-width: 560px) {
   .summaryGrid {
     grid-template-columns: 1fr;

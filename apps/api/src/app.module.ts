@@ -32,6 +32,7 @@ import { CommerceController } from "./commerce.controller";
 import { FighterVerificationController } from "./fighter-verification.controller";
 import { ManualsController } from "./manuals.controller";
 import { ShadowController } from "./shadow.controller";
+import { LockersController } from "./lockers.controller";
 
 @Module({
   controllers: [
@@ -63,6 +64,7 @@ import { ShadowController } from "./shadow.controller";
     FighterVerificationController,
     ManualsController,
     ShadowController,
+    LockersController,
   ],
   providers: [PrismaService, AuthGuard, ProgressionService],
 })

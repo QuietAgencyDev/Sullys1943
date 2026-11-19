@@ -31,7 +31,27 @@ function formatTime(value?: string) {
   if (!value) return "TBD";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  return date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+    timeZone: "America/Toronto",
+  });
+}
+
+function isCurrentClass(item: CalendarItem) {
+  if (item.kind !== "class_session" || !item.startsAt) return false;
+  const start = new Date(item.startsAt).getTime();
+  const end = item.endsAt
+    ? new Date(item.endsAt).getTime()
+    : start + 50 * 60 * 1000;
+  const now = Date.now();
+  return now >= start && now <= end;
+}
+
+function mentionsFood(item: CalendarItem) {
+  const text = `${item.kind ?? ""} ${item.title} ${item.body ?? ""} ${item.meta ?? ""}`;
+  return /nutrition|kitchen|chicken|meal|food|pre-order/i.test(text);
 }
 
 function itemDetails(item: CalendarItem) {
@@ -51,8 +71,6 @@ function itemLabel(kind?: string) {
   if (kind === "class_session") return "Class";
   if (kind === "gym_event") return "Gym news";
   if (kind === "achievement_nudge") return "Progress";
-  if (kind === "nutrition_plan") return "Nutrition";
-  if (kind === "nutrition_pickup") return "Pickup";
   return "Today";
 }
 
@@ -62,7 +80,6 @@ function itemTone(
   if (item.kind === "class_session") {
     return item.booked ? "success" : "accent";
   }
-  if (item.kind === "nutrition_pickup") return "warning";
   if (item.kind === "achievement_nudge") return "accent";
   return "neutral";
 }
@@ -110,17 +127,17 @@ export default function CalendarPage() {
 
   const sortedItems = useMemo(
     () =>
-      [...items].sort((a, b) => {
+      [...items].filter((item) => !mentionsFood(item)).sort((a, b) => {
         const aTime = a.startsAt ? new Date(a.startsAt).getTime() : 0;
         const bTime = b.startsAt ? new Date(b.startsAt).getTime() : 0;
         return aTime - bTime;
       }),
     [items],
   );
-  const bookedClasses = items.filter(
+  const bookedClasses = sortedItems.filter(
     (item) => item.kind === "class_session" && item.booked,
   ).length;
-  const availableClasses = items.filter(
+  const availableClasses = sortedItems.filter(
     (item) => item.kind === "class_session" && !item.booked,
   ).length;
   const nextBooked = sortedItems.find(
@@ -249,21 +266,22 @@ export default function CalendarPage() {
             <ol>
               {sortedItems.map((item) => {
                 const details = itemDetails(item);
+                const live = isCurrentClass(item);
                 return (
                   <li key={`${item.kind ?? "item"}-${item.id}`}>
                     <time dateTime={item.startsAt}>
                       {formatTime(item.startsAt)}
                     </time>
                     <span className={calendarStyles.timelineMarker} aria-hidden />
-                    <Card className={calendarStyles.timelineCard}>
+                    <Card className={`${calendarStyles.timelineCard} ${live ? calendarStyles.timelineLive : ""}`}>
                       <div className={calendarStyles.itemHeading}>
                         <div>
                           {item.kind === "class_session" && posterForClass(item.title) ? (
                             /* eslint-disable-next-line @next/next/no-img-element */
                             <img className={calendarStyles.poster} src={posterForClass(item.title) ?? ""} alt="" />
                           ) : null}
-                          <Badge tone={itemTone(item)}>
-                            {itemLabel(item.kind)}
+                          <Badge tone={live ? "success" : itemTone(item)}>
+                            {live ? "On now" : itemLabel(item.kind)}
                           </Badge>
                           <h3>{item.title}</h3>
                         </div>
@@ -273,8 +291,6 @@ export default function CalendarPage() {
                           </Link>
                         ) : item.kind === "achievement_nudge" ? (
                           <Link href="/app/passport">Passport</Link>
-                        ) : item.kind?.startsWith("nutrition") ? (
-                          <Link href="/app/nutrition">Nutrition</Link>
                         ) : null}
                       </div>
                       {item.endsAt || item.location ? (

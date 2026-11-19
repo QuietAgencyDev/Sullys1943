@@ -70,17 +70,17 @@ export const SULLYS_PROGRAMS: Program[] = [
   {
     slug: "lifeskills",
     name: "Lifeskills Development",
-    short: "Financial literacy, meal prep, and cooking for life outside the gym.",
+    short: "Financial literacy and practical skills for life outside the gym.",
     lead:
       "Programs are vehicles. People are the purpose — including the skills that make independence possible.",
     body: [
       "Financial literacy modules help youth understand money, choices, and responsibility.",
-      "Meal prep and cooking classes connect directly to kitchen and nutrition support in the gym.",
+      "Practical skills classes cover money, work, and life outside the ropes.",
       "We prepare people for life outside the ropes: work, home, and community.",
     ],
     outcomes: [
       "Practical money skills",
-      "Food skills and independence",
+      "Practical skills and independence",
       "Confidence navigating adult responsibilities",
     ],
   },

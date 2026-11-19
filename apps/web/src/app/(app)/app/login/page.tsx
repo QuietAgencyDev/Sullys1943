@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useState } from "react";
@@ -47,6 +48,13 @@ function LoginForm() {
   return (
     <div className={styles.page}>
       <div className={styles.headerBlock}>
+        <Image
+          src={brand.assets.logoPrimary}
+          alt=""
+          width={64}
+          height={82}
+          priority
+        />
         <p className={styles.eyebrow}>{brand.copy.appName}</p>
         <h1 className={styles.title}>Sign in</h1>
         <p className={styles.lead}>

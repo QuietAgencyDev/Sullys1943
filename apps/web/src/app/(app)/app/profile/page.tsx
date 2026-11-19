@@ -186,9 +186,9 @@ export default function ProfilePage() {
                 Liability waiver
               </Button>
             </Link>
-            <Link href="/app/nutrition">
+            <Link href="/app/locker">
               <Button type="button" variant="secondary">
-                Kitchen — coming soon
+                Locker rental
               </Button>
             </Link>
             <Link href="/app/attendance">
