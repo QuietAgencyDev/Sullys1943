@@ -1013,7 +1013,7 @@
   font-size: clamp(1.05rem, 1.85vw, 1.42rem);
   font-weight: 700;
   letter-spacing: 0.04em;
-  animation: marquee 110s linear infinite;
+  animation: marquee 640s linear infinite;
   backface-visibility: hidden;
   will-change: transform;
 }
