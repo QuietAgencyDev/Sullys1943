@@ -69,7 +69,7 @@ img {
 @media (hover: hover) and (pointer: fine) {
   html[data-brand="sullys"] body,
   html[data-brand="sullys"] body * {
-    cursor: url("/cursors/sullys-glove.png?v=sm") 48 1, auto;
+    cursor: url("/cursors/sullys-glove.png?v=sm2") 36 1, auto;
   }
 
   html[data-brand="sullys"] input,
