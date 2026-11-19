@@ -798,8 +798,14 @@ type RoundState = {
   syncedToClass: boolean;
 };
 
+const EASTERN = "America/New_York";
+
 function formatClock(d: Date) {
-  return d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  return d.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: EASTERN,
+  });
 }
 
 function formatClassWindow(startsAt: string, endsAt: string) {
@@ -810,7 +816,18 @@ function formatCountdown(totalSeconds: number) {
   const s = Math.max(0, Math.floor(totalSeconds));
   const m = Math.floor(s / 60);
   const sec = s % 60;
-  return `${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+  return `${m}:${String(sec).padStart(2, "0")}`;
+}
+
+/** Eastern class clock. Minutes only once it would become 5 characters. */
+function formatClassClock(totalSeconds: number) {
+  const s = Math.max(0, Math.floor(totalSeconds));
+  const hours = Math.floor(s / 3600);
+  const minutes = Math.floor((s % 3600) / 60);
+  const seconds = s % 60;
+  if (hours > 0) return `${hours}:${String(minutes).padStart(2, "0")}`;
+  if (minutes >= 10) return String(minutes);
+  return `${minutes}:${String(seconds).padStart(2, "0")}`;
 }
 
 function readTimerConfig() {
@@ -1458,10 +1475,11 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
         <div className={styles.clockBlock}>
           <p className={styles.clock}>{formatClock(now)}</p>
           <p className={styles.date}>
-            {now.toLocaleDateString(undefined, {
+            {now.toLocaleDateString("en-US", {
               weekday: "long",
               month: "long",
               day: "numeric",
+              timeZone: EASTERN,
             })}
           </p>
         </div>
@@ -1518,7 +1536,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             xpBonus={riveXp}
             bonusLabel={riveBonusLabel}
             artCover={showArtPopup}
-            roundClock={formatCountdown(shownSeconds)}
+            roundClock={onScheduleClock ? formatClassClock(shownSeconds) : formatCountdown(shownSeconds)}
             roundLabel={
               onScheduleClock
                 ? focus?.phase === "live"
@@ -1609,9 +1627,10 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                       {session.coach ? `Coach ${session.coach}` : "Coach on duty"}
                     </p>
                     <p className={styles.splitClock}>
-                      {formatCountdown(session.secondsRemaining)}
+                      {formatClassClock(session.secondsRemaining)}
                     </p>
                     <p className={styles.roundMeta}>
+                      {session.secondsRemaining >= 600 ? "min left · " : ""}
                       {session.spotsLeft} spots left · {session.checkedIn ?? 0}/{session.capacity} in
                     </p>
                   </div>
@@ -1793,8 +1812,12 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
               <p className={styles.timerLabel}>
                 {onScheduleClock
                   ? focus?.phase === "live"
-                    ? "Class clock · time left"
-                    : "Class clock · until start"
+                    ? shownSeconds >= 600
+                      ? "Class clock · minutes left"
+                      : "Class clock · time left"
+                    : shownSeconds >= 600
+                      ? "Class clock · minutes until start"
+                      : "Class clock · until start"
                   : round.phase === "work"
                     ? "Round clock"
                     : "Rest clock"}
@@ -1805,7 +1828,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                     : " · open gym"}
               </p>
               <p className={styles.timer}>
-                {formatCountdown(shownSeconds)}
+                {onScheduleClock ? formatClassClock(shownSeconds) : formatCountdown(shownSeconds)}
               </p>
               <div
                 className={styles.roundBar}
@@ -1854,7 +1877,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                       <span>
                         {focus?.phase === "live" ? "Time left" : "Starts in"}
                       </span>
-                      <strong>{formatCountdown(classCountdown)}</strong>
+                      <strong>{formatClassClock(classCountdown)}</strong>
                     </div>
                     <div className={styles.capacityStatus}>
                       <span>
@@ -1902,7 +1925,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                         : "Starts in"}
                     </p>
                     <p className={styles.timer}>
-                      {formatCountdown(classCountdown)}
+                      {formatClassClock(classCountdown)}
                     </p>
                   </>
                 ) : (
@@ -1926,7 +1949,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                     {" · "}
                     {formatClassWindow(session.startsAt, session.endsAt)}
                     {" · "}
-                    {formatCountdown(session.secondsRemaining)} left
+                    {formatClassClock(session.secondsRemaining)} left
                     {" · "}
                     {session.spotsLeft} spots
                   </p>
@@ -1938,7 +1961,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                 {onScheduleClock ? "Class clock" : "Round status"}
               </p>
               <p className={styles.roundStatusBig}>
-                {onScheduleClock ? formatCountdown(shownSeconds) : round.phase === "work" ? "WORK" : "REST"}
+                {onScheduleClock ? formatClassClock(shownSeconds) : round.phase === "work" ? "WORK" : "REST"}
               </p>
               <p className={styles.meta}>
                 {onScheduleClock
@@ -2074,10 +2097,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                       <strong>{s.title}</strong>
                     </span>
                     <span>
-                      {new Date(s.startsAt).toLocaleTimeString([], {
-                        hour: "numeric",
-                        minute: "2-digit",
-                      })}{" "}
+                      {formatClock(new Date(s.startsAt))}{" "}
                       · {s.spotsLeft} left
                     </span>
                   </li>
