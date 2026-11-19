@@ -3,6 +3,29 @@ import { PrismaService } from "./prisma.service";
 
 type Profile = "floor" | "reception";
 
+const TORONTO = "America/Toronto";
+
+function torontoDayStart(now: Date) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: TORONTO,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(now);
+  const pick = (type: string) =>
+    Number(parts.find((part) => part.type === type)?.value ?? "0");
+  const year = pick("year");
+  const month = pick("month");
+  const day = pick("day");
+  const asUtc = Date.UTC(year, month - 1, day, pick("hour"), pick("minute"), pick("second"));
+  const offset = asUtc - now.getTime();
+  return new Date(Date.UTC(year, month - 1, day) - offset);
+}
+
 @Controller("tv")
 export class TvController {
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
@@ -17,12 +40,9 @@ export class TvController {
       profileRaw === "reception" ? "reception" : "floor";
 
     const now = new Date();
-    const start = new Date(now);
-    start.setHours(0, 0, 0, 0);
-    const end = new Date(start);
-    end.setDate(end.getDate() + 1);
-    const horizon = new Date(end);
-    horizon.setDate(horizon.getDate() + 1);
+    const start = torontoDayStart(now);
+    const end = new Date(start.getTime() + 24 * 60 * 60 * 1000);
+    const horizon = new Date(end.getTime() + 24 * 60 * 60 * 1000);
 
     const [sessions, checkInsToday, xpRows, announcements, activeLive] =
       await Promise.all([
@@ -205,12 +225,8 @@ export class TvController {
     const todaySessions = mapped.filter((s) => s.startsAt < end.toISOString());
     const tomorrowSessions = mapped.filter((s) => s.startsAt >= end.toISOString());
     const todayOpen = todaySessions.some((s) => s.phase !== "done");
-    const calendarSessions = todayOpen ? todaySessions : tomorrowSessions;
-    const calendarWhen = calendarSessions[0]
-      ? new Date(calendarSessions[0].startsAt)
-      : todayOpen
-        ? start
-        : end;
+    const calendarSessions = todaySessions;
+    const calendarWhen = start;
 
     const liveClasses = todaySessions.filter((s) => s.phase === "live").slice(0, 2);
     const live = liveClasses[0] ?? null;
@@ -287,7 +303,10 @@ export class TvController {
         .filter((s) => s.phase !== "done")
         .slice(0, 8),
       calendar: {
-        label: calendarWhen.toLocaleDateString("en-US", { weekday: "long" }),
+        label: calendarWhen.toLocaleDateString("en-US", {
+          weekday: "long",
+          timeZone: TORONTO,
+        }),
         sessions: calendarSessions,
       },
       leaderboard: gameLeaderboard.length ? gameLeaderboard : leaderboard,

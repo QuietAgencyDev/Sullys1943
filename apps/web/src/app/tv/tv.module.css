@@ -332,44 +332,70 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.15rem 2.4rem;
-  align-content: start;
+  flex: 1;
   min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.35rem;
+  align-content: stretch;
 }
 
 .calRow {
   display: grid;
-  grid-template-columns: 12.5rem minmax(0, 1fr);
-  gap: 0.1rem 0.85rem;
-  align-items: baseline;
-  padding: 0.55rem 0;
-  border-bottom: 1px solid rgba(243, 230, 200, 0.2);
+  grid-template-columns: minmax(14rem, 22%) minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  gap: 0.05rem 1.1rem;
+  align-items: center;
+  padding: 0.35rem 0.45rem;
+  border-bottom: 1px solid rgba(243, 230, 200, 0.22);
 }
 
 .calTime {
   color: var(--brand-glove);
-  font-size: clamp(1.25rem, 2vw, 1.7rem);
+  font-size: clamp(1.7rem, 2.8vw, 2.6rem);
   font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .calName {
   color: var(--brand-cream);
   font-family: var(--font-display-loaded), var(--font-display);
-  font-size: clamp(1.7rem, 2.8vw, 2.55rem);
+  font-size: clamp(2.6rem, 4.6vw, 4.2rem);
   letter-spacing: 0.02em;
-  line-height: 0.95;
+  line-height: 0.9;
 }
 
 .calCoach {
   grid-column: 2;
   color: var(--brand-red);
-  font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+  font-size: clamp(1.25rem, 2vw, 1.8rem);
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
+}
+
+.calIcon {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  width: clamp(4.2rem, 7vw, 6.4rem);
+  height: clamp(4.2rem, 7vw, 6.4rem);
+  object-fit: cover;
+  border-radius: 0.45rem;
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.4);
+}
+
+.panelWithIcon {
+  position: relative;
+}
+
+.panelIcon {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  width: 3.4rem;
+  height: 3.4rem;
+  object-fit: cover;
+  border-radius: 0.4rem;
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.45);
 }
 
 .calDone {

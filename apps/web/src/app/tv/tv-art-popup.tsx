@@ -1221,13 +1221,6 @@ const CHART_ADS = [
 const SPONSOR_ADS = [
   {
     mode: "sponsor_poster",
-    hero: "/tv/sponsors/sugo-crew.jpg?v=3",
-    h1: "PIZZA",
-    h2: "CREW.",
-    msg: "SUGO · PIZZA WITH THE CREW",
-  },
-  {
-    mode: "sponsor_poster",
     hero: "/tv/sponsors/sugo-round-two.jpg?v=2",
     h1: "ROUND",
     h2: "TWO.",

@@ -16,6 +16,7 @@ import {
 } from "./tv-rive-layer";
 import { dealFloorAdOrder, FLOOR_ADS } from "./tv-art-popup";
 import { TvBoxerRig } from "./tv-boxer-rig";
+import { posterForClass } from "@/lib/floor-schedule";
 
 const DEMO_MODES = [
   "achievement",
@@ -723,7 +724,7 @@ function weaveFloorFeed(input: {
   const extras: FeedLine[] = [
     {
       kind: "system",
-      text: "Bar Sugo · Pizza with the crew · Round Two · 1279 Bloor St W · Mon–Sat 5–11 PM · Sun 3:30–9:30 PM · bar.sugotoronto.com",
+      text: "Bar Sugo · Round Two · 1279 Bloor St W · Mon–Sat 5–11 PM · Sun 3:30–9:30 PM · bar.sugotoronto.com",
     },
     {
       kind: "system",
@@ -805,6 +806,15 @@ type RoundState = {
 };
 
 const EASTERN = "America/New_York";
+
+function torontoDayKey(value: string | Date) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: EASTERN,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(typeof value === "string" ? new Date(value) : value);
+}
 
 function formatClock(d: Date) {
   const parts = new Intl.DateTimeFormat("en-US", {
@@ -1512,7 +1522,11 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
               <h2 className={styles.calTitle}>{board?.calendar?.label ?? "Today"}</h2>
             </div>
             <ul className={styles.calGrid}>
-              {(board?.calendar?.sessions ?? []).map((session) => (
+              {(board?.calendar?.sessions ?? [])
+                .filter((session) => torontoDayKey(session.startsAt) === torontoDayKey(now))
+                .map((session) => {
+                  const icon = posterForClass(session.title);
+                  return (
                 <li
                   key={session.id}
                   className={`${styles.calRow} ${session.phase === "done" ? styles.calDone : ""} ${session.phase === "live" ? styles.calLive : ""}`}
@@ -1522,15 +1536,22 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                   </span>
                   <span className={styles.calName}>{session.title}</span>
                   <span className={styles.calCoach}>
-                    {session.coach ?? ""}
+                    {session.coach ?? "Coach on duty"}
                     {session.phase === "live"
                       ? " · live"
                       : session.spotsLeft === 0
                         ? " · full"
-                        : ""}
+                        : ` · ${session.spotsLeft} spots`}
                   </span>
+                  {icon ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img className={styles.calIcon} src={icon} alt="" draggable={false} />
+                  ) : (
+                    <span />
+                  )}
                 </li>
-              ))}
+                  );
+                })}
             </ul>
           </div>
         ) : null}
@@ -2108,7 +2129,16 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
           </div>
 
           {profile === "floor" ? (
-            <div className={`${styles.panel} ${styles.sideFill}`}>
+            <div className={`${styles.panel} ${styles.sideFill} ${styles.panelWithIcon}`}>
+              {focus && posterForClass(focus.title) ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  className={styles.panelIcon}
+                  src={posterForClass(focus.title) ?? ""}
+                  alt=""
+                  draggable={false}
+                />
+              ) : null}
               <p className={styles.panelTitle}>Members A–Z</p>
               <ul className={styles.boardList}>
                 {(board?.xpChart ?? board?.leaderboard ?? []).slice(0, 5).map((row) => (
