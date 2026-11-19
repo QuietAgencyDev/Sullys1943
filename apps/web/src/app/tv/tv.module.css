@@ -289,6 +289,9 @@
 
 .main {
   grid-row: 2;
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .floorCalendar {

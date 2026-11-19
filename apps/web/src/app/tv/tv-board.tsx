@@ -2156,7 +2156,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                       <strong>{row.displayName}</strong>
                     </span>
                     <span>
-                      {row.score != null
+                      {"score" in row && row.score != null
                         ? `${row.score} pts`
                         : `${row.xp} XP · L${row.level}`}
                     </span>
@@ -2234,10 +2234,12 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
           </div>
           </div>
         </div>
+        {chartScreen || calendarScreen ? null : (
         <p className={styles.hint}>
           Press F for fullscreen
           {profile === "floor" ? "" : " · Auto-refreshes"}
         </p>
+        )}
       </footer>
     </div>
   );
