@@ -801,12 +801,17 @@ type RoundState = {
 const EASTERN = "America/New_York";
 
 function formatClock(d: Date) {
-  return d.toLocaleTimeString("en-US", {
+  const parts = new Intl.DateTimeFormat("en-US", {
     hour: "numeric",
     minute: "2-digit",
     hour12: true,
+    hourCycle: "h12",
     timeZone: EASTERN,
-  });
+  }).formatToParts(d);
+  const hour = parts.find((part) => part.type === "hour")?.value ?? "";
+  const minute = parts.find((part) => part.type === "minute")?.value ?? "";
+  const period = parts.find((part) => part.type === "dayPeriod")?.value ?? "";
+  return `${hour}:${minute} ${period}`.trim();
 }
 
 function formatClassWindow(startsAt: string, endsAt: string) {
@@ -820,15 +825,8 @@ function formatCountdown(totalSeconds: number) {
   return `${m}:${String(sec).padStart(2, "0")}`;
 }
 
-/** Eastern class clock. Minutes only once it would become 5 characters. */
-function formatClassClock(totalSeconds: number) {
-  const s = Math.max(0, Math.floor(totalSeconds));
-  const hours = Math.floor(s / 3600);
-  const minutes = Math.floor((s % 3600) / 60);
-  const seconds = s % 60;
-  if (hours > 0) return `${hours}:${String(minutes).padStart(2, "0")}`;
-  if (minutes >= 10) return String(minutes);
-  return `${minutes}:${String(seconds).padStart(2, "0")}`;
+function classMoment(startsAt: string, endsAt: string, phase: string) {
+  return formatClock(new Date(phase === "live" ? endsAt : startsAt));
 }
 
 function readTimerConfig() {
@@ -1537,7 +1535,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             xpBonus={riveXp}
             bonusLabel={riveBonusLabel}
             artCover={showArtPopup}
-            roundClock={onScheduleClock ? formatClassClock(shownSeconds) : formatCountdown(shownSeconds)}
+            roundClock={onScheduleClock && focus ? classMoment(focus.startsAt, focus.endsAt, focus.phase) : formatCountdown(shownSeconds)}
             roundLabel={
               onScheduleClock
                 ? focus?.phase === "live"
@@ -1628,10 +1626,11 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                       {session.coach ? `Coach ${session.coach}` : "Coach on duty"}
                     </p>
                     <p className={styles.splitClock}>
-                      {formatClassClock(session.secondsRemaining)}
+                      {classMoment(session.startsAt, session.endsAt, session.phase)}
                     </p>
                     <p className={styles.roundMeta}>
-                      {session.secondsRemaining >= 600 ? "min left · " : ""}
+                      {session.phase === "live" ? "Ends" : "Starts"}
+                      {" · "}
                       {session.spotsLeft} spots left · {session.checkedIn ?? 0}/{session.capacity} in
                     </p>
                   </div>
@@ -1813,12 +1812,8 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
               <p className={styles.timerLabel}>
                 {onScheduleClock
                   ? focus?.phase === "live"
-                    ? shownSeconds >= 600
-                      ? "Class clock · minutes left"
-                      : "Class clock · time left"
-                    : shownSeconds >= 600
-                      ? "Class clock · minutes until start"
-                      : "Class clock · until start"
+                    ? "Class ends"
+                    : "Class starts"
                   : round.phase === "work"
                     ? "Round clock"
                     : "Rest clock"}
@@ -1829,7 +1824,9 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                     : " · open gym"}
               </p>
               <p className={styles.timer}>
-                {onScheduleClock ? formatClassClock(shownSeconds) : formatCountdown(shownSeconds)}
+                {onScheduleClock && focus
+                  ? classMoment(focus.startsAt, focus.endsAt, focus.phase)
+                  : formatCountdown(shownSeconds)}
               </p>
               <div
                 className={styles.roundBar}
@@ -1876,9 +1873,9 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                   <div className={styles.receptionCountdown}>
                     <div>
                       <span>
-                        {focus?.phase === "live" ? "Time left" : "Starts in"}
+                        {focus?.phase === "live" ? "Ends" : "Starts"}
                       </span>
-                      <strong>{formatClassClock(classCountdown)}</strong>
+                      <strong>{focus ? classMoment(focus.startsAt, focus.endsAt, focus.phase) : ""}</strong>
                     </div>
                     <div className={styles.capacityStatus}>
                       <span>
@@ -1921,12 +1918,10 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                 {classCountdown !== null ? (
                   <>
                     <p className={styles.timerLabel}>
-                      {focus?.phase === "live"
-                        ? "Class time remaining"
-                        : "Starts in"}
+                      {focus?.phase === "live" ? "Class ends" : "Class starts"}
                     </p>
                     <p className={styles.timer}>
-                      {formatClassClock(classCountdown)}
+                      {focus ? classMoment(focus.startsAt, focus.endsAt, focus.phase) : ""}
                     </p>
                   </>
                 ) : (
@@ -1950,8 +1945,6 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                     {" · "}
                     {formatClassWindow(session.startsAt, session.endsAt)}
                     {" · "}
-                    {formatClassClock(session.secondsRemaining)} left
-                    {" · "}
                     {session.spotsLeft} spots
                   </p>
                 ))}
@@ -1962,7 +1955,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                 {onScheduleClock ? "Class clock" : "Round status"}
               </p>
               <p className={styles.roundStatusBig}>
-                {onScheduleClock ? formatClassClock(shownSeconds) : round.phase === "work" ? "WORK" : "REST"}
+                {onScheduleClock && focus ? classMoment(focus.startsAt, focus.endsAt, focus.phase) : round.phase === "work" ? "WORK" : "REST"}
               </p>
               <p className={styles.meta}>
                 {onScheduleClock
