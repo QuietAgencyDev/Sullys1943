@@ -155,6 +155,7 @@ const POSTER = {
   path2: "/classes/fight-path-2.jpg",
   team: "/classes/fight-team.jpg",
   boxtech: "/classes/boxtech.jpg",
+  royale: "/classes/battle-royale.jpg",
 } as const;
 
 function slot(
@@ -200,7 +201,7 @@ export const FLOOR_SLOTS: FloorSlot[] = (() => {
     if (day === 1 || day === 3) {
       out.push(slot(day, 18, 30, 50, 'Fight Path 1', 'Intermediate', 'intermediate', { poster: POSTER.path1, blurb: path1, note: 'B+C · 6+ months' }));
     } else if (day === 2) {
-      out.push(slot(day, 18, 30, 50, 'Battle Royale', 'Intermediate', 'intermediate', { coach: 'Jonathan Bochner', note: 'B+C', blurb: 'Jonathan Bochner. 50 minutes. The second class at 6:30.' }));
+      out.push(slot(day, 18, 30, 50, 'Battle Royale', 'Intermediate', 'intermediate', { coach: 'Jonathan Bochner', poster: POSTER.royale, note: 'B+C', blurb: 'Jonathan Bochner. 50 minutes. The second class at 6:30.' }));
     } else {
       out.push(slot(day, 18, 30, 50, 'Fight Path 2', 'Intermediate / Advanced', 'advanced', { poster: POSTER.path2, blurb: path2, note: 'B+C · 6+ months' }));
     }
