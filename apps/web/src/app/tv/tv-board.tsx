@@ -804,6 +804,7 @@ function formatClock(d: Date) {
   return d.toLocaleTimeString("en-US", {
     hour: "numeric",
     minute: "2-digit",
+    hour12: true,
     timeZone: EASTERN,
   });
 }
