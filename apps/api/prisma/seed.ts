@@ -514,10 +514,6 @@ Contact: danielle@sullysboxinggym.com · +1-647-284-1510 · sullysboxinggym.com`
     data: { userId: member.id, badgeId: firstVisit.id },
   });
 
-  await prisma.xpLedger.create({
-    data: { userId: member.id, delta: 70, reason: "seed_balance" },
-  });
-
   await prisma.legacyTimelineEntry.createMany({
     data: [
       {

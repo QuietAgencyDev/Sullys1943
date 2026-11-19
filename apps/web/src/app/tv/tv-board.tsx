@@ -104,6 +104,12 @@ type Board = {
     level: number;
     score?: number;
   }[];
+  xpChart?: {
+    rank: number;
+    displayName: string;
+    xp: number;
+    level: number;
+  }[];
   ticker: { name: string; at: string; late?: boolean }[];
   manifesto: string[];
   refreshSeconds: number;
@@ -1031,6 +1037,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
       setAdOn(true);
       const gym = next != null && (FLOOR_ADS[next]?.hero ?? "").includes("sullys-ossington");
       const calendar = next != null && FLOOR_ADS[next]?.mode === "floor_calendar";
+      const chart = next != null && FLOOR_ADS[next]?.mode === "xp_chart";
       const poster = next != null && FLOOR_ADS[next]?.mode === "sponsor_poster";
       timer = setTimeout(
         hide,
@@ -1038,6 +1045,8 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
           ? jitter(8000, 11000)
           : poster
             ? 18000
+            : chart
+              ? 22000
             : calendar
               ? 18000
               : gym
@@ -1330,6 +1339,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     coachMode !== "timer" && hasArtPopup(coachMode) && !popupFreeze && !demoCelebrate;
   const floorAd = pairExample || !adOn || profile !== "floor" ? null : FLOOR_ADS[adIndex];
   const calendarScreen = floorAd?.mode === "floor_calendar";
+  const chartScreen = floorAd?.mode === "xp_chart";
   const posterScreen = floorAd?.mode === "sponsor_poster";
   const gymScreen = Boolean(floorAd?.hero?.includes("sullys-ossington"));
   const tvMode =
@@ -1370,6 +1380,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   const riveActive =
     profile === "floor" &&
     !calendarScreen &&
+    !chartScreen &&
     !posterScreen &&
     (Boolean(board?.coachTimer) ||
       demoCelebrate ||
@@ -1408,7 +1419,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
     <div
       className={`${styles.shell} ${
         round.phase === "work" ? styles.phaseWork : styles.phaseRest
-      } ${showArtPopup ? styles.shellArt : ""} ${gymScreen ? styles.shellGym : ""} ${posterScreen ? styles.shellPoster : ""} ${calendarScreen ? styles.shellCalendar : ""}`}
+      } ${showArtPopup ? styles.shellArt : ""} ${gymScreen ? styles.shellGym : ""} ${posterScreen ? styles.shellPoster : ""} ${calendarScreen ? styles.shellCalendar : ""} ${chartScreen ? styles.shellCalendar : ""}`}
       data-profile={profile}
     >
       {gymScreen ? (
@@ -1521,6 +1532,47 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                 </li>
               ))}
             </ul>
+          </div>
+        ) : null}
+        {chartScreen ? (
+          <div className={styles.xpBoard} role="region" aria-label="Top 100 Sully XP">
+            <figure className={styles.xpSully}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/tv/cast/founder-sully-portrait.png?v=1" alt="" draggable={false} />
+            </figure>
+            <div className={styles.xpMain}>
+              <div className={styles.xpHead}>
+                <div>
+                  <p className={styles.calKicker}>Sully XP</p>
+                  <h2 className={styles.xpTitle}>Top 100</h2>
+                </div>
+                <div className={styles.xpMarks} aria-hidden>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/brand/sullys-heritage-shield.png" alt="" />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/tv/icons/champion-belt.png" alt="" />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/tv/icons/sully-xp.png" alt="" />
+                </div>
+              </div>
+              <ol className={styles.xpGrid}>
+                {(board?.xpChart ?? []).map((row) => (
+                  <li
+                    key={row.rank}
+                    className={`${styles.xpRow} ${row.rank <= 3 && row.xp > 0 ? styles.xpPodium : ""}`}
+                  >
+                    <span className={styles.xpRank}>{String(row.rank).padStart(2, "0")}</span>
+                    <span className={styles.xpName}>{row.displayName}</span>
+                    <span className={styles.xpScore}>
+                      {row.xp > 0 ? `${row.xp}` : "0"}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+              {!board?.xpChart?.length ? (
+                <p className={styles.xpEmpty}>Show up. Everyone starts at zero.</p>
+              ) : null}
+            </div>
           </div>
         ) : null}
         <section
@@ -2057,9 +2109,9 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
 
           {profile === "floor" ? (
             <div className={`${styles.panel} ${styles.sideFill}`}>
-              <p className={styles.panelTitle}>Floor leaderboard</p>
+              <p className={styles.panelTitle}>Top XP</p>
               <ul className={styles.boardList}>
-                {(board?.leaderboard ?? []).slice(0, 5).map((row) => (
+                {(board?.xpChart ?? board?.leaderboard ?? []).slice(0, 5).map((row) => (
                   <li key={row.rank} className={styles.boardRow}>
                     <span>
                       <span className={styles.rank}>
@@ -2074,9 +2126,9 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                     </span>
                   </li>
                 ))}
-                {!board?.leaderboard?.length ? (
+                {!(board?.xpChart ?? board?.leaderboard)?.length ? (
                   <li className={styles.boardRow}>
-                    <span>Train today — claim the board</span>
+                    <span>Everyone starts at 0</span>
                   </li>
                 ) : null}
               </ul>

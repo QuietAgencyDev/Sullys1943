@@ -291,6 +291,7 @@ export class TvController {
         sessions: calendarSessions,
       },
       leaderboard: gameLeaderboard.length ? gameLeaderboard : leaderboard,
+      xpChart: await this.xpChart(),
       ticker: recentCheckIns.map((c) => ({
         name:
           c.status === "late"
@@ -372,5 +373,43 @@ export class TvController {
           })()
         : null,
     };
+  }
+
+  /** Top 100 by XP. Members with no XP still appear at zero. */
+  private async xpChart() {
+    const [sums, people] = await Promise.all([
+      this.prisma.xpLedger.groupBy({
+        by: ["userId"],
+        _sum: { delta: true },
+      }),
+      this.prisma.user.findMany({
+        where: {
+          disabledAt: null,
+          role: { in: ["member", "parent", "child"] },
+        },
+        select: { id: true, firstName: true, lastName: true },
+      }),
+    ]);
+    const xpByUser = new Map(
+      sums.map((row) => [row.userId, row._sum.delta ?? 0]),
+    );
+    return people
+      .map((person) => {
+        const xp = Math.max(0, xpByUser.get(person.id) ?? 0);
+        const initial = person.lastName.trim().charAt(0);
+        return {
+          displayName: initial
+            ? `${person.firstName} ${initial}.`
+            : person.firstName,
+          xp,
+          level: Math.floor(xp / 100) + 1,
+        };
+      })
+      .sort(
+        (a, b) =>
+          b.xp - a.xp || a.displayName.localeCompare(b.displayName),
+      )
+      .slice(0, 100)
+      .map((row, index) => ({ rank: index + 1, ...row }));
   }
 }

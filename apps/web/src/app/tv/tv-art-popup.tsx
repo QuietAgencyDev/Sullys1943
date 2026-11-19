@@ -1208,6 +1208,16 @@ const SCHEDULE_ADS = [
   },
 ] as const;
 
+const CHART_ADS = [
+  {
+    mode: "xp_chart",
+    hero: "",
+    h1: "TOP",
+    h2: "100.",
+    msg: "SULLY XP",
+  },
+] as const;
+
 const SPONSOR_ADS = [
   {
     mode: "sponsor_poster",
@@ -1248,6 +1258,7 @@ export const FLOOR_ADS = [
   ...EARLS_ADS,
   ...GYM_ADS,
   ...SCHEDULE_ADS,
+  ...CHART_ADS,
   ...SPONSOR_ADS,
 ] as const;
 
@@ -1310,11 +1321,20 @@ export function dealFloorAdOrder(seed: number): number[] {
   // One neighbourhood poster, taking turns, and it is drawn right after the class board.
   if (SPONSOR_ADS.length) {
     const sponsorBase =
-      laneCount + EARLS_ADS.length + GYM_ADS.length + SCHEDULE_ADS.length;
+      laneCount +
+      EARLS_ADS.length +
+      GYM_ADS.length +
+      SCHEDULE_ADS.length +
+      CHART_ADS.length;
     order.push(sponsorBase + (Math.abs(seed) % SPONSOR_ADS.length));
   }
   if (SCHEDULE_ADS.length) {
     order.push(laneCount + EARLS_ADS.length + GYM_ADS.length);
+  }
+  if (CHART_ADS.length) {
+    order.push(
+      laneCount + EARLS_ADS.length + GYM_ADS.length + SCHEDULE_ADS.length,
+    );
   }
   return order;
 }

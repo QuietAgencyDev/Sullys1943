@@ -161,6 +161,128 @@
   visibility: hidden;
 }
 
+.xpBoard {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: grid;
+  grid-template-columns: minmax(14rem, 24%) minmax(0, 1fr);
+  gap: 0.6rem;
+  padding: 0.15rem 0.2rem 0.1rem 0;
+  background:
+    radial-gradient(circle at 12% 80%, rgba(200, 32, 38, 0.28), transparent 42%),
+    #0c0908;
+  overflow: hidden;
+}
+
+.xpSully {
+  margin: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 0;
+}
+
+.xpSully img {
+  height: 96%;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 16px 18px rgba(0, 0, 0, 0.55));
+}
+
+.xpMain {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.xpHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.xpTitle {
+  margin: 0;
+  color: var(--brand-cream);
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(3.2rem, 6vw, 5.2rem);
+  line-height: 0.84;
+  letter-spacing: 0.03em;
+}
+
+.xpMarks {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.xpMarks img {
+  height: clamp(3.2rem, 6vw, 4.6rem);
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.45));
+}
+
+.xpGrid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(20, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 0.7rem;
+}
+
+.xpRow {
+  display: grid;
+  grid-template-columns: 1.7rem minmax(0, 1fr) auto;
+  gap: 0.28rem;
+  align-items: center;
+  border-bottom: 1px solid rgba(243, 230, 200, 0.16);
+  min-width: 0;
+}
+
+.xpRank {
+  color: var(--brand-red);
+  font-weight: 800;
+  font-size: clamp(0.72rem, 1vw, 0.95rem);
+}
+
+.xpName {
+  overflow: hidden;
+  color: var(--brand-cream);
+  font-weight: 700;
+  font-size: clamp(0.78rem, 1.05vw, 1.05rem);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.xpScore {
+  color: #f7c963;
+  font-weight: 800;
+  font-size: clamp(0.72rem, 1vw, 0.95rem);
+}
+
+.xpPodium .xpRank,
+.xpPodium .xpName {
+  color: #f7c963;
+}
+
+.xpEmpty {
+  margin: 0;
+  color: var(--brand-cream);
+  font-size: 1.4rem;
+}
+
 .top {
   grid-row: 1;
 }
