@@ -375,41 +375,61 @@ export class TvController {
     };
   }
 
-  /** Top 100 by XP. Members with no XP still appear at zero. */
+  /** First 100 active client-list members, A to Z. Coaches stay off. */
   private async xpChart() {
-    const [sums, people] = await Promise.all([
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const [sums, seats] = await Promise.all([
       this.prisma.xpLedger.groupBy({
         by: ["userId"],
         _sum: { delta: true },
       }),
-      this.prisma.user.findMany({
+      this.prisma.membershipMember.findMany({
         where: {
-          disabledAt: null,
-          role: { in: ["member", "parent", "child"] },
+          user: {
+            disabledAt: null,
+            role: "member",
+            NOT: { email: { endsWith: "@sullys.local" } },
+          },
+          membership: {
+            status: "active",
+            OR: [{ endsAt: null }, { endsAt: { gte: today } }],
+          },
         },
-        select: { id: true, firstName: true, lastName: true },
+        select: {
+          user: { select: { id: true, firstName: true, lastName: true } },
+        },
       }),
     ]);
     const xpByUser = new Map(
       sums.map((row) => [row.userId, row._sum.delta ?? 0]),
     );
+    const seen = new Set<string>();
+    const people = [];
+    for (const seat of seats) {
+      if (seen.has(seat.user.id)) continue;
+      seen.add(seat.user.id);
+      people.push(seat.user);
+    }
     return people
       .map((person) => {
+        const first = person.firstName.trim();
+        const initial = person.lastName.trim().charAt(0).toUpperCase();
         const xp = Math.max(0, xpByUser.get(person.id) ?? 0);
-        const initial = person.lastName.trim().charAt(0);
         return {
-          displayName: initial
-            ? `${person.firstName} ${initial}.`
-            : person.firstName,
+          displayName: initial ? `${first}.${initial}` : first,
+          sortName: `${first} ${person.lastName}`.trim(),
           xp,
           level: Math.floor(xp / 100) + 1,
         };
       })
-      .sort(
-        (a, b) =>
-          b.xp - a.xp || a.displayName.localeCompare(b.displayName),
+      .sort((a, b) =>
+        a.sortName.localeCompare(b.sortName, "en", { sensitivity: "base" }),
       )
       .slice(0, 100)
-      .map((row, index) => ({ rank: index + 1, ...row }));
+      .map(({ sortName: _sortName, ...row }, index) => ({
+        rank: index + 1,
+        ...row,
+      }));
   }
 }

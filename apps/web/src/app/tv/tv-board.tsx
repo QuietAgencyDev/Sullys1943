@@ -1543,7 +1543,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
             <div className={styles.xpMain}>
               <div className={styles.xpHead}>
                 <div>
-                  <p className={styles.calKicker}>Sully XP</p>
+                  <p className={styles.calKicker}>Active members · A to Z</p>
                   <h2 className={styles.xpTitle}>Top 100</h2>
                 </div>
                 <div className={styles.xpMarks} aria-hidden>
@@ -2109,7 +2109,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
 
           {profile === "floor" ? (
             <div className={`${styles.panel} ${styles.sideFill}`}>
-              <p className={styles.panelTitle}>Top XP</p>
+              <p className={styles.panelTitle}>Members A–Z</p>
               <ul className={styles.boardList}>
                 {(board?.xpChart ?? board?.leaderboard ?? []).slice(0, 5).map((row) => (
                   <li key={row.rank} className={styles.boardRow}>
