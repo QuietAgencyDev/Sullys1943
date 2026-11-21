@@ -118,10 +118,40 @@ export default function ClassesPage() {
           })}
         </div>
 
+        <section className={styles.pt} aria-label="Kids private training">
+          <div className={styles.ptIntro}>
+            <p className={styles.eyebrow}>Kids 7 and under</p>
+            <h2 className={styles.ptTitle}>Private training</h2>
+            <p className={styles.copy}>
+              One-to-one time with a coach, booked at the desk. Ages 7 and
+              under. The website does not charge this.
+            </p>
+          </div>
+          <div className={styles.ptRates}>
+            <article className={styles.ptCard}>
+              <p className={styles.ptKicker}>Private</p>
+              <p className={styles.ptPrice}>$65</p>
+              <p className={styles.ptUnit}>an hour · one child</p>
+            </article>
+            <article className={`${styles.ptCard} ${styles.ptSpecial}`}>
+              <p className={styles.ptKicker}>Two together</p>
+              <p className={styles.ptPrice}>$55</p>
+              <p className={styles.ptUnit}>an hour · the pair rate</p>
+            </article>
+          </div>
+          <ul className={styles.ptCoaches}>
+            <li>Reni</li>
+            <li>Levi</li>
+            <li>Anthony</li>
+            <li>Tommy</li>
+          </ul>
+        </section>
+
         <ul className={styles.notes}>
           <li>The posted week is Monday to Friday. Sunday the gym is closed.</li>
           <li>Youth Boxing is free Monday, Wednesday, and Friday, 4:30–5:20, ages 13–17. Junior Boxing is free Tuesday and Thursday, 4:30–5:20, ages 8–12. A parent books the child before they arrive. No walk-ins.</li>
           <li>Fight Team and Sparring are invite only. Coach approval, an active Boxing Ontario membership, a valid medical, a mouthguard, and headgear.</li>
+          <li>Kids 7 and under, private training: $65 an hour with one child, $55 an hour when two train together. Coaches Reni, Levi, Anthony, and Tommy. Book at the desk.</li>
           <li>November 2026 rates, before HST: Adult Unlimited $150 a month, 8 classes $120, weights and bags $75, drop-in $32. Gift certificates are $50, $100, and $150 at the desk. Glofox still sends the bill.</li>
         </ul>
 

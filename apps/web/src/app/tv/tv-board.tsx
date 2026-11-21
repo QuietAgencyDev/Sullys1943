@@ -500,6 +500,7 @@ const FLOOR_SYSTEM: FeedLine[] = [
   { kind: "system", text: "Family on the floor. Kids in the craft." },
   { kind: "system", text: "Youth boxing · ages 8–17 · free scheduled classes · ask the desk." },
   { kind: "system", text: "Holiday gift certificates · $50, $100, and $150 · at the desk." },
+  { kind: "system", text: "Kids 7 and under · private $65 an hour · two together $55 an hour · Reni, Levi, Anthony, Tommy." },
   { kind: "system", text: "Coach Tony is off the floor, recovering. The corner stays with him." },
   { kind: "system", text: "Shout out Viktoria Penney · she organised Coach Tony's fundraiser." },
   { kind: "system", text: "Earl's Fight Shop · 1385 Dundas St. W · earlsfightshop.com · Mon & Tue 12–3 · Wed–Sun 12–7 · (416) 531-1331." },

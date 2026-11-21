@@ -353,6 +353,7 @@ export function JoinForm() {
               <li>Student 18–22 $99 / month · valid student ID</li>
               <li>Senior 65+ $1,200 / year · Annual paid-in-full $1,200 / year</li>
               <li>Drop-in $32 · 5 classes $145 · 10 classes $260</li>
+              <li>Kids 7 and under · private $65 / hour · two together $55 / hour · Reni, Levi, Anthony, Tommy</li>
               <li>Gift certificates $50, $100, and $150 · at the desk</li>
             </ul>
             {error ? <p className={styles.error}>{error}</p> : null}

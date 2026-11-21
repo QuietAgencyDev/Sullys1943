@@ -247,6 +247,85 @@
   font-size: 0.85rem;
 }
 
+.pt {
+  margin: 1.75rem 0 1.25rem;
+  padding: 1.25rem;
+  display: grid;
+  gap: 1rem;
+  background:
+    linear-gradient(160deg, rgba(200, 32, 38, 0.18), rgba(243, 230, 200, 0.05) 42%, rgba(18, 14, 12, 0.2));
+  border: 1px solid rgba(243, 230, 200, 0.22);
+  border-radius: 16px;
+}
+
+.ptIntro .copy {
+  margin-bottom: 0;
+}
+
+.ptTitle {
+  margin: 0.2rem 0 0.45rem;
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(2.2rem, 6vw, 3.4rem);
+  line-height: 0.92;
+  color: var(--brand-cream);
+}
+
+.ptRates {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.ptCard {
+  padding: 1rem 1rem 0.9rem;
+  background: rgba(18, 14, 12, 0.55);
+  border-radius: 12px;
+}
+
+.ptSpecial {
+  outline: 1px solid rgba(200, 32, 38, 0.7);
+}
+
+.ptKicker {
+  margin: 0;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--brand-red);
+}
+
+.ptPrice {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-display-loaded), var(--font-display);
+  font-size: clamp(3rem, 8vw, 4.4rem);
+  line-height: 0.9;
+  color: var(--brand-cream);
+}
+
+.ptUnit {
+  margin: 0.35rem 0 0;
+  color: var(--text-muted);
+}
+
+.ptCoaches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ptCoaches li {
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(243, 230, 200, 0.1);
+  color: var(--brand-cream);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
 @media (max-width: 1100px) {
   .board {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -255,6 +334,9 @@
 
 @media (max-width: 680px) {
   .board {
+    grid-template-columns: 1fr;
+  }
+  .ptRates {
     grid-template-columns: 1fr;
   }
 }
