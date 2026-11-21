@@ -21,6 +21,6 @@ body::after {
   inset: 0;
   box-sizing: border-box;
   border: var(--sullys-frame-width) solid transparent;
-  border-image: url("/tv/wood-frame.jpg") 44 52 44 52 stretch;
+  border-image: url("/tv/wood-frame.jpg?v=dark3") 44 52 44 52 stretch;
   pointer-events: none;
 }
