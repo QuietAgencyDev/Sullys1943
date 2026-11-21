@@ -232,10 +232,10 @@ async function main() {
     data: {
       organizationId: org.id,
       code: "monthly",
-      name: "Monthly Unlimited",
-      description: "Unlimited standard classes",
+      name: "Adult Unlimited",
+      description: "Unlimited group classes and gym access. November 2026 rate, before HST.",
       interval: "monthly",
-      priceCents: 14900,
+      priceCents: 15000,
     },
   });
 
@@ -243,10 +243,10 @@ async function main() {
     data: {
       organizationId: org.id,
       code: "trial",
-      name: "Trial Week",
-      description: "7-day trial access",
+      name: "Free intro class",
+      description: "One complimentary class for a new customer. Ask the desk.",
       interval: "one_time",
-      priceCents: 2900,
+      priceCents: 0,
     },
   });
 
@@ -254,8 +254,8 @@ async function main() {
     data: {
       organizationId: org.id,
       code: "youth",
-      name: "Youth — free",
-      description: "Little Champs and Jab Lab. Ages 6–18. Free at Sully's.",
+      name: "Youth — free scheduled classes",
+      description: "Free scheduled classes for ages 8–12 and 13–17. A parent books the child. This is not the paid youth membership.",
       interval: "monthly",
       priceCents: 0,
     },
@@ -265,10 +265,10 @@ async function main() {
     data: {
       organizationId: org.id,
       code: "drop_in",
-      name: "Drop-in class",
-      description: "Single-day walk-in access sold at the desk",
+      name: "Single drop-in",
+      description: "One class. Expires 30 days from purchase.",
       interval: "one_time",
-      priceCents: 2500,
+      priceCents: 3200,
     },
   });
 

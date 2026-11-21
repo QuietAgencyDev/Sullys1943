@@ -463,9 +463,9 @@ const FLOOR_ONTARIO: FeedLine[] = [
   { kind: "trivia", text: "Over 700 boxers. Sully's sent 22. Nineteen came home with medals." },
   { kind: "trivia", text: "Sully's took the Brampton Cup team award. The west end travelled in a pack." },
   { kind: "trivia", text: "Viktoria Penney · gold · women's 80 kg · Brampton Cup 2025 · trained on this floor." },
-  { kind: "trivia", text: "Viktoria Penney · Canadian Elite Nationals · Cape Breton · won her opener Tuesday." },
+  { kind: "trivia", text: "Viktoria Penney · Canadian Elite Nationals · Cape Breton · two wins on the card." },
   { kind: "trivia", text: "Viktoria Penney · unanimous decision over Melina Laplante · women's 70 kg · 17 November 2026." },
-  { kind: "trivia", text: "Viktoria fights again Thursday at the Canadian Elite Nationals. The gym is with her." },
+  { kind: "trivia", text: "Viktoria Penney · unanimous decision over Maeva Montemiglio · women's 70 kg · 19 November 2026." },
   { kind: "trivia", text: "Women's boxing · Viktoria and Jackie · this corner is open." },
   { kind: "trivia", text: "Penney calls Sully's a family inside a gym. The medal says the work was real." },
   { kind: "trivia", text: "From Dundas West to Brampton. Same hands. Bigger room." },
@@ -498,8 +498,9 @@ const FLOOR_SYSTEM: FeedLine[] = [
   { kind: "system", text: "Character before the bell." },
   { kind: "system", text: "We don't lower standards. We raise people." },
   { kind: "system", text: "Family on the floor. Kids in the craft." },
-  { kind: "system", text: "Youth boxing · kids 6–14 · ask the desk." },
-  { kind: "system", text: "Coach Tony is off the floor, recovering. Scan In His Corner." },
+  { kind: "system", text: "Youth boxing · ages 8–17 · free scheduled classes · ask the desk." },
+  { kind: "system", text: "Holiday gift certificates · $50, $100, and $150 · at the desk." },
+  { kind: "system", text: "Coach Tony is off the floor, recovering. The corner stays with him." },
   { kind: "system", text: "Shout out Viktoria Penney · she organised Coach Tony's fundraiser." },
   { kind: "system", text: "Earl's Fight Shop · 1385 Dundas St. W · earlsfightshop.com · Mon & Tue 12–3 · Wed–Sun 12–7 · (416) 531-1331." },
   { kind: "system", text: "Sully's exclusive merch and fight gear are on the way for 2027." },
@@ -648,8 +649,21 @@ function floorClassPhoto(
   coach?: string | null,
   seed = 0,
 ) {
-  const haystack = `${title ?? ""} ${coach ?? ""}`;
-  const pool = FLOOR_CLASS_PHOTO_POOLS.find((row) => row.match.test(haystack));
+  const fromCoach = coach
+    ? FLOOR_CLASS_PHOTO_POOLS.find((row) => row.match.test(coach))
+    : undefined;
+  const pool =
+    fromCoach ??
+    FLOOR_CLASS_PHOTO_POOLS.find((row) => {
+      const source = row.match.source;
+      if (/house of pain/i.test(source) && coach && !/tony|morrison/i.test(coach)) {
+        return false;
+      }
+      if (/boxtech/i.test(source) && coach && !/rico/i.test(coach)) {
+        return false;
+      }
+      return row.match.test(`${title ?? ""} ${coach ?? ""}`);
+    });
   const stills = pool?.srcs ?? [];
   // null slot = live Coach 2 rig. Women's Boxing stays on the female coach stills.
   const slots: Array<string | null> =

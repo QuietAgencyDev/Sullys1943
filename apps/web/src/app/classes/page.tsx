@@ -122,7 +122,7 @@ export default function ClassesPage() {
           <li>The posted week is Monday to Friday. Sunday the gym is closed.</li>
           <li>Youth Boxing is free Monday, Wednesday, and Friday, 4:30–5:20, ages 13–17. Junior Boxing is free Tuesday and Thursday, 4:30–5:20, ages 8–12. A parent books the child before they arrive. No walk-ins.</li>
           <li>Fight Team and Sparring are invite only. Coach approval, an active Boxing Ontario membership, a valid medical, a mouthguard, and headgear.</li>
-          <li>A class marked B+C runs at the same time as the class beside it.</li>
+          <li>November 2026 rates, before HST: Adult Unlimited $150 a month, 8 classes $120, weights and bags $75, drop-in $32. Gift certificates are $50, $100, and $150 at the desk. Glofox still sends the bill.</li>
         </ul>
 
         {classes.length > 0 ? (

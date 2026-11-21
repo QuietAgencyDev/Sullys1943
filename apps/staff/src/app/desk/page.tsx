@@ -190,6 +190,9 @@ export default function DeskPage() {
         if (email) setLastFailedEmail(email);
         if (blocked) {
           setOverride(true);
+          setOverrideReason((current) =>
+            current.trim().length >= 4 ? current : "Glofox member easing in",
+          );
         }
       } finally {
         setBusy(false);
@@ -330,9 +333,10 @@ export default function DeskPage() {
       <p className={styles.eyebrow}>FRONT DESK</p>
       <h1 className={styles.title}>Scanner</h1>
       <p className={styles.copy}>
-        USB scanner → focused field → auto check-in. A person is on the floor
-        only after this scan. Leave the menu on their booked class. Pick a
-        class only to place someone who is not booked.
+        One scanner, two windows. Click Glofox to scan their Glofox code.
+        Glofox still takes the payment. Click this box and scan the Sully's
+        card to record the visit and XP. Leave the menu on their booked class.
+        If the member is not booked yet, pick the class, then scan.
       </p>
       {pulse?.kpis.pendingPayments ? (
         <p className={styles.error} role="alert">

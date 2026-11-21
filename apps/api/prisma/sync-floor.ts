@@ -184,7 +184,33 @@ async function main() {
   );
 
   let created = 0;
+  let updated = 0;
   for (const [key, slot] of planned) {
+    const capacity =
+      slot.youth || slot.tone === "fight" || slot.tone === "sparring" ? 12 : 25;
+    const coachUserId = slot.coach ? (coachByName.get(slot.coach) ?? null) : null;
+    const existingMatch = existing.find(
+      (session) => slotKey(session.startsAt, session.title) === key,
+    );
+    if (existingMatch) {
+      if (
+        existingMatch.coachName !== (slot.coach ?? null) ||
+        existingMatch.capacity !== capacity ||
+        existingMatch.coachUserId !== (coachUserId ?? null)
+      ) {
+        await prisma.session.update({
+          where: { id: existingMatch.id },
+          data: {
+            coachName: slot.coach ?? null,
+            coachUserId,
+            capacity,
+            endsAt: slot.endsAt,
+          },
+        });
+        updated += 1;
+      }
+      continue;
+    }
     if (have.has(key)) continue;
     await prisma.session.create({
       data: {
@@ -194,12 +220,9 @@ async function main() {
         title: slot.title,
         startsAt: slot.startsAt,
         endsAt: slot.endsAt,
-        capacity:
-          slot.youth || slot.tone === "fight" || slot.tone === "sparring"
-            ? 12
-            : 25,
+        capacity,
         coachName: slot.coach,
-        coachUserId: slot.coach ? coachByName.get(slot.coach) : undefined,
+        coachUserId,
       },
     });
     created += 1;
@@ -229,7 +252,7 @@ async function main() {
     where: { organizationId: org.id, role: "coach", disabledAt: null },
   });
   console.log(
-    `coaches ${active}, classes added ${created}, old classes removed ${removed}, left in place ${kept}`,
+    `coaches ${active}, classes added ${created}, coaches updated ${updated}, old classes removed ${removed}, left in place ${kept}`,
   );
 }
 

@@ -152,6 +152,15 @@ export function JoinForm() {
     setPending(true);
     setNote(null);
     try {
+      if (plan !== "youth") {
+        setNote(
+          plan === "monthly"
+            ? "Adult Unlimited is $150 a month before HST. Glofox still sends that bill. Tell the desk. This app does not charge."
+            : "The first class for a new customer is free. Ask the desk. This app does not charge.",
+        );
+        setStep("done");
+        return;
+      }
       const checkout = await post<CheckoutResponse>(
         "/api/v1/membership/checkout",
         { productCode: plan, plan },
@@ -305,9 +314,9 @@ export function JoinForm() {
                 className={`${styles.plan} ${plan === "monthly" ? styles.planSelected : ""}`}
                 onClick={() => setPlan("monthly")}
               >
-                <p className={styles.planName}>Monthly membership</p>
+                <p className={styles.planName}>Adult Unlimited</p>
                 <p className={styles.planMeta}>
-                  $149 / mo · unlimited adult classes
+                  $150 / month · unlimited group classes and gym access
                 </p>
               </button>
               <button
@@ -315,9 +324,9 @@ export function JoinForm() {
                 className={`${styles.plan} ${plan === "youth" ? styles.planSelected : ""}`}
                 onClick={() => setPlan("youth")}
               >
-                <p className={styles.planName}>Youth</p>
+                <p className={styles.planName}>Free youth classes</p>
                 <p className={styles.planMeta}>
-                  Free · ages 6–18 · Little Champs and Jab Lab
+                  Ages 8–12 and 13–17 · scheduled classes · a parent books
                 </p>
               </button>
               <button
@@ -325,17 +334,27 @@ export function JoinForm() {
                 className={`${styles.plan} ${plan === "trial" ? styles.planSelected : ""}`}
                 onClick={() => setPlan("trial")}
               >
-                <p className={styles.planName}>Trial</p>
+                <p className={styles.planName}>Free intro class</p>
                 <p className={styles.planMeta}>
-                  $29 one-time · short intro pass
+                  One class for a new customer · ask the desk
                 </p>
               </button>
             </div>
             <p className={styles.copy}>
-              Youth classes are free, the way the gym already runs them. The
-              adult monthly rate stays the desk rate until you confirm a new
-              number. The public plans page does not publish one.
+              November 2026 desk rates, in CAD, before HST. Glofox still sends
+              the bill. This app does not charge.
             </p>
+            <ul className={styles.copy}>
+              <li>Adult Unlimited $150 / month</li>
+              <li>8-Class Membership $120 / month · unused classes do not roll over</li>
+              <li>Weights and Bags Only $75 / month</li>
+              <li>Flex Pass $175 for one month · no automatic renewal</li>
+              <li>Youth 8–12 $75 / month · Youth 13–17 $85 / month</li>
+              <li>Student 18–22 $99 / month · valid student ID</li>
+              <li>Senior 65+ $1,200 / year · Annual paid-in-full $1,200 / year</li>
+              <li>Drop-in $32 · 5 classes $145 · 10 classes $260</li>
+              <li>Gift certificates $50, $100, and $150 · at the desk</li>
+            </ul>
             {error ? <p className={styles.error}>{error}</p> : null}
             <div className={styles.actions}>
               <Button
@@ -347,7 +366,11 @@ export function JoinForm() {
                 Back
               </Button>
               <Button type="submit" disabled={pending}>
-                {pending ? "Starting checkout…" : "Continue to payment"}
+                {pending
+                  ? "Saving…"
+                  : plan === "youth"
+                    ? "Confirm free youth classes"
+                    : "Got it — Glofox still bills"}
               </Button>
             </div>
           </form>

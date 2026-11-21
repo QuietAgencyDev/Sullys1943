@@ -82,6 +82,20 @@ export default function StorePage() {
           </div>
         </div>
 
+        <section className={styles.block} aria-label="Holiday gift certificates">
+          <h2 className={styles.subhead}>Give the gift of boxing</h2>
+          <p className={styles.copy}>
+            $50, $100, and $150. Buy one at the desk. Staff check the card
+            before it is used. The website does not charge the card.
+          </p>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/store/sullys-holiday-gift-cards.jpg"
+            alt="Sully's holiday gift certificates, $50, $100, and $150"
+            style={{ width: "100%", height: "auto", borderRadius: "12px" }}
+          />
+        </section>
+
         <ProductBlock title="Gift certificates" products={gifts} />
         <ProductBlock title="Training gear" products={gear} />
         <ProductBlock title="Apparel" products={apparel} />

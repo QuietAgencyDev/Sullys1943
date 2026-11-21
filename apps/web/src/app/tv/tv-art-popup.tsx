@@ -311,7 +311,7 @@ const SPECS: Record<string, ArtSpec> = {
     "COACH TONY",
     "IN HIS",
     "CORNER.",
-    "SCAN THE CODE. STAND WITH HIM.",
+    "THE CORNER STAYS.",
     [
       {
         id: "message",
@@ -607,17 +607,6 @@ export function TvArtPopup(live: TvArtPopupLive) {
               <span className={styles.shoutName}>SHOUT OUT · VIKTORIA PENNEY</span>
               <span className={styles.shoutWhy}>FOR ORGANISING THE FUNDRAISER</span>
             </p>
-            <p className={styles.goalReached}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/tv/icons/glove-1.png" alt="" draggable={false} />
-              <span>GOAL REACHED !!</span>
-            </p>
-            <aside className={styles.scanPlate}>
-              <div className={styles.qrCard}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/tv/tony-recovery-qr.png" alt="" draggable={false} />
-              </div>
-            </aside>
           </>
         ) : null}
         {live.tvMode === "earls_shop" ? (
@@ -1218,6 +1207,16 @@ const CHART_ADS = [
   },
 ] as const;
 
+const GIFT_ADS = [
+  {
+    mode: "sponsor_poster",
+    hero: "/tv/sponsors/sullys-holiday-gift-cards.jpg",
+    h1: "GIFT",
+    h2: "CARDS.",
+    msg: "$50 · $100 · $150 CAD · AT THE DESK",
+  },
+] as const;
+
 const SPONSOR_ADS = [
   {
     mode: "sponsor_poster",
@@ -1252,6 +1251,7 @@ export const FLOOR_ADS = [
   ...GYM_ADS,
   ...SCHEDULE_ADS,
   ...CHART_ADS,
+  ...GIFT_ADS,
   ...SPONSOR_ADS,
 ] as const;
 
@@ -1312,13 +1312,13 @@ export function dealFloorAdOrder(seed: number): number[] {
     order.splice(at, 0, gymIndex);
   }
   // One neighbourhood poster, taking turns, and it is drawn right after the class board.
+  const giftBase =
+    laneCount + EARLS_ADS.length + GYM_ADS.length + SCHEDULE_ADS.length + CHART_ADS.length;
+  if (GIFT_ADS.length) {
+    order.push(giftBase);
+  }
   if (SPONSOR_ADS.length) {
-    const sponsorBase =
-      laneCount +
-      EARLS_ADS.length +
-      GYM_ADS.length +
-      SCHEDULE_ADS.length +
-      CHART_ADS.length;
+    const sponsorBase = giftBase + GIFT_ADS.length;
     order.push(sponsorBase + (Math.abs(seed) % SPONSOR_ADS.length));
   }
   if (SCHEDULE_ADS.length) {

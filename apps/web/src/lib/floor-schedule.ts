@@ -115,7 +115,7 @@ export const FLOOR_COACHES: FloorCoach[] = [
     firstName: "Viktoria",
     lastName: "Penney",
     title: "Coach",
-    bio: "On the Sully's coaching floor. 2025 Brampton Cup gold medalist at women's 80 kg.",
+    bio: "On the Sully's coaching floor. Boxing Canada national team, women's 80 kg. 2025 Brampton Cup gold. At the 2026 Elite Nationals in Cape Breton she won unanimous decisions over Melina Laplante on 17 November and Maeva Montemiglio on 19 November, both at women's 70 kg.",
     photoUrl: "/coaches/viktoria-penney.png",
   },
   {
@@ -172,47 +172,68 @@ function slot(
 }
 
 export const FLOOR_SLOTS: FloorSlot[] = (() => {
-  const days = [1, 2, 3, 4, 5];
   const out: FloorSlot[] = [];
-  const hop = 'All levels. Boxing conditioning. 50 minutes. No shortcuts.';
-  const strength = 'All levels. 50 minutes. Strength, stamina, and the muscles behind the punches.';
-  const beginner = 'Beginners only. No experience required. 50 minutes. Stance, footwork, punches, and basic combinations.';
-  const youth = 'Ages 13–17. Free Monday, Wednesday, and Friday, 4:30–5:20. A parent books the child. No walk-ins.';
-  const junior = 'Ages 8–12. Free Tuesday and Thursday, 4:30–5:20. A parent books the child. No walk-ins.';
-  const box = 'All levels. Technique first: footwork, defence, angles, and ring sense. Start here before Fight Path.';
-  const path1 = 'Intermediate. 50 minutes. At least 6 months of boxing. Not for beginners.';
-  const path2 = 'Intermediate and advanced. 50 minutes. At least 6 months, depending on skill. Not for beginners.';
-  const team = 'Invite only. 90 minutes. Coach approval, Boxing Ontario membership, a valid medical, mouthguard, and headgear.';
-  const spar = 'Invite only. 90 minutes. Coach approval, Boxing Ontario membership, a valid medical, mouthguard, and headgear.';
-  for (const day of days) {
-    out.push(slot(day, 12, 0, 50, 'House of Pain', 'All levels', 'plus', { poster: POSTER.hop, blurb: hop }));
-    out.push(slot(day, 13, 0, 50, 'Strength and Conditioning', 'All levels', 'plus', { poster: POSTER.strength, blurb: strength }));
-    if (day === 1 || day === 3 || day === 5) {
-      out.push(slot(day, 16, 30, 50, 'Youth Boxing', 'Ages 13–17', 'beginner', { poster: POSTER.youth, blurb: youth, youth: true, note: 'Free · parent booking required' }));
-    } else {
-      out.push(slot(day, 16, 30, 50, 'Junior Boxing', 'Ages 8–12', 'beginner', { poster: POSTER.junior, blurb: junior, youth: true, note: 'Free · parent booking required' }));
-    }
-    out.push(slot(day, 17, 30, 50, 'Beginner Boxing', 'Beginners only', 'beginner', { poster: POSTER.beginner, blurb: beginner }));
-    if (day === 2 || day === 4) {
-      out.push(slot(day, 18, 30, 50, 'House of Pain', 'All levels', 'plus', { poster: POSTER.hop, blurb: hop }));
-    } else {
-      out.push(slot(day, 18, 30, 50, 'BoxTech', 'All levels', 'plus', { poster: POSTER.boxtech, blurb: box }));
-    }
-    if (day === 1 || day === 3) {
-      out.push(slot(day, 18, 30, 50, 'Fight Path 1', 'Intermediate', 'intermediate', { poster: POSTER.path1, blurb: path1, note: 'B+C · 6+ months' }));
-    } else if (day === 2) {
-      out.push(slot(day, 18, 30, 50, 'Battle Royale', 'Intermediate', 'intermediate', { coach: 'Jonathan Bochner', poster: POSTER.royale, note: 'B+C', blurb: 'Jonathan Bochner. 50 minutes. The second class at 6:30.' }));
-    } else {
-      out.push(slot(day, 18, 30, 50, 'Fight Path 2', 'Intermediate / Advanced', 'advanced', { poster: POSTER.path2, blurb: path2, note: 'B+C · 6+ months' }));
-    }
-    out.push(slot(day, 19, 30, 50, 'House of Pain', 'All levels', 'plus', { poster: POSTER.hop, blurb: hop }));
-    if (day === 1 || day === 5) {
-      out.push(slot(day, 19, 30, 90, 'Technical Sparring', 'Invite only', 'sparring', { poster: POSTER.spar, blurb: spar, note: 'B+C · coach approval required' }));
-    } else if (day === 3) {
-      out.push(slot(day, 19, 30, 50, 'Strength and Conditioning', 'All levels', 'plus', { poster: POSTER.strength, blurb: strength, note: 'B+C' }));
-    } else {
-      out.push(slot(day, 19, 30, 90, 'Fight Team', 'Invite only', 'fight', { poster: POSTER.team, blurb: team, note: 'B+C · coach approval required' }));
-    }
+  const hop = "All levels. Boxing conditioning. 50 minutes. No shortcuts.";
+  const strength = "All levels. 50 minutes. Strength, stamina, and the muscles behind the punches.";
+  const beginner = "Beginners only. No experience required. 50 minutes. Stance, footwork, punches, and basic combinations.";
+  const youth = "Ages 13–17. Free Monday, Wednesday, and Friday, 4:30–5:20. A parent books the child. No walk-ins.";
+  const junior = "Ages 8–12. Free Tuesday and Thursday, 4:30–5:20, with Renata. A parent books the child. No walk-ins.";
+  const box = "All levels. Technique first: footwork, defence, angles, and ring sense. Start here before Fight Path.";
+  const path1 = "Intermediate. 50 minutes. At least 6 months of boxing. Not for beginners.";
+  const path2 = "Intermediate and advanced. 50 minutes. At least 6 months, depending on skill. Not for beginners.";
+  const team = "Invite only. 90 minutes. Coach approval, Boxing Ontario membership, a valid medical, mouthguard, and headgear.";
+  const spar = "Invite only. 90 minutes. Coach approval, Boxing Ontario membership, a valid medical, mouthguard, and headgear.";
+  const levi = "Levi";
+  const tommy = "Tommy";
+  const rico = "Rico Mancini";
+  const anthony = "Anthony";
+  const renata = "Renata";
+  const jonathan = "Jonathan Bochner";
+
+  for (const day of [1, 2, 3, 4, 5]) {
+    out.push(slot(day, 12, 0, 50, "House of Pain", "All levels", "plus", { coach: levi, poster: POSTER.hop, blurb: hop }));
+  }
+  out.push(slot(1, 13, 0, 50, "BoxTech", "All levels", "plus", { coach: levi, poster: POSTER.boxtech, blurb: box }));
+  out.push(slot(2, 13, 0, 50, "Strength and Conditioning", "All levels", "plus", { coach: levi, poster: POSTER.strength, blurb: strength }));
+  out.push(slot(3, 13, 0, 50, "BoxTech", "All levels", "plus", { coach: levi, poster: POSTER.boxtech, blurb: box }));
+  out.push(slot(4, 13, 0, 50, "Strength and Conditioning", "All levels", "plus", { coach: levi, poster: POSTER.strength, blurb: strength }));
+  out.push(slot(5, 13, 0, 50, "BoxTech", "All levels", "plus", { coach: levi, poster: POSTER.boxtech, blurb: box }));
+
+  for (const day of [1, 3, 5]) {
+    out.push(slot(day, 16, 30, 50, "Youth Boxing", "Ages 13–17", "beginner", { poster: POSTER.youth, blurb: youth, youth: true, note: "Free · parent booking required" }));
+  }
+  for (const day of [2, 4]) {
+    out.push(slot(day, 16, 30, 50, "Junior Boxing", "Ages 8–12", "beginner", { coach: renata, poster: POSTER.junior, blurb: junior, youth: true, note: "Free · parent booking required" }));
+  }
+
+  out.push(slot(1, 17, 30, 50, "Beginner Boxing", "Beginners only", "beginner", { poster: POSTER.beginner, blurb: beginner }));
+  out.push(slot(2, 17, 30, 50, "House of Pain", "All levels", "plus", { coach: anthony, poster: POSTER.hop, blurb: hop }));
+  out.push(slot(3, 17, 30, 50, "Beginner Boxing", "Beginners only", "beginner", { poster: POSTER.beginner, blurb: beginner }));
+  out.push(slot(4, 17, 30, 50, "House of Pain", "All levels", "plus", { coach: rico, poster: POSTER.hop, blurb: hop }));
+  out.push(slot(5, 17, 30, 50, "Beginner Boxing", "Beginners only", "beginner", { poster: POSTER.beginner, blurb: beginner }));
+
+  out.push(slot(1, 18, 30, 50, "BoxTech", "All levels", "plus", { coach: tommy, poster: POSTER.boxtech, blurb: box }));
+  out.push(slot(2, 18, 30, 50, "Beginner Boxing", "Beginners only", "beginner", { coach: rico, poster: POSTER.beginner, blurb: beginner }));
+  out.push(slot(3, 18, 30, 50, "BoxTech", "All levels", "plus", { coach: tommy, poster: POSTER.boxtech, blurb: box }));
+  out.push(slot(4, 18, 30, 50, "Beginner Boxing", "Beginners only", "beginner", { coach: tommy, poster: POSTER.beginner, blurb: beginner }));
+  out.push(slot(5, 18, 30, 50, "BoxTech", "All levels", "plus", { coach: anthony, poster: POSTER.boxtech, blurb: box }));
+
+  out.push(slot(1, 18, 30, 50, "Fight Path 1", "Intermediate", "intermediate", { poster: POSTER.path1, blurb: path1, note: "B+C · 6+ months" }));
+  out.push(slot(2, 18, 30, 50, "Battle Royale", "Intermediate", "intermediate", { coach: jonathan, poster: POSTER.royale, note: "B+C", blurb: "Jonathan Bochner. 50 minutes. The second class at 6:30." }));
+  out.push(slot(3, 18, 30, 50, "Fight Path 2", "Intermediate / Advanced", "advanced", { poster: POSTER.path2, blurb: path2, note: "B+C · 6+ months" }));
+  out.push(slot(4, 18, 30, 50, "Fight Path 1", "Intermediate", "intermediate", { poster: POSTER.path1, blurb: path1, note: "B+C · 6+ months" }));
+  out.push(slot(5, 18, 30, 50, "Fight Path 2", "Intermediate / Advanced", "advanced", { poster: POSTER.path2, blurb: path2, note: "B+C · 6+ months" }));
+
+  out.push(slot(1, 19, 30, 50, "House of Pain", "All levels", "plus", { coach: tommy, poster: POSTER.hop, blurb: hop }));
+  out.push(slot(2, 19, 30, 50, "Strength and Conditioning", "All levels", "plus", { coach: anthony, poster: POSTER.strength, blurb: strength, note: "B+C" }));
+  out.push(slot(3, 19, 30, 50, "Strength and Conditioning", "All levels", "plus", { coach: tommy, poster: POSTER.strength, blurb: strength, note: "B+C" }));
+  out.push(slot(4, 19, 30, 50, "House of Pain", "All levels", "plus", { coach: tommy, poster: POSTER.hop, blurb: hop }));
+  out.push(slot(5, 19, 30, 50, "Strength and Conditioning", "All levels", "plus", { coach: anthony, poster: POSTER.strength, blurb: strength, note: "B+C" }));
+
+  out.push(slot(1, 19, 30, 90, "Technical Sparring", "Invite only", "sparring", { poster: POSTER.spar, blurb: spar, note: "Coach approval required" }));
+  out.push(slot(5, 19, 30, 90, "Technical Sparring", "Invite only", "sparring", { poster: POSTER.spar, blurb: spar, note: "Coach approval required" }));
+  for (const day of [2, 3, 4]) {
+    out.push(slot(day, 19, 30, 90, "Fight Team", "Invite only", "fight", { poster: POSTER.team, blurb: team, note: "Coach approval required" }));
   }
   return out;
 })();

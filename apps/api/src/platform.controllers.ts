@@ -846,7 +846,7 @@ export class CheckInController {
         throw new BadRequestException(
           token.startsWith("SUL-")
             ? "That check-in code is not on this desk. Reload the card and scan the new QR."
-            : "The scanner did not read a Sully's check-in QR. Scan the code on the member card.",
+            : "That is not a Sully's check-in QR. Scan a Glofox code in the Glofox window. Click this box and scan the Sully's card for the visit and XP.",
         );
       }
       if (cred.expiresAt.getTime() < Date.now()) {
