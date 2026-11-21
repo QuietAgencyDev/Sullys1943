@@ -1299,11 +1299,14 @@ export function dealFloorAdOrder(seed: number): number[] {
   }
   const order = dealt.reverse();
   const laneCount = order.length;
-  // One Earl's card every third full pass, so it shows less than the other cards.
-  if (Math.abs(seed) % 3 === 0 && EARLS_ADS.length) {
+  // Earl's shop card once each pass, and a second time on half the passes.
+  if (EARLS_ADS.length) {
     const earlsIndex = laneCount;
     const fromStart = Math.floor(order.length * 0.65);
-    order.splice(order.length - fromStart, 0, earlsIndex);
+    order.splice(Math.max(0, order.length - fromStart), 0, earlsIndex);
+    if (Math.abs(seed) % 2 === 0) {
+      order.splice(Math.max(1, Math.floor(order.length * 0.28)), 0, earlsIndex);
+    }
   }
   // Old gym still, once each pass. The floor holds it full-screen.
   if (GYM_ADS.length) {
@@ -1316,6 +1319,7 @@ export function dealFloorAdOrder(seed: number): number[] {
     laneCount + EARLS_ADS.length + GYM_ADS.length + SCHEDULE_ADS.length + CHART_ADS.length;
   if (GIFT_ADS.length) {
     order.push(giftBase);
+    order.splice(Math.max(1, Math.floor(order.length * 0.42)), 0, giftBase);
   }
   if (SPONSOR_ADS.length) {
     const sponsorBase = giftBase + GIFT_ADS.length;

@@ -1530,7 +1530,9 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
         {posterScreen ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            className={styles.posterStill}
+            className={`${styles.posterStill} ${
+              floorAd?.hero?.includes("holiday") ? styles.posterHoliday : ""
+            }`}
             src={floorAd?.hero || "/tv/sponsors/sugo-round-two.jpg"}
             alt=""
             draggable={false}
@@ -2161,28 +2163,32 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                 />
               ) : null}
               <p className={styles.panelTitle}>Members A–Z</p>
-              <ul className={styles.boardList}>
-                {(board?.xpChart ?? board?.leaderboard ?? []).slice(0, 5).map((row) => (
-                  <li key={row.rank} className={styles.boardRow}>
-                    <span>
-                      <span className={styles.rank}>
-                        {String(row.rank).padStart(2, "0")}
-                      </span>
-                      <strong>{row.displayName}</strong>
-                    </span>
-                    <span>
-                      {"score" in row && row.score != null
-                        ? `${row.score} pts`
-                        : `${row.xp} XP · L${row.level}`}
-                    </span>
-                  </li>
-                ))}
-                {!(board?.xpChart ?? board?.leaderboard)?.length ? (
-                  <li className={styles.boardRow}>
-                    <span>Everyone starts at 0</span>
-                  </li>
-                ) : null}
-              </ul>
+              <div className={styles.nameCrawl}>
+                <ul className={styles.boardList}>
+                  {(board?.xpChart ?? board?.leaderboard ?? [])
+                    .concat(board?.xpChart ?? board?.leaderboard ?? [])
+                    .map((row, index) => (
+                      <li key={`${row.rank}-${index}`} className={styles.boardRow}>
+                        <span>
+                          <span className={styles.rank}>
+                            {String(row.rank).padStart(2, "0")}
+                          </span>
+                          <strong>{row.displayName}</strong>
+                        </span>
+                        <span>
+                          {"score" in row && row.score != null
+                            ? `${row.score} pts`
+                            : `${row.xp} XP · L${row.level}`}
+                        </span>
+                      </li>
+                    ))}
+                  {!(board?.xpChart ?? board?.leaderboard)?.length ? (
+                    <li className={styles.boardRow}>
+                      <span>Everyone starts at 0</span>
+                    </li>
+                  ) : null}
+                </ul>
+              </div>
             </div>
           ) : (
             <div className={`${styles.panel} ${styles.sideFill}`}>

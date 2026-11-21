@@ -1,6 +1,5 @@
-.tvScreen,
-.tvScreen * {
-  cursor: none !important;
+.tvScreen {
+  min-height: 100svh;
 }
 
 .shell {
@@ -152,6 +151,10 @@
   object-fit: contain;
   object-position: center;
   background: linear-gradient(180deg, #f7f2e8 0%, #f7f2e8 46%, #102a56 54%, #102a56 100%);
+}
+
+.posterHoliday {
+  background: linear-gradient(180deg, #1b6b34 0%, #146b32 46%, #9b1c24 54%, #7d1218 100%);
 }
 
 .shellPoster .hero,
@@ -959,7 +962,7 @@
 
 .sideFill {
   flex: 1 1 0;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .panelTitle {
@@ -977,6 +980,15 @@
   padding: 0;
   display: grid;
   gap: 0.45rem;
+}
+
+.nameCrawl {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.nameCrawl .boardList {
+  animation: marqueeY 140s linear infinite;
 }
 
 .boardRow {
@@ -1549,7 +1561,8 @@
   .phaseCurtain::before,
   .phaseCurtain::after,
   .arrivalMoment,
-  .leaderCrawl > div {
+  .leaderCrawl > div,
+  .nameCrawl .boardList {
     animation: none;
   }
 
