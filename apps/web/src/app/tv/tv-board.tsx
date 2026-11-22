@@ -111,6 +111,12 @@ type Board = {
     xp: number;
     level: number;
   }[];
+  membersAz?: {
+    rank: number;
+    displayName: string;
+    xp: number;
+    level: number;
+  }[];
   ticker: { name: string; at: string; late?: boolean }[];
   manifesto: string[];
   refreshSeconds: number;
@@ -969,22 +975,24 @@ function MemberCrawl({
   }>;
 }) {
   const trackRef = useRef<HTMLUListElement>(null);
+  const started = useRef(0);
   useEffect(() => {
     const node = trackRef.current;
     if (!node || rows.length < 2) return;
+    if (!started.current) started.current = performance.now();
+    const origin = started.current;
     let frame = 0;
-    const start = performance.now();
     const step = (now: number) => {
       const half = node.scrollHeight / 2;
       if (half > 8) {
-        const y = (((now - start) / 1000) * 32) % half;
+        const y = (((now - origin) / 1000) * 36) % half;
         node.style.transform = `translate3d(0, ${-y}px, 0)`;
       }
       frame = requestAnimationFrame(step);
     };
     frame = requestAnimationFrame(step);
     return () => cancelAnimationFrame(frame);
-  }, [rows]);
+  }, [rows.length]);
   if (!rows.length) {
     return (
       <div className={styles.nameCrawl}>
@@ -2220,7 +2228,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                 />
               ) : null}
               <p className={styles.panelTitle}>Members A–Z</p>
-              <MemberCrawl rows={board?.xpChart ?? []} />
+              <MemberCrawl rows={board?.membersAz ?? board?.xpChart ?? []} />
             </div>
           ) : (
             <div className={`${styles.panel} ${styles.sideFill}`}>

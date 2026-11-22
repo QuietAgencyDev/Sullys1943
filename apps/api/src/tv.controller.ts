@@ -275,6 +275,8 @@ export class TvController {
         : Promise.resolve([]),
     ]);
 
+    const membersAz = await this.xpChart();
+
     return {
       profile,
       asOf: now.toISOString(),
@@ -310,7 +312,8 @@ export class TvController {
         sessions: calendarSessions,
       },
       leaderboard: gameLeaderboard.length ? gameLeaderboard : leaderboard,
-      xpChart: await this.xpChart(),
+      xpChart: membersAz.slice(0, 100),
+      membersAz,
       ticker: recentCheckIns.map((c) => ({
         name:
           c.status === "late"
@@ -445,7 +448,6 @@ export class TvController {
       .sort((a, b) =>
         a.sortName.localeCompare(b.sortName, "en", { sensitivity: "base" }),
       )
-      .slice(0, 100)
       .map(({ sortName: _sortName, ...row }, index) => ({
         rank: index + 1,
         ...row,
