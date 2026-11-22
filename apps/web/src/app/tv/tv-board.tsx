@@ -957,6 +957,63 @@ function writeCachedBoard(profile: string, data: Board) {
   }
 }
 
+function MemberCrawl({
+  rows,
+}: {
+  rows: Array<{
+    rank: number;
+    displayName: string;
+    xp: number;
+    level: number;
+    score?: number;
+  }>;
+}) {
+  const trackRef = useRef<HTMLUListElement>(null);
+  useEffect(() => {
+    const node = trackRef.current;
+    if (!node || rows.length < 2) return;
+    let frame = 0;
+    const start = performance.now();
+    const step = (now: number) => {
+      const half = node.scrollHeight / 2;
+      if (half > 8) {
+        const y = (((now - start) / 1000) * 32) % half;
+        node.style.transform = `translate3d(0, ${-y}px, 0)`;
+      }
+      frame = requestAnimationFrame(step);
+    };
+    frame = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frame);
+  }, [rows]);
+  if (!rows.length) {
+    return (
+      <div className={styles.nameCrawl}>
+        <p className={styles.meta}>Everyone starts at 0</p>
+      </div>
+    );
+  }
+  const loop = rows.concat(rows);
+  return (
+    <div className={styles.nameCrawl}>
+      <ul className={styles.boardList} ref={trackRef}>
+        {loop.map((row, index) => (
+          <li key={`${row.rank}-${index}`} className={styles.boardRow}>
+            <span>
+              <span className={styles.rank}>{String(row.rank).padStart(2, "0")}</span>
+              <strong>{row.displayName}</strong>
+            </span>
+            <span>
+              {"score" in row && row.score != null
+                ? `${row.score} pts`
+                : `${row.xp} XP · L${row.level}`}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
   const brand = getBrand();
   const floor = floorLabel(brand.copy.appName);
@@ -2163,32 +2220,7 @@ export function TvBoard({ profile }: { profile: "floor" | "reception" }) {
                 />
               ) : null}
               <p className={styles.panelTitle}>Members A–Z</p>
-              <div className={styles.nameCrawl}>
-                <ul className={styles.boardList}>
-                  {(board?.xpChart ?? board?.leaderboard ?? [])
-                    .concat(board?.xpChart ?? board?.leaderboard ?? [])
-                    .map((row, index) => (
-                      <li key={`${row.rank}-${index}`} className={styles.boardRow}>
-                        <span>
-                          <span className={styles.rank}>
-                            {String(row.rank).padStart(2, "0")}
-                          </span>
-                          <strong>{row.displayName}</strong>
-                        </span>
-                        <span>
-                          {"score" in row && row.score != null
-                            ? `${row.score} pts`
-                            : `${row.xp} XP · L${row.level}`}
-                        </span>
-                      </li>
-                    ))}
-                  {!(board?.xpChart ?? board?.leaderboard)?.length ? (
-                    <li className={styles.boardRow}>
-                      <span>Everyone starts at 0</span>
-                    </li>
-                  ) : null}
-                </ul>
-              </div>
+              <MemberCrawl rows={board?.xpChart ?? []} />
             </div>
           ) : (
             <div className={`${styles.panel} ${styles.sideFill}`}>
