@@ -962,7 +962,10 @@
 
 .sideFill {
   flex: 1 1 0;
+  min-height: 0;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .panelTitle {
@@ -983,12 +986,17 @@
 }
 
 .nameCrawl {
+  flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;
 }
 
 .nameCrawl .boardList {
-  animation: marqueeY 140s linear infinite;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  animation: marqueeY 80s linear infinite;
+  will-change: transform;
 }
 
 .boardRow {
@@ -1411,10 +1419,10 @@
 
 @keyframes marqueeY {
   from {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translateY(-50%);
+    transform: translate3d(0, -50%, 0);
   }
 }
 
@@ -1561,8 +1569,7 @@
   .phaseCurtain::before,
   .phaseCurtain::after,
   .arrivalMoment,
-  .leaderCrawl > div,
-  .nameCrawl .boardList {
+  .leaderCrawl > div {
     animation: none;
   }
 
