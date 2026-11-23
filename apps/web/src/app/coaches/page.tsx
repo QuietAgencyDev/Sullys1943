@@ -230,7 +230,7 @@ export default function CoachesPage() {
           <section className={styles.fighters} aria-label="Fighters on BoxRec">
             <h2 className={styles.fighterTitle}>Fighters on BoxRec</h2>
             <p className={styles.copy}>
-              These boxers list Sully&apos;s on BoxRec. A record is shown only when BoxRec prints one. Viktoria Penney is on the floor and on Boxing Canada&apos;s national team. BoxRec does not have a page for her.
+              These boxers list Sully&apos;s on BoxRec. A record is shown only when BoxRec prints one. Viktoria Penney is the 2026 Canadian Elite national champion at women&apos;s 70 kg. BoxRec does not have a page for her.
             </p>
             <ul className={styles.fighterList}>
               {BOXREC_FIGHTERS.map((fighter) => (

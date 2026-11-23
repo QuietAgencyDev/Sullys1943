@@ -115,7 +115,7 @@ export const FLOOR_COACHES: FloorCoach[] = [
     firstName: "Viktoria",
     lastName: "Penney",
     title: "Coach",
-    bio: "On the Sully's coaching floor. Boxing Canada national team, women's 80 kg. 2025 Brampton Cup gold. At the 2026 Elite Nationals in Cape Breton she won unanimous decisions over Melina Laplante on 17 November and Maeva Montemiglio on 19 November, both at women's 70 kg.",
+    bio: "On the Sully's coaching floor. 2026 Canadian Elite national champion at women's 70 kg. She won the final in Cape Breton on 21 November by unanimous decision over Samantha Bumbaca. 2025 Brampton Cup gold at women's 80 kg. Boxing Canada national team.",
     photoUrl: "/coaches/viktoria-penney.png",
   },
   {
